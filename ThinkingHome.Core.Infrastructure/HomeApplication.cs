@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Composition.Convention;
 using System.Composition.Hosting;
 using System.Linq;
 using System.Reflection;
@@ -19,6 +20,11 @@ namespace ThinkingHome.Core.Infrastructure
         public void Init()
         {
             LoadPlugins();
+
+            foreach (var plugin in context.GetAllPlugins())
+            {
+                plugin.InitPlugin();
+            }
         }
 
         private void LoadPlugins()
@@ -30,15 +36,7 @@ namespace ThinkingHome.Core.Infrastructure
                 .WithAssembly(assembly2)
                 .CreateContainer();
 
-            context = container.GetExport<IServiceContext>();
-
-            foreach (var pl in context.GetAllPlugins())
-            {
-                logger.Info(pl.GetType().FullName);
-            }
-
-            logger.Info("44444444");
-            logger.Info(context.GetPlugin<TestPlugin2>().GetType());
+            context = container.GetExport<IServiceContext>("DCCEE19A-2CEA-423F-BFE5-AE5E12679938");
         }
     }
 }
