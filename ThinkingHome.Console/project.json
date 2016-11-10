@@ -1,11 +1,12 @@
 ﻿{
-    "version": "1.0.0-*",
+    "version": "4.0.0-*",
     "buildOptions": {
         "debugType": "portable",
         "emitEntryPoint": true
     },
     "dependencies": {
-        "ThinkingHome.Core.Infrastructure": "1.0.0-*"
+        "ThinkingHome.Core.Infrastructure": "4.0.0-*",
+        "ThinkingHome.Core.Plugins": "4.0.0-*"
     },
     "frameworks": {
         "netcoreapp1.1": {
