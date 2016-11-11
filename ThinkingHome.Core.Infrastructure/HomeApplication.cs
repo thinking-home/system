@@ -79,7 +79,10 @@ namespace ThinkingHome.Core.Infrastructure
         private void LoadPlugins(Assembly[] asms)
         {
             var conventions = new ConventionBuilder();
-            conventions.ForTypesDerivedFrom<PluginBase>().Shared();
+            conventions
+                .ForTypesDerivedFrom<PluginBase>()
+                .Export<PluginBase>()
+                .Shared();
 
 
 

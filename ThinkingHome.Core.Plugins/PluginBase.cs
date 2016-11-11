@@ -1,4 +1,7 @@
-﻿using System.Composition;
+﻿using System;
+using System.Composition;
+using System.Linq;
+using System.Threading.Tasks;
 using NLog;
 
 namespace ThinkingHome.Core.Plugins
@@ -37,5 +40,16 @@ namespace ThinkingHome.Core.Plugins
         }
 
         #endregion
+
+        public void GenerateEvent<T>(T[] handlers, Action<T> action)
+        {
+            if (handlers == null) return;
+
+            foreach (var handler in handlers)
+            {
+                var context = new EventContext<T>(handler, action, Logger);
+                Task.Factory.StartNew(context.Start);
+            }
+        }
     }
 }

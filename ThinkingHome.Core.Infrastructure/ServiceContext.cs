@@ -12,8 +12,7 @@ namespace ThinkingHome.Core.Infrastructure
     public class ServiceContext : IServiceContext
     {
         [ImportingConstructor]
-        public ServiceContext(
-            [ImportMany("9F1A88A2-4E69-4794-A5E2-98ACA829E204")] IEnumerable<PluginBase> loadedPlugins)
+        public ServiceContext([ImportMany] IEnumerable<PluginBase> loadedPlugins)
         {
             plugins = loadedPlugins.ToDictionary(p => p.GetType());
         }
