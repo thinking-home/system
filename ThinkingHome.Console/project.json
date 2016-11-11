@@ -6,7 +6,8 @@
     },
     "dependencies": {
         "ThinkingHome.Core.Infrastructure": "4.0.0-*",
-        "ThinkingHome.Core.Plugins": "4.0.0-*"
+        "ThinkingHome.Core.Plugins": "4.0.0-*",
+        "ThinkingHome.Plugins.Timer": "4.0.0-*"
     },
     "frameworks": {
         "netcoreapp1.1": {

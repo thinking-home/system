@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Composition.Convention;
 using System.Composition.Hosting;
 using System.Reflection;
 using NLog;
@@ -12,11 +13,15 @@ namespace ThinkingHome.Core.Infrastructure
 
         private IServiceContext context;
 
-        public void Init()
+        /// <summary>
+        /// Инициализация
+        /// </summary>
+        /// <param name="asms">Список сборок с плагинами - временное решение</param>
+        public void Init(params Assembly[] asms)
         {
             try
             {
-                LoadPlugins();
+                LoadPlugins(asms);
 
                 // инициализируем плагины
                 foreach (var plugin in context.GetAllPlugins())
@@ -71,13 +76,16 @@ namespace ThinkingHome.Core.Infrastructure
 
         #region private
 
-        private void LoadPlugins()
+        private void LoadPlugins(Assembly[] asms)
         {
-            var assembly = GetType().GetTypeInfo().Assembly;
-            var assembly2 = typeof(PluginBase).GetTypeInfo().Assembly;
+            var conventions = new ConventionBuilder();
+            conventions.ForTypesDerivedFrom<PluginBase>().Shared();
+
+
+
             var container = new ContainerConfiguration()
-                .WithAssembly(assembly)
-                .WithAssembly(assembly2)
+                .WithAssemblies(asms, conventions)
+                .WithAssembly(GetType().GetTypeInfo().Assembly, conventions)
                 .CreateContainer();
 
             context = container.GetExport<IServiceContext>("DCCEE19A-2CEA-423F-BFE5-AE5E12679938");
