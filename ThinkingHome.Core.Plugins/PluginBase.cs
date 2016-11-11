@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Composition;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Composition;
 using NLog;
 
 namespace ThinkingHome.Core.Plugins
@@ -27,22 +23,17 @@ namespace ThinkingHome.Core.Plugins
 
         public virtual void InitPlugin()
         {
-            logger.Warn("init plugin {0}", GetType().FullName);
 
-            foreach (var plugin in Context.GetAllPlugins())
-            {
-                logger.Warn("- {0}", plugin.GetType().FullName);
-            }
         }
 
         public virtual void StartPlugin()
         {
-            logger.Warn("start plugin");
+
         }
 
         public virtual void StopPlugin()
         {
-            logger.Warn("stop plugin");
+
         }
 
         #endregion

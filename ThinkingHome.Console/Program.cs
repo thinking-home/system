@@ -10,8 +10,15 @@ namespace ThinkingHome.Console
     {
         public static void Main(string[] args)
         {
-            var cls = new HomeApplication();
-            cls.Init();
+            var app = new HomeApplication();
+
+            app.Init();
+            app.StartServices();
+
+            System.Console.WriteLine("Service is available. Press ENTER to exit.");
+            System.Console.ReadLine();
+
+            app.StopServices();
         }
     }
 }
