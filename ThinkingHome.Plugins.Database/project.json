@@ -1,0 +1,19 @@
+﻿{
+  "version": "4.0.0-*",
+  "buildOptions": {
+    "debugType": "portable"
+  },
+  "dependencies": {
+    "Microsoft.EntityFrameworkCore": "1.1.0-preview1-final",
+    "NETStandard.Library": "1.6.1-preview1-24530-04",
+    "NLog": "5.0.0-beta03",
+    "Npgsql.EntityFrameworkCore.PostgreSQL": "1.1.0-preview1-final",
+    "System.Composition": "1.0.31-preview1-24530-04",
+    "ThinkingHome.Core.Plugins": "4.0.0-*"
+  },
+  "frameworks": {
+    "netstandard1.6": {
+      "imports": "dnxcore50"
+    }
+  }
+}

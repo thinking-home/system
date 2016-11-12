@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using ThinkingHome.Core.Infrastructure;
+using ThinkingHome.Plugins.Database;
 using ThinkingHome.Plugins.Timer;
 using ThinkingHome.Plugins.Tmp;
 
@@ -17,8 +18,9 @@ namespace ThinkingHome.Console
 
             var timerAssembly = typeof(TimerPlugin).GetTypeInfo().Assembly;
             var tmpAssembly = typeof(TmpPlugin).GetTypeInfo().Assembly;
+            var dbAssembly = typeof(DatabasePlugin).GetTypeInfo().Assembly;
 
-            app.Init(timerAssembly, tmpAssembly);
+            app.Init(timerAssembly, tmpAssembly, dbAssembly);
             app.StartServices();
 
             System.Console.WriteLine("Service is available. Press ENTER to exit.");
