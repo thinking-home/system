@@ -8,8 +8,8 @@ namespace ThinkingHome.Plugins.Timer
     {
         #region fields
 
-        private const int TIMER_INTERVAL = 30000;
-        //private const int TIMER_INTERVAL = 2000;
+        //private const int TIMER_INTERVAL = 30000;
+        private const int TIMER_INTERVAL = 2000;
 
         private System.Threading.Timer timer;
 
@@ -38,8 +38,7 @@ namespace ThinkingHome.Plugins.Timer
 
         private void Callback(object state)
         {
-            OnEvent(DateTime.Now);
-            GenerateEvent(OnEvent, e => e(DateTime.Now));
+            GenerateEvent(OnEvent, e => e(DateTime.Now), true);
         }
     }
 }

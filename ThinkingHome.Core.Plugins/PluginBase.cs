@@ -41,12 +41,20 @@ namespace ThinkingHome.Core.Plugins
 
         #endregion
 
-        public void GenerateEvent<T>(T handler, Action<T> action)
+        public void GenerateEvent<T>(T handler, Action<T> action, bool runAsync = false)
         {
             if (handler == null) return;
 
             var context = new EventContext<T>(handler, action, Logger);
-            Task.Factory.StartNew(context.Start);
+
+            if (runAsync)
+            {
+                Task.Factory.StartNew(context.Start);
+            }
+            else
+            {
+                context.Start();
+            }
         }
     }
 }
