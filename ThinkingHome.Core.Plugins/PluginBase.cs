@@ -41,15 +41,12 @@ namespace ThinkingHome.Core.Plugins
 
         #endregion
 
-        public void GenerateEvent<T>(T[] handlers, Action<T> action)
+        public void GenerateEvent<T>(T handler, Action<T> action)
         {
-            if (handlers == null) return;
+            if (handler == null) return;
 
-            foreach (var handler in handlers)
-            {
-                var context = new EventContext<T>(handler, action, Logger);
-                Task.Factory.StartNew(context.Start);
-            }
+            var context = new EventContext<T>(handler, action, Logger);
+            Task.Factory.StartNew(context.Start);
         }
     }
 }

@@ -1,14 +1,27 @@
-﻿using System.Threading;
+﻿using System;
+using System.Composition;
+using System.Threading;
+using System.Threading.Tasks;
 using ThinkingHome.Core.Plugins;
 
 namespace ThinkingHome.Plugins.Timer
 {
     public class TimerPlugin : PluginBase
     {
-        private const int TIMER_INTERVAL = 30000;
-        //private const int TIMER_INTERVAL = 2000;
+        #region fields
+
+        //private const int TIMER_INTERVAL = 30000;
+        private const int TIMER_INTERVAL = 2000;
 
         private System.Threading.Timer timer;
+
+        #endregion
+
+        #region handlers
+
+        public event Action<DateTime> OnEvent;
+
+        #endregion
 
         public override void InitPlugin()
         {
@@ -27,7 +40,8 @@ namespace ThinkingHome.Plugins.Timer
 
         private void Callback(object state)
         {
-            Logger.Info("сработал таймер");
+            OnEvent(DateTime.Now);
+            GenerateEvent(OnEvent, e => e(DateTime.Now));
         }
     }
 }
