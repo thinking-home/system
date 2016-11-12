@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ThinkingHome.Plugins.Database.Tmp
+namespace ThinkingHome.Plugins.Tmp
 {
     public class SmallPig
     {

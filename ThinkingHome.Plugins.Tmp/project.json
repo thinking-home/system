@@ -8,6 +8,7 @@
         "NLog": "5.0.0-beta03",
         "System.Composition": "1.0.31-preview1-24530-04",
         "ThinkingHome.Core.Plugins": "4.0.0-*",
+        "ThinkingHome.Plugins.Database": "4.0.0-*",
         "ThinkingHome.Plugins.Timer": "4.0.0-*"
     },
     "frameworks": {

@@ -84,8 +84,6 @@ namespace ThinkingHome.Core.Infrastructure
                 .Export<PluginBase>()
                 .Shared();
 
-
-
             var container = new ContainerConfiguration()
                 .WithAssemblies(asms, conventions)
                 .WithAssembly(GetType().GetTypeInfo().Assembly, conventions)
