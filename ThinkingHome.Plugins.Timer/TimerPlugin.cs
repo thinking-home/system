@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Composition;
 using System.Threading;
-using System.Threading.Tasks;
 using ThinkingHome.Core.Plugins;
 
 namespace ThinkingHome.Plugins.Timer
@@ -10,8 +8,8 @@ namespace ThinkingHome.Plugins.Timer
     {
         #region fields
 
-        //private const int TIMER_INTERVAL = 30000;
-        private const int TIMER_INTERVAL = 2000;
+        private const int TIMER_INTERVAL = 30000;
+        //private const int TIMER_INTERVAL = 2000;
 
         private System.Threading.Timer timer;
 

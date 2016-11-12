@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Composition;
 using ThinkingHome.Core.Plugins;
 using ThinkingHome.Plugins.Timer;
 
@@ -11,7 +10,7 @@ namespace ThinkingHome.Plugins.Tmp
         {
             Logger.Info("init tmp plugin {0}", Guid.NewGuid());
 
-            Context.GetPlugin<TimerPlugin>().OnEvent += MimimiTimer;
+            Context.Require<TimerPlugin>().OnEvent += MimimiTimer;
         }
 
         public override void StartPlugin()
