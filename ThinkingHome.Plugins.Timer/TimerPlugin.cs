@@ -9,7 +9,7 @@ namespace ThinkingHome.Plugins.Timer
         #region fields
 
         //private const int TIMER_INTERVAL = 30000;
-        private const int TIMER_INTERVAL = 2000;
+        private const int TIMER_INTERVAL = 10000;
 
         private System.Threading.Timer timer;
 

@@ -8,6 +8,6 @@ namespace ThinkingHome.Plugins.Tmp
 
         public string Name { get; set; }
 
-        public string Size { get; set; }
+        public int Size { get; set; }
     }
 }

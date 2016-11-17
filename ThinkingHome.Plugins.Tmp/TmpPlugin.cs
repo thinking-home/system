@@ -31,7 +31,7 @@ namespace ThinkingHome.Plugins.Tmp
             using (var db = Context.Require<DatabasePlugin>().OpenSession())
             {
                 db.Set<SmallPig>().ToList()
-                    .ForEach(pig => Logger.Warn(pig.Name));
+                    .ForEach(pig => Logger.Warn($"{pig.Name}, size: {pig.Size} ({pig.Id})"));
 
             }
         }

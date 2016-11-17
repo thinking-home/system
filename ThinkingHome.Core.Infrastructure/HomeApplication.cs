@@ -30,6 +30,15 @@ namespace ThinkingHome.Core.Infrastructure
                     plugin.InitPlugin();
                 }
             }
+            catch (ReflectionTypeLoadException ex)
+            {
+                logger.Error(ex, "error on plugins initialization");
+                foreach (var loaderException in ex.LoaderExceptions)
+                {
+                    logger.Error(loaderException, loaderException.Message);
+                }
+                throw;
+            }
             catch (Exception ex)
             {
                 logger.Error(ex, "error on plugins initialization");

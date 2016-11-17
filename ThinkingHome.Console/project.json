@@ -7,6 +7,9 @@
     "dependencies": {
         "ThinkingHome.Core.Infrastructure": "4.0.0-*",
         "ThinkingHome.Core.Plugins": "4.0.0-*",
+        "ThinkingHome.Migrator": "3.0.0-alpha1",
+        "ThinkingHome.Migrator.Providers.PostgreSQL": "3.0.0-alpha1",
+        "ThinkingHome.Migrator.Framework": "3.0.0-alpha1",
         "ThinkingHome.Plugins.Timer": "4.0.0-*",
         "ThinkingHome.Plugins.Database": "4.0.0-*",
         "ThinkingHome.Plugins.Tmp": "4.0.0-*"
