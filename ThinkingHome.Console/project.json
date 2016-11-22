@@ -1,29 +1,29 @@
 ﻿{
-    "version": "4.0.0-*",
-    "buildOptions": {
-        "debugType": "portable",
-        "emitEntryPoint": true
-    },
-    "dependencies": {
-        "ThinkingHome.Core.Infrastructure": "4.0.0-*",
-        "ThinkingHome.Core.Plugins": "4.0.0-*",
-        "ThinkingHome.Migrator": "3.0.0-alpha1",
-        "ThinkingHome.Migrator.Providers.PostgreSQL": "3.0.0-alpha1",
-        "ThinkingHome.Migrator.Framework": "3.0.0-alpha1",
-        "ThinkingHome.Plugins.Timer": "4.0.0-*",
-        "ThinkingHome.Plugins.Database": "4.0.0-*",
-        "ThinkingHome.Plugins.Scripts": "4.0.0-*",
-        "ThinkingHome.Plugins.Tmp": "4.0.0-*"
-    },
-    "frameworks": {
-        "netcoreapp1.1": {
-            "dependencies": {
-                "Microsoft.NETCore.App": {
-                    "type": "platform",
-                    "version": "1.1.0"
-                }
-            },
-            "imports": "dnxcore50"
+  "version": "4.0.0-*",
+  "buildOptions": {
+    "debugType": "portable",
+    "emitEntryPoint": true
+  },
+  "dependencies": {
+    "ThinkingHome.Core.Infrastructure": "4.0.0-*",
+    "ThinkingHome.Core.Plugins": "4.0.0-*",
+    "ThinkingHome.Migrator": "3.0.0-alpha2",
+    "ThinkingHome.Migrator.Framework": "3.0.0-alpha2",
+    "ThinkingHome.Migrator.Providers.PostgreSQL": "3.0.0-alpha2",
+    "ThinkingHome.Plugins.Database": "4.0.0-*",
+    "ThinkingHome.Plugins.Scripts": "4.0.0-*",
+    "ThinkingHome.Plugins.Timer": "4.0.0-*",
+    "ThinkingHome.Plugins.Tmp": "4.0.0-*"
+  },
+  "frameworks": {
+    "netcoreapp1.1": {
+      "dependencies": {
+        "Microsoft.NETCore.App": {
+          "type": "platform",
+          "version": "1.1.0"
         }
+      },
+      "imports": "dnxcore50"
     }
+  }
 }

@@ -10,8 +10,8 @@
     "Npgsql.EntityFrameworkCore.PostgreSQL": "1.1.0",
     "System.Composition": "1.0.31",
     "ThinkingHome.Core.Plugins": "4.0.0-*",
-    "ThinkingHome.Migrator": "3.0.0-alpha1",
-    "ThinkingHome.Migrator.Providers.PostgreSQL": "3.0.0-alpha1"
+    "ThinkingHome.Migrator": "3.0.0-alpha2",
+    "ThinkingHome.Migrator.Providers.PostgreSQL": "3.0.0-alpha2"
   },
   "frameworks": {
     "netstandard1.6": {
