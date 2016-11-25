@@ -8,13 +8,11 @@ using ThinkingHome.Plugins.Timer;
 
 namespace ThinkingHome.Plugins.Tmp
 {
-    public class TmpPlugin : PluginBase, IDbModelOwner
+    public class TmpPlugin : PluginBase, IDbModelOwner, ITimerOwner
     {
         public override void InitPlugin()
         {
             Logger.Info("init tmp plugin {0}", Guid.NewGuid());
-
-            Context.Require<TimerPlugin>().OnEvent += MimimiTimer;
         }
 
         public override void StartPlugin()
@@ -42,6 +40,11 @@ namespace ThinkingHome.Plugins.Tmp
         public void InitModel(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<SmallPig>();
+        }
+
+        public void RegisterTimers(ITimerCollection collection)
+        {
+            collection.AddTimer(7000, MimimiTimer);
         }
     }
 }
