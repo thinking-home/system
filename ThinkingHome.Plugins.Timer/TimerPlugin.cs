@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Threading;
 using ThinkingHome.Core.Plugins;
-using ThinkingHome.Core.Plugins.Utils;
 
 namespace ThinkingHome.Plugins.Timer
 {
@@ -10,26 +8,51 @@ namespace ThinkingHome.Plugins.Timer
     {
         #region fields
 
-        private readonly TimerCollection timers = new TimerCollection();
+        public static readonly Random random = new Random();
+
+        public readonly object lockObject = new object();
+
+        public readonly List<InternalTimer> timers = new List<InternalTimer>();
+
+        private bool inited = false;
 
         #endregion
 
         public override void InitPlugin()
         {
-            foreach (var plugin in Context.GetAllPlugins().FilterByType<ITimerOwner>())
+            foreach (var plugin in Context.GetAllPlugins<ITimerOwner>())
             {
-                plugin.RegisterTimers(timers);
+                plugin.RegisterTimers(AddTimer);
             }
+
+            inited = true;
         }
 
         public override void StartPlugin()
         {
-            timers.Start();
+            lock (lockObject)
+            {
+                timers.ForEach(timer => timer.Start());
+            }
         }
 
         public override void StopPlugin()
         {
-            timers.Dispose();
+            lock (lockObject)
+            {
+                timers.ForEach(timer => timer.Dispose());
+            }
+        }
+
+        private void AddTimer(TimerCallbackDelegate callback, int interval, int? delay = null)
+        {
+            if (inited) throw new InvalidOperationException();
+
+            lock (lockObject)
+            {
+                var timer = new InternalTimer(delay ?? random.Next(interval), interval, callback, Logger);
+                timers.Add(timer);
+            }
         }
     }
 }

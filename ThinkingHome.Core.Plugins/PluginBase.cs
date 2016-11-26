@@ -41,20 +41,12 @@ namespace ThinkingHome.Core.Plugins
 
         #endregion
 
-        public void GenerateEvent<T>(T handler, Action<T> action, bool runAsync = false)
+        public void SafeInvoke<T>(T handler, Action<T> action, bool async = false)
         {
             if (handler == null) return;
 
             var context = new EventContext<T>(handler, action, Logger);
-
-            if (runAsync)
-            {
-                Task.Factory.StartNew(context.Start);
-            }
-            else
-            {
-                context.Start();
-            }
+            context.Invoke(async);
         }
     }
 }

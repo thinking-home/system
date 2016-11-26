@@ -11,19 +11,24 @@ namespace ThinkingHome.Core.Infrastructure
     [Export("DCCEE19A-2CEA-423F-BFE5-AE5E12679938", typeof(IServiceContext)), Shared]
     public class ServiceContext : IServiceContext
     {
+        private readonly Dictionary<Type, PluginBase> plugins;
+
         [ImportingConstructor]
         public ServiceContext([ImportMany] IEnumerable<PluginBase> loadedPlugins)
         {
             plugins = loadedPlugins.ToDictionary(p => p.GetType());
         }
 
-        #region plugins
-
-        private readonly Dictionary<Type, PluginBase> plugins;
-
         public IReadOnlyCollection<PluginBase> GetAllPlugins()
         {
             return new ReadOnlyCollection<PluginBase>(plugins.Values.ToList());
+        }
+
+        public IReadOnlyCollection<T> GetAllPlugins<T>()
+        {
+            var filtered = plugins.Values.Where(obj => obj is T).Cast<T>();
+
+            return new ReadOnlyCollection<T>(filtered.ToList());
         }
 
         public T Require<T>() where T : PluginBase
@@ -35,7 +40,5 @@ namespace ThinkingHome.Core.Infrastructure
         {
             action(Require<T>());
         }
-
-        #endregion
     }
 }

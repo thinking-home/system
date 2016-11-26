@@ -42,9 +42,9 @@ namespace ThinkingHome.Plugins.Tmp
             modelBuilder.Entity<SmallPig>();
         }
 
-        public void RegisterTimers(ITimerCollection collection)
+        public void RegisterTimers(RegisterTimerDelegate addTimer)
         {
-            collection.AddTimer(7000, MimimiTimer);
+            addTimer(MimimiTimer, 7000);
         }
     }
 }

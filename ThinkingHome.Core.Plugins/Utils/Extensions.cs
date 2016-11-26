@@ -13,10 +13,5 @@ namespace ThinkingHome.Core.Plugins.Utils
         {
             return obj == null ? defaultValue : JsonConvert.SerializeObject(obj);
         }
-
-        public static IEnumerable<T> FilterByType<T>(this IEnumerable<PluginBase> collection) where T : class
-        {
-            return collection.Where(obj => obj is T).Cast<T>();
-        }
     }
 }

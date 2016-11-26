@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using NLog;
 
 namespace ThinkingHome.Core.Plugins
@@ -16,7 +17,19 @@ namespace ThinkingHome.Core.Plugins
             this.logger = logger;
         }
 
-        public void Start()
+        public void Invoke(bool async)
+        {
+            if (async)
+            {
+                InvokeAsync();
+            }
+            else
+            {
+                Invoke();
+            }
+        }
+
+        public void Invoke()
         {
             try
             {
@@ -26,6 +39,11 @@ namespace ThinkingHome.Core.Plugins
             {
                 logger.Error(ex);
             }
+        }
+
+        public void InvokeAsync()
+        {
+            Task.Factory.StartNew(Invoke);
         }
     }
 }

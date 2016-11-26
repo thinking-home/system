@@ -2,6 +2,6 @@
 {
     public interface ITimerOwner
     {
-        void RegisterTimers(ITimerCollection collection);
+        void RegisterTimers(RegisterTimerDelegate addTimer);
     }
 }
