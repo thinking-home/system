@@ -13,7 +13,7 @@ namespace ThinkingHome.Plugins.Tmp
     {
         public override void InitPlugin()
         {
-            Logger.Info("init tmp plugin {0}", Guid.NewGuid());
+            Logger.Info($"init tmp plugin {Guid.NewGuid()}");
         }
 
         public override void StartPlugin()
@@ -25,11 +25,7 @@ namespace ThinkingHome.Plugins.Tmp
             {
                 Id = id,
                 Name = name,
-//                Body = "host.logInfo('mi mi mi');" +
-//                       "host.logError('error!');" +
-//                       "host.logError(JSON.stringify(arguments));"
-                Body = "host.logInfo('outer script::::');" +
-                       "host.executeScript('1f716e2656da4c8693a01b06534a0074', 12412, 'хрюката', { id: 5 });"
+                Body = "host.logError(JSON.stringify(arguments));"
             };
 
 //            using (var db = Context.Require<DatabasePlugin>().OpenSession())
@@ -39,14 +35,13 @@ namespace ThinkingHome.Plugins.Tmp
 //            }
 
             Context.Require<ScriptsPlugin>().ExecuteScript(script);
-            //Context.Require<ScriptsPlugin>().ExecuteScriptByName(name, new object[]{1, 2 , "муму"});
 
-            Logger.Warn("start tmp plugin {0}", Guid.NewGuid());
+            Logger.Warn($"start tmp plugin {Guid.NewGuid()}");
         }
 
         public override void StopPlugin()
         {
-            Logger.Debug("stop tmp plugin {0}", Guid.NewGuid());
+            Logger.Debug($"stop tmp plugin {Guid.NewGuid()}");
         }
 
         public void MimimiTimer(DateTime now)
@@ -57,8 +52,6 @@ namespace ThinkingHome.Plugins.Tmp
                     .ForEach(pig => Logger.Warn($"{pig.Name}, size: {pig.Size} ({pig.Id})"));
 
             }
-
-            //Context.Require<ScriptsPlugin>().Run();
         }
 
         public void InitModel(ModelBuilder modelBuilder)

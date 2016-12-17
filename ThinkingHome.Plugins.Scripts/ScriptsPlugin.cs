@@ -1,11 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-using Esprima;
 using Jint;
 using Microsoft.EntityFrameworkCore;
-using NLog;
 using ThinkingHome.Core.Plugins;
 using ThinkingHome.Core.Plugins.Utils;
 using ThinkingHome.Plugins.Database;
@@ -33,7 +29,6 @@ namespace ThinkingHome.Plugins.Scripts
             try
             {
                 string json = args.ToJson("[]");
-                Logger.Fatal(json);
                 string code =  $"(function(){{{script.Body}}}).apply(this,{json});";
 
                 engine.Execute(code);
