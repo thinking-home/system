@@ -15,6 +15,18 @@ namespace ThinkingHome.Console
     {
         public static void Main(string[] args)
         {
+//            var name = new AssemblyName{ Name = "ThinkingHome.Migrator" };
+//            var asm = Assembly.Load(name);
+//
+//            System.Console.WriteLine(asm.FullName);
+//
+//            foreach (var referencedAssembly in asm.GetReferencedAssemblies())
+//            {
+//                System.Console.WriteLine(referencedAssembly.FullName);
+//            }
+//
+//            return;
+
             var app = new HomeApplication();
 
             var timerAssembly = typeof(TimerPlugin).GetTypeInfo().Assembly;

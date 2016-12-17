@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Esprima;
 using Jint;
+using Microsoft.EntityFrameworkCore;
 using NLog;
 using ThinkingHome.Core.Plugins;
 using ThinkingHome.Core.Plugins.Utils;
@@ -12,11 +13,11 @@ using ThinkingHome.Plugins.Scripts.Model;
 
 namespace ThinkingHome.Plugins.Scripts
 {    
-    public class ScriptsPlugin : PluginBase
+    public class ScriptsPlugin : PluginBase, IDbModelOwner
     {
         private ScriptHost scriptHost;
 
-        private static Engine engine = new Engine(options => options.DebugMode());
+        private static Engine engine = new Engine();
 
         public override void InitPlugin()
         {
@@ -32,7 +33,8 @@ namespace ThinkingHome.Plugins.Scripts
             try
             {
                 string json = args.ToJson("[]");
-                string code =  $"(function(){{{script.Body}}})({json});";
+                Logger.Fatal(json);
+                string code =  $"(function(){{{script.Body}}}).apply(this,{json});";
 
                 engine.Execute(code);
             }
@@ -45,7 +47,7 @@ namespace ThinkingHome.Plugins.Scripts
         /// <summary>
         /// Запуск скриптов по имени (из других скриптов)
         /// </summary>
-        private void ExecuteScriptByName(string scriptName, object[] args)
+        public void ExecuteScriptByName(string scriptName, object[] args)
         {
             using (var session = Context.Require<DatabasePlugin>().OpenSession())
             {
@@ -53,6 +55,11 @@ namespace ThinkingHome.Plugins.Scripts
 
                 ExecuteScript(script, args);
             }
+        }
+
+        public void InitModel(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<UserScript>();
         }
     }
 }

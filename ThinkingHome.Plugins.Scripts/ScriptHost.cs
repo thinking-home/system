@@ -36,7 +36,7 @@ namespace ThinkingHome.Plugins.Scripts
         }
 
         // ReSharper disable once InconsistentNaming
-        public void runScript(string name, params object[] args)
+        public void executeScript(string name, params object[] args)
         {
             scriptRunner(name, args);
         }
