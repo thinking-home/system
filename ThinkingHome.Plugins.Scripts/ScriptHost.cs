@@ -18,12 +18,6 @@ namespace ThinkingHome.Plugins.Scripts
         }
 
         // ReSharper disable once InconsistentNaming
-        public object executeMethod(string method, params object[] args)
-        {
-            return methods[method].DynamicInvoke(args);
-        }
-
-        // ReSharper disable once InconsistentNaming
         public void logInfo(object message, params object[] args)
         {
             logger.Log(LogLevel.Info, message.ToString(), args);
@@ -33,6 +27,12 @@ namespace ThinkingHome.Plugins.Scripts
         public void logError(object message, params object[] args)
         {
             logger.Log(LogLevel.Error, message.ToString(), args);
+        }
+
+        // ReSharper disable once InconsistentNaming
+        public object executeMethod(string method, params object[] args)
+        {
+            return methods[method].DynamicInvoke(args);
         }
 
         // ReSharper disable once InconsistentNaming

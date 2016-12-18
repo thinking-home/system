@@ -14,9 +14,8 @@ namespace ThinkingHome.Plugins.Database
 
         public override void InitPlugin()
         {
-            inits = Context.GetAllPlugins()
-                .Select(GetInitializer)
-                .Where(init => init != null)
+            inits = Context.GetAllPlugins<IDbModelOwner>()
+                .Select(plugin => (Action<ModelBuilder>)plugin.InitModel)
                 .ToArray();
 
             ApplyMigrations();
@@ -31,7 +30,6 @@ namespace ThinkingHome.Plugins.Database
             {
                 var asm = plugin.GetType().GetTypeInfo().Assembly;
 
-
                 if (!hash.Contains(asm.FullName))
                 {
                     using (var migrator = new Migrator.Migrator(
@@ -45,13 +43,6 @@ namespace ThinkingHome.Plugins.Database
                     hash.Add(asm.FullName);
                 }
             }
-        }
-
-        private Action<ModelBuilder> GetInitializer(PluginBase plugin)
-        {
-            if (!(plugin is IDbModelOwner)) return null;
-
-            return ((IDbModelOwner) plugin).InitModel;
         }
 
         public DbContext OpenSession()

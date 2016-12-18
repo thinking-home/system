@@ -17,7 +17,14 @@ namespace ThinkingHome.Plugins.Scripts
 
         public override void InitPlugin()
         {
-            scriptHost = new ScriptHost(null, Logger, ExecuteScriptByName);
+            var actions = new InternalDictionary<Delegate>();
+
+            foreach (var plugin in Context.GetAllPlugins<IScriptApiOwner>())
+            {
+                plugin.RegisterScriptMethods(actions.Register);
+            }
+
+            scriptHost = new ScriptHost(actions, Logger, ExecuteScriptByName);
             engine.SetValue("host", scriptHost);
         }
 

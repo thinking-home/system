@@ -9,7 +9,7 @@ using ThinkingHome.Plugins.Timer;
 
 namespace ThinkingHome.Plugins.Tmp
 {
-    public class TmpPlugin : PluginBase, IDbModelOwner, ITimerOwner
+    public class TmpPlugin : PluginBase, IDbModelOwner, ITimerOwner, IScriptApiOwner
     {
         public override void InitPlugin()
         {
@@ -25,7 +25,7 @@ namespace ThinkingHome.Plugins.Tmp
             {
                 Id = id,
                 Name = name,
-                Body = "host.logError(JSON.stringify(arguments));"
+                Body = "host.executeMethod('мукнуть', 'это полезно!', 15);"
             };
 
 //            using (var db = Context.Require<DatabasePlugin>().OpenSession())
@@ -62,6 +62,19 @@ namespace ThinkingHome.Plugins.Tmp
         public void RegisterTimers(RegisterTimerDelegate addTimer)
         {
             addTimer(MimimiTimer, 7000);
+        }
+
+        public void RegisterScriptMethods(RegisterScriptMethodDelegate addScriptMethod)
+        {
+            addScriptMethod("мукнуть", (Action<string, double>)SayMoo);
+        }
+
+        public void SayMoo(string text, double count = 1)
+        {
+            for (var i = 0; i < count; i++)
+            {
+                Logger.Info($"Корова сказала: Му - {text}");
+            }
         }
     }
 }
