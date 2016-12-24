@@ -19,35 +19,38 @@ namespace ThinkingHome.Plugins.Tmp
 
         public override void StartPlugin()
         {
-            var id = Guid.NewGuid();
-            var name = id.ToString("N");
-            var script = new UserScript
-            {
-                Id = id,
-                Name = name,
-                Body = "var count = arguments[0] || 7;host.мукнуть('это полезно!!!!', count); return count * 10;"
-                //Body = "host.мукнуть('это полезно!', 15);host.протестировать(88, 'волк', 'коза', 'капуста1')"
-                //Body = "host.logInfo(host.logError1);"
-            };
+//            var id = Guid.NewGuid();
+//            var name = id.ToString("N");
+//            var script = new UserScript
+//            {
+//                Id = id,
+//                Name = name,
+//                Body = "var count = arguments[0] || 7;host.мукнуть('это полезно!!!!', count); return count * 10;"
+//                //Body = "host.мукнуть('это полезно!', 15);host.протестировать(88, 'волк', 'коза', 'капуста1')"
+//                //Body = "host.logInfo(host.logError1);"
+//            };
 
-            var id2 = Guid.NewGuid();
-            var name2 = id2.ToString("N");
-            var script2 = new UserScript
-            {
-                Id = id2,
-                Name = name2,
-                Body = $"host.logInfo(host.executeScript('{name}', 12) + 3 + '=====');"
-            };
+//            using (var db = Context.Require<DatabasePlugin>().OpenSession())
+//            {
+//                db.Set<UserScript>().Add(script);
+//                db.SaveChanges();
+//            }
 
-            using (var db = Context.Require<DatabasePlugin>().OpenSession())
-            {
-                db.Set<UserScript>().Add(script);
-                db.Set<UserScript>().Add(script2);
+//            Context.Require<ScriptsPlugin>()
+//                .ExecuteScript(@"
+//host.log.trace('mimi: {0}', 1111);
+//host.log.debug('mimi: {0}', 2222);
+//host.log.info('mimi: {0}', 3333);
+//host.log.warn('mimi: {0}', 4444);
+//host.log.error('mimi: {0}', 5555);
+//host.log.fatal('mimi: {0}', 6666);
+//host.log.fatal(host.log.fatal);
+//host.log.fatal(host.log.fatal2);
+//");
 
-                db.SaveChanges();
-            }
+            var result = Context.Require<ScriptsPlugin>().ExecuteScript("return host.api.мукнуть('это полезно!')");
 
-            Context.Require<ScriptsPlugin>().ExecuteScript(script2);
+            Logger.Info($"script result: {result}");
 
             Logger.Warn($"start tmp plugin {Guid.NewGuid()}");
         }
@@ -79,18 +82,22 @@ namespace ThinkingHome.Plugins.Tmp
 
         public void RegisterScriptMethods(RegisterScriptMethodDelegate addScriptMethod)
         {
-            addScriptMethod("мукнуть", (Action<string, int>)SayMoo);
+            addScriptMethod("мукнуть", (Func<string, int, int>)SayMoo);
             addScriptMethod("протестировать", (Action<int, object[]>)VariableParamsCount);
         }
 
-        public void SayMoo(string text, int count = 3)
+        public int SayMoo(string text, int count)
         {
+            Logger.Info("count = {0}", count);
+
             var msg = $"Корова сказала: Му - {text}";
 
             for (var i = 0; i < count; i++)
             {
                 Logger.Info($"{i + 1} - {msg}");
             }
+
+            return 2459 + count;
         }
 
         public void VariableParamsCount(int count, params object[] strings)

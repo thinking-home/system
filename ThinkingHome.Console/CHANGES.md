@@ -21,10 +21,11 @@
   - для миграций портирован ECM7.Migrator
 - Таймеры
   - нет атрибутов, регистрация таймеров руками с заданным интервалом (нужно реализовать интерфейс)
-- runScript => executeScript
 - регистрация скриптовых команд через интерфейс (нужно приведение типов)
 - из скриптов можно возвращать данные (написать return ...)
-  
+- runScript => host.scripts.scriptName(args)
+- executeMethod => host.api.methodName(args)
+- logInfo, logError => host.log.trace/debug/info/warn/error/fatal
   
   
 ## Правила
