@@ -31,31 +31,36 @@ namespace ThinkingHome.Plugins.Scripts
         /// <summary>
         /// Запуск скриптов (для плагинов)
         /// </summary>
-        public void ExecuteScript(UserScript script, params object[] args)
+        public object ExecuteScript(UserScript script, params object[] args)
         {
             try
             {
                 string json = args.ToJson("[]");
                 string code =  $"(function(){{{script.Body}}}).apply(this,{json});";
 
-                engine.Execute(code);
+                return engine.Execute(code)
+                    .GetCompletionValue()
+                    .ToObject();
             }
             catch (Exception ex)
             {
                 Logger.Error(ex, $"error in user script {script.Name}");
+                return null;
             }
         }
 
         /// <summary>
         /// Запуск скриптов по имени (из других скриптов)
         /// </summary>
-        public void ExecuteScriptByName(string scriptName, object[] args)
+        public object ExecuteScriptByName(string scriptName, object[] args)
         {
+            Logger.Debug($"execute script: {scriptName}");
+
             using (var session = Context.Require<DatabasePlugin>().OpenSession())
             {
-                var script = session.Set<UserScript>().First(s => s.Name == scriptName);
+                var script = session.Set<UserScript>().Single(s => s.Name == scriptName);
 
-                ExecuteScript(script, args);
+                return ExecuteScript(script, args);
             }
         }
 

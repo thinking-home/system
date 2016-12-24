@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Internal;
 using ThinkingHome.Core.Plugins;
 using ThinkingHome.Plugins.Database;
 using ThinkingHome.Plugins.Scripts;
@@ -20,21 +21,33 @@ namespace ThinkingHome.Plugins.Tmp
         {
             var id = Guid.NewGuid();
             var name = id.ToString("N");
-
             var script = new UserScript
             {
                 Id = id,
                 Name = name,
-                Body = "host.executeMethod('мукнуть', 'это полезно!', 15);"
+                Body = "var count = arguments[0] || 7;host.мукнуть('это полезно!!!!', count); return count * 10;"
+                //Body = "host.мукнуть('это полезно!', 15);host.протестировать(88, 'волк', 'коза', 'капуста1')"
+                //Body = "host.logInfo(host.logError1);"
             };
 
-//            using (var db = Context.Require<DatabasePlugin>().OpenSession())
-//            {
-//                db.Set<UserScript>().Add(script);
-//                db.SaveChanges();
-//            }
+            var id2 = Guid.NewGuid();
+            var name2 = id2.ToString("N");
+            var script2 = new UserScript
+            {
+                Id = id2,
+                Name = name2,
+                Body = $"host.logInfo(host.executeScript('{name}', 12) + 3 + '=====');"
+            };
 
-            Context.Require<ScriptsPlugin>().ExecuteScript(script);
+            using (var db = Context.Require<DatabasePlugin>().OpenSession())
+            {
+                db.Set<UserScript>().Add(script);
+                db.Set<UserScript>().Add(script2);
+
+                db.SaveChanges();
+            }
+
+            Context.Require<ScriptsPlugin>().ExecuteScript(script2);
 
             Logger.Warn($"start tmp plugin {Guid.NewGuid()}");
         }
@@ -66,14 +79,27 @@ namespace ThinkingHome.Plugins.Tmp
 
         public void RegisterScriptMethods(RegisterScriptMethodDelegate addScriptMethod)
         {
-            addScriptMethod("мукнуть", (Action<string, double>)SayMoo);
+            addScriptMethod("мукнуть", (Action<string, int>)SayMoo);
+            addScriptMethod("протестировать", (Action<int, object[]>)VariableParamsCount);
         }
 
-        public void SayMoo(string text, double count = 1)
+        public void SayMoo(string text, int count = 3)
         {
+            var msg = $"Корова сказала: Му - {text}";
+
             for (var i = 0; i < count; i++)
             {
-                Logger.Info($"Корова сказала: Му - {text}");
+                Logger.Info($"{i + 1} - {msg}");
+            }
+        }
+
+        public void VariableParamsCount(int count, params object[] strings)
+        {
+            var msg = strings.Join("|");
+
+            for (var i = 0; i < count; i++)
+            {
+                Logger.Fatal($"{i + 1} - {msg}");
             }
         }
     }

@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Linq;
+using System.Reflection;
 using NLog;
 using ThinkingHome.Core.Plugins.Utils;
 
@@ -8,9 +10,17 @@ namespace ThinkingHome.Plugins.Scripts
     {
         private readonly InternalDictionary<Delegate> methods;
         private readonly Logger logger;
-        private readonly Action<string, object[]> scriptRunner;
+        private readonly Func<string, object[], object> scriptRunner;
 
-        public ScriptHost(InternalDictionary<Delegate> methods, Logger logger, Action<string, object[]> scriptRunner)
+        public Delegate this[string name]
+        {
+            get {
+                logger.Debug($"execute method: {name}");
+                return methods[name];
+            }
+        }
+
+    public ScriptHost(InternalDictionary<Delegate> methods, Logger logger, Func<string, object[], object> scriptRunner)
         {
             this.methods = methods;
             this.logger = logger;
@@ -32,13 +42,14 @@ namespace ThinkingHome.Plugins.Scripts
         // ReSharper disable once InconsistentNaming
         public object executeMethod(string method, params object[] args)
         {
+            logger.Debug($"execute method: {method}");
             return methods[method].DynamicInvoke(args);
         }
 
         // ReSharper disable once InconsistentNaming
-        public void executeScript(string name, params object[] args)
+        public object executeScript(string name, params object[] args)
         {
-            scriptRunner(name, args);
+            return scriptRunner(name, args);
         }
     }
 }
