@@ -4,9 +4,10 @@
     "debugType": "portable"
   },
   "dependencies": {
+    "Microsoft.Extensions.Configuration": "1.1.0",
     "NETStandard.Library": "1.6.1",
     "Newtonsoft.Json": "9.0.2-beta1",
-    "NLog": "5.0.0-beta03",
+    "NLog": "5.0.0-beta04",
     "System.Composition": "1.0.31"
   },
   "frameworks": {

@@ -29,3 +29,9 @@
 
 - скриптовые события
 - асинхронный запуск скриптов (?)
+
+====
+- telegram bot https://www.nuget.org/packages/Telegram.Bot/
+- slack
+- 
+

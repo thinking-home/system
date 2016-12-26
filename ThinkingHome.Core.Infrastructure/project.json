@@ -5,9 +5,11 @@
   },
   "dependencies": {
     "NETStandard.Library": "1.6.1",
-    "NLog": "5.0.0-beta03",
+    "NLog": "5.0.0-beta04",
     "System.Composition": "1.0.31",
-    "ThinkingHome.Core.Plugins": "4.0.0-*"
+    "ThinkingHome.Core.Plugins": "4.0.0-*",
+    "Microsoft.Extensions.Configuration": "1.1.0",
+    "Microsoft.Extensions.Configuration.Json": "1.1.0"
   },
   "frameworks": {
     "netstandard1.6": {
