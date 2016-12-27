@@ -2,6 +2,7 @@
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Internal;
+using Microsoft.Extensions.Configuration;
 using ThinkingHome.Core.Plugins;
 using ThinkingHome.Plugins.Database;
 using ThinkingHome.Plugins.Scripts;
@@ -12,7 +13,7 @@ namespace ThinkingHome.Plugins.Tmp
 {
     public class TmpPlugin : PluginBase, IDbModelOwner, ITimerOwner, IScriptApiOwner
     {
-        public override void InitPlugin()
+        public override void InitPlugin(IConfigurationSection config)
         {
             Logger.Info($"init tmp plugin {Guid.NewGuid()}");
         }

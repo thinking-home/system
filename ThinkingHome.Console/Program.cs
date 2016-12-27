@@ -27,6 +27,7 @@ namespace ThinkingHome.Console
 //
 //            return;
 
+            var config = new HomeConfiguration();
             var app = new HomeApplication();
 
             var timerAssembly = typeof(TimerPlugin).GetTypeInfo().Assembly;
@@ -34,7 +35,7 @@ namespace ThinkingHome.Console
             var dbAssembly = typeof(DatabasePlugin).GetTypeInfo().Assembly;
             var jsAssembly = typeof(ScriptsPlugin).GetTypeInfo().Assembly;
 
-            app.Init(timerAssembly, tmpAssembly, dbAssembly, jsAssembly);
+            app.Init(config, timerAssembly, tmpAssembly, dbAssembly, jsAssembly);
             app.StartServices();
 
             System.Console.WriteLine("Service is available. Press ENTER to exit.");

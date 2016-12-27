@@ -26,6 +26,9 @@
 - runScript => host.scripts.scriptName(args)
 - executeMethod => host.api.methodName(args)
 - logInfo, logError => host.log.trace/debug/info/warn/error/fatal
+- API для работы с конфигами: Microsoft.Extensions.Configuration
+- конфиг приходит в метод Init
+- настройки плагинов в разделе "plugins:<полное название класса плагина>"
   
   
 ## Правила
@@ -43,3 +46,4 @@
   - .NET API (methods + events)
   - script API (methods + events)
   - HTTP API
+  - параметры конфига

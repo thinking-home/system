@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using ThinkingHome.Core.Plugins;
 using ThinkingHome.Migrator.Providers.PostgreSQL;
 
@@ -11,9 +12,14 @@ namespace ThinkingHome.Plugins.Database
     public class DatabasePlugin : PluginBase
     {
         private Action<ModelBuilder>[] inits;
+        private string cstring;
 
-        public override void InitPlugin()
+        public override void InitPlugin(IConfigurationSection config)
         {
+            cstring = config["connectionString"];
+
+            if (string.IsNullOrEmpty(cstring)) throw new Exception("connection string is required");
+
             inits = Context.GetAllPlugins<IDbModelOwner>()
                 .Select(plugin => (Action<ModelBuilder>)plugin.InitModel)
                 .ToArray();
@@ -30,18 +36,14 @@ namespace ThinkingHome.Plugins.Database
             {
                 var asm = plugin.GetType().GetTypeInfo().Assembly;
 
-                if (!hash.Contains(asm.FullName))
-                {
-                    using (var migrator = new Migrator.Migrator(
-                        factory.CreateProvider(
-                            "host=localhost;port=5432;database=postgres;user name=postgres;password=123"),
-                        asm))
-                    {
-                        migrator.Migrate();
-                    }
+                if (hash.Contains(asm.FullName)) continue;
 
-                    hash.Add(asm.FullName);
+                using (var migrator = new Migrator.Migrator(factory.CreateProvider(cstring), asm))
+                {
+                    migrator.Migrate();
                 }
+
+                hash.Add(asm.FullName);
             }
         }
 

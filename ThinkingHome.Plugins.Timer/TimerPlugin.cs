@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Microsoft.Extensions.Configuration;
 using ThinkingHome.Core.Plugins;
 
 namespace ThinkingHome.Plugins.Timer
@@ -18,7 +19,7 @@ namespace ThinkingHome.Plugins.Timer
 
         #endregion
 
-        public override void InitPlugin()
+        public override void InitPlugin(IConfigurationSection config)
         {
             foreach (var plugin in Context.GetAllPlugins<ITimerOwner>())
             {

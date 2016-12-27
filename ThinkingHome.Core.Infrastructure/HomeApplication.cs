@@ -16,8 +16,9 @@ namespace ThinkingHome.Core.Infrastructure
         /// <summary>
         /// Инициализация
         /// </summary>
+        /// <param name="config"></param>
         /// <param name="asms">Список сборок с плагинами - временное решение</param>
-        public void Init(params Assembly[] asms)
+        public void Init(HomeConfiguration config,  params Assembly[] asms)
         {
             try
             {
@@ -26,8 +27,10 @@ namespace ThinkingHome.Core.Infrastructure
                 // инициализируем плагины
                 foreach (var plugin in context.GetAllPlugins())
                 {
-                    logger.Info("init plugin: {0}", plugin.GetType().FullName);
-                    plugin.InitPlugin();
+                    var pluginType = plugin.GetType();
+
+                    logger.Info($"init plugin: {pluginType.FullName}");
+                    plugin.InitPlugin(config.GetPluginSection(pluginType));
                 }
             }
             catch (ReflectionTypeLoadException ex)
@@ -52,7 +55,7 @@ namespace ThinkingHome.Core.Infrastructure
             {
                 foreach (var plugin in context.GetAllPlugins())
                 {
-                    logger.Info("start plugin {0}", plugin.GetType().FullName);
+                    logger.Info($"start plugin {plugin.GetType().FullName}");
                     plugin.StartPlugin();
                 }
 
@@ -71,7 +74,7 @@ namespace ThinkingHome.Core.Infrastructure
             {
                 try
                 {
-                    logger.Info("stop plugin {0}", plugin.GetType().FullName);
+                    logger.Info($"stop plugin {plugin.GetType().FullName}");
                     plugin.StopPlugin();
                 }
                 catch (Exception ex)

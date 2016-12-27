@@ -2,6 +2,7 @@
 using System.Composition;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
 using NLog;
 
 namespace ThinkingHome.Core.Plugins
@@ -24,7 +25,7 @@ namespace ThinkingHome.Core.Plugins
             Logger = LogManager.GetLogger(GetType().FullName);
         }
 
-        public virtual void InitPlugin()
+        public virtual void InitPlugin(IConfigurationSection config)
         {
 
         }
