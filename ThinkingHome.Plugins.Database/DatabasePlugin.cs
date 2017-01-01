@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.Extensions.Configuration;
 using ThinkingHome.Core.Plugins;
 using ThinkingHome.Migrator.Providers.PostgreSQL;
@@ -11,6 +12,8 @@ namespace ThinkingHome.Plugins.Database
 {    
     public class DatabasePlugin : PluginBase
     {
+        private readonly DbContextOptionsBuilder optionsBuilder = new DbContextOptionsBuilder<HomeDbContext>();
+
         private Action<ModelBuilder>[] inits;
         private string cstring;
 
@@ -19,6 +22,8 @@ namespace ThinkingHome.Plugins.Database
             cstring = config["connectionString"];
 
             if (string.IsNullOrEmpty(cstring)) throw new Exception("connection string is required");
+
+            optionsBuilder.UseNpgsql(cstring);
 
             inits = Context.GetAllPlugins<IDbModelOwner>()
                 .Select(plugin => (Action<ModelBuilder>)plugin.InitModel)
@@ -49,7 +54,7 @@ namespace ThinkingHome.Plugins.Database
 
         public DbContext OpenSession()
         {
-            return new HomeDbContext(inits);
+            return new HomeDbContext(inits, optionsBuilder.Options);
         }
     }
 }
