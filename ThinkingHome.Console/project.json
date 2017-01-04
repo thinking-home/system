@@ -4,20 +4,16 @@
         "debugType": "portable",
         "emitEntryPoint": true,
         "copyToOutput": [
-            "project.json",
             "appsettings.json"
         ]
     },
     "dependencies": {
-        "ThinkingHome.Core.Infrastructure": "4.0.0-*",
-        "ThinkingHome.Core.Plugins": "4.0.0-*",
-        "ThinkingHome.Migrator": "3.0.0-alpha2",
-        "ThinkingHome.Migrator.Framework": "3.0.0-alpha2",
-        "ThinkingHome.Migrator.Providers.PostgreSQL": "3.0.0-alpha2",
-        "ThinkingHome.Plugins.Database": "4.0.0-*",
-        "ThinkingHome.Plugins.Scripts": "4.0.0-*",
-        "ThinkingHome.Plugins.Timer": "4.0.0-*",
-        "ThinkingHome.Plugins.Tmp": "4.0.0-*"
+        "ThinkingHome.Core.Infrastructure": { "target": "project" },
+        "ThinkingHome.Core.Plugins": { "target": "project" },
+        "ThinkingHome.Plugins.Database": { "target": "project" },
+        "ThinkingHome.Plugins.Scripts": { "target": "project" },
+        "ThinkingHome.Plugins.Timer": { "target": "project" },
+        "ThinkingHome.Plugins.Tmp": { "target": "project" }
     },
     "frameworks": {
         "netcoreapp1.1": {

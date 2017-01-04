@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Composition.Convention;
 using System.Composition.Hosting;
+using System.Linq;
 using System.Reflection;
 using NLog;
 using ThinkingHome.Core.Plugins;
@@ -17,12 +18,11 @@ namespace ThinkingHome.Core.Infrastructure
         /// Инициализация
         /// </summary>
         /// <param name="config"></param>
-        /// <param name="asms">Список сборок с плагинами - временное решение</param>
-        public void Init(HomeConfiguration config,  params Assembly[] asms)
+        public void Init(HomeConfiguration config)
         {
             try
             {
-                LoadPlugins(asms);
+                LoadPlugins(config);
 
                 // инициализируем плагины
                 foreach (var plugin in context.GetAllPlugins())
@@ -88,8 +88,10 @@ namespace ThinkingHome.Core.Infrastructure
 
         #region private
 
-        private void LoadPlugins(Assembly[] asms)
+        private void LoadPlugins(HomeConfiguration config)
         {
+            var asms = config.GetDependencies().ToArray();
+
             var conventions = new ConventionBuilder();
             conventions
                 .ForTypesDerivedFrom<PluginBase>()

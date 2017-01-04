@@ -1,22 +1,22 @@
 ﻿{
-  "version": "4.0.0-*",
-  "buildOptions": {
-    "debugType": "portable"
-  },
-  "dependencies": {
-    "Microsoft.EntityFrameworkCore": "1.1.0",
-    "NETStandard.Library": "1.6.1",
-    "NLog": "5.0.0-beta04",
-    "Npgsql.EntityFrameworkCore.PostgreSQL": "1.1.0",
-    "System.Composition": "1.0.31",
-    "ThinkingHome.Core.Plugins": "4.0.0-*",
-    "Microsoft.Extensions.Configuration": "1.1.0",
-    "ThinkingHome.Migrator": "3.0.0-alpha2",
-    "ThinkingHome.Migrator.Providers.PostgreSQL": "3.0.0-alpha2"
-  },
-  "frameworks": {
-    "netstandard1.6": {
-      "imports": "dnxcore50"
+    "version": "4.0.0-*",
+    "buildOptions": {
+        "debugType": "portable"
+    },
+    "dependencies": {
+        "Microsoft.EntityFrameworkCore": "1.1.0",
+        "NETStandard.Library": "1.6.1",
+        "NLog": "5.0.0-beta04",
+        "Npgsql.EntityFrameworkCore.PostgreSQL": "1.1.0",
+        "System.Composition": "1.0.31",
+        "Microsoft.Extensions.Configuration": "1.1.0",
+        "ThinkingHome.Migrator": "3.0.0-alpha2",
+        "ThinkingHome.Migrator.Providers.PostgreSQL": "3.0.0-alpha2",
+        "ThinkingHome.Core.Plugins": { "target": "project" }
+    },
+    "frameworks": {
+        "netstandard1.6": {
+            "imports": "dnxcore50"
+        }
     }
-  }
 }

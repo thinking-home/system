@@ -7,12 +7,12 @@
     "NETStandard.Library": "1.6.1",
     "NLog": "5.0.0-beta04",
     "System.Composition": "1.0.31",
-    "ThinkingHome.Core.Plugins": "4.0.0-*",
     "Microsoft.Extensions.Configuration": "1.1.0",
     "ThinkingHome.Migrator.Framework": "3.0.0-alpha2",
-    "ThinkingHome.Plugins.Database": "4.0.0-*",
-    "ThinkingHome.Plugins.Scripts": "4.0.0-*",
-    "ThinkingHome.Plugins.Timer": "4.0.0-*"
+    "ThinkingHome.Core.Plugins": { "target": "project" },
+    "ThinkingHome.Plugins.Database": { "target": "project" },
+    "ThinkingHome.Plugins.Scripts": { "target": "project" },
+    "ThinkingHome.Plugins.Timer": { "target": "project" }
   },
   "frameworks": {
     "netstandard1.6": {

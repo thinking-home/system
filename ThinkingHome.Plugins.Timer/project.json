@@ -1,18 +1,18 @@
 ﻿{
-  "version": "4.0.0-*",
-  "buildOptions": {
-    "debugType": "portable"
-  },
-  "dependencies": {
-    "NETStandard.Library": "1.6.1",
-    "NLog": "5.0.0-beta04",
-    "System.Composition": "1.0.31",
-    "Microsoft.Extensions.Configuration": "1.1.0",
-    "ThinkingHome.Core.Plugins": "4.0.0-*"
-  },
-  "frameworks": {
-    "netstandard1.6": {
-      "imports": "dnxcore50"
+    "version": "4.0.0-*",
+    "buildOptions": {
+        "debugType": "portable"
+    },
+    "dependencies": {
+        "NETStandard.Library": "1.6.1",
+        "NLog": "5.0.0-beta04",
+        "System.Composition": "1.0.31",
+        "Microsoft.Extensions.Configuration": "1.1.0",
+        "ThinkingHome.Core.Plugins": { "target": "project" }
+    },
+    "frameworks": {
+        "netstandard1.6": {
+            "imports": "dnxcore50"
+        }
     }
-  }
 }
