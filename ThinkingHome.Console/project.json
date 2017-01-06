@@ -10,6 +10,7 @@
     "dependencies": {
         "ThinkingHome.Core.Infrastructure": { "target": "project" },
         "ThinkingHome.Core.Plugins": { "target": "project" },
+        "ThinkingHome.Plugins.WebServer": { "target": "project" },
         "ThinkingHome.Plugins.Database": { "target": "project" },
         "ThinkingHome.Plugins.Scripts": { "target": "project" },
         "ThinkingHome.Plugins.Timer": { "target": "project" },

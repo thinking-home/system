@@ -1,6 +1,4 @@
-﻿using System;
-using System.Reflection;
-using ThinkingHome.Core.Infrastructure;
+﻿using ThinkingHome.Core.Infrastructure;
 
 namespace ThinkingHome.Console
 {

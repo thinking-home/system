@@ -29,6 +29,8 @@
 - API для работы с конфигами: Microsoft.Extensions.Configuration
 - конфиг приходит в метод Init
 - настройки плагинов в разделе "plugins:<полное название класса плагина>"
+- Listener => WebServer
+- веб-сервер - теперь Kestrel
   
   
 ## Правила

@@ -1,0 +1,22 @@
+﻿{
+  "version": "1.0.0-*",
+  "buildOptions": {
+    "debugType": "portable"
+  },
+  "dependencies": {
+      "Microsoft.Extensions.Configuration": "1.1.0",
+      "Microsoft.Extensions.Logging": "1.1.0",
+      "Microsoft.AspNetCore.Hosting": "1.1.0",
+      "Microsoft.AspNetCore.Server.Kestrel": "1.1.0",
+      "NLog": "5.0.0-beta04",
+      "NLog.Extensions.Logging": "1.0.0-rtm-alpha5",
+      "System.Composition": "1.0.31",
+      "ThinkingHome.Core.Plugins": { "target": "project" },
+      "NETStandard.Library": "1.6.1"
+  },
+  "frameworks": {
+    "netstandard1.6": {
+      "imports": "dnxcore50"
+    }
+  }
+}
