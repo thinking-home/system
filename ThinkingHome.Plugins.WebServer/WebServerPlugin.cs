@@ -13,18 +13,22 @@ namespace ThinkingHome.Plugins.WebServer
 
         public override void InitPlugin(IConfigurationSection config)
         {
+            var port = config.GetValue<int>("port", 41831);
+
             var loggerFactory = new LoggerFactory();
             loggerFactory.AddNLog();
 
             host = new WebHostBuilder()
                 .UseLoggerFactory(loggerFactory)
-                .UseUrls("http://+:41831")
+                .UseKestrel()
+                .UseUrls($"http://+:{port}")
                 .UseStartup<Startup>()
                 .Build();
         }
 
         public override void StartPlugin()
         {
+            // важно запускать Start вместо Run, чтобы оно не лезло напрямую в консоль
             host.Start();
         }
 

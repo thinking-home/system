@@ -5,6 +5,7 @@
   },
   "dependencies": {
       "Microsoft.Extensions.Configuration": "1.1.0",
+      "Microsoft.Extensions.Configuration.Binder": "1.1.0",
       "Microsoft.Extensions.Logging": "1.1.0",
       "Microsoft.AspNetCore.Hosting": "1.1.0",
       "Microsoft.AspNetCore.Server.Kestrel": "1.1.0",
