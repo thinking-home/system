@@ -26,11 +26,12 @@
 - runScript => host.scripts.scriptName(args)
 - executeMethod => host.api.methodName(args)
 - logInfo, logError => host.log.trace/debug/info/warn/error/fatal
-- API для работы с конфигами: Microsoft.Extensions.Configuration
+- API для работы с конфигами: Microsoft.Extensions.Configuration (хелперы: Microsoft.Extensions.Configuration.Binder)
 - конфиг приходит в метод Init
 - настройки плагинов в разделе "plugins:<полное название класса плагина>"
 - Listener => WebServer
 - веб-сервер - теперь Kestrel
+- порт веб-сервера в настройке `port`
   
   
 ## Правила

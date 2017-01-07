@@ -1,5 +1,7 @@
 ﻿using System.Threading;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using NLog.Extensions.Logging;
@@ -22,8 +24,18 @@ namespace ThinkingHome.Plugins.WebServer
                 .UseLoggerFactory(loggerFactory)
                 .UseKestrel()
                 .UseUrls($"http://+:{port}")
-                .UseStartup<Startup>()
+                .Configure(Configure)
                 .Build();
+        }
+
+        private void Configure(IApplicationBuilder app)
+        {
+            app.UseMiddleware<PluginApiMiddleware>();
+
+            app.Run(async (context) =>
+            {
+                await context.Response.WriteAsync("<p>Hello World!<p>");
+            });
         }
 
         public override void StartPlugin()
