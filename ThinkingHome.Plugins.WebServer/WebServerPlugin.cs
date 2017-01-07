@@ -1,11 +1,10 @@
-﻿using System.Threading;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.DependencyInjection;
 using NLog.Extensions.Logging;
 using ThinkingHome.Core.Plugins;
+using ThinkingHome.Plugins.WebServer.Handlers;
 
 namespace ThinkingHome.Plugins.WebServer
 {
@@ -15,27 +14,34 @@ namespace ThinkingHome.Plugins.WebServer
 
         public override void InitPlugin(IConfigurationSection config)
         {
-            var port = config.GetValue<int>("port", 41831);
-
-            var loggerFactory = new LoggerFactory();
-            loggerFactory.AddNLog();
+            var port = config.GetValue("port", 41831);
+            var handlers = RegisterHandlers();
 
             host = new WebHostBuilder()
-                .UseLoggerFactory(loggerFactory)
                 .UseKestrel()
                 .UseUrls($"http://+:{port}")
-                .Configure(Configure)
+                .Configure(app => app
+                    .UseStatusCodePages()
+                    .UseMiddleware<HomePluginsMiddleware>())
+                .ConfigureServices(services => services
+                    .AddSingleton(handlers)
+                    .AddSingleton(Logger))
+                .ConfigureLogging(loggerFactory =>
+                    loggerFactory.AddNLog())
                 .Build();
         }
 
-        private void Configure(IApplicationBuilder app)
+        private HttpHandlerSet RegisterHandlers()
         {
-            app.UseMiddleware<PluginApiMiddleware>();
+            var handlers = new HttpHandlerSet();
 
-            app.Run(async (context) =>
+            foreach (var plugin in Context.GetAllPlugins<IHttpApiOwner>())
             {
-                await context.Response.WriteAsync("<p>Hello World!<p>");
-            });
+                plugin.RegisterHandlers((url, method) =>
+                    handlers.Register(url, new ApiHttpHandler(method)));
+            }
+
+            return handlers;
         }
 
         public override void StartPlugin()

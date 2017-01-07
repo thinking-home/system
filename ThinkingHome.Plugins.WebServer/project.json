@@ -8,6 +8,7 @@
       "Microsoft.Extensions.Configuration.Binder": "1.1.0",
       "Microsoft.Extensions.Logging": "1.1.0",
       "Microsoft.AspNetCore.Hosting": "1.1.0",
+      "Microsoft.AspNetCore.Diagnostics": "1.1.0",
       "Microsoft.AspNetCore.Server.Kestrel": "1.1.0",
       "NLog": "5.0.0-beta04",
       "NLog.Extensions.Logging": "1.0.0-rtm-alpha5",

@@ -8,10 +8,11 @@ using ThinkingHome.Plugins.Database;
 using ThinkingHome.Plugins.Scripts;
 using ThinkingHome.Plugins.Scripts.Model;
 using ThinkingHome.Plugins.Timer;
+using ThinkingHome.Plugins.WebServer;
 
 namespace ThinkingHome.Plugins.Tmp
 {
-    public class TmpPlugin : PluginBase, IDbModelOwner, ITimerOwner, IScriptApiOwner
+    public class TmpPlugin : PluginBase, IDbModelOwner, ITimerOwner, IScriptApiOwner, IHttpApiOwner
     {
         public override void InitPlugin(IConfigurationSection config)
         {
@@ -109,6 +110,17 @@ namespace ThinkingHome.Plugins.Tmp
             {
                 Logger.Fatal($"{i + 1} - {msg}");
             }
+        }
+
+        public void RegisterHandlers(RegisterHttpHandlerDelegate addHandler)
+        {
+            addHandler("/", TmpHandlerMethod);
+            addHandler("/index", TmpHandlerMethod);
+        }
+
+        public object TmpHandlerMethod()
+        {
+            return 42;
         }
     }
 }
