@@ -115,12 +115,17 @@ namespace ThinkingHome.Plugins.Tmp
         public void RegisterHandlers(RegisterHttpHandlerDelegate addHandler)
         {
             addHandler("/", TmpHandlerMethod);
-            addHandler("/index", TmpHandlerMethod);
+            addHandler("/index", TmpHandlerMethod42);
         }
 
         public object TmpHandlerMethod()
         {
-            return 42;
+            return null;
+        }
+
+        public object TmpHandlerMethod42()
+        {
+            return new { answer = 42 };
         }
     }
 }
