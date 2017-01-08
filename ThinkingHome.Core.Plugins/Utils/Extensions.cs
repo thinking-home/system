@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Newtonsoft.Json;
 
@@ -13,5 +14,45 @@ namespace ThinkingHome.Core.Plugins.Utils
         {
             return obj == null ? defaultValue : JsonConvert.SerializeObject(obj);
         }
+
+        #region parse
+
+        public static int? ParseInt(this string stringValue)
+        {
+            int result;
+
+            if (int.TryParse(stringValue, out result))
+            {
+                return result;
+            }
+
+            return null;
+        }
+
+        public static Guid? ParseGuid(this string stringValue)
+        {
+            Guid result;
+
+            if (Guid.TryParse(stringValue, out result))
+            {
+                return result;
+            }
+
+            return null;
+        }
+
+        public static bool? ParseBool(this string stringValue)
+        {
+            bool result;
+
+            if (bool.TryParse(stringValue, out result))
+            {
+                return result;
+            }
+
+            return null;
+        }
+
+        #endregion
     }
 }

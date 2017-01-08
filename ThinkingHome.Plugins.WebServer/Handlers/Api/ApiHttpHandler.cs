@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using ThinkingHome.Core.Plugins.Utils;
 
-namespace ThinkingHome.Plugins.WebServer.Handlers
+namespace ThinkingHome.Plugins.WebServer.Handlers.Api
 {
     public class ApiHttpHandler : IHttpHandler
     {
@@ -21,7 +21,8 @@ namespace ThinkingHome.Plugins.WebServer.Handlers
 
         public async Task ProcessRequest(HttpContext context)
         {
-            var result = await Task.Factory.StartNew(() => method());
+            var parameters = new HttpRequestParams(context.Request);
+            var result = await Task.Factory.StartNew(() => method(parameters));
             var json = result.ToJson("null");
 
             var response = context.Response;

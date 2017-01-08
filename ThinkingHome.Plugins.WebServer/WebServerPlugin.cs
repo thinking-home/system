@@ -5,6 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using NLog.Extensions.Logging;
 using ThinkingHome.Core.Plugins;
 using ThinkingHome.Plugins.WebServer.Handlers;
+using ThinkingHome.Plugins.WebServer.Handlers.Api;
 
 namespace ThinkingHome.Plugins.WebServer
 {

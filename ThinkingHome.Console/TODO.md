@@ -15,12 +15,12 @@
 - [x] вынести connection string в настройки
 - [x] кэширование конфигурации БД (кэшируется срезствами EF)
 - [x] вынести порт веб-сервера в настройки
+- [x] параметры для методов HTTP API
 
 
 
 - [ ] StopPlugin => Dispose?
 
-- [ ] параметры для методов HTTP API
 - [ ] загрузка ресурсов по HTTP
 - [ ] логирование через microsoft.extensions.logging (?) - привести в порядок
 - [ ] починить NLog
@@ -38,9 +38,9 @@
 
 ## alpha1
 
-- [ ] http listener (api, resources, signalr)
+- [ ] http listener (~~api~~, resources)
 - [ ] web-ui
-- [ ] scripts (UI, events)
+- [ ] scripts (web api, UI, events)
 
 ## alpha2
 
@@ -50,6 +50,8 @@
 - [ ] mqtt
 - [ ] weather
 - [ ] timer/alarm clock
+- [ ] http listener (signalr)
+
 
 ### мелкие
 
