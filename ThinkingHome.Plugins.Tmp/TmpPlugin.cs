@@ -14,7 +14,7 @@ using ThinkingHome.Plugins.WebServer.Handlers.Api;
 
 namespace ThinkingHome.Plugins.Tmp
 {
-    public class TmpPlugin : PluginBase, IDbModelOwner, ITimerOwner, IScriptApiOwner, IHttpApiOwner
+    public class TmpPlugin : PluginBase, IDbModelOwner, ITimerOwner, IScriptApiOwner
     {
         public override void InitPlugin(IConfigurationSection config)
         {
@@ -114,26 +114,27 @@ namespace ThinkingHome.Plugins.Tmp
             }
         }
 
-        public void RegisterHandlers(RegisterHttpHandlerDelegate addHandler)
-        {
-            addHandler("/", TmpHandlerMethod);
-            addHandler("/index", TmpHandlerMethod42);
-        }
-
+        [HttpCommand("/")]
         public object TmpHandlerMethod(HttpRequestParams requestParams)
         {
             return null;
         }
 
+        [HttpCommand("/index42")]
         public object TmpHandlerMethod42(HttpRequestParams requestParams)
         {
             return new { answer = 42, name = requestParams.GetString("name") };
         }
 
-        [HttpCommand("/index43")]
+        [HttpCommand("/pigs")]
         public object TmpHandlerMethod43(HttpRequestParams requestParams)
         {
-            return new { answer = 43, name = requestParams.GetString("name") + 43 };
+            using (var db = Context.Require<DatabasePlugin>().OpenSession())
+            {
+                return db.Set<SmallPig>()
+                    .Select(pig => new { id = pig.Id, name = pig.Name, size = pig.Size})
+                    .ToList();
+            }
         }
     }
 }

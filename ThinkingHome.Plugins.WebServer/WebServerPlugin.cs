@@ -37,17 +37,6 @@ namespace ThinkingHome.Plugins.WebServer
         {
             var handlers = new HttpHandlerSet();
 
-            foreach (var plugin in Context.GetAllPlugins<IHttpApiOwner>())
-            {
-                var pluginTypeName = plugin.GetType().FullName;
-
-                plugin.RegisterHandlers((url, method) =>
-                {
-                    Logger.Info($"register HTTP handler: [{pluginTypeName}]({url})");
-                    handlers.Register(url, new ApiHttpHandler(method));
-                });
-            }
-
             foreach (var plugin in Context.GetAllPlugins())
             {
                 var pluginTypeName = plugin.GetType().FullName;
