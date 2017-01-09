@@ -9,6 +9,7 @@ using ThinkingHome.Plugins.Scripts;
 using ThinkingHome.Plugins.Scripts.Model;
 using ThinkingHome.Plugins.Timer;
 using ThinkingHome.Plugins.WebServer;
+using ThinkingHome.Plugins.WebServer.Attributes;
 using ThinkingHome.Plugins.WebServer.Handlers.Api;
 
 namespace ThinkingHome.Plugins.Tmp
@@ -127,6 +128,12 @@ namespace ThinkingHome.Plugins.Tmp
         public object TmpHandlerMethod42(HttpRequestParams requestParams)
         {
             return new { answer = 42, name = requestParams.GetString("name") };
+        }
+
+        [HttpCommand("/index43")]
+        public object TmpHandlerMethod43(HttpRequestParams requestParams)
+        {
+            return new { answer = 43, name = requestParams.GetString("name") + 43 };
         }
     }
 }

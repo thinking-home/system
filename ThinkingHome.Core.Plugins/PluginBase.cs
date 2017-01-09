@@ -1,9 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Composition;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using NLog;
+using ThinkingHome.Core.Plugins.Utils;
 
 namespace ThinkingHome.Core.Plugins
 {
@@ -38,6 +41,39 @@ namespace ThinkingHome.Core.Plugins
         public virtual void StopPlugin()
         {
 
+        }
+
+        #endregion
+
+        #region find methods
+
+        public PluginMethodInfo<TAttribute, TDelegate>[] FindMethodsByAttribute<TAttribute, TDelegate>()
+            where TAttribute: Attribute where TDelegate : class
+        {
+            return GetType()
+                .GetMethods()
+                .SelectMany(GetMethodAttributes<TAttribute>)
+                .Select(GetPluginMethodInfo<TAttribute, TDelegate>)
+                .ToArray();
+        }
+
+        private static IEnumerable<Tuple<MethodInfo, TAttribute>> GetMethodAttributes<TAttribute>(MethodInfo method)
+            where TAttribute: Attribute
+        {
+            return method
+                .GetCustomAttributes<TAttribute>()
+                .Select(attr => new Tuple<MethodInfo, TAttribute>(method, attr));
+        }
+
+        private PluginMethodInfo<TAttribute, TDelegate> GetPluginMethodInfo<TAttribute, TDelegate>(
+            Tuple<MethodInfo, TAttribute> obj)
+            where TAttribute: Attribute where TDelegate : class
+        {
+            var mthodDelegate = obj.Item1.IsStatic
+                ? obj.Item1.CreateDelegate(typeof(TDelegate))
+                : obj.Item1.CreateDelegate(typeof(TDelegate), this);
+
+            return new PluginMethodInfo<TAttribute, TDelegate>(obj.Item2, mthodDelegate as TDelegate);
         }
 
         #endregion

@@ -21,6 +21,7 @@
 
 - [ ] StopPlugin => Dispose?
 
+- [ ] выпилить интерфейсы I*Owner
 - [ ] загрузка ресурсов по HTTP
 - [ ] логирование через microsoft.extensions.logging (?) - привести в порядок
 - [ ] починить NLog

@@ -4,6 +4,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using NLog.Extensions.Logging;
 using ThinkingHome.Core.Plugins;
+using ThinkingHome.Plugins.WebServer.Attributes;
 using ThinkingHome.Plugins.WebServer.Handlers;
 using ThinkingHome.Plugins.WebServer.Handlers.Api;
 
@@ -45,6 +46,17 @@ namespace ThinkingHome.Plugins.WebServer
                     Logger.Info($"register HTTP handler: [{pluginTypeName}]({url})");
                     handlers.Register(url, new ApiHttpHandler(method));
                 });
+            }
+
+            foreach (var plugin in Context.GetAllPlugins())
+            {
+                var pluginTypeName = plugin.GetType().FullName;
+
+                foreach (var mi in plugin.FindMethodsByAttribute<HttpCommandAttribute, HttpHandlerDelegate>())
+                {
+                    Logger.Info($"register HTTP handler: [{pluginTypeName}]({mi.MetaData.Url})");
+                    handlers.Register(mi.MetaData.Url, new ApiHttpHandler(mi.Method));
+                }
             }
 
             return handlers;
