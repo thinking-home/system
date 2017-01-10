@@ -5,7 +5,7 @@
     },
     "dependencies": {
         "NETStandard.Library": "1.6.1",
-        "NLog": "5.0.0-beta04",
+        "NLog": "5.0.0-beta03",
         "System.Composition": "1.0.31",
         "System.Runtime.Loader": "4.3.0",
         "Microsoft.Extensions.Configuration": "1.1.0",
