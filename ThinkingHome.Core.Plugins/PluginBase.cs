@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Composition;
 using System.Linq;
 using System.Reflection;
-using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using NLog;
 using ThinkingHome.Core.Plugins.Utils;
@@ -69,9 +68,16 @@ namespace ThinkingHome.Core.Plugins
             Tuple<MethodInfo, TAttribute> obj)
             where TAttribute: Attribute where TDelegate : class
         {
+            var delegateType = typeof(TDelegate);
+
+            if (delegateType == typeof(Delegate))
+            {
+                delegateType = obj.Item1.GetDelegateType();
+            }
+
             var mthodDelegate = obj.Item1.IsStatic
-                ? obj.Item1.CreateDelegate(typeof(TDelegate))
-                : obj.Item1.CreateDelegate(typeof(TDelegate), this);
+                ? obj.Item1.CreateDelegate(delegateType)
+                : obj.Item1.CreateDelegate(delegateType, this);
 
             return new PluginMethodInfo<TAttribute, TDelegate>(obj.Item2, mthodDelegate as TDelegate);
         }

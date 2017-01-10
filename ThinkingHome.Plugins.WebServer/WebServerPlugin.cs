@@ -43,7 +43,7 @@ namespace ThinkingHome.Plugins.WebServer
 
                 foreach (var mi in plugin.FindMethodsByAttribute<HttpCommandAttribute, HttpHandlerDelegate>())
                 {
-                    Logger.Info($"register HTTP handler: [{pluginTypeName}]({mi.MetaData.Url})");
+                    Logger.Info($"register HTTP handler: \"{mi.MetaData.Url}\" ({pluginTypeName})");
                     handlers.Register(mi.MetaData.Url, new ApiHttpHandler(mi.Method));
                 }
             }

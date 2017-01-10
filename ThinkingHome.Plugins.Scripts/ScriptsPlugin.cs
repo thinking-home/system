@@ -6,6 +6,7 @@ using Microsoft.Extensions.Configuration;
 using ThinkingHome.Core.Plugins;
 using ThinkingHome.Core.Plugins.Utils;
 using ThinkingHome.Plugins.Database;
+using ThinkingHome.Plugins.Scripts.Attributes;
 using ThinkingHome.Plugins.Scripts.Internal;
 using ThinkingHome.Plugins.Scripts.Model;
 
@@ -20,9 +21,15 @@ namespace ThinkingHome.Plugins.Scripts
         public override void InitPlugin(IConfigurationSection config)
         {
             // регистрируем методы плагинов
-            foreach (var plugin in Context.GetAllPlugins<IScriptApiOwner>())
+            foreach (var plugin in Context.GetAllPlugins())
             {
-                plugin.RegisterScriptMethods(methods.Register);
+                var pluginTypeName = plugin.GetType().FullName;
+
+                foreach (var mi in plugin.FindMethodsByAttribute<ScriptCommandAttribute, Delegate>())
+                {
+                    Logger.Info($"register script method: \"{mi.MetaData.Alias}\" ({pluginTypeName})");
+                    methods.Register(mi.MetaData.Alias, mi.Method);
+                }
             }
 
             // создаем объект host

@@ -6,15 +6,14 @@ using Microsoft.Extensions.Configuration;
 using ThinkingHome.Core.Plugins;
 using ThinkingHome.Plugins.Database;
 using ThinkingHome.Plugins.Scripts;
-using ThinkingHome.Plugins.Scripts.Model;
+using ThinkingHome.Plugins.Scripts.Attributes;
 using ThinkingHome.Plugins.Timer;
-using ThinkingHome.Plugins.WebServer;
 using ThinkingHome.Plugins.WebServer.Attributes;
 using ThinkingHome.Plugins.WebServer.Handlers.Api;
 
 namespace ThinkingHome.Plugins.Tmp
 {
-    public class TmpPlugin : PluginBase, IDbModelOwner, ITimerOwner, IScriptApiOwner
+    public class TmpPlugin : PluginBase, IDbModelOwner, ITimerOwner
     {
         public override void InitPlugin(IConfigurationSection config)
         {
@@ -84,12 +83,7 @@ namespace ThinkingHome.Plugins.Tmp
             addTimer(MimimiTimer, 7000);
         }
 
-        public void RegisterScriptMethods(RegisterScriptMethodDelegate addScriptMethod)
-        {
-            addScriptMethod("мукнуть", (Func<string, int, int>)SayMoo);
-            addScriptMethod("протестировать", (Action<int, object[]>)VariableParamsCount);
-        }
-
+        [ScriptCommand("мукнуть")]
         public int SayMoo(string text, int count)
         {
             Logger.Info("count = {0}", count);
@@ -104,6 +98,7 @@ namespace ThinkingHome.Plugins.Tmp
             return 2459 + count;
         }
 
+        [ScriptCommand("протестировать")]
         public void VariableParamsCount(int count, params object[] strings)
         {
             var msg = strings.Join("|");

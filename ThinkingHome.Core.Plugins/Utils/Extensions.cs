@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
+using System.Reflection;
 using Newtonsoft.Json;
 
 namespace ThinkingHome.Core.Plugins.Utils
@@ -13,6 +15,18 @@ namespace ThinkingHome.Core.Plugins.Utils
         public static string ToJson(this object obj, string defaultValue = "")
         {
             return obj == null ? defaultValue : JsonConvert.SerializeObject(obj);
+        }
+
+        /// <summary>
+        /// Получить тип делегата для заданного метода
+        /// </summary>
+        public static Type GetDelegateType(this MethodInfo mi)
+        {
+            var types2 = mi.GetParameters()
+                .Select(p => p.ParameterType)
+                .Concat(new[] { mi.ReturnType });
+
+            return Expression.GetDelegateType(types2.ToArray());
         }
 
         #region parse
