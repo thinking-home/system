@@ -13,6 +13,7 @@ using ThinkingHome.Plugins.WebServer.Handlers.Api;
 
 namespace ThinkingHome.Plugins.Tmp
 {
+    [HttpEmbeddedResource("/mimimi.txt", "ThinkingHome.Plugins.Tmp.mimimi.txt")]
     public class TmpPlugin : PluginBase, IDbModelOwner, ITimerOwner
     {
         public override void InitPlugin(IConfigurationSection config)

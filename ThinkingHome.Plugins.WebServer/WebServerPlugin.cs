@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using System.Collections.Generic;
+using System.Reflection;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -39,12 +41,22 @@ namespace ThinkingHome.Plugins.WebServer
 
             foreach (var plugin in Context.GetAllPlugins())
             {
-                var pluginTypeName = plugin.GetType().FullName;
+                var pluginType = plugin.GetType();
 
+                // api handlers
                 foreach (var mi in plugin.FindMethodsByAttribute<HttpCommandAttribute, HttpHandlerDelegate>())
                 {
-                    Logger.Info($"register HTTP handler: \"{mi.MetaData.Url}\" ({pluginTypeName})");
+                    Logger.Info($"register HTTP handler: \"{mi.MetaData.Url}\" ({pluginType.FullName})");
                     handlers.Register(mi.MetaData.Url, new ApiHttpHandler(mi.Method));
+                }
+
+                // resource handlers
+                var asm = pluginType.GetTypeInfo().Assembly;
+
+                foreach (var resource in pluginType.GetTypeInfo().GetCustomAttributes<HttpResourceAttribute>())
+                {
+                    Logger.Info($"register HTTP handler: \"{resource.Url}\" ({resource.GetType().FullName})");
+                    handlers.Register(resource.Url, new ResourceHttpHandler(asm, resource));
                 }
             }
 

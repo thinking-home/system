@@ -1,23 +1,26 @@
 ﻿{
-  "version": "4.0.0-*",
-  "buildOptions": {
-    "debugType": "portable"
-  },
-  "dependencies": {
-    "NETStandard.Library": "1.6.1",
-    "NLog": "5.0.0-beta03",
-    "System.Composition": "1.0.31",
-    "Microsoft.Extensions.Configuration": "1.1.0",
-    "ThinkingHome.Migrator.Framework": "3.0.0-alpha2",
-    "ThinkingHome.Core.Plugins": { "target": "project" },
-    "ThinkingHome.Plugins.Database": { "target": "project" },
-    "ThinkingHome.Plugins.Scripts": { "target": "project" },
-    "ThinkingHome.Plugins.WebServer": { "target": "project" },
-    "ThinkingHome.Plugins.Timer": { "target": "project" }
-  },
-  "frameworks": {
-    "netstandard1.6": {
-      "imports": "dnxcore50"
+    "version": "4.0.0-*",
+    "buildOptions": {
+        "debugType": "portable",
+        "embed": {
+            "include": ["mimimi.txt"]
+        }
+    },
+    "dependencies": {
+        "NETStandard.Library": "1.6.1",
+        "NLog": "5.0.0-beta03",
+        "System.Composition": "1.0.31",
+        "Microsoft.Extensions.Configuration": "1.1.0",
+        "ThinkingHome.Migrator.Framework": "3.0.0-alpha2",
+        "ThinkingHome.Core.Plugins": { "target": "project" },
+        "ThinkingHome.Plugins.Database": { "target": "project" },
+        "ThinkingHome.Plugins.Scripts": { "target": "project" },
+        "ThinkingHome.Plugins.WebServer": { "target": "project" },
+        "ThinkingHome.Plugins.Timer": { "target": "project" }
+    },
+    "frameworks": {
+        "netstandard1.6": {
+            "imports": "dnxcore50"
+        }
     }
-  }
 }
