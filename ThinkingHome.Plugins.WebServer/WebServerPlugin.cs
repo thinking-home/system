@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Reflection;
+﻿using System.Reflection;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -8,7 +7,6 @@ using NLog.Extensions.Logging;
 using ThinkingHome.Core.Plugins;
 using ThinkingHome.Plugins.WebServer.Attributes;
 using ThinkingHome.Plugins.WebServer.Handlers;
-using ThinkingHome.Plugins.WebServer.Handlers.Api;
 
 namespace ThinkingHome.Plugins.WebServer
 {
@@ -28,6 +26,7 @@ namespace ThinkingHome.Plugins.WebServer
                     .UseStatusCodePages()
                     .UseMiddleware<HomePluginsMiddleware>())
                 .ConfigureServices(services => services
+                    .AddMemoryCache()
                     .AddSingleton(handlers)
                     .AddSingleton(Logger))
                 .ConfigureLogging(loggerFactory =>

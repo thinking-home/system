@@ -1,4 +1,4 @@
-﻿using ThinkingHome.Plugins.WebServer.Handlers.Api;
+﻿using ThinkingHome.Plugins.WebServer.Handlers;
 
 namespace ThinkingHome.Plugins.WebServer
 {

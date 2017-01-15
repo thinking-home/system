@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using ThinkingHome.Core.Plugins.Utils;
 
-namespace ThinkingHome.Plugins.WebServer.Handlers.Api
+namespace ThinkingHome.Plugins.WebServer.Handlers
 {
     public class HttpRequestParams
     {

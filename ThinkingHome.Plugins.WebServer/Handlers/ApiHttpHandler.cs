@@ -2,9 +2,10 @@
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Caching.Memory;
 using ThinkingHome.Core.Plugins.Utils;
 
-namespace ThinkingHome.Plugins.WebServer.Handlers.Api
+namespace ThinkingHome.Plugins.WebServer.Handlers
 {
     public class ApiHttpHandler : IHttpHandler
     {
@@ -19,17 +20,15 @@ namespace ThinkingHome.Plugins.WebServer.Handlers.Api
             this.method = method;
         }
 
-        public async Task ProcessRequest(HttpContext context)
+        public async Task ProcessRequest(HttpContext context, IMemoryCache cache)
         {
             var parameters = new HttpRequestParams(context.Request);
-            var result = await Task.Factory.StartNew(() => method(parameters));
+            var result = await Task.Run(() => method(parameters));
             var json = result.ToJson("null");
 
             var response = context.Response;
 
             response.Headers["Cache-Control"] = "no-cache, no-store";
-            response.Headers["Pragma"] = "no-cache";
-
             response.ContentType = "application/json;charset=utf-8";
             response.ContentLength = utf8.GetByteCount(json);
 

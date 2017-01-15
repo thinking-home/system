@@ -9,7 +9,7 @@ using ThinkingHome.Plugins.Scripts;
 using ThinkingHome.Plugins.Scripts.Attributes;
 using ThinkingHome.Plugins.Timer;
 using ThinkingHome.Plugins.WebServer.Attributes;
-using ThinkingHome.Plugins.WebServer.Handlers.Api;
+using ThinkingHome.Plugins.WebServer.Handlers;
 
 namespace ThinkingHome.Plugins.Tmp
 {
