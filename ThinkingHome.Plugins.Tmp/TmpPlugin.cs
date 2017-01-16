@@ -14,6 +14,7 @@ using ThinkingHome.Plugins.WebServer.Handlers;
 namespace ThinkingHome.Plugins.Tmp
 {
     [HttpEmbeddedResource("/mimimi.txt", "ThinkingHome.Plugins.Tmp.mimimi.txt")]
+    [HttpEmbeddedResource("/moo.txt", "ThinkingHome.Plugins.Tmp.moo.txt")]
     public class TmpPlugin : PluginBase, IDbModelOwner, ITimerOwner
     {
         public override void InitPlugin(IConfigurationSection config)

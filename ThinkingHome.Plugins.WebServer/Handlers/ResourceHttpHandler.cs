@@ -10,8 +10,9 @@ namespace ThinkingHome.Plugins.WebServer.Handlers
     public class ResourceHttpHandler : IHttpHandler
     {
         // cache params
-        private const string CACHE_KEY = "1AD07B08-E047-4593-A169-7BE44A633639";
         private const int CACHE_EXPIRATION = 7200; // в секундах (7200 == 2 часа)
+
+        private readonly string cacheKey;
         private readonly object lockObj = new object();
 
         private readonly Assembly assembly;
@@ -21,6 +22,7 @@ namespace ThinkingHome.Plugins.WebServer.Handlers
         {
             this.assembly = assembly;
             this.resource = resource;
+            this.cacheKey = $"B746CB6C-D767-4AD8-B3F5-CD7FADEAD51A:{resource.Url}";
         }
 
         public async Task ProcessRequest(HttpContext context, IMemoryCache cache)
@@ -38,14 +40,14 @@ namespace ThinkingHome.Plugins.WebServer.Handlers
         {
             byte[] result;
 
-            if (cache.TryGetValue(CACHE_KEY, out result)) return result;
+            if (cache.TryGetValue(cacheKey, out result)) return result;
 
             lock (lockObj)
             {
-                if (cache.TryGetValue(CACHE_KEY, out result)) return result;
+                if (cache.TryGetValue(cacheKey, out result)) return result;
 
                 result = resource.GetContent(assembly);
-                cache.Set(CACHE_KEY, result, TimeSpan.FromSeconds(CACHE_EXPIRATION));
+                cache.Set(cacheKey, result, TimeSpan.FromSeconds(CACHE_EXPIRATION));
             }
 
             return result;

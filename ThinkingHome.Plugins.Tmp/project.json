@@ -3,7 +3,10 @@
     "buildOptions": {
         "debugType": "portable",
         "embed": {
-            "include": ["mimimi.txt"]
+            "include": [
+                "mimimi.txt",
+                "moo.txt"
+            ]
         }
     },
     "dependencies": {
