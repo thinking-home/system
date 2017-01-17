@@ -15,7 +15,7 @@ namespace ThinkingHome.Plugins.Tmp
 {
     [HttpEmbeddedResource("/mimimi.txt", "ThinkingHome.Plugins.Tmp.mimimi.txt")]
     [HttpEmbeddedResource("/moo.txt", "ThinkingHome.Plugins.Tmp.moo.txt")]
-    public class TmpPlugin : PluginBase, IDbModelOwner, ITimerOwner
+    public class TmpPlugin : PluginBase, IDbModelOwner
     {
         public override void InitPlugin(IConfigurationSection config)
         {
@@ -65,6 +65,7 @@ namespace ThinkingHome.Plugins.Tmp
             Logger.Debug($"stop tmp plugin {Guid.NewGuid()}");
         }
 
+        [TimerCallback(3000)]
         public void MimimiTimer(DateTime now)
         {
             using (var db = Context.Require<DatabasePlugin>().OpenSession())
@@ -78,11 +79,6 @@ namespace ThinkingHome.Plugins.Tmp
         public void InitModel(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<SmallPig>();
-        }
-
-        public void RegisterTimers(RegisterTimerDelegate addTimer)
-        {
-            addTimer(MimimiTimer, 7000);
         }
 
         [ScriptCommand("мукнуть")]

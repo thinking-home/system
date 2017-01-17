@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Microsoft.Extensions.Configuration;
 using ThinkingHome.Core.Plugins;
 
@@ -15,45 +16,33 @@ namespace ThinkingHome.Plugins.Timer
 
         public readonly List<InternalTimer> timers = new List<InternalTimer>();
 
-        private bool inited = false;
-
         #endregion
 
         public override void InitPlugin(IConfigurationSection config)
         {
-            foreach (var plugin in Context.GetAllPlugins<ITimerOwner>())
-            {
-                plugin.RegisterTimers(AddTimer);
-            }
+            var callbacks = Context.GetAllPlugins()
+                .SelectMany(plugin =>
+                    plugin.FindMethodsByAttribute<TimerCallbackAttribute, TimerCallbackDelegate>());
 
-            inited = true;
+            foreach (var callback in callbacks)
+            {
+                var timer = new InternalTimer(
+                    callback.MetaData.Delay ?? random.Next(callback.MetaData.Interval),
+                    callback.MetaData.Interval,
+                    callback.Method, Logger);
+
+                timers.Add(timer);
+            }
         }
 
         public override void StartPlugin()
         {
-            lock (lockObject)
-            {
-                timers.ForEach(timer => timer.Start());
-            }
+            timers.ForEach(timer => timer.Start());
         }
 
         public override void StopPlugin()
         {
-            lock (lockObject)
-            {
-                timers.ForEach(timer => timer.Dispose());
-            }
-        }
-
-        private void AddTimer(TimerCallbackDelegate callback, int interval, int? delay = null)
-        {
-            if (inited) throw new InvalidOperationException();
-
-            lock (lockObject)
-            {
-                var timer = new InternalTimer(delay ?? random.Next(interval), interval, callback, Logger);
-                timers.Add(timer);
-            }
+            timers.ForEach(timer => timer.Dispose());
         }
     }
 }
