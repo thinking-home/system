@@ -12,7 +12,7 @@ using ThinkingHome.Plugins.Scripts.Model;
 
 namespace ThinkingHome.Plugins.Scripts
 {
-    public class ScriptsPlugin : PluginBase, IDbModelOwner
+    public class ScriptsPlugin : PluginBase
     {
         private static readonly Engine engine = new Engine();
 
@@ -43,6 +43,7 @@ namespace ThinkingHome.Plugins.Scripts
             engine.SetValue("host", host);
         }
 
+        [DbModelBuilder]
         public void InitModel(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<UserScript>();

@@ -1,13 +1,12 @@
-﻿    using System;
-    using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 
 namespace ThinkingHome.Plugins.Database
 {
     public class HomeDbContext : DbContext
     {
-        private readonly Action<ModelBuilder>[] inits;
+        private readonly DbModelBuilderDelegate[] inits;
 
-        public HomeDbContext(Action<ModelBuilder>[] inits, DbContextOptions options) : base(options)
+        public HomeDbContext(DbModelBuilderDelegate[] inits, DbContextOptions options) : base(options)
         {
             this.inits = inits;
         }

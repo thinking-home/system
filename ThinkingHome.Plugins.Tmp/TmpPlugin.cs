@@ -15,7 +15,7 @@ namespace ThinkingHome.Plugins.Tmp
 {
     [HttpEmbeddedResource("/mimimi.txt", "ThinkingHome.Plugins.Tmp.mimimi.txt")]
     [HttpEmbeddedResource("/moo.txt", "ThinkingHome.Plugins.Tmp.moo.txt")]
-    public class TmpPlugin : PluginBase, IDbModelOwner
+    public class TmpPlugin : PluginBase
     {
         public override void InitPlugin(IConfigurationSection config)
         {
@@ -76,6 +76,7 @@ namespace ThinkingHome.Plugins.Tmp
             }
         }
 
+        [DbModelBuilder]
         public void InitModel(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<SmallPig>();

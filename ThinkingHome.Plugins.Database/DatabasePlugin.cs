@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.Extensions.Configuration;
 using ThinkingHome.Core.Plugins;
 using ThinkingHome.Migrator.Providers.PostgreSQL;
@@ -14,7 +13,7 @@ namespace ThinkingHome.Plugins.Database
     {
         private readonly DbContextOptionsBuilder optionsBuilder = new DbContextOptionsBuilder<HomeDbContext>();
 
-        private Action<ModelBuilder>[] inits;
+        private DbModelBuilderDelegate[] inits;
         private string cstring;
 
         public override void InitPlugin(IConfigurationSection config)
@@ -25,8 +24,9 @@ namespace ThinkingHome.Plugins.Database
 
             optionsBuilder.UseNpgsql(cstring);
 
-            inits = Context.GetAllPlugins<IDbModelOwner>()
-                .Select(plugin => (Action<ModelBuilder>)plugin.InitModel)
+            inits = Context.GetAllPlugins()
+                .SelectMany(p => p.FindMethodsByAttribute<DbModelBuilderAttribute, DbModelBuilderDelegate>())
+                .Select(obj => obj.Method)
                 .ToArray();
 
             ApplyMigrations();
