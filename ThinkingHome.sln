@@ -41,6 +41,10 @@ Global
 		{19AA54D2-4097-4744-ABFE-D5B06AD08E3F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{19AA54D2-4097-4744-ABFE-D5B06AD08E3F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{19AA54D2-4097-4744-ABFE-D5B06AD08E3F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D51509B5-8FEA-4577-9001-CABE822CA1C6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D51509B5-8FEA-4577-9001-CABE822CA1C6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D51509B5-8FEA-4577-9001-CABE822CA1C6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D51509B5-8FEA-4577-9001-CABE822CA1C6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -53,6 +57,7 @@ Global
 		{9AF40835-D064-4D83-96BF-B9C129924A6B} = {8CC0C0F0-7BF2-46C7-B63F-D25A1AC467C2}
 		{C1088C6B-A74C-4DAB-B1C5-B38F4B5E138C} = {8CC0C0F0-7BF2-46C7-B63F-D25A1AC467C2}
 		{19AA54D2-4097-4744-ABFE-D5B06AD08E3F} = {8CC0C0F0-7BF2-46C7-B63F-D25A1AC467C2}
+		{D51509B5-8FEA-4577-9001-CABE822CA1C6} = {8CC0C0F0-7BF2-46C7-B63F-D25A1AC467C2}
 	EndGlobalSection
 EndGlobal
 	Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "ThinkingHome.Console", "ThinkingHome.Console\ThinkingHome.Console.xproj", "{CD850C7F-9938-43AB-8A1D-A080E266003E}"
@@ -74,4 +79,6 @@ EndGlobal
 	Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "ThinkingHome.Plugins.Scripts", "ThinkingHome.Plugins.Scripts\ThinkingHome.Plugins.Scripts.xproj", "{C1088C6B-A74C-4DAB-B1C5-B38F4B5E138C}"
 	EndProject
 	Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "ThinkingHome.Plugins.WebServer", "ThinkingHome.Plugins.WebServer\ThinkingHome.Plugins.WebServer.xproj", "{19AA54D2-4097-4744-ABFE-D5B06AD08E3F}"
+	EndProject
+	Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "ThinkingHome.Plugins.Scripts.WebApi", "ThinkingHome.Plugins.Scripts.WebApi\ThinkingHome.Plugins.Scripts.WebApi.xproj", "{D51509B5-8FEA-4577-9001-CABE822CA1C6}"
 	EndProject
