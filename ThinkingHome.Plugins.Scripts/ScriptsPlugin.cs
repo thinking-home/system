@@ -37,7 +37,8 @@ namespace ThinkingHome.Plugins.Scripts
             {
                 scripts = new ScriptMethodContainer<Func<object[], object>>(CreateScriptDelegateByName),
                 api = new ScriptMethodContainer<Delegate>(GetMethodDelegate),
-                log = new ScriptLogger(Logger)
+                log = new ScriptLogger(Logger),
+                emit = new Action<string, object[]>(EmitScriptEvent)
             };
 
             engine.SetValue("host", host);
@@ -67,14 +68,22 @@ namespace ThinkingHome.Plugins.Scripts
             return CreateScriptDelegateByName(name)(args);
         }
 
-//        public void RaiseScriptEvent(string alias, params object[] args)
-//        {
-//            using (var session = Context.Require<DatabasePlugin>().OpenSession())
-//            {
-//                var scripts = session.Set<UserScript>()
-//                    .Where(s => s.Name == alias)
-//            }
-//        }
+        public void EmitScriptEvent(string eventAlias, params object[] args)
+        {
+            Logger.Debug($"execute script event handlers ({eventAlias})");
+
+            using (var session = Context.Require<DatabasePlugin>().OpenSession())
+            {
+                // find all subscribed scripts
+                var scripts = session.Set<ScriptEventHandler>()
+                    .Where(s => s.EventAlias == eventAlias)
+                    .Select(x => x.UserScript)
+                    .ToList();
+
+                // execute scripts async
+                scripts.ForEach(script => SafeInvoke(script, s => ExecuteScript(s, args), true));
+            }
+        }
 
         #endregion
 

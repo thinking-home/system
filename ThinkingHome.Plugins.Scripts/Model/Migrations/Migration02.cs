@@ -11,8 +11,8 @@ namespace ThinkingHome.Plugins.Scripts.Model.Migrations
         {
             Database.AddTable("Scripts_EventHandler",
                 new Column("Id", DbType.Guid, ColumnProperty.PrimaryKey),
-                new Column("EventAlias", DbType.String.WithSize(200), ColumnProperty.NotNull,
-                new Column("UserScriptId", DbType.Guid, ColumnProperty.NotNull))
+                new Column("EventAlias", DbType.String.WithSize(int.MaxValue), ColumnProperty.NotNull),
+                new Column("UserScriptId", DbType.Guid, ColumnProperty.NotNull)
             );
 
             Database.AddForeignKey("FK_Scripts_EventHandler_UserScriptId",

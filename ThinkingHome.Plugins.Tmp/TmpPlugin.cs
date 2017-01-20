@@ -65,7 +65,7 @@ namespace ThinkingHome.Plugins.Tmp
             Logger.Debug($"stop tmp plugin {Guid.NewGuid()}");
         }
 
-        [TimerCallback(3000)]
+        [TimerCallback(30000)]
         public void MimimiTimer(DateTime now)
         {
             using (var db = Context.Require<DatabasePlugin>().OpenSession())
@@ -111,6 +111,7 @@ namespace ThinkingHome.Plugins.Tmp
         [HttpCommand("/")]
         public object TmpHandlerMethod(HttpRequestParams requestParams)
         {
+            Context.Require<ScriptsPlugin>().EmitScriptEvent("mimi", 1,2,3, "GUID-111");
             return null;
         }
 
