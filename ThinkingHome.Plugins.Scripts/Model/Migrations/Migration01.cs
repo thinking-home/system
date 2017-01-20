@@ -9,7 +9,7 @@ namespace ThinkingHome.Plugins.Scripts.Model.Migrations
     {
         public override void Apply()
         {
-            Database.AddTable("UserScript",
+            Database.AddTable("Scripts_UserScript",
                 new Column("Id", DbType.Guid, ColumnProperty.PrimaryKey),
                 new Column("Name", DbType.String.WithSize(int.MaxValue), ColumnProperty.NotNull),
                 new Column("Body", DbType.String.WithSize(int.MaxValue), ColumnProperty.NotNull)
@@ -18,7 +18,7 @@ namespace ThinkingHome.Plugins.Scripts.Model.Migrations
 
         public override void Revert()
         {
-            Database.RemoveTable("UserScript");
+            Database.RemoveTable("Scripts_UserScript");
         }
     }
 }

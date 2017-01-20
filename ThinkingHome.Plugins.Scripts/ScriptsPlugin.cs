@@ -46,7 +46,8 @@ namespace ThinkingHome.Plugins.Scripts
         [DbModelBuilder]
         public void InitModel(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<UserScript>();
+            modelBuilder.Entity<UserScript>(cfg => cfg.ToTable("Scripts_UserScript"));
+            modelBuilder.Entity<ScriptEventHandler>(cfg => cfg.ToTable("Scripts_EventHandler"));
         }
 
         #region public API
@@ -65,6 +66,15 @@ namespace ThinkingHome.Plugins.Scripts
         {
             return CreateScriptDelegateByName(name)(args);
         }
+
+//        public void RaiseScriptEvent(string alias, params object[] args)
+//        {
+//            using (var session = Context.Require<DatabasePlugin>().OpenSession())
+//            {
+//                var scripts = session.Set<UserScript>()
+//                    .Where(s => s.Name == alias)
+//            }
+//        }
 
         #endregion
 
