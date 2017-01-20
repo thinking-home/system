@@ -10,6 +10,8 @@ namespace ThinkingHome.Plugins.Scripts.WebApi
 {
     public class ScriptsWebApiPlugin : PluginBase
     {
+        #region scripts
+
         [HttpCommand("/api/scripts/list")]
         public object GetScriptList(HttpRequestParams request)
         {
@@ -97,5 +99,70 @@ namespace ThinkingHome.Plugins.Scripts.WebApi
 
             return null;
         }
+
+        #endregion
+
+        #region script event
+
+        [HttpCommand("/api/scripts/subscription/list")]
+        public object GetSubscriptionList(HttpRequestParams request)
+        {
+            using (var session = Context.Require<DatabasePlugin>().OpenSession())
+            {
+                var list = session.Set<ScriptEventHandler>()
+                    .Select(x => new
+                    {
+                        id = x.Id,
+                        scriptId = x.UserScript.Id,
+                        scriptName = x.UserScript.Name,
+                        eventAlias = x.EventAlias
+                    })
+                    .ToList();
+
+                return list;
+            }
+        }
+
+        [HttpCommand("/api/scripts/subscription/add")]
+        public object AddSubscription(HttpRequestParams request)
+        {
+            var scriptId = request.GetRequiredGuid("scriptId");
+            var eventAlias = request.GetRequiredString("eventAlias");
+
+            using (var session = Context.Require<DatabasePlugin>().OpenSession())
+            {
+                var guid = Guid.NewGuid();
+
+                var subscription = new ScriptEventHandler
+                {
+                    Id = guid,
+                    EventAlias = eventAlias,
+                    UserScriptId = scriptId
+                };
+
+                session.Set<ScriptEventHandler>().Add(subscription);
+                session.SaveChanges();
+
+                return guid;
+            }
+        }
+
+        [HttpCommand("/api/scripts/subscription/delete")]
+        public object DeleteSubscription(HttpRequestParams request)
+        {
+            var subscriptionId = request.GetRequiredGuid("subscriptionId");
+
+            using (var session = Context.Require<DatabasePlugin>().OpenSession())
+            {
+                var subscription = session.Set<ScriptEventHandler>().Single(s => s.Id == subscriptionId);
+                session.Set<ScriptEventHandler>().Remove(subscription);
+                session.SaveChanges();
+            }
+
+            return null;
+        }
+
+
+        #endregion
     }
 }
