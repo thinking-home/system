@@ -108,7 +108,7 @@ namespace ThinkingHome.Plugins.Tmp
             }
         }
 
-        [HttpCommand("/")]
+        [HttpCommand("/wefwefwef")]
         public object TmpHandlerMethod(HttpRequestParams requestParams)
         {
             Context.Require<ScriptsPlugin>().EmitScriptEvent("mimi", 1,2,3, "GUID-111");

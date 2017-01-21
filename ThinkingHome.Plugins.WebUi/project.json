@@ -1,0 +1,22 @@
+﻿{
+    "version": "4.0.0-*",
+    "buildOptions": {
+        "debugType": "portable",
+        "embed": {
+            "include": ["Resources/**/*"]
+        }
+    },
+    "dependencies": {
+        "NLog": "5.0.0-beta03",
+        "System.Composition": "1.0.31",
+        "Microsoft.Extensions.Configuration": "1.1.0",
+        "ThinkingHome.Core.Plugins": { "target": "project" },
+        "ThinkingHome.Plugins.WebServer": { "target": "project" },
+        "NETStandard.Library": "1.6.1"
+    },
+    "frameworks": {
+        "netstandard1.6": {
+            "imports": "dnxcore50"
+        }
+    }
+}
