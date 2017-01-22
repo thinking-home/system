@@ -7,6 +7,7 @@ namespace ThinkingHome.Plugins.WebUi
     [HttpEmbeddedResource("/", "ThinkingHome.Plugins.WebUi.Resources.Application.index.html", "text/html")]
     [HttpEmbeddedResource("/webapp/index.js", "ThinkingHome.Plugins.WebUi.Resources.Application.index.js", "application/javascript")]
     [HttpEmbeddedResource("/webapp/lib.js", "ThinkingHome.Plugins.WebUi.Resources.Application.lib.js", "application/javascript")]
+    [HttpEmbeddedResource("/webapp/core/app.js", "ThinkingHome.Plugins.WebUi.Resources.Application.core.app.js", "application/javascript")]
 
     // vendor
     [HttpEmbeddedResource("/vendor/js/json2.js", "ThinkingHome.Plugins.WebUi.Resources.Vendor.js.json2.min.js", "application/javascript")]

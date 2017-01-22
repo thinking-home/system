@@ -18,6 +18,7 @@ requirejs.config({
     }
 });
 
-require(['lib'], function (lib) {
-    console.log(lib);
+require(['webapp/core/app'], function (application) {
+    window.app = new application();
+    window.app.start();
 });
