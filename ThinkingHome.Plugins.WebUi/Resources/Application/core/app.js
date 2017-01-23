@@ -5,6 +5,7 @@ define(
         var homeApplication = lib.marionette.Application.extend({
             initialize: function(options) {
                 console.log('init');
+                console.log(options);
             },
             onStart: function() {
                 console.log('start');

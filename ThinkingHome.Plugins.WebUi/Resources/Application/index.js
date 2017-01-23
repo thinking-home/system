@@ -2,8 +2,10 @@ requirejs.config({
     urlArgs: 'bust=' + Date.now(),
     baseUrl: '/',
     paths: {
-        lib: 'webapp/lib',
+        text: 'vendor/js/require-text',
+        json: 'vendor/js/require-json',
 
+        lib: 'webapp/lib',
         json2: 'vendor/js/json2',
         jquery: 'vendor/js/jquery',
         underscore: 'vendor/js/underscore',
@@ -18,7 +20,7 @@ requirejs.config({
     }
 });
 
-require(['webapp/core/app'], function (application) {
-    window.app = new application();
+require(['webapp/core/app', 'json!webapp/config.json'], function (application, config) {
+    window.app = new application(config);
     window.app.start();
 });
