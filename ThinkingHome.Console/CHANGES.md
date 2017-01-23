@@ -9,9 +9,14 @@
   - запуск плагинов (считать, что все остальные инициализированы)
     ...
   - остановка плагинов
-- события - синхронные/асинхронные (определяет плагин) `SafeInvoke`
-- подписка на события вручную
-- `Context.Using`, `Context.Require`, `GetAllPlugins<T>`
+- CORE
+  - события - синхронные/асинхронные (определяет плагин) `SafeInvoke`
+  - подписка на события вручную
+  - изменилось API Context: `Context.Using`, `Context.Require`, `GetAllPlugins<T>`
+  - API для работы с конфигами: Microsoft.Extensions.Configuration (хелперы: Microsoft.Extensions.Configuration.Binder)
+  - конфиг приходит в метод Init
+  - настройки плагинов в разделе "plugins:<полное название класса плагина>"
+  - метод FindMethodsByAttribute у базового класса плагинов для поиска методов, отмеченных атрибутом
 - Database 
   - теперь в виде плагина, 
   - работает на EF
@@ -21,21 +26,19 @@
   - для миграций портирован ECM7.Migrator
 - Таймеры
   - регистрация через атрибуты, можно указать любой интервал
-- из скриптов можно возвращать данные (написать return ...)
-- runScript => host.scripts.scriptName(args)
-- executeMethod => host.api.methodName(args)
-- logInfo, logError => host.log.trace/debug/info/warn/error/fatal
-- EmitScriptEvent для генерации сценарных событий
-- emit для генерации сценарных событий из других сценариев
-- обработчики сценарных событий запускаются асинхронно
-- API для работы с конфигами: Microsoft.Extensions.Configuration (хелперы: Microsoft.Extensions.Configuration.Binder)
-- конфиг приходит в метод Init
-- настройки плагинов в разделе "plugins:<полное название класса плагина>"
+- Сценарии
+  - JScript => V8 (jint)
+  - из скриптов можно возвращать данные (написать return ...)
+  - runScript => host.scripts.scriptName(args)
+  - executeMethod => host.api.methodName(args)
+  - logInfo, logError => host.log.trace/debug/info/warn/error/fatal
+  - EmitScriptEvent для генерации сценарных событий
+  - emit для генерации сценарных событий из других сценариев
+  - обработчики сценарных событий запускаются асинхронно
 - Listener => WebServer
 - веб-сервер - теперь Kestrel, используется часть инфраструктуры ASP.NET Core MVC 
 - порт веб-сервера в настройке `port`
 - асинхронная обработка запросов
-- метод FindMethodsByAttribute у базового класса плагинов для поиска методов, отмеченных атрибутом
 - изменены параметры http api сценариев
 - сценарные плагины в отдельных пакетах
 - marionette v3
