@@ -17,17 +17,14 @@ namespace ThinkingHome.Plugins.WebUi
 
     // vendor
     [JavaScriptResource("/vendor/js/system.js", "ThinkingHome.Plugins.WebUi.Resources.Vendor.js.system.min.js")]
+    [JavaScriptResource("/vendor/js/system-json.js", "ThinkingHome.Plugins.WebUi.Resources.Vendor.js.system-json.min.js")]
 
     [JavaScriptResource("/vendor/js/json2.js", "ThinkingHome.Plugins.WebUi.Resources.Vendor.js.json2.min.js", Alias = "json2")]
     [JavaScriptResource("/vendor/js/jquery.js", "ThinkingHome.Plugins.WebUi.Resources.Vendor.js.jquery.min.js", Alias = "jquery")]
-    [JavaScriptResource("/vendor/js/require.js", "ThinkingHome.Plugins.WebUi.Resources.Vendor.js.require.min.js")]
-    [JavaScriptResource("/vendor/js/require-text.js", "ThinkingHome.Plugins.WebUi.Resources.Vendor.js.require-text.min.js")]
-    [JavaScriptResource("/vendor/js/require-json.js", "ThinkingHome.Plugins.WebUi.Resources.Vendor.js.require-json.min.js")]
     [JavaScriptResource("/vendor/js/underscore.js", "ThinkingHome.Plugins.WebUi.Resources.Vendor.js.underscore.min.js", Alias = "underscore")]
     [JavaScriptResource("/vendor/js/backbone.js", "ThinkingHome.Plugins.WebUi.Resources.Vendor.js.backbone.min.js", Alias = "backbone")]
     [JavaScriptResource("/vendor/js/backbone.radio.js", "ThinkingHome.Plugins.WebUi.Resources.Vendor.js.backbone.radio.min.js", Alias = "backbone.radio")]
     [JavaScriptResource("/vendor/js/marionette.js", "ThinkingHome.Plugins.WebUi.Resources.Vendor.js.marionette.min.js", Alias = "marionette")]
-    // [HttpEmbeddedResource("/vendor/css/uikit.min.css", "ThinkingHome.Plugins.WebUi.Resources.Vendor.css.uikit.min.css", "text/css")]
     public class WebUiPlugin : PluginBase
     {
         private readonly InternalDictionary<string> aliases = new InternalDictionary<string>();
@@ -54,7 +51,8 @@ namespace ThinkingHome.Plugins.WebUi
         {
             return new
             {
-                map = aliases
+                app = "mi mi mi",
+                systemjs = new { map = aliases }
             };
         }
     }
