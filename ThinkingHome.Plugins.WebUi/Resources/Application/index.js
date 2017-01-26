@@ -1,7 +1,8 @@
 // configure loaders
 SystemJS.config({
     meta: {
-        '*.json': { loader: '/vendor/js/system-json.js' }
+        '*.json': { loader: '/vendor/js/system-json.js' },
+        '*.tpl': { loader: '/vendor/js/system-text.js' }
     }
 });
 

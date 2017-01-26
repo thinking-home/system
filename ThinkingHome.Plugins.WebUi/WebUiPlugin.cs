@@ -16,15 +16,31 @@ namespace ThinkingHome.Plugins.WebUi
     [JavaScriptResource("/webapp/core/app.js", "ThinkingHome.Plugins.WebUi.Resources.Application.core.app.js")]
 
     // vendor
+
+    // systemjs
     [JavaScriptResource("/vendor/js/system.js", "ThinkingHome.Plugins.WebUi.Resources.Vendor.js.system.min.js")]
     [JavaScriptResource("/vendor/js/system-json.js", "ThinkingHome.Plugins.WebUi.Resources.Vendor.js.system-json.min.js")]
+    [JavaScriptResource("/vendor/js/system-text.js", "ThinkingHome.Plugins.WebUi.Resources.Vendor.js.system-text.min.js")]
 
+    // css
+    [CssResource("/vendor/css/foundation.css", "ThinkingHome.Plugins.WebUi.Resources.Vendor.css.foundation.min.css")]
+    [CssResource("/vendor/css/font-awesome.css", "ThinkingHome.Plugins.WebUi.Resources.Vendor.css.font-awesome.min.css")]
+
+    // fonts
+    [HttpEmbeddedResource("/vendor/fonts/fontawesome-webfont.eot", "ThinkingHome.Plugins.WebUi.Resources.Vendor.fonts.fontawesome-webfont.eot", "application/vnd.ms-fontobject")]
+    [HttpEmbeddedResource("/vendor/fonts/fontawesome-webfont.svg", "ThinkingHome.Plugins.WebUi.Resources.Vendor.fonts.fontawesome-webfont.svg", "image/svg+xml")]
+    [HttpEmbeddedResource("/vendor/fonts/fontawesome-webfont.ttf", "ThinkingHome.Plugins.WebUi.Resources.Vendor.fonts.fontawesome-webfont.ttf", "application/x-font-truetype")]
+    [HttpEmbeddedResource("/vendor/fonts/fontawesome-webfont.woff", "ThinkingHome.Plugins.WebUi.Resources.Vendor.fonts.fontawesome-webfont.woff", "application/font-woff")]
+    [HttpEmbeddedResource("/vendor/fonts/fontawesome-webfont.woff2", "ThinkingHome.Plugins.WebUi.Resources.Vendor.fonts.fontawesome-webfont.woff2", "application/font-woff2")]
+
+    // libraries
     [JavaScriptResource("/vendor/js/json2.js", "ThinkingHome.Plugins.WebUi.Resources.Vendor.js.json2.min.js", Alias = "json2")]
     [JavaScriptResource("/vendor/js/jquery.js", "ThinkingHome.Plugins.WebUi.Resources.Vendor.js.jquery.min.js", Alias = "jquery")]
     [JavaScriptResource("/vendor/js/underscore.js", "ThinkingHome.Plugins.WebUi.Resources.Vendor.js.underscore.min.js", Alias = "underscore")]
     [JavaScriptResource("/vendor/js/backbone.js", "ThinkingHome.Plugins.WebUi.Resources.Vendor.js.backbone.min.js", Alias = "backbone")]
     [JavaScriptResource("/vendor/js/backbone.radio.js", "ThinkingHome.Plugins.WebUi.Resources.Vendor.js.backbone.radio.min.js", Alias = "backbone.radio")]
     [JavaScriptResource("/vendor/js/marionette.js", "ThinkingHome.Plugins.WebUi.Resources.Vendor.js.marionette.min.js", Alias = "marionette")]
+    [JavaScriptResource("/vendor/js/handlebars.js", "ThinkingHome.Plugins.WebUi.Resources.Vendor.js.handlebars.min.js", Alias = "handlebars")]
     public class WebUiPlugin : PluginBase
     {
         private readonly InternalDictionary<string> aliases = new InternalDictionary<string>();
