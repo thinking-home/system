@@ -1,19 +1,16 @@
-define(
-    ['lib'],
-    function(lib) {
+var lib = require('lib');
+var layout = require('webapp/core/layout.js');
 
-        var homeApplication = lib.marionette.Application.extend({
-            initialize: function(options) {
-                console.log('init');
-                console.log(options);
-            },
-            onStart: function() {
-                console.log('start');
-            },
-            onBeforeDestroy: function() {
-                console.log('destroy');
-            }
-        });
+var homeApplication = lib.marionette.Application.extend({
+    initialize: function(options) {
+        this.layout = new layout();
+    },
+    onStart: function() {
+        this.layout.render();
+    },
+    onBeforeDestroy: function() {
+        this.layout.destroy();
+    }
+});
 
-        return homeApplication;
-    });
+module.exports = homeApplication;

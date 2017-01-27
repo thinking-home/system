@@ -14,6 +14,7 @@ namespace ThinkingHome.Plugins.WebUi
     [JavaScriptResource("/webapp/index.js", "ThinkingHome.Plugins.WebUi.Resources.Application.index.js")]
     [JavaScriptResource("/webapp/lib.js", "ThinkingHome.Plugins.WebUi.Resources.Application.lib.js", Alias = "lib")]
     [JavaScriptResource("/webapp/core/app.js", "ThinkingHome.Plugins.WebUi.Resources.Application.core.app.js")]
+    [JavaScriptResource("/webapp/core/layout.js", "ThinkingHome.Plugins.WebUi.Resources.Application.core.layout.js")]
 
     // vendor
 
