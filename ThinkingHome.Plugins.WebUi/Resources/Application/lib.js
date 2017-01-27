@@ -3,16 +3,14 @@ define([
     'backbone',
     'underscore',
     'handlebars',
-    'jquery',
-    'json2'
-], function(marionette, backbone, underscore, handlebars, jquery, json2) {
+    'jquery'
+], function(marionette, backbone, underscore, handlebars, jquery) {
 
     return {
         marionette: marionette,
         backbone: backbone,
         handlebars: handlebars,
         _: underscore,
-        $: jquery,
-        json2: json2
+        $: jquery
     };
 });
