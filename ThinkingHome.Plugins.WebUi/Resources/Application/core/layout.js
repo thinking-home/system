@@ -1,11 +1,21 @@
 var lib = require('lib');
-var tplLayout = require('webapp/core/layout.tpl');
+var layoutTemplate = require('webapp/core/layout.tpl');
 
-var Layout = function() {
-    console.log('l-new');
+var layoutView = lib.marionette.View.extend({
+    el: 'body',
+    template: lib.handlebars.compile(layoutTemplate)
+});
 
-    this.render = function() { console.log(tplLayout); };
-    this.destroy = function() { console.log('l-destroy'); };
-};
+var Layout = lib.common.ApplicationBlock.extend({
+    initialize: function() {
+        this.view = new layoutView();
+    },
+    render: function() {
+        this.view.render();
+    },
+    onBeforeDestroy: function () {
+        this.view.destroy();
+    }
+});
 
 module.exports = Layout;
