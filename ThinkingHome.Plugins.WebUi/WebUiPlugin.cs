@@ -17,6 +17,9 @@ namespace ThinkingHome.Plugins.WebUi
     [JavaScriptResource("/webapp/core/layout.js", "ThinkingHome.Plugins.WebUi.Resources.Application.core.layout.js")]
     [HttpEmbeddedResource("/webapp/core/layout.tpl", "ThinkingHome.Plugins.WebUi.Resources.Application.core.layout.tpl")]
 
+    // css
+    [CssResource("/webapp/index.css", "ThinkingHome.Plugins.WebUi.Resources.Application.index.css")]
+
     // vendor
 
     // systemjs

@@ -1,14 +1,14 @@
 var lib = require('lib');
 var layoutTemplate = require('webapp/core/layout.tpl');
 
-var layoutView = lib.marionette.View.extend({
+var LayoutView = lib.marionette.View.extend({
     el: 'body',
     template: lib.handlebars.compile(layoutTemplate)
 });
 
 var Layout = lib.common.ApplicationBlock.extend({
     initialize: function() {
-        this.view = new layoutView();
+        this.view = new LayoutView();
     },
     render: function() {
         this.view.render();
