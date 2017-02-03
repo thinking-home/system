@@ -12,6 +12,7 @@ namespace ThinkingHome.Plugins.WebUi
     [HttpEmbeddedResource("/", "ThinkingHome.Plugins.WebUi.Resources.Application.index.html", "text/html")]
     [HttpEmbeddedResource("/favicon.ico", "ThinkingHome.Plugins.WebUi.Resources.Application.favicon.ico", "image/x-icon")]
     [JavaScriptResource("/webapp/index.js", "ThinkingHome.Plugins.WebUi.Resources.Application.index.js")]
+    [JavaScriptResource("/webapp/welcome.js", "ThinkingHome.Plugins.WebUi.Resources.Application.welcome.js")]
     [JavaScriptResource("/webapp/lib.js", "ThinkingHome.Plugins.WebUi.Resources.Application.lib.js", Alias = "lib")]
     [JavaScriptResource("/webapp/core/app.js", "ThinkingHome.Plugins.WebUi.Resources.Application.core.app.js")]
     [JavaScriptResource("/webapp/core/layout.js", "ThinkingHome.Plugins.WebUi.Resources.Application.core.layout.js")]
@@ -51,6 +52,8 @@ namespace ThinkingHome.Plugins.WebUi
 
         public override void InitPlugin(IConfigurationSection config)
         {
+            aliases.Register("welcome", config.GetValue("defaultPage", "/webapp/welcome.js"));
+
             foreach (var plugin in Context.GetAllPlugins())
             {
                 var type = plugin.GetType().GetTypeInfo();

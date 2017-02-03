@@ -3,7 +3,10 @@ var layoutTemplate = require('webapp/core/layout.tpl');
 
 var LayoutView = lib.marionette.View.extend({
     el: 'body',
-    template: lib.handlebars.compile(layoutTemplate)
+    template: lib.handlebars.compile(layoutTemplate),
+    regions: {
+        content: '.js-content'
+    }
 });
 
 var Layout = lib.common.ApplicationBlock.extend({
@@ -15,6 +18,11 @@ var Layout = lib.common.ApplicationBlock.extend({
     },
     onBeforeDestroy: function () {
         this.view.destroy();
+    },
+
+    // api
+    setContentView: function(view) {
+        this.view.showChildView('content', view);
     }
 });
 

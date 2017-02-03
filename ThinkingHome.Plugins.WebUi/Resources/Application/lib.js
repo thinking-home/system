@@ -18,9 +18,17 @@ define([
         }
     });
 
+    var page = applicationBlock.extend({
+        initialize: function (options) {
+            this.application = options.application;
+        },
+        start: function () { }
+    });
+
     return {
         common: {
-            ApplicationBlock: applicationBlock
+            ApplicationBlock: applicationBlock,
+            Page: page
         },
         marionette: marionette,
         backbone: backbone,
