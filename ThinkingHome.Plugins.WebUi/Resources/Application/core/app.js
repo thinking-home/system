@@ -2,8 +2,6 @@ var lib = require('lib');
 var layout = require('webapp/core/layout.js');
 var router = require('webapp/core/router.js');
 
-var welcomePage = require('welcome');
-
 var homeApplication = lib.marionette.Application.extend({
 
     initialize: function(options) {
@@ -17,9 +15,6 @@ var homeApplication = lib.marionette.Application.extend({
     onStart: function() {
         this.layout.render();
         this.router.start();
-
-        var page = new welcomePage({ application: this });
-        page.start();
     },
 
     onBeforeDestroy: function() {
@@ -38,7 +33,20 @@ var homeApplication = lib.marionette.Application.extend({
 
     // private
     _loadPage: function(route, args) {
-        console.log(route, args);
+        var self = this;
+
+        route = route || 'welcome';
+        args = args || [];
+
+        SystemJS.import(route).then(function(appSection) {
+            self.appSection && self.appSection.destroy();
+
+            var instance = self.appSection = new appSection({ application: self });
+            instance.start.apply(instance, args);
+            self.router.setPath(route, args);
+        }).catch(function(err) {
+            alert(err);
+        });
     }
 });
 

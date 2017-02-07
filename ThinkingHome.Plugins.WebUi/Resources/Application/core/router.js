@@ -10,6 +10,11 @@ var router = lib.backbone.Router.extend({
         lib.backbone.history.start();
     },
 
+    setPath: function (route, args) {
+        var path = route + this._formatQueryString(args);
+        lib.backbone.history.navigate(path);
+    },
+
     _processRoute: function (route, queryString) {
         var args = this._parseQueryString(queryString);
         this.trigger('navigate', route, args);
@@ -22,6 +27,15 @@ var router = lib.backbone.Router.extend({
         }
 
         return [];
+    },
+
+    _formatQueryString: function (args) {
+
+        if (lib._.isArray(args) && args.length) {
+            return '?' + args.map(encodeURIComponent).join('/');
+        }
+
+        return '';
     }
 });
 
