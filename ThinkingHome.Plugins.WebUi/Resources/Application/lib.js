@@ -18,7 +18,7 @@ define([
         }
     });
 
-    var page = applicationBlock.extend({
+    var appSection = applicationBlock.extend({
         initialize: function (options) {
             this.application = options.application;
         },
@@ -28,7 +28,7 @@ define([
     return {
         common: {
             ApplicationBlock: applicationBlock,
-            Page: page
+            AppSection: appSection
         },
         marionette: marionette,
         backbone: backbone,

@@ -1,7 +1,7 @@
 <div class="top-bar">
     <div class="top-bar-title">
         <span>
-            <span class="fa fa-home"></span> Home console
+            <span class="fa fa-home"></span> Home
         </span>
     </div>
     <div>

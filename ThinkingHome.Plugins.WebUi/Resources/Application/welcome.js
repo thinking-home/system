@@ -1,10 +1,10 @@
 var lib = require('lib');
 
 var welcomeView = lib.marionette.View.extend({
-    template: lib.handlebars.compile('<h1>Welcome to home!</h1>')
+    template: lib.handlebars.compile('<h1>Welcome home!</h1>')
 });
 
-var welcomePage = lib.common.Page.extend({
+var welcomeSection = lib.common.AppSection.extend({
     start: function() {
         var view = new welcomeView();
 
@@ -12,4 +12,4 @@ var welcomePage = lib.common.Page.extend({
     }
 });
 
-module.exports = welcomePage;
+module.exports = welcomeSection;
