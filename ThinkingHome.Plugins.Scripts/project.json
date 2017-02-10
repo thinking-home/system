@@ -9,7 +9,7 @@
         "NLog": "5.0.0-beta03",
         "System.Composition": "1.0.31",
         "Microsoft.Extensions.Configuration": "1.1.0",
-        "ThinkingHome.Migrator.Framework": "3.0.0-alpha2",
+        "ThinkingHome.Migrator.Framework": "3.0.0-alpha3",
         "ThinkingHome.Plugins.Database": { "target": "project" },
         "ThinkingHome.Core.Plugins": { "target": "project" }
     },

@@ -43,7 +43,7 @@ namespace ThinkingHome.Plugins.Database
 
                 if (hash.Contains(asm.FullName)) continue;
 
-                using (var migrator = new Migrator.Migrator(factory.CreateProvider(cstring), asm))
+                using (var migrator = new Migrator.Migrator(factory.CreateProvider(cstring, null), asm))
                 {
                     migrator.Migrate();
                 }
