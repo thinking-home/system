@@ -16,7 +16,7 @@ namespace ThinkingHome.Core.Plugins
         [Import("DCCEE19A-2CEA-423F-BFE5-AE5E12679938")]
         public IServiceContext Context { get; set; }
 
-        protected Logger Logger { get; }
+        protected Logger Logger2 { get; }
 
         #endregion
 
@@ -24,7 +24,7 @@ namespace ThinkingHome.Core.Plugins
 
         protected PluginBase()
         {
-            Logger = LogManager.GetLogger(GetType().FullName);
+            Logger2 = LogManager.GetLogger(GetType().FullName);
         }
 
         public virtual void InitPlugin(IConfigurationSection config)
@@ -88,7 +88,7 @@ namespace ThinkingHome.Core.Plugins
         {
             if (handler == null) return;
 
-            var context = new EventContext<T>(handler, action, Logger);
+            var context = new EventContext<T>(handler, action, Logger2);
             context.Invoke(async);
         }
     }

@@ -19,7 +19,7 @@ namespace ThinkingHome.Plugins.Tmp
     {
         public override void InitPlugin(IConfigurationSection config)
         {
-            Logger.Info($"init tmp plugin {Guid.NewGuid()}");
+            Logger2.Info($"init tmp plugin {Guid.NewGuid()}");
         }
 
         public override void StartPlugin()
@@ -55,14 +55,14 @@ namespace ThinkingHome.Plugins.Tmp
 
             var result = Context.Require<ScriptsPlugin>().ExecuteScript("return host.api.мукнуть('это полезно!')");
 
-            Logger.Info($"script result: {result}");
+            Logger2.Info($"script result: {result}");
 
-            Logger.Warn($"start tmp plugin {Guid.NewGuid()}");
+            Logger2.Warn($"start tmp plugin {Guid.NewGuid()}");
         }
 
         public override void StopPlugin()
         {
-            Logger.Debug($"stop tmp plugin {Guid.NewGuid()}");
+            Logger2.Debug($"stop tmp plugin {Guid.NewGuid()}");
         }
 
         [TimerCallback(30000)]
@@ -71,7 +71,7 @@ namespace ThinkingHome.Plugins.Tmp
             using (var db = Context.Require<DatabasePlugin>().OpenSession())
             {
                 db.Set<SmallPig>().ToList()
-                    .ForEach(pig => Logger.Warn($"{pig.Name}, size: {pig.Size} ({pig.Id})"));
+                    .ForEach(pig => Logger2.Warn($"{pig.Name}, size: {pig.Size} ({pig.Id})"));
 
             }
         }
@@ -85,13 +85,13 @@ namespace ThinkingHome.Plugins.Tmp
         [ScriptCommand("мукнуть")]
         public int SayMoo(string text, int count)
         {
-            Logger.Info("count = {0}", count);
+            Logger2.Info("count = {0}", count);
 
             var msg = $"Корова сказала: Му - {text}";
 
             for (var i = 0; i < count; i++)
             {
-                Logger.Info($"{i + 1} - {msg}");
+                Logger2.Info($"{i + 1} - {msg}");
             }
 
             return 2459 + count;
@@ -104,7 +104,7 @@ namespace ThinkingHome.Plugins.Tmp
 
             for (var i = 0; i < count; i++)
             {
-                Logger.Fatal($"{i + 1} - {msg}");
+                Logger2.Fatal($"{i + 1} - {msg}");
             }
         }
 
