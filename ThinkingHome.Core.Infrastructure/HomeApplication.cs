@@ -3,14 +3,15 @@ using System.Composition.Convention;
 using System.Composition.Hosting;
 using System.Linq;
 using System.Reflection;
-using NLog;
+using Microsoft.Extensions.Logging;
+using NLog.Extensions.Logging;
 using ThinkingHome.Core.Plugins;
 
 namespace ThinkingHome.Core.Infrastructure
 {
     public class HomeApplication
     {
-        private readonly Logger logger = LogManager.GetCurrentClassLogger();
+        private readonly NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
         private IServiceContext context;
 
@@ -20,6 +21,9 @@ namespace ThinkingHome.Core.Infrastructure
         /// <param name="config"></param>
         public void Init(HomeConfiguration config)
         {
+            var loggerFactory = new LoggerFactory();
+            loggerFactory.AddNLog();
+
             try
             {
                 LoadPlugins(config);
@@ -28,9 +32,13 @@ namespace ThinkingHome.Core.Infrastructure
                 foreach (var plugin in context.GetAllPlugins())
                 {
                     var pluginType = plugin.GetType();
-
                     logger.Info($"init plugin: {pluginType.FullName}");
-                    plugin.InitPlugin(config.GetPluginSection(pluginType));
+
+                    var pluginConfig = config.GetPluginSection(pluginType);
+                    var pluginLogger = loggerFactory.CreateLogger(pluginType);
+
+                    plugin.Logger = pluginLogger;
+                    plugin.InitPlugin(pluginConfig);
                 }
             }
             catch (ReflectionTypeLoadException ex)

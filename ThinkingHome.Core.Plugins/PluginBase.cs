@@ -4,7 +4,7 @@ using System.Composition;
 using System.Linq;
 using System.Reflection;
 using Microsoft.Extensions.Configuration;
-using NLog;
+using Microsoft.Extensions.Logging;
 using ThinkingHome.Core.Plugins.Utils;
 
 namespace ThinkingHome.Core.Plugins
@@ -16,7 +16,9 @@ namespace ThinkingHome.Core.Plugins
         [Import("DCCEE19A-2CEA-423F-BFE5-AE5E12679938")]
         public IServiceContext Context { get; set; }
 
-        protected Logger Logger2 { get; }
+        public ILogger Logger { get; set; }
+
+        protected NLog.Logger Logger2 { get; }
 
         #endregion
 
@@ -24,7 +26,7 @@ namespace ThinkingHome.Core.Plugins
 
         protected PluginBase()
         {
-            Logger2 = LogManager.GetLogger(GetType().FullName);
+            Logger2 = NLog.LogManager.GetLogger(GetType().FullName);
         }
 
         public virtual void InitPlugin(IConfigurationSection config)
