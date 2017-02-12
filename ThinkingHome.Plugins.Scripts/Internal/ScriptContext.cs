@@ -1,6 +1,6 @@
 ﻿using System;
 using Jint;
-using NLog;
+using Microsoft.Extensions.Logging;
 using ThinkingHome.Core.Plugins.Utils;
 
 namespace ThinkingHome.Plugins.Scripts.Internal
@@ -10,9 +10,9 @@ namespace ThinkingHome.Plugins.Scripts.Internal
         private readonly string name;
         private readonly string body;
         private readonly Engine engine;
-        private readonly Logger logger;
+        private readonly ILogger logger;
 
-        public ScriptContext(string name, string body, Engine engine, Logger logger)
+        public ScriptContext(string name, string body, Engine engine, ILogger logger)
         {
             this.name = name;
             this.body = body;
@@ -33,8 +33,8 @@ namespace ThinkingHome.Plugins.Scripts.Internal
             }
             catch (Exception ex)
             {
-                var id = string.IsNullOrEmpty(name) ? $"script \"{name}\"" : "unnamed script";
-                logger.Error(ex, $"Can't execute {id}");
+                var displayName = string.IsNullOrEmpty(name) ? "unnamed script" : $"script \"{name}\"";
+                logger.LogError(new EventId(), ex, $"Can't execute {displayName}");
 
                 return null;
             }

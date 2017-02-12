@@ -3,6 +3,7 @@ using System.Linq;
 using Jint;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using ThinkingHome.Core.Plugins;
 using ThinkingHome.Core.Plugins.Utils;
 using ThinkingHome.Plugins.Database;
@@ -27,7 +28,7 @@ namespace ThinkingHome.Plugins.Scripts
 
                 foreach (var mi in plugin.FindMethodsByAttribute<ScriptCommandAttribute, Delegate>())
                 {
-                    Logger2.Info($"register script method: \"{mi.MetaData.Alias}\" ({pluginTypeName})");
+                    Logger.LogInformation($"register script method: \"{mi.MetaData.Alias}\" ({pluginTypeName})");
                     methods.Register(mi.MetaData.Alias, mi.Method);
                 }
             }
@@ -37,7 +38,7 @@ namespace ThinkingHome.Plugins.Scripts
             {
                 scripts = new ScriptMethodContainer<Func<object[], object>>(CreateScriptDelegateByName),
                 api = new ScriptMethodContainer<Delegate>(GetMethodDelegate),
-                log = new ScriptLogger(Logger2),
+                log = new ScriptLogger(Logger),
                 emit = new Action<string, object[]>(EmitScriptEvent)
             };
 
@@ -70,7 +71,7 @@ namespace ThinkingHome.Plugins.Scripts
 
         public void EmitScriptEvent(string eventAlias, params object[] args)
         {
-            Logger2.Debug($"execute script event handlers ({eventAlias})");
+            Logger.LogDebug($"execute script event handlers ({eventAlias})");
 
             using (var session = Context.Require<DatabasePlugin>().OpenSession())
             {
@@ -91,7 +92,7 @@ namespace ThinkingHome.Plugins.Scripts
 
         private Func<object[], object> CreateScriptDelegate(string name, string body)
         {
-            return new ScriptContext(name, body, engine, Logger2).Execute;
+            return new ScriptContext(name, body, engine, Logger).Execute;
         }
 
         private Func<object[], object> CreateScriptDelegateByName(string name)
@@ -106,7 +107,7 @@ namespace ThinkingHome.Plugins.Scripts
             }
             catch (Exception ex)
             {
-                Logger2.Error(ex, $"Can't find the script '{name}'");
+                Logger.LogError(new EventId(), ex, $"Can't find the script '{name}'");
                 return null;
             }
         }
@@ -119,7 +120,7 @@ namespace ThinkingHome.Plugins.Scripts
             }
             catch (Exception ex)
             {
-                Logger2.Error(ex, $"Can't find the method '{name}'");
+                Logger.LogError(new EventId(), ex, $"Can't find the method '{name}'");
                 return null;
             }
         }

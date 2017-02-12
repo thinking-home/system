@@ -5,9 +5,9 @@
     },
     "dependencies": {
         "NETStandard.Library": "1.6.1",
-        "NLog": "5.0.0-beta05",
         "System.Composition": "1.0.31",
         "Microsoft.Extensions.Configuration": "1.1.0",
+        "Microsoft.Extensions.Logging": "1.1.0",
         "ThinkingHome.Plugins.Database": { "target": "project" },
         "ThinkingHome.Plugins.Scripts": { "target": "project" },
         "ThinkingHome.Plugins.WebServer": { "target": "project" },
