@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using NLog.Extensions.Logging;
+using Microsoft.Extensions.Logging;
 using ThinkingHome.Core.Plugins;
 using ThinkingHome.Plugins.WebServer.Attributes;
 using ThinkingHome.Plugins.WebServer.Handlers;
@@ -27,10 +27,9 @@ namespace ThinkingHome.Plugins.WebServer
                     .UseMiddleware<HomePluginsMiddleware>())
                 .ConfigureServices(services => services
                     .AddMemoryCache()
-                    .AddSingleton(handlers)
-                    .AddSingleton(Logger2))
+                    .AddSingleton(handlers))
                 .ConfigureLogging(loggerFactory =>
-                    loggerFactory.AddNLog())
+                    loggerFactory.AddProxy(Logger))
                 .Build();
         }
 
@@ -45,7 +44,7 @@ namespace ThinkingHome.Plugins.WebServer
                 // api handlers
                 foreach (var mi in plugin.FindMethodsByAttribute<HttpCommandAttribute, HttpHandlerDelegate>())
                 {
-                    Logger2.Info($"register HTTP handler: \"{mi.MetaData.Url}\" ({pluginType.FullName})");
+                    Logger.LogInformation($"register HTTP handler: \"{mi.MetaData.Url}\" ({pluginType.FullName})");
                     handlers.Register(mi.MetaData.Url, new ApiHttpHandler(mi.Method));
                 }
 
@@ -54,7 +53,7 @@ namespace ThinkingHome.Plugins.WebServer
 
                 foreach (var resource in pluginType.GetTypeInfo().GetCustomAttributes<HttpResourceAttribute>())
                 {
-                    Logger2.Info($"register HTTP handler: \"{resource.Url}\" ({resource.GetType().FullName})");
+                    Logger.LogInformation($"register HTTP handler: \"{resource.Url}\" ({resource.GetType().FullName})");
                     handlers.Register(resource.Url, new ResourceHttpHandler(asm, resource));
                 }
             }

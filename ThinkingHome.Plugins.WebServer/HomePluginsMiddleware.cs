@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Caching.Memory;
-using NLog;
+using Microsoft.Extensions.Logging;
 using ThinkingHome.Plugins.WebServer.Handlers;
 
 namespace ThinkingHome.Plugins.WebServer
@@ -11,14 +11,14 @@ namespace ThinkingHome.Plugins.WebServer
     {
         private readonly RequestDelegate next;
         private readonly HttpHandlerSet handlers;
-        private readonly Logger logger;
+        private readonly ILogger logger;
         private readonly IMemoryCache cache;
 
-        public HomePluginsMiddleware(RequestDelegate next, HttpHandlerSet handlers, Logger logger, IMemoryCache cache)
+        public HomePluginsMiddleware(RequestDelegate next, HttpHandlerSet handlers, ILoggerFactory loggerFactory, IMemoryCache cache)
         {
             this.next = next;
             this.handlers = handlers;
-            this.logger = logger;
+            this.logger = loggerFactory.CreateLogger(GetType());
             this.cache = cache;
         }
 
@@ -28,7 +28,7 @@ namespace ThinkingHome.Plugins.WebServer
 
             if (handlers.ContainsKey(path))
             {
-                logger.Info($"invoke http handler: {path};");
+                logger.LogInformation($"invoke http handler: {path};");
 
                 try
                 {
@@ -36,7 +36,7 @@ namespace ThinkingHome.Plugins.WebServer
                 }
                 catch (Exception ex)
                 {
-                    logger.Error(ex, $"http handler error: {path}");
+                    logger.LogInformation(0, ex, $"http handler error: {path}");
                     context.Response.StatusCode = 500;
                 }
             }
