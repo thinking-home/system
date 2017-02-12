@@ -18,16 +18,9 @@ namespace ThinkingHome.Core.Plugins
 
         public ILogger Logger { get; set; }
 
-        protected NLog.Logger Logger2 { get; }
-
         #endregion
 
         #region life cycle
-
-        protected PluginBase()
-        {
-            Logger2 = NLog.LogManager.GetLogger(GetType().FullName);
-        }
 
         public virtual void InitPlugin(IConfigurationSection config)
         {
@@ -52,6 +45,7 @@ namespace ThinkingHome.Core.Plugins
             where TAttribute: Attribute where TDelegate : class
         {
             return GetType()
+                .GetTypeInfo()
                 .GetMethods()
                 .SelectMany(GetMethodAttributes<TAttribute>)
                 .Select(GetPluginMethodInfo<TAttribute, TDelegate>)
