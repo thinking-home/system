@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
-using NLog;
+using Microsoft.Extensions.Logging;
 
 namespace ThinkingHome.Core.Plugins
 {
@@ -37,7 +37,7 @@ namespace ThinkingHome.Core.Plugins
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                logger.LogError(0, ex, "Event handler failed");
             }
         }
 

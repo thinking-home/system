@@ -90,7 +90,7 @@ namespace ThinkingHome.Core.Plugins
         {
             if (handler == null) return;
 
-            var context = new EventContext<T>(handler, action, Logger2);
+            var context = new EventContext<T>(handler, action, Logger);
             context.Invoke(async);
         }
     }

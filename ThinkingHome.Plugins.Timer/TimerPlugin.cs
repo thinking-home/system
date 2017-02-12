@@ -29,7 +29,7 @@ namespace ThinkingHome.Plugins.Timer
                 var timer = new InternalTimer(
                     callback.MetaData.Delay ?? random.Next(callback.MetaData.Interval),
                     callback.MetaData.Interval,
-                    callback.Method, Logger2);
+                    callback.Method, Logger);
 
                 timers.Add(timer);
             }

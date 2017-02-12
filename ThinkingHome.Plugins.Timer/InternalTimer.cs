@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Threading;
-using NLog;
+using Microsoft.Extensions.Logging;
 using ThinkingHome.Core.Plugins;
 
 namespace ThinkingHome.Plugins.Timer
@@ -11,7 +11,7 @@ namespace ThinkingHome.Plugins.Timer
         private readonly int interval;
         private readonly System.Threading.Timer timer;
 
-        public InternalTimer(int delay, int interval, TimerCallbackDelegate callback, Logger logger)
+        public InternalTimer(int delay, int interval, TimerCallbackDelegate callback, ILogger logger)
         {
             this.delay = delay;
             this.interval = interval;
