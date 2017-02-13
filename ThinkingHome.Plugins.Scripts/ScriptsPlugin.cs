@@ -2,7 +2,6 @@
 using System.Linq;
 using Jint;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using ThinkingHome.Core.Plugins;
 using ThinkingHome.Core.Plugins.Utils;
@@ -19,7 +18,7 @@ namespace ThinkingHome.Plugins.Scripts
 
         private readonly InternalDictionary<Delegate> methods = new InternalDictionary<Delegate>();
 
-        public override void InitPlugin(IConfigurationSection config)
+        public override void InitPlugin()
         {
             // регистрируем методы плагинов
             foreach (var plugin in Context.GetAllPlugins())

@@ -2,21 +2,32 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Composition;
-using System.Composition.Convention;
 using ThinkingHome.Core.Plugins;
 using System.Linq;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 
 namespace ThinkingHome.Core.Infrastructure
 {
-    [Export("DCCEE19A-2CEA-423F-BFE5-AE5E12679938", typeof(IServiceContext)), Shared]
     public class ServiceContext : IServiceContext
     {
         private readonly Dictionary<Type, PluginBase> plugins;
 
-        [ImportingConstructor]
-        public ServiceContext([ImportMany] IEnumerable<PluginBase> loadedPlugins)
+        public ServiceContext(
+            IEnumerable<PluginBase> loadedPlugins,
+            IConfigurationSection configuration,
+            ILoggerFactory loggerFactory)
         {
             plugins = loadedPlugins.ToDictionary(p => p.GetType());
+
+            foreach (var plugin in plugins.Values)
+            {
+                var type = plugin.GetType();
+
+                plugin.Context = this;
+                plugin.Logger = loggerFactory.CreateLogger(type);
+                plugin.Configuration = configuration.GetSection(type.FullName);
+            }
         }
 
         public IReadOnlyCollection<PluginBase> GetAllPlugins()

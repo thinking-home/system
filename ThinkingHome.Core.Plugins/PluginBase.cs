@@ -18,11 +18,13 @@ namespace ThinkingHome.Core.Plugins
 
         public ILogger Logger { get; set; }
 
+        public IConfigurationSection Configuration { get; set; }
+
         #endregion
 
         #region life cycle
 
-        public virtual void InitPlugin(IConfigurationSection config)
+        public virtual void InitPlugin()
         {
 
         }

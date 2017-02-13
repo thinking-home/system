@@ -2,7 +2,6 @@
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Internal;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using ThinkingHome.Core.Plugins;
 using ThinkingHome.Plugins.Database;
@@ -18,7 +17,7 @@ namespace ThinkingHome.Plugins.Tmp
     [HttpEmbeddedResource("/moo.txt", "ThinkingHome.Plugins.Tmp.moo.txt")]
     public class TmpPlugin : PluginBase
     {
-        public override void InitPlugin(IConfigurationSection config)
+        public override void InitPlugin()
         {
             Logger.LogInformation($"init tmp plugin {Guid.NewGuid()}");
         }

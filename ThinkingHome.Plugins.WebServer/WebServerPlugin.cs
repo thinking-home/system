@@ -14,9 +14,9 @@ namespace ThinkingHome.Plugins.WebServer
     {
         private IWebHost host;
 
-        public override void InitPlugin(IConfigurationSection config)
+        public override void InitPlugin()
         {
-            var port = config.GetValue("port", 41831);
+            var port = Configuration.GetValue("port", 41831);
             var handlers = RegisterHandlers();
 
             host = new WebHostBuilder()

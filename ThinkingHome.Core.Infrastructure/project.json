@@ -11,6 +11,7 @@
         "System.Runtime.Loader": "4.3.0",
         "Microsoft.Extensions.Configuration": "1.1.0",
         "Microsoft.Extensions.Configuration.Json": "1.1.0",
+        "Microsoft.Extensions.DependencyInjection": "1.1.0",
         "Microsoft.Extensions.Logging": "1.1.0",
         "ThinkingHome.Core.Plugins": { "target": "project" }
     },

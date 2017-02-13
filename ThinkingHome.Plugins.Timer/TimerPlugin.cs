@@ -18,7 +18,7 @@ namespace ThinkingHome.Plugins.Timer
 
         #endregion
 
-        public override void InitPlugin(IConfigurationSection config)
+        public override void InitPlugin()
         {
             var callbacks = Context.GetAllPlugins()
                 .SelectMany(plugin =>

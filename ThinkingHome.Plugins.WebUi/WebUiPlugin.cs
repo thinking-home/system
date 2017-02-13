@@ -51,9 +51,9 @@ namespace ThinkingHome.Plugins.WebUi
     {
         private readonly InternalDictionary<string> aliases = new InternalDictionary<string>();
 
-        public override void InitPlugin(IConfigurationSection config)
+        public override void InitPlugin()
         {
-            aliases.Register("welcome", config.GetValue("defaultPage", "/webapp/welcome.js"));
+            aliases.Register("welcome", Configuration.GetValue("defaultPage", "/webapp/welcome.js"));
 
             foreach (var plugin in Context.GetAllPlugins())
             {

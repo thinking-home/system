@@ -14,10 +14,12 @@
   - подписка на события вручную
   - изменилось API Context: `Context.Using`, `Context.Require`, `GetAllPlugins<T>`
   - API для работы с конфигами: Microsoft.Extensions.Configuration (хелперы: Microsoft.Extensions.Configuration.Binder)
-  - конфиг приходит в метод Init
+  - конфиг перенесен в свойство плагина
   - настройки плагинов в разделе "plugins:<полное название класса плагина>"
   - метод FindMethodsByAttribute у базового класса плагинов для поиска методов, отмеченных атрибутом
   - NLog => Microsoft.Extensions.Logging
+  - MEF => Microsoft.Extensions.DependencyInjection, не нужна ссылка в каждой DLL
+  - 
 - Database 
   - теперь в виде плагина, 
   - работает на EF

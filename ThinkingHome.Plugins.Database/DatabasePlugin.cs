@@ -16,9 +16,9 @@ namespace ThinkingHome.Plugins.Database
         private DbModelBuilderDelegate[] inits;
         private string cstring;
 
-        public override void InitPlugin(IConfigurationSection config)
+        public override void InitPlugin()
         {
-            cstring = config["connectionString"];
+            cstring = Configuration["connectionString"];
 
             if (string.IsNullOrEmpty(cstring)) throw new Exception("connection string is required");
 

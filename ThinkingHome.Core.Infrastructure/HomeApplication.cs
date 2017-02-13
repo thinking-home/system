@@ -1,8 +1,8 @@
 ﻿using System;
-using System.Composition.Convention;
-using System.Composition.Hosting;
 using System.Linq;
 using System.Reflection;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using NLog.Extensions.Logging;
 using ThinkingHome.Core.Plugins;
@@ -11,7 +11,9 @@ namespace ThinkingHome.Core.Infrastructure
 {
     public class HomeApplication
     {
-        private readonly NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+        private IServiceProvider services;
+
+        private ILogger logger;
 
         private IServiceContext context;
 
@@ -21,38 +23,33 @@ namespace ThinkingHome.Core.Infrastructure
         /// <param name="config"></param>
         public void Init(HomeConfiguration config)
         {
-            var loggerFactory = new LoggerFactory();
-            loggerFactory.AddNLog();
+            services = ConfigureServices(config);
+            var loggerFactory = services.GetRequiredService<ILoggerFactory>().AddNLog();
+
+            logger = loggerFactory.CreateLogger<HomeApplication>();
+            context = services.GetRequiredService<IServiceContext>();
 
             try
             {
-                LoadPlugins(config);
-
                 // инициализируем плагины
                 foreach (var plugin in context.GetAllPlugins())
                 {
-                    var pluginType = plugin.GetType();
-                    logger.Info($"init plugin: {pluginType.FullName}");
-
-                    var pluginConfig = config.GetPluginSection(pluginType);
-                    var pluginLogger = loggerFactory.CreateLogger(pluginType);
-
-                    plugin.Logger = pluginLogger;
-                    plugin.InitPlugin(pluginConfig);
+                    logger.LogInformation($"init plugin: {plugin.GetType().FullName}");
+                    plugin.InitPlugin();
                 }
             }
             catch (ReflectionTypeLoadException ex)
             {
-                logger.Error(ex, "error on plugins initialization");
+                logger.LogError(0, ex, "error on plugins initialization");
                 foreach (var loaderException in ex.LoaderExceptions)
                 {
-                    logger.Error(loaderException, loaderException.Message);
+                    logger.LogError(0, loaderException, loaderException.Message);
                 }
                 throw;
             }
             catch (Exception ex)
             {
-                logger.Error(ex, "error on plugins initialization");
+                logger.LogError(0, ex, "error on plugins initialization");
                 throw;
             }
         }
@@ -63,15 +60,15 @@ namespace ThinkingHome.Core.Infrastructure
             {
                 foreach (var plugin in context.GetAllPlugins())
                 {
-                    logger.Info($"start plugin {plugin.GetType().FullName}");
+                    logger.LogInformation($"start plugin {plugin.GetType().FullName}");
                     plugin.StartPlugin();
                 }
 
-                logger.Info("all plugins are started");
+                logger.LogInformation("all plugins are started");
             }
             catch (Exception ex)
             {
-                logger.Error(ex, "error on start plugins");
+                logger.LogError(0, ex, "error on start plugins");
                 throw;
             }
         }
@@ -82,36 +79,46 @@ namespace ThinkingHome.Core.Infrastructure
             {
                 try
                 {
-                    logger.Info($"stop plugin {plugin.GetType().FullName}");
+                    logger.LogInformation($"stop plugin {plugin.GetType().FullName}");
                     plugin.StopPlugin();
                 }
                 catch (Exception ex)
                 {
-                    logger.Error(ex, "error on stop plugins");
+                    logger.LogError(0, ex, "error on stop plugins");
                 }
             }
 
-            logger.Info("all plugins are stopped");
+            logger.LogInformation("all plugins are stopped");
         }
 
         #region private
 
-        private void LoadPlugins(HomeConfiguration config)
+        private IServiceProvider ConfigureServices(HomeConfiguration config)
         {
             var asms = config.GetDependencies().ToArray();
 
-            var conventions = new ConventionBuilder();
-            conventions
-                .ForTypesDerivedFrom<PluginBase>()
-                .Export<PluginBase>()
-                .Shared();
+            var serviceCollection = new ServiceCollection();
 
-            var container = new ContainerConfiguration()
-                .WithAssemblies(asms, conventions)
-                .WithAssembly(GetType().GetTypeInfo().Assembly, conventions)
-                .CreateContainer();
+            serviceCollection.AddSingleton<ILoggerFactory, LoggerFactory>();
+            serviceCollection.AddSingleton<IServiceContext, ServiceContext>();
+            serviceCollection.AddSingleton<IConfigurationSection>(config.Configuration.GetSection("plugins"));
 
-            context = container.GetExport<IServiceContext>("DCCEE19A-2CEA-423F-BFE5-AE5E12679938");
+            foreach (var asm in asms)
+            {
+                AddAssemblyPlugins(serviceCollection, asm);
+            }
+
+            return serviceCollection.BuildServiceProvider();
+        }
+
+        private void AddAssemblyPlugins(ServiceCollection services, Assembly asm)
+        {
+            var baseType = typeof(PluginBase);
+
+            foreach (var pluginType in asm.GetExportedTypes().Where(type => baseType.IsAssignableFrom(type)))
+            {
+                services.AddSingleton(baseType, pluginType);
+            }
         }
 
         #endregion
