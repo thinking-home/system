@@ -6,7 +6,6 @@
     "dependencies": {
         "Jint": "3.0.0-beta-001",
         "NETStandard.Library": "1.6.1",
-        "System.Composition": "1.0.31",
         "Microsoft.Extensions.Configuration": "1.1.0",
         "Microsoft.Extensions.Logging": "1.1.0",
         "ThinkingHome.Migrator.Framework": "3.0.0-alpha3",

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Composition;
 using System.Linq;
 using System.Reflection;
 using Microsoft.Extensions.Configuration;
@@ -13,7 +12,6 @@ namespace ThinkingHome.Core.Plugins
     {
         #region properties
 
-        [Import("DCCEE19A-2CEA-423F-BFE5-AE5E12679938")]
         public IServiceContext Context { get; set; }
 
         public ILogger Logger { get; set; }

@@ -5,7 +5,6 @@
     },
     "dependencies": {
         "NETStandard.Library": "1.6.1",
-        "System.Composition": "1.0.31",
         "Microsoft.EntityFrameworkCore": "1.1.0",
         "Npgsql.EntityFrameworkCore.PostgreSQL": "1.1.0",
         "Microsoft.Extensions.Configuration": "1.1.0",

@@ -7,7 +7,6 @@
         }
     },
     "dependencies": {
-        "System.Composition": "1.0.31",
         "Microsoft.Extensions.Configuration": "1.1.0",
         "Microsoft.Extensions.Logging": "1.1.0",
         "ThinkingHome.Core.Plugins": { "target": "project" },

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Composition;
 using ThinkingHome.Core.Plugins;
 using System.Linq;
 using Microsoft.Extensions.Configuration;

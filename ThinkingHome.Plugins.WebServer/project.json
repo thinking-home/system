@@ -11,7 +11,6 @@
       "Microsoft.AspNetCore.Diagnostics": "1.1.0",
       "Microsoft.AspNetCore.Server.Kestrel": "1.1.0",
       "Microsoft.Extensions.Caching.Memory": "1.1.0",
-      "System.Composition": "1.0.31",
       "ThinkingHome.Core.Plugins": { "target": "project" },
       "NETStandard.Library": "1.6.1"
   },
