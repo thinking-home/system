@@ -2,5 +2,5 @@
     <span class="navbar-brand">My Home</span>
 </div>
 <div class="th-container js-container">
-    <div class="th-content js-content"></div>
+    <div class="container-fluid th-content js-content"></div>
 </div>
