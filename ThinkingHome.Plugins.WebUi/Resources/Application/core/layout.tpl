@@ -1,17 +1,5 @@
-<div class="top-bar">
-    <div class="top-bar-title">
-        <span>
-            <span class="fa fa-home"></span> Home
-        </span>
-    </div>
-    <div>
-        <div class="top-bar-right">
-            <ul class="menu">
-                <li><a href="#">One</a></li>
-                <li><a href="#">Two</a></li>
-            </ul>
-        </div>
-    </div>
+<div class="navbar navbar-inverse bg-primary fixed-top">
+    <span class="navbar-brand">My Home</span>
 </div>
 <div class="th-container js-container">
     <div class="th-content js-content"></div>
