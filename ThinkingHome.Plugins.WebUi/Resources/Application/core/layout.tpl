@@ -2,7 +2,9 @@
     <a href="#" class="navbar-toggler navbar-toggler-right js-toggler">
         <span class="navbar-toggler-icon"></span>
     </a>
-    <a class="navbar-brand js-nav-link" href="#welcome"><i class="fa fa-home"></i> My Home</a>
+    <a class="navbar-brand js-nav-link" href="#welcome">
+        <i class="fa fa-home"></i> <span class="hidden-sm-down">My Home</span>
+    </a>
 
     <div class="collapse navbar-collapse js-menu">
         <ul class="navbar-nav ml-auto">

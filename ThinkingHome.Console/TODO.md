@@ -45,22 +45,27 @@
 - [ ] сделать применение миграций в порядке зависимости библиотек
 
 ### webui
-- [ ] ядро приложения
-- [ ] базовая разметка: меню (сворачивается), home/apps/settings
-- [ ] welcome page
-- [ ] list page
-- [ ]
-- [ ]
+- [ ] moment
+- [ ] настройка для списка разделов
+- [ ] переименовать модуль welcome в dummy и написать пояснительный текст
+- [ ] не применять настройки стандартных страниц, если alias уже занят
 
 ## alpha1
 
-- [x] http listener (api, resources)
-- [ ] web-ui (core, )
-- [ ] scripts (~~web~~ ~~api~~, UI: список скриптов, редактор скриптов, подписка на события, ~~events~~)
+- [x] http listener (~~api~~, ~~resources~~)
+- [x] scripts (~~web~~ ~~api~~, ~~events~~)
+- [x] web-ui (~~core: обшие библиотеки, точка входа, layout~~)
 
 ## alpha2
 
-- [ ] локализация
+- [ ] web-ui (app list,
+- [ ] scripts (UI: список скриптов, редактор скриптов, подписка на события)
+- [ ] плагин utils (http запросы, email)
+
+## alpha3
+
+- [ ] web-ui (dashboards),
+- [ ] локализация (после релиза .NET Core 2.0)
 - [ ] microclimate (Core, UI)
 - [ ] noolite (Core, API, UI)
 - [ ] видеонаблюдение
@@ -72,8 +77,6 @@
 
 ### мелкие
 
-- [ ] HTTP запросы
-- [ ] email
 - [ ] telegram bot https://www.nuget.org/packages/Telegram.Bot/
 - [ ] slack
 
