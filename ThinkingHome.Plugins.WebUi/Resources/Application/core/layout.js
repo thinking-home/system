@@ -3,9 +3,20 @@ var layoutTemplate = require('webapp/core/layout.tpl');
 
 var LayoutView = lib.marionette.View.extend({
     el: 'body',
+
     template: lib.handlebars.compile(layoutTemplate),
+
     regions: {
         content: '.js-content'
+    },
+
+    events: {
+        'click .js-toggler': function() { this.toggleMenu(); },
+        'click .js-nav-link': function() { this.toggleMenu(false); }
+    },
+
+    toggleMenu: function(enabled) {
+        this.$('.js-menu').toggleClass('show', enabled);
     }
 });
 
