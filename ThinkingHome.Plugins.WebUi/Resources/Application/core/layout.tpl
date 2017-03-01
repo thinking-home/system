@@ -1,7 +1,7 @@
 <nav class="navbar navbar-inverse bg-primary navbar-toggleable-sm fixed-top">
-    <a href="#" class="navbar-toggler navbar-toggler-right js-toggler">
+    <button type="button" class="navbar-toggler navbar-toggler-right js-toggler">
         <span class="navbar-toggler-icon"></span>
-    </a>
+    </button>
     <a class="navbar-brand js-nav-link" href="#welcome">
         <i class="fa fa-home"></i> <span class="hidden-sm-down">My Home</span>
     </a>

@@ -12,7 +12,7 @@ namespace ThinkingHome.Plugins.WebUi
     [HttpEmbeddedResource("/", "ThinkingHome.Plugins.WebUi.Resources.Application.index.html", "text/html")]
     [HttpEmbeddedResource("/favicon.ico", "ThinkingHome.Plugins.WebUi.Resources.Application.favicon.ico", "image/x-icon")]
     [JavaScriptResource("/webapp/index.js", "ThinkingHome.Plugins.WebUi.Resources.Application.index.js")]
-    [JavaScriptResource("/webapp/welcome.js", "ThinkingHome.Plugins.WebUi.Resources.Application.welcome.js")]
+    [JavaScriptResource("/webapp/dummy.js", "ThinkingHome.Plugins.WebUi.Resources.Application.dummy.js")]
     [JavaScriptResource("/webapp/lib.js", "ThinkingHome.Plugins.WebUi.Resources.Application.lib.js", Alias = "lib")]
     [JavaScriptResource("/webapp/core/app.js", "ThinkingHome.Plugins.WebUi.Resources.Application.core.app.js")]
     [JavaScriptResource("/webapp/core/router.js", "ThinkingHome.Plugins.WebUi.Resources.Application.core.router.js")]
@@ -54,7 +54,8 @@ namespace ThinkingHome.Plugins.WebUi
 
         public override void InitPlugin()
         {
-            aliases.Register("welcome", Configuration.GetValue("defaultPage", "/webapp/welcome.js"));
+            aliases.Register("welcome", Configuration.GetValue("pages:welcome", "/webapp/dummy.js"));
+            aliases.Register("apps", Configuration.GetValue("pages:apps", "/webapp/dummy.js"));
 
             foreach (var plugin in Context.GetAllPlugins())
             {

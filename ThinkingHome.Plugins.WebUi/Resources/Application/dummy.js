@@ -1,16 +1,17 @@
 var lib = require('lib');
 
-var welcomeView = lib.marionette.View.extend({
+var View = lib.marionette.View.extend({
     template: lib.handlebars.compile('Welcome home!'),
     tagName: 'h1'
 });
 
-var welcomeSection = lib.common.AppSection.extend({
+var Section = lib.common.AppSection.extend({
     start: function() {
-        var view = new welcomeView();
-
+        var view = new View();
         this.application.setContentView(view);
+
+        console.log(arguments);
     }
 });
 
-module.exports = welcomeSection;
+module.exports = Section;
