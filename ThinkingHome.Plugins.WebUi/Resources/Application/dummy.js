@@ -1,8 +1,8 @@
 var lib = require('lib');
+var template = require('webapp/dummy.tpl');
 
 var View = lib.marionette.View.extend({
-    template: lib.handlebars.compile('Welcome home!'),
-    tagName: 'h1'
+    template: lib.handlebars.compile(template)
 });
 
 var Section = lib.common.AppSection.extend({

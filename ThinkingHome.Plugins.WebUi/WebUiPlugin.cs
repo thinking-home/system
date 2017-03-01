@@ -12,12 +12,15 @@ namespace ThinkingHome.Plugins.WebUi
     [HttpEmbeddedResource("/", "ThinkingHome.Plugins.WebUi.Resources.Application.index.html", "text/html")]
     [HttpEmbeddedResource("/favicon.ico", "ThinkingHome.Plugins.WebUi.Resources.Application.favicon.ico", "image/x-icon")]
     [JavaScriptResource("/webapp/index.js", "ThinkingHome.Plugins.WebUi.Resources.Application.index.js")]
-    [JavaScriptResource("/webapp/dummy.js", "ThinkingHome.Plugins.WebUi.Resources.Application.dummy.js")]
     [JavaScriptResource("/webapp/lib.js", "ThinkingHome.Plugins.WebUi.Resources.Application.lib.js", Alias = "lib")]
     [JavaScriptResource("/webapp/core/app.js", "ThinkingHome.Plugins.WebUi.Resources.Application.core.app.js")]
     [JavaScriptResource("/webapp/core/router.js", "ThinkingHome.Plugins.WebUi.Resources.Application.core.router.js")]
     [JavaScriptResource("/webapp/core/layout.js", "ThinkingHome.Plugins.WebUi.Resources.Application.core.layout.js")]
     [HttpEmbeddedResource("/webapp/core/layout.tpl", "ThinkingHome.Plugins.WebUi.Resources.Application.core.layout.tpl")]
+
+    // dummy
+    [JavaScriptResource("/webapp/dummy.js", "ThinkingHome.Plugins.WebUi.Resources.Application.dummy.js")]
+    [HttpEmbeddedResource("/webapp/dummy.tpl", "ThinkingHome.Plugins.WebUi.Resources.Application.dummy.tpl")]
 
     // css
     [CssResource("/webapp/index.css", "ThinkingHome.Plugins.WebUi.Resources.Application.index.css")]
