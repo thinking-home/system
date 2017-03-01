@@ -47,6 +47,7 @@ namespace ThinkingHome.Plugins.WebUi
     [JavaScriptResource("/vendor/js/backbone.radio.js", "ThinkingHome.Plugins.WebUi.Resources.Vendor.js.backbone.radio.min.js", Alias = "backbone.radio")]
     [JavaScriptResource("/vendor/js/marionette.js", "ThinkingHome.Plugins.WebUi.Resources.Vendor.js.marionette.min.js", Alias = "marionette")]
     [JavaScriptResource("/vendor/js/handlebars.js", "ThinkingHome.Plugins.WebUi.Resources.Vendor.js.handlebars.min.js", Alias = "handlebars")]
+    [JavaScriptResource("/vendor/js/moment.js", "ThinkingHome.Plugins.WebUi.Resources.Vendor.js.moment.min.js", Alias = "moment")]
     public class WebUiPlugin : PluginBase
     {
         private readonly InternalDictionary<string> aliases = new InternalDictionary<string>();

@@ -2,9 +2,10 @@ define([
     'marionette',
     'backbone',
     'handlebars',
+    'moment',
     'underscore',
     'jquery'
-], function(marionette, backbone, handlebars, _, $) {
+], function(marionette, backbone, handlebars, moment, _, $) {
 
     var applicationBlock = marionette.Object.extend({
         bind: function (fn) {
@@ -33,6 +34,7 @@ define([
         marionette: marionette,
         backbone: backbone,
         handlebars: handlebars,
+        moment: moment,
         _: _,
         $: $
     };
