@@ -2,7 +2,7 @@
     <button type="button" class="navbar-toggler navbar-toggler-right js-toggler">
         <span class="navbar-toggler-icon"></span>
     </button>
-    <a class="navbar-brand js-nav-link" href="#welcome">
+    <a class="navbar-brand mr-auto js-nav-link" href="#welcome">
         <i class="fa fa-home"></i> <span class="hidden-sm-down">My Home</span>
     </a>
 
