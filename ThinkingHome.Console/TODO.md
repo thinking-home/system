@@ -58,7 +58,7 @@
 
 ## alpha2
 
-- [ ] web-ui (app list,
+- [ ] web-ui (app list, ...)
 - [ ] scripts (UI: список скриптов, редактор скриптов, подписка на события)
 - [ ] плагин utils (http запросы, email)
 
