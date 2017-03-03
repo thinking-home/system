@@ -12,7 +12,7 @@
 
 Сигнатура метода, вызываемого по таймеру, должна соответствовать делегату `TimerCallbackDelegate`:
 
-```
+```csharp
 public delegate void TimerCallbackDelegate(DateTime now);
 ```
 
@@ -23,7 +23,7 @@ public delegate void TimerCallbackDelegate(DateTime now);
 
 *Пример:*
 
-```
+```csharp
 [TimerCallback(30000)]
 public void MyTimerHandler(DateTime now)
 {

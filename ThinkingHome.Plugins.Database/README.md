@@ -9,7 +9,7 @@
 Строка подключения к БД настраивается с помощью параметра `connectionString` в файле appsettings.json.
 В текущий момент поддерживается только СУБД PostgreSQL.
 
-```
+```json
 {
     "plugins": {
 
@@ -30,13 +30,13 @@
 
 Сигнатура метода, вызываемого по таймеру, должна соответствовать делегату `DbModelBuilderDelegate`:
 
-```
+```csharp
 public delegate void DbModelBuilderDelegate(ModelBuilder modelBuilder);
 ```
 
 *Пример*
 
-```
+```csharp
 [DbModelBuilder]
 public void InitModel(ModelBuilder modelBuilder)
 {
@@ -51,7 +51,7 @@ public void InitModel(ModelBuilder modelBuilder)
 
 *Пример*
 
-```
+```csharp
 using (var db = Context.Require<DatabasePlugin>().OpenSession())
 {
     foreach (var user in db.Set<Users>())
@@ -81,7 +81,7 @@ using (var db = Context.Require<DatabasePlugin>().OpenSession())
 
 *Пример*
 
-```
+```csharp
 [Migration(1)]
 public class Migration01 : Migration
 {

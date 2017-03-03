@@ -11,7 +11,7 @@
 
 Вы можете настроить порт, на котором будут слушаться HTTP запросы. Для этого укажите параметр `port` в настройках плагина в файле appsettings.json.
 
-```
+```json
 {
     "plugins": {
 
@@ -32,7 +32,7 @@
 
 Сигнатура метода, обрабатывающего HTTP запрос, должна соответствовать делегату `HttpHandlerDelegate`:
 
-```
+```csharp
 public delegate object HttpHandlerDelegate(HttpRequestParams requestParams);
 ```
 
@@ -40,7 +40,7 @@ public delegate object HttpHandlerDelegate(HttpRequestParams requestParams);
 
 *Пример*
 
-```
+```csharp
 [HttpCommand("/questions/main")]
 public object TmpHandlerMethod42(HttpRequestParams requestParams)
 {
@@ -56,7 +56,7 @@ public object TmpHandlerMethod42(HttpRequestParams requestParams)
 
 *Пример*
 
-```
+```csharp
 [HttpEmbeddedResource("/favicon.ico", "MyPlugin.favicon.ico", "image/x-icon")]
 public class MyPlugin : PluginBase
 {
