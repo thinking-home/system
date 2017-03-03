@@ -6,7 +6,7 @@
 
 ## API
 
-### [TimerCallbackAttribute]
+### [TimerCallback]
 
 Вы можете отметить методы своего плагина атрибутом `ThinkingHome.Plugins.Timer.TimerCallbackAttribute` и указать в его параметрах интервал. Метод вашего плагина будет автоматически вызываться через указанные интервалы времени.
 
