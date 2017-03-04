@@ -9,7 +9,7 @@
 Строка подключения к БД настраивается с помощью параметра `connectionString` в файле appsettings.json.
 В текущий момент поддерживается только СУБД PostgreSQL.
 
-```json
+```js
 {
     "plugins": {
 
@@ -24,7 +24,7 @@
 
 ## API
 
-### [DbModelBuilder]
+### `[DbModelBuilder]`
 
 Вы можете отметить методы своего плагина атрибутом `ThinkingHome.Plugins.Database.DbModelBuilderAttribute` и реализовать там логику по настройке мэппинга вашей модели на структуру БД, используя EF Fluent API.
 
@@ -34,7 +34,7 @@
 public delegate void DbModelBuilderDelegate(ModelBuilder modelBuilder);
 ```
 
-*Пример*
+#### Пример
 
 ```csharp
 [DbModelBuilder]
@@ -45,11 +45,11 @@ public void InitModel(ModelBuilder modelBuilder)
 }
 ```
 
-### public DbContext OpenSession()
+### `DbContext OpenSession()`
 
 Метод `OpenSession` возвращает экземпляр `DbContext` для получения и сохранения данных в БД.
 
-*Пример*
+#### Пример
 
 ```csharp
 using (var db = Context.Require<DatabasePlugin>().OpenSession())
@@ -67,7 +67,7 @@ using (var db = Context.Require<DatabasePlugin>().OpenSession())
 Для миграции структуры БД используется библиотека [ThinkingHome.Migrator](https://github.com/thinking-home/migrator).
 С ее помощью вы можете настроить автоматическое создание необходимых объектов БД (таблиц, ограничений, индексов и т.д.)
 
-*Схема использования*
+### Схема использования
 
 1. Подключите в проект своего плагина пакет [ThinkingHome.Migrator.Framework](https://www.nuget.org/packages/ThinkingHome.Migrator.Framework).
 
@@ -79,7 +79,7 @@ using (var db = Context.Require<DatabasePlugin>().OpenSession())
 
 При старте приложения нужные изменения БД будут выполнены автоматически.
 
-*Пример*
+#### Пример
 
 ```csharp
 [Migration(1)]

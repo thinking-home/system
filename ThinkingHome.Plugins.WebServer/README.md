@@ -26,7 +26,7 @@
 
 ## API
 
-### [HttpCommand]
+### `[HttpCommand]`
 
 Вы можете отметить методы своего плагина атрибутом `ThinkingHome.Plugins.WebServer.Attributes.HttpCommandAttribute` и указать в его параметрах URL. Метод вашего плагина будет автоматически вызван при получении HTTP запроса к указанному URL.
 
@@ -38,7 +38,7 @@ public delegate object HttpHandlerDelegate(HttpRequestParams requestParams);
 
 Входной параметр `requestParams` содержит информацию о параметрах HTTP запроса. Возвращаемое из метода значение будет сериализовано в JSON и передано обратно на клиент.
 
-*Пример*
+#### Пример
 
 ```csharp
 [HttpCommand("/questions/main")]
@@ -48,13 +48,13 @@ public object TmpHandlerMethod42(HttpRequestParams requestParams)
 }
 ```
 
-### [HttpEmbeddedResource]
+### `[HttpEmbeddedResource]`
 
 С помощью атрибута `ThinkingHome.Plugins.WebServer.Attributes.HttpEmbeddedResourceAttribute` вы можете настроить, чтобы по заданному URL на клиент возвращался заданный файл ресурсов.
 
 Атрибутом необходимо отметить класс вашего плагина. В параметрах атрибута нужно указать: URL относительно корневого адреса, путь к файлу в ресурсах DLL (файл ресурсов и плагин должны находиться в одной DLL) и content type.
 
-*Пример*
+#### Пример
 
 ```csharp
 [HttpEmbeddedResource("/favicon.ico", "MyPlugin.favicon.ico", "image/x-icon")]

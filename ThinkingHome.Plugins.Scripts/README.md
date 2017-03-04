@@ -8,7 +8,7 @@
 
 Ниже перечислены классы, определенные в пакете ThinkingHome.Plugins.Scripts для хранения данных о сценариях. Вы можете работать с ними с помощью плагина [DatabasePlugin](../ThinkingHome.Plugins.Database/README.md) и [Entity Framework Core](https://docs.microsoft.com/en-us/ef/core).
 
-### UserScript
+### `ThinkingHome.Plugins.Scripts.Model.UserScript`
 
 Представляет собой сценарий, сохраненный в системе.
 
@@ -20,7 +20,7 @@
 - `string Name` - название сценария 
 - `string Body` - текст сценария
 
-### ScriptEventHandler
+### `ThinkingHome.Plugins.Scripts.Model.ScriptEventHandler`
 
 Содержит информацию о подписке сценария на сценарное событие с заданным именем.
 
@@ -34,11 +34,11 @@
 
 ## API
 
-### object ExecuteScript(string body, params object[] args)
+### `object ExecuteScript(string body, params object[] args)`
 
 Запускает сценарий, текст которого задан первым параметром. Параметры, начиная со второго, передаются в качестве аргументов в запускаемый сценарий.
 
-*Пример*
+#### Пример
 
 ```csharp
 string script = "var res = 0;" +
@@ -53,11 +53,11 @@ var result = Context.Require<ScriptsPlugin>()
 
 ```
 
-### object ExecuteScriptByName(string name, params object[] args)
+### `object ExecuteScriptByName(string name, params object[] args)`
 
 Запускает сценарий, который был ранее сохранен в системе под именем, указанным первым параметром. Параметры, начиная со второго, передаются в качестве аргументов в запускаемый сценарий. 
 
-*Пример*
+#### Пример
 
 ```csharp
 var result = Context.Require<ScriptsPlugin>()
@@ -65,11 +65,11 @@ var result = Context.Require<ScriptsPlugin>()
 
 ```
 
-### void EmitScriptEvent(string eventAlias, params object[] args)
+### `void EmitScriptEvent(string eventAlias, params object[] args)`
 
 Генерирует сценарное событие с заданным именем и параметрами. Будут автоматически вызваны все обработчики (сценарии), подписанные на это событие. Вызов обработчиков происходит асинхронно.
 
-*Пример*
+#### Пример
 
 ```csharp
 var result = Context.Require<ScriptsPlugin>()
@@ -77,6 +77,39 @@ var result = Context.Require<ScriptsPlugin>()
 
 ```
 
+### `[ScriptCommand]`
+
+Вы можете отметить методы своего плагина атрибутом `ThinkingHome.Plugins.Scripts.Attributes.ScriptCommandAttribute` и они станут доступны для вызова из сценариев.
+
+В параметрах атрибута необходимо указать имя, по которому можно будет обращаться из сценария к указанному методу.
+
+Результат работы метода будет передан в сценарий, вызвавший его.
+
+#### Пример
+
+```csharp
+[ScriptCommand("мукнуть")]
+public int SayMoo(int count)
+{
+    for (var i = 0; i < count; i++)
+    {
+        Logger.LogInformation("Му!");
+    }
+
+    return 2459 + count;
+}
+```
+
 ## API сценариев
+
+### Аргументы и возвращаемые значения
+
+### Логирование
+
+### Методы плагинов
+
+### Запуск других сценариев
+
+### Сценарные события
 
 
