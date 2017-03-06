@@ -146,4 +146,41 @@ curl 'http://localhost:8080/api/scripts/execute?id=c91f45c6-2da1-4cc6-a2b8-8190a
 
 ### `/api/scripts/subscription/add`
 
+Добавляет подписку сценария на заданное сценарное событие.
+
+#### Параметры и возвращаемое значение
+
+- `scriptId` (guid) - id сценария.
+- `eventAlias` (string) - название события.
+
+В ответ на клиент возвращается строка, содержащая id добавленной подписки.
+
+```json
+"fa170f1a-4665-40df-884b-307f0731fa86"
+```
+
+#### Пример
+
+```bash
+curl 'http://localhost:8080/api/scripts/subscription/add?scriptId=a634a269-d250-40bc-a9ca-0e76b19d84b5&eventAlias=my-event'
+```
+
 ### `/api/scripts/subscription/delete`
+
+Удаляет подписку сценария на сценарное событие.
+
+#### Параметры и возвращаемое значение
+
+- `subscriptionId` (guid) - id удаляемой подписки.
+
+В ответ на клиент возвражается `null`. Если подписка с заданным id не найдена, будет возвращен код ошибки 500. 
+
+```json
+null
+```
+
+#### Пример
+
+```bash
+curl 'http://localhost:8080/api/scripts/subscription/delete?subscriptionId=fa170f1a-4665-40df-884b-307f0731fa86'
+```
