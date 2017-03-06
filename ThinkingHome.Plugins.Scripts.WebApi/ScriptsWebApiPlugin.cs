@@ -94,10 +94,8 @@ namespace ThinkingHome.Plugins.Scripts.WebApi
             {
                 var script = session.Set<UserScript>().Single(s => s.Id == id);
 
-                Context.Require<ScriptsPlugin>().ExecuteScript(script);
+                return Context.Require<ScriptsPlugin>().ExecuteScript(script);
             }
-
-            return null;
         }
 
         #endregion
