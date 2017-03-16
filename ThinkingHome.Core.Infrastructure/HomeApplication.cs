@@ -4,8 +4,9 @@ using System.Reflection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using NLog.Extensions.Logging;
+using Serilog;
 using ThinkingHome.Core.Plugins;
+using ILogger = Microsoft.Extensions.Logging.ILogger;
 
 namespace ThinkingHome.Core.Infrastructure
 {
@@ -24,7 +25,10 @@ namespace ThinkingHome.Core.Infrastructure
         public void Init(HomeConfiguration config)
         {
             services = ConfigureServices(config);
-            var loggerFactory = services.GetRequiredService<ILoggerFactory>().AddNLog();
+
+            var loggerFactory = services
+                .GetRequiredService<ILoggerFactory>()
+                .AddSerilog(config.LoggerConfiguration.CreateLogger(), true);
 
             logger = loggerFactory.CreateLogger<HomeApplication>();
             context = services.GetRequiredService<IServiceContext>();
@@ -115,7 +119,7 @@ namespace ThinkingHome.Core.Infrastructure
         {
             var baseType = typeof(PluginBase);
 
-            foreach (var pluginType in asm.GetExportedTypes().Where(type => baseType.IsAssignableFrom(type)))
+            foreach (var pluginType in asm.GetExportedTypes().Where(type => baseType.GetTypeInfo().IsAssignableFrom(type)))
             {
                 services.AddSingleton(baseType, pluginType);
             }

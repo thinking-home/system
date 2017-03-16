@@ -16,7 +16,6 @@
 - [x] кэширование конфигурации БД (кэшируется срезствами EF)
 - [x] вынести порт веб-сервера в настройки
 - [x] параметры для методов HTTP API
-- [x] починить NLog (в версии 5.0.0-beta04 баг при записи в файл, откатился до версии 5.0.0-beta03)
 - [x] загрузка ресурсов по HTTP
 - [x] сделать кэширование ресурсов и заголовки ответа
 - [x] сделать хэндлер для ресурсов асинхронным
@@ -26,7 +25,8 @@
 - [x] логирование через microsoft.extensions.logging (?) - привести в порядок
 - [x] пустая стартовая страница по умолчанию + настройки стартовой страницы
 - [x] скриптовые события
-- [х] починить двойное нажатие ENTER для выхода! (https://youtrack.jetbrains.com/issue/RIDER-4677)
+- [х] починить двойное нажатие ENTER для выхода! https://youtrack.jetbrains.com/issue/RIDER-4677
+- [x] serilog
 
 - [ ] атрибуты для разделов
 - [ ] загрузка стилей
@@ -69,7 +69,7 @@
 - [ ] microclimate (Core, UI)
 - [ ] noolite (Core, API, UI)
 - [ ] видеонаблюдение
-- [ ] mqtt
+- [ ] ~~mqtt~~ rabbitmq http://www.rabbitmq.com/dotnet.html
 - [ ] weather
 - [ ] timer/alarm clock
 - [ ] http listener (signalr)
@@ -85,4 +85,8 @@
 ====
 
 - [ ] сделать поддержку нескольких СУБД
+
+
+
+https://github.com/dotnet/core/blob/master/release-notes/download-archives/1.1-preview2.1-download.md
 
