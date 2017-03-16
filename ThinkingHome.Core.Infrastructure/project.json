@@ -10,7 +10,8 @@
         "Microsoft.Extensions.Configuration.Json": "1.1.0",
         "Microsoft.Extensions.DependencyInjection": "1.1.0",
         "Microsoft.Extensions.Logging": "1.1.0",
-        "Microsoft.Extensions.Logging.Console": "1.1.0",
+        "Serilog.Extensions.Logging": "1.4.0",
+        "Serilog.Settings.Configuration": "2.2.0",
         "ThinkingHome.Core.Plugins": { "target": "project" }
     },
     "frameworks": {

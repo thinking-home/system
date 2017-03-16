@@ -4,7 +4,9 @@ using System.Reflection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Serilog;
 using ThinkingHome.Core.Plugins;
+using ILogger = Microsoft.Extensions.Logging.ILogger;
 
 namespace ThinkingHome.Core.Infrastructure
 {
@@ -23,9 +25,10 @@ namespace ThinkingHome.Core.Infrastructure
         public void Init(HomeConfiguration config)
         {
             services = ConfigureServices(config);
+
             var loggerFactory = services
                 .GetRequiredService<ILoggerFactory>()
-                .AddConsole();
+                .AddSerilog(config.LoggerConfiguration.CreateLogger(), true);
 
             logger = loggerFactory.CreateLogger<HomeApplication>();
             context = services.GetRequiredService<IServiceContext>();
