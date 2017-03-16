@@ -25,7 +25,8 @@
 - [x] логирование через microsoft.extensions.logging (?) - привести в порядок
 - [x] пустая стартовая страница по умолчанию + настройки стартовой страницы
 - [x] скриптовые события
-- [х] починить двойное нажатие ENTER для выхода! (https://youtrack.jetbrains.com/issue/RIDER-4677)
+- [х] починить двойное нажатие ENTER для выхода! https://youtrack.jetbrains.com/issue/RIDER-4677
+- [x] serilog
 
 - [ ] атрибуты для разделов
 - [ ] загрузка стилей
@@ -68,7 +69,7 @@
 - [ ] microclimate (Core, UI)
 - [ ] noolite (Core, API, UI)
 - [ ] видеонаблюдение
-- [ ] mqtt
+- [ ] ~~mqtt~~ rabbitmq http://www.rabbitmq.com/dotnet.html
 - [ ] weather
 - [ ] timer/alarm clock
 - [ ] http listener (signalr)
