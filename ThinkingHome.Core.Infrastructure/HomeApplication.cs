@@ -18,11 +18,7 @@ namespace ThinkingHome.Core.Infrastructure
 
         private IServiceContext context;
 
-        /// <summary>
-        /// Инициализация
-        /// </summary>
-        /// <param name="config"></param>
-        public void Init(HomeConfiguration config)
+        public void StartServices(HomeConfiguration config)
         {
             services = ConfigureServices(config);
 
@@ -35,12 +31,21 @@ namespace ThinkingHome.Core.Infrastructure
 
             try
             {
-                // инициализируем плагины
+                // init plugins
                 foreach (var plugin in context.GetAllPlugins())
                 {
                     logger.LogInformation($"init plugin: {plugin.GetType().FullName}");
                     plugin.InitPlugin();
                 }
+
+                // start plugins
+                foreach (var plugin in context.GetAllPlugins())
+                {
+                    logger.LogInformation($"start plugin {plugin.GetType().FullName}");
+                    plugin.StartPlugin();
+                }
+
+                logger.LogInformation("all plugins are started");
             }
             catch (ReflectionTypeLoadException ex)
             {
@@ -50,25 +55,6 @@ namespace ThinkingHome.Core.Infrastructure
                     logger.LogError(0, loaderException, loaderException.Message);
                 }
                 throw;
-            }
-            catch (Exception ex)
-            {
-                logger.LogError(0, ex, "error on plugins initialization");
-                throw;
-            }
-        }
-
-        public void StartServices()
-        {
-            try
-            {
-                foreach (var plugin in context.GetAllPlugins())
-                {
-                    logger.LogInformation($"start plugin {plugin.GetType().FullName}");
-                    plugin.StartPlugin();
-                }
-
-                logger.LogInformation("all plugins are started");
             }
             catch (Exception ex)
             {
