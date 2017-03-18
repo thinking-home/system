@@ -26,7 +26,10 @@
 - [x] пустая стартовая страница по умолчанию + настройки стартовой страницы
 - [x] скриптовые события
 - [х] починить двойное нажатие ENTER для выхода! https://youtrack.jetbrains.com/issue/RIDER-4677
-- [x] serilog
+- [x] NLog => Serilog
+- [x] починить запуск в фоновом режиме
+
+- [ ] починить запуск в IDE
 
 - [ ] атрибуты для разделов
 - [ ] загрузка стилей
@@ -58,7 +61,7 @@
 
 ## alpha2
 
-- [ ] web-ui (app list, ...)
+- [ ] web-ui (app list)
 - [ ] scripts (UI: список скриптов, редактор скриптов, подписка на события)
 - [ ] плагин utils (http запросы, email)
 
@@ -71,7 +74,7 @@
 - [ ] видеонаблюдение
 - [ ] ~~mqtt~~ rabbitmq http://www.rabbitmq.com/dotnet.html
 - [ ] weather
-- [ ] timer/alarm clock
+- [ ] scheduler
 - [ ] http listener (signalr)
 
 
