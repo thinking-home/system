@@ -18,9 +18,6 @@ namespace ThinkingHome.Console
             app.StartServices(config);
 
             // finalize
-            var done = new AutoResetEvent(false);
-            var asm = typeof(Program).GetTypeInfo().Assembly;
-
             Action shutdown = () =>
             {
                 System.Console.WriteLine("Application is shutting down...");
@@ -28,7 +25,7 @@ namespace ThinkingHome.Console
                 System.Console.WriteLine("Done");
             };
 
-            AssemblyLoadContext.GetLoadContext(asm).Unloading += context => { shutdown(); };
+            AssemblyLoadContext.Default.Unloading += context => { shutdown(); };
             System.Console.CancelKeyPress += (sender, eventArgs) => { shutdown(); };
 
             // wait
@@ -40,6 +37,7 @@ namespace ThinkingHome.Console
             else
             {
                 System.Console.WriteLine("Service is available. Press Ctrl+C to exit.");
+                var done = new AutoResetEvent(false);
                 done.WaitOne();
             }
         }
