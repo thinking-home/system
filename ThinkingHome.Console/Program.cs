@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Reflection;
 using System.Runtime.Loader;
 using System.Threading;
@@ -31,8 +32,16 @@ namespace ThinkingHome.Console
             System.Console.CancelKeyPress += (sender, eventArgs) => { shutdown(); };
 
             // wait
-            System.Console.WriteLine("Service is available. Press Ctrl+C to exit.");
-            done.WaitOne();
+            if (args.Any(value => value == "-enter"))
+            {
+                System.Console.WriteLine("Service is available. Press ENTER to exit.");
+                System.Console.ReadLine();
+            }
+            else
+            {
+                System.Console.WriteLine("Service is available. Press Ctrl+C to exit.");
+                done.WaitOne();
+            }
         }
     }
 }
