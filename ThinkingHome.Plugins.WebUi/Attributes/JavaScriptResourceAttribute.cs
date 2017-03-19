@@ -10,5 +10,10 @@ namespace ThinkingHome.Plugins.WebUi.Attributes
             : base(url, resourcePath, "application/javascript")
         {
         }
+
+        public string GetClientUrl()
+        {
+            return string.IsNullOrEmpty(Alias) ? Url : Alias;
+        }
     }
 }

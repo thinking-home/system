@@ -10,11 +10,14 @@ using ThinkingHome.Plugins.Scripts.Attributes;
 using ThinkingHome.Plugins.Timer;
 using ThinkingHome.Plugins.WebServer.Attributes;
 using ThinkingHome.Plugins.WebServer.Handlers;
+using ThinkingHome.Plugins.WebUi.Apps;
 
 namespace ThinkingHome.Plugins.Tmp
 {
     [HttpEmbeddedResource("/mimimi.txt", "ThinkingHome.Plugins.Tmp.mimimi.txt")]
     [HttpEmbeddedResource("/moo.txt", "ThinkingHome.Plugins.Tmp.moo.txt")]
+    [AppSection("tmp section", "/webui/tmp/index.js", "ThinkingHome.Plugins.Tmp.Resources.tmp.js")]
+
     public class TmpPlugin : PluginBase
     {
         public override void InitPlugin()

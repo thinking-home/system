@@ -12,6 +12,7 @@
         "ThinkingHome.Core.Plugins": { "target": "project" },
         "ThinkingHome.Plugins.WebServer": { "target": "project" },
         "ThinkingHome.Plugins.WebUi": { "target": "project" },
+        "ThinkingHome.Plugins.WebUi.Apps": { "target": "project" },
         "ThinkingHome.Plugins.Database": { "target": "project" },
         "ThinkingHome.Plugins.Scripts": { "target": "project" },
         "ThinkingHome.Plugins.Scripts.WebApi": { "target": "project" },
