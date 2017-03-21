@@ -27,7 +27,7 @@ namespace ThinkingHome.Plugins.WebUi.Apps
             sections.AddRange(list);
         }
 
-        [HttpCommand("/webapp/sections.json")]
+        [HttpCommand("/api/webui/apps/list")]
         public object LoadParams(HttpRequestParams request)
         {
             return sections
