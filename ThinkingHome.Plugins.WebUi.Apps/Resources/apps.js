@@ -27,7 +27,10 @@ var loadSections = function (type) {
 
 var ItemView = lib.marionette.View.extend({
     template: lib.handlebars.compile(itemTemplate),
-    tagName: 'li'
+    tagName: 'li',
+    triggers: {
+        'click .js-section-link': 'navigate'
+    }
 });
 
 var ListView = lib.marionette.CollectionView.extend({
@@ -52,6 +55,9 @@ var Section = lib.common.AppSection.extend({
         this.view = new LayoutView({
             title: type === 'system' ? 'Settings' : 'Applications'
         });
+
+        this.listenTo(this.view, "childview:navigate", this.bind('onSectionSelect'));
+
         this.application.setContentView(this.view);
 
         loadSections(type).then(
@@ -62,6 +68,10 @@ var Section = lib.common.AppSection.extend({
         this.view.showChildView('list', new ListView({
             collection: items
         }));
+    },
+    onSectionSelect: function(childView) {
+        var url = childView.model.get('url');
+        this.application.navigate(url);
     }
 });
 
