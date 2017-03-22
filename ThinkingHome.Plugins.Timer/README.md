@@ -1,4 +1,6 @@
-﻿*ThinkingHome.Plugins.Timer*  [![NuGet Pre Release](https://img.shields.io/nuget/vpre/ThinkingHome.Plugins.Timer.svg)]()
+﻿*ThinkingHome.Plugins.Timer*  
+
+[![NuGet Pre Release](https://img.shields.io/nuget/vpre/ThinkingHome.Plugins.Timer.svg)](https://www.nuget.org/packages/ThinkingHome.Plugins.Timer)
 
 # TimerPlugin
 
