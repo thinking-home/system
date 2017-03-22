@@ -9,6 +9,7 @@ using ThinkingHome.Plugins.WebUi.Attributes;
 namespace ThinkingHome.Plugins.WebUi.Apps
 {
     [JavaScriptResource("/webapp/apps.js", "ThinkingHome.Plugins.WebUi.Apps.Resources.apps.js")]
+    [JavaScriptResource("/webapp/settings.js", "ThinkingHome.Plugins.WebUi.Apps.Resources.settings.js")]
     public class WebUiAppsPlugin : PluginBase
     {
         private readonly List<AppSectionAttribute> sections = new List<AppSectionAttribute>();
@@ -27,11 +28,23 @@ namespace ThinkingHome.Plugins.WebUi.Apps
             sections.AddRange(list);
         }
 
-        [HttpCommand("/api/webui/apps/list")]
-        public object LoadParams(HttpRequestParams request)
-        {
-            var type = request.GetString("type") == "system" ? SectionType.System : SectionType.User;
 
+        #region web api
+
+        [HttpCommand("/api/webui/apps/user")]
+        public object LoadUserSections(HttpRequestParams request)
+        {
+            return GetSectionList(SectionType.User);
+        }
+
+        [HttpCommand("/api/webui/apps/system")]
+        public object LoadSystemSections(HttpRequestParams request)
+        {
+            return GetSectionList(SectionType.System);
+        }
+
+        private object GetSectionList(SectionType type)
+        {
             return sections
                 .Where(s => s.Type == type)
                 .Select(s => new
@@ -42,5 +55,6 @@ namespace ThinkingHome.Plugins.WebUi.Apps
                 .ToArray();
         }
 
+        #endregion
     }
 }

@@ -15,10 +15,11 @@ var SectionCollection = lib.backbone.Collection.extend({
     comparator: 'sortOrder'
 });
 
-var loadSections = function (type) {
-    return lib.$
-        .getJSON('/api/webui/apps/list', { type: type })
-        .then(function(list) { return new SectionCollection(list); });
+var loadSections = function (url) {
+    return lib.$.getJSON(url)
+        .then(function(data) {
+            return new SectionCollection(data);
+        });
 };
 
 //#endregion
@@ -51,23 +52,24 @@ var LayoutView = lib.marionette.View.extend({
 //#endregion
 
 var Section = lib.common.AppSection.extend({
-    start: function(type) {
+    title: 'Applications',
+    url: '/api/webui/apps/user',
+    start: function() {
         this.view = new LayoutView({
-            title: type === 'system' ? 'Settings' : 'Applications'
+            title: this.getOption('title')
         });
-
-        this.listenTo(this.view, "childview:navigate", this.bind('onSectionSelect'));
 
         this.application.setContentView(this.view);
 
-        loadSections(type).then(
+        loadSections(this.getOption('url')).then(
             this.bind('displayList'),
             function() { alert('error!'); });
     },
     displayList: function (items) {
-        this.view.showChildView('list', new ListView({
-            collection: items
-        }));
+        var listView = new ListView({ collection: items });
+        this.listenTo(listView, "childview:navigate", this.bind('onSectionSelect'));
+
+        this.view.showChildView('list', listView);
     },
     onSectionSelect: function(childView) {
         var url = childView.model.get('url');
