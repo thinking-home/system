@@ -39,6 +39,9 @@ var LayoutView = lib.marionette.View.extend({
     template: lib.handlebars.compile(layoutTemplate),
     regions: {
         list: '.js-list'
+    },
+    onRender: function() {
+        this.$('.js-title').text(this.getOption('title'));
     }
 });
 
@@ -46,7 +49,9 @@ var LayoutView = lib.marionette.View.extend({
 
 var Section = lib.common.AppSection.extend({
     start: function(type) {
-        this.view = new LayoutView();
+        this.view = new LayoutView({
+            title: type === 'system' ? 'Settings' : 'Applications'
+        });
         this.application.setContentView(this.view);
 
         loadSections(type).then(

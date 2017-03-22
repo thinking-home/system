@@ -16,7 +16,11 @@ namespace ThinkingHome.Plugins.Tmp
 {
     [HttpEmbeddedResource("/mimimi.txt", "ThinkingHome.Plugins.Tmp.mimimi.txt")]
     [HttpEmbeddedResource("/moo.txt", "ThinkingHome.Plugins.Tmp.moo.txt")]
-    [AppSection("tmp section", "/webui/tmp/index.js", "ThinkingHome.Plugins.Tmp.Resources.tmp.js")]
+    [AppSection(SectionType.User, "tmp user section 1", "/webui/tmp/index1.js", "ThinkingHome.Plugins.Tmp.Resources.tmp.js")]
+    [AppSection(SectionType.User, "tmp user section 2", "/webui/tmp/index2.js", "ThinkingHome.Plugins.Tmp.Resources.tmp.js")]
+    [AppSection(SectionType.User, "tmp user section 3", "/webui/tmp/index3.js", "ThinkingHome.Plugins.Tmp.Resources.tmp.js")]
+    [AppSection(SectionType.System, "tmp system section 1", "/webui/tmp/index4.js", "ThinkingHome.Plugins.Tmp.Resources.tmp.js")]
+    [AppSection(SectionType.System, "tmp system section 2", "/webui/tmp/index5.js", "ThinkingHome.Plugins.Tmp.Resources.tmp.js")]
 
     public class TmpPlugin : PluginBase
     {

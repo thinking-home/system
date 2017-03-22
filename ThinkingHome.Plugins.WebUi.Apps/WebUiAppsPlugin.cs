@@ -30,7 +30,10 @@ namespace ThinkingHome.Plugins.WebUi.Apps
         [HttpCommand("/api/webui/apps/list")]
         public object LoadParams(HttpRequestParams request)
         {
+            var type = request.GetString("type") == "system" ? SectionType.System : SectionType.User;
+
             return sections
+                .Where(s => s.Type == type)
                 .Select(s => new
                 {
                     title = s.Title,

@@ -4,10 +4,13 @@ namespace ThinkingHome.Plugins.WebUi.Apps
 {
     public class AppSectionAttribute : JavaScriptResourceAttribute
     {
-        public AppSectionAttribute(string title, string url, string resourcePath) : base(url, resourcePath)
+        public AppSectionAttribute(SectionType type, string title, string url, string resourcePath) : base(url, resourcePath)
         {
+            Type = type;
             Title = title;
         }
+
+        public SectionType Type { get; set; }
 
         public string Title { get; set; }
 
