@@ -1,4 +1,4 @@
-*ThinkingHome.Plugins.Scripts*
+*ThinkingHome.Plugins.Scripts*  [![NuGet Pre Release](https://img.shields.io/nuget/vpre/ThinkingHome.Plugins.Scripts.svg)]()
 
 # ScriptsPlugin
 

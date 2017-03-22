@@ -1,4 +1,4 @@
-*ThinkingHome.Plugins.WebUi*
+*ThinkingHome.Plugins.WebUi*  [![NuGet Pre Release](https://img.shields.io/nuget/vpre/ThinkingHome.Plugins.WebUi.svg)]()
 
 # WebUiPlugin
 

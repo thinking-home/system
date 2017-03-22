@@ -67,7 +67,7 @@
 
 ## README
 
-*название пакета*
+*название пакета* [![NuGet Pre Release](https://img.shields.io/nuget/vpre/ThinkingHome.Plugins.XXX.svg)]()
 \# Название плагина
 
 - плагины

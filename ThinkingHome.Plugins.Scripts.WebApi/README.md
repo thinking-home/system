@@ -1,4 +1,4 @@
-*ThinkingHome.Plugins.Scripts.WebApi*
+*ThinkingHome.Plugins.Scripts.WebApi*  [![NuGet Pre Release](https://img.shields.io/nuget/vpre/ThinkingHome.Plugins.Scripts.WebApi.svg)]()
 
 # ScriptsWebApiPlugin
 

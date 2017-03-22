@@ -1,4 +1,4 @@
-*ThinkingHome.Plugins.WebServer*
+*ThinkingHome.Plugins.WebServer*  [![NuGet Pre Release](https://img.shields.io/nuget/vpre/ThinkingHome.Plugins.WebServer.svg)]()
 
 # WebServerPlugin
 

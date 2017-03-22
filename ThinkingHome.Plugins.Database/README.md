@@ -1,4 +1,4 @@
-*ThinkingHome.Plugins.Database*
+*ThinkingHome.Plugins.Database* [![NuGet Pre Release](https://img.shields.io/nuget/vpre/ThinkingHome.Plugins.Database.svg)]()
 
 # DatabasePlugin
 
