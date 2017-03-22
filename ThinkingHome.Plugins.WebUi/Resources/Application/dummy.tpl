@@ -12,7 +12,8 @@
         "ThinkingHome.Plugins.WebUi.WebUiPlugin": {
             "pages": {
                 "welcome": "/webapp/dummy.js",
-                "apps": "/webapp/dummy.js"
+                "apps": "/webapp/dummy.js",
+                "settings": "/webapp/dummy.js"
             }
         }
     }

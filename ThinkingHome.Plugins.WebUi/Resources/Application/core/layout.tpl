@@ -12,7 +12,7 @@
                 <a class="nav-link js-nav-link" href="#apps">Apps</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link js-nav-link" href="#apps?system">Settings</a>
+                <a class="nav-link js-nav-link" href="#settings">Settings</a>
             </li>
         </ul>
     </div>

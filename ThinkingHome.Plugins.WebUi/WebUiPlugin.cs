@@ -59,6 +59,7 @@ namespace ThinkingHome.Plugins.WebUi
         {
             aliases.Register("welcome", Configuration.GetValue("pages:welcome", "/webapp/dummy.js"));
             aliases.Register("apps", Configuration.GetValue("pages:apps", "/webapp/dummy.js"));
+            aliases.Register("settings", Configuration.GetValue("pages:settings", "/webapp/dummy.js"));
 
             foreach (var plugin in Context.GetAllPlugins())
             {
