@@ -7,12 +7,10 @@
         "NETStandard.Library": "1.6.1",
         "Microsoft.EntityFrameworkCore": "1.1.0",
         "Npgsql.EntityFrameworkCore.PostgreSQL": "1.1.0",
-        "Microsoft.EntityFrameworkCore.Sqlite": "1.1.0",
         "Microsoft.Extensions.Configuration": "1.1.0",
         "Microsoft.Extensions.Logging": "1.1.0",
-        "ThinkingHome.Migrator": "3.0.0-alpha5",
-        "ThinkingHome.Migrator.Providers.PostgreSQL": "3.0.0-alpha5",
-        "ThinkingHome.Migrator.Providers.SQLite": "3.0.0-alpha6",
+        "ThinkingHome.Migrator": "3.0.0-alpha7",
+        "ThinkingHome.Migrator.Providers.PostgreSQL": "3.0.0-alpha7",
         "ThinkingHome.Core.Plugins": { "target": "project" }
     },
     "frameworks": {
