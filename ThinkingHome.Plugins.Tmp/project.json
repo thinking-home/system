@@ -14,7 +14,7 @@
         "NETStandard.Library": "1.6.1",
         "Microsoft.Extensions.Configuration": "1.1.0",
         "Microsoft.Extensions.Logging": "1.1.0",
-        "ThinkingHome.Migrator.Framework": "3.0.0-alpha3",
+        "ThinkingHome.Migrator.Framework": "3.0.0-alpha4",
         "ThinkingHome.Core.Plugins": { "target": "project" },
         "ThinkingHome.Plugins.Database": { "target": "project" },
         "ThinkingHome.Plugins.Scripts": { "target": "project" },
