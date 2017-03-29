@@ -11,6 +11,7 @@ using ThinkingHome.Plugins.Timer;
 using ThinkingHome.Plugins.WebServer.Attributes;
 using ThinkingHome.Plugins.WebServer.Handlers;
 using ThinkingHome.Plugins.WebUi.Apps;
+using ThinkingHome.Plugins.WebUi.Attributes;
 
 namespace ThinkingHome.Plugins.Tmp
 {
@@ -21,6 +22,8 @@ namespace ThinkingHome.Plugins.Tmp
     [AppSection(SectionType.User, "tmp user section 3", "/webui/tmp/index3.js", "ThinkingHome.Plugins.Tmp.Resources.tmp.js")]
     [AppSection(SectionType.System, "tmp system section 1", "/webui/tmp/index4.js", "ThinkingHome.Plugins.Tmp.Resources.tmp.js")]
     [AppSection(SectionType.System, "tmp system section 2", "/webui/tmp/index5.js", "ThinkingHome.Plugins.Tmp.Resources.tmp.js")]
+
+    [JavaScriptResource("/webui/xxx.jsx", "ThinkingHome.Plugins.Tmp.Resources.xxx.jsx")]
 
     public class TmpPlugin : PluginBase
     {

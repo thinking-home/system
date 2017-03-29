@@ -1,8 +1,17 @@
 // configure loaders
 SystemJS.config({
+    map: {
+        'systemjs-babel-build': '/vendor/js/systemjs-babel-browser.js'
+    },
+    transpiler: '/vendor/js/system-babel.js',
+
     meta: {
         '*.json': { loader: '/vendor/js/system-json.js' },
-        '*.tpl': { loader: '/vendor/js/system-text.js' }
+        '*.tpl': { loader: '/vendor/js/system-text.js' },
+        '*.jsx': {
+            loader: '/vendor/js/system-babel.js',
+            babelOptions: { react: true }
+        }
     }
 });
 
