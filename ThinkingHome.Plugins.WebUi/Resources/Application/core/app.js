@@ -26,6 +26,10 @@ var homeApplication = lib.marionette.Application.extend({
         this.layout.setContentView(view);
     },
 
+    showError: function(title, message) {
+        this.layout.showError(title, message);
+    },
+
     navigate: function (route) {
         var args = Array.prototype.slice.call(arguments, 1);
         this._loadPage(route, args);

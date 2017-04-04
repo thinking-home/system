@@ -1,5 +1,16 @@
 var lib = require('lib');
 var layoutTemplate = require('webapp/core/layout.tpl');
+var errorTemplate = '<h1><i class="fa fa-times-circle fa-fw"></i> {{title}}</h1><p>{{message}}</p>';
+
+var ErrorView = lib.marionette.View.extend({
+    template: lib.handlebars.compile(errorTemplate),
+    templateContext: function() {
+        return {
+            title: this.getOption('title'),
+            message: this.getOption('message')
+        }
+    }
+});
 
 var LayoutView = lib.marionette.View.extend({
     el: 'body',
@@ -34,6 +45,15 @@ var Layout = lib.common.ApplicationBlock.extend({
     // api
     setContentView: function(view) {
         this.view.showChildView('content', view);
+    },
+
+    showError: function(title, message) {
+        var errorView = new ErrorView({
+            title: title,
+            message: message
+        });
+
+        this.view.showChildView('content', errorView);
     }
 });
 
