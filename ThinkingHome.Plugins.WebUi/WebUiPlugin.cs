@@ -31,12 +31,6 @@ namespace ThinkingHome.Plugins.WebUi
     [JavaScriptResource("/vendor/js/system.js", "ThinkingHome.Plugins.WebUi.Resources.Vendor.js.system.min.js")]
     [JavaScriptResource("/vendor/js/system-json.js", "ThinkingHome.Plugins.WebUi.Resources.Vendor.js.system-json.min.js")]
     [JavaScriptResource("/vendor/js/system-text.js", "ThinkingHome.Plugins.WebUi.Resources.Vendor.js.system-text.min.js")]
-    [JavaScriptResource("/vendor/js/system-babel.js", "ThinkingHome.Plugins.WebUi.Resources.Vendor.js.system-babel.js")]
-    [JavaScriptResource("/vendor/js/systemjs-babel-browser.js", "ThinkingHome.Plugins.WebUi.Resources.Vendor.js.systemjs-babel-browser.js")]
-
-    // react
-    [JavaScriptResource("/vendor/js/react.js", "ThinkingHome.Plugins.WebUi.Resources.Vendor.js.react.min.js", Alias = "react")]
-    [JavaScriptResource("/vendor/js/react-dom.js", "ThinkingHome.Plugins.WebUi.Resources.Vendor.js.react-dom.min.js", Alias = "react-dom")]
 
     // bootstrap
     [CssResource("/vendor/css/bootstrap.css", "ThinkingHome.Plugins.WebUi.Resources.Vendor.css.bootstrap.min.css")]
