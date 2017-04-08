@@ -49,7 +49,7 @@ var homeApplication = lib.marionette.Application.extend({
             instance.start.apply(instance, args);
             self.router.setPath(route, args);
         }).catch(function(err) {
-            alert(err);
+            self.showError('Can\'t load section', err);
         });
     }
 });
