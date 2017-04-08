@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
+using ThinkingHome.Core.Plugins.Utils;
 using ThinkingHome.Plugins.WebServer.Handlers;
 
 namespace ThinkingHome.Plugins.WebServer
@@ -10,11 +11,11 @@ namespace ThinkingHome.Plugins.WebServer
     public class HomePluginsMiddleware
     {
         private readonly RequestDelegate next;
-        private readonly HttpHandlerSet handlers;
+        private readonly InternalDictionary<IHttpHandler> handlers;
         private readonly ILogger logger;
         private readonly IMemoryCache cache;
 
-        public HomePluginsMiddleware(RequestDelegate next, HttpHandlerSet handlers, ILoggerFactory loggerFactory, IMemoryCache cache)
+        public HomePluginsMiddleware(InternalDictionary<IHttpHandler> handlers, RequestDelegate next, ILoggerFactory loggerFactory, IMemoryCache cache)
         {
             this.next = next;
             this.handlers = handlers;

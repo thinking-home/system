@@ -5,6 +5,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using ThinkingHome.Core.Plugins;
+using ThinkingHome.Core.Plugins.Utils;
 using ThinkingHome.Plugins.WebServer.Attributes;
 using ThinkingHome.Plugins.WebServer.Handlers;
 
@@ -24,18 +25,17 @@ namespace ThinkingHome.Plugins.WebServer
                 .UseUrls($"http://+:{port}")
                 .Configure(app => app
                     .UseStatusCodePages()
-                    .UseMiddleware<HomePluginsMiddleware>())
+                    .UseMiddleware<HomePluginsMiddleware>(handlers))
                 .ConfigureServices(services => services
-                    .AddMemoryCache()
-                    .AddSingleton(handlers))
+                    .AddMemoryCache())
                 .ConfigureLogging(loggerFactory =>
                     loggerFactory.AddProxy(Logger))
                 .Build();
         }
 
-        private HttpHandlerSet RegisterHandlers()
+        private InternalDictionary<IHttpHandler> RegisterHandlers()
         {
-            var handlers = new HttpHandlerSet();
+            var handlers = new InternalDictionary<IHttpHandler>();
 
             foreach (var plugin in Context.GetAllPlugins())
             {
