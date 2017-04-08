@@ -19,8 +19,9 @@ namespace ThinkingHome.Plugins.Tmp
     [AppSection(SectionType.User, "tmp user section 1", "/webui/tmp/index1.js", "ThinkingHome.Plugins.Tmp.Resources.tmp.js", SortOrder = 4)]
     [AppSection(SectionType.User, "tmp user section 2", "/webui/tmp/index2.js", "ThinkingHome.Plugins.Tmp.Resources.tmp.js", SortOrder = 2)]
     [AppSection(SectionType.User, "tmp user section 3", "/webui/tmp/index3.js", "ThinkingHome.Plugins.Tmp.Resources.tmp.js")]
-    [AppSection(SectionType.System, "tmp system section 1", "/webui/tmp/index4.js", "ThinkingHome.Plugins.Tmp.Resources.tmp.js")]
-    [AppSection(SectionType.System, "tmp system section 2", "/webui/tmp/index5.js", "ThinkingHome.Plugins.Tmp.Resources.tmp.js")]
+    [AppSection(SectionType.System, "Scripts", "/webui/tmp/index4.js", "ThinkingHome.Plugins.Tmp.Resources.tmp.js", Icon = "code")]
+    [AppSection(SectionType.System, "Scheduler", "/webui/tmp/index5.js", "ThinkingHome.Plugins.Tmp.Resources.tmp.js", Icon = "calendar-check-o")]
+    [AppSection(SectionType.System, "Weather locations", "/webui/tmp/inde6.js", "ThinkingHome.Plugins.Tmp.Resources.tmp.js")]
 
     public class TmpPlugin : PluginBase
     {

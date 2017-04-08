@@ -50,6 +50,7 @@ namespace ThinkingHome.Plugins.WebUi.Apps
                 .Select(s => new
                 {
                     title = s.Title,
+                    icon = s.Icon,
                     url = s.GetClientUrl()
                 })
                 .ToArray();

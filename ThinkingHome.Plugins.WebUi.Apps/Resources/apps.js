@@ -1,6 +1,6 @@
 var lib = require('lib');
 var layoutTemplate = '<h1 class="js-title"></h1><div class="js-list"></div>';
-var itemTemplate = '<h4><a href="#" class="js-section-link">{{title}}</a></h4>';
+var itemTemplate = '<h4><i class="fa fa-fw fa-{{icon}} text-muted"></i> <a href="#" class="js-section-link">{{title}}</a></h4>';
 
 //#region entities
 

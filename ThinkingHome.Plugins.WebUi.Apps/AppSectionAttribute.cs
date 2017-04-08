@@ -14,6 +14,8 @@ namespace ThinkingHome.Plugins.WebUi.Apps
 
         public string Title { get; set; }
 
+        public string Icon { get; set; }
+
         public int SortOrder { get; set; }
     }
 }
