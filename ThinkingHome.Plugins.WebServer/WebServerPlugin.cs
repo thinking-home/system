@@ -45,16 +45,16 @@ namespace ThinkingHome.Plugins.WebServer
                 foreach (var mi in plugin.FindMethodsByAttribute<HttpCommandAttribute, HttpHandlerDelegate>())
                 {
                     Logger.LogInformation($"register HTTP handler: \"{mi.MetaData.Url}\" ({pluginType.FullName})");
-                    handlers.Register(mi.MetaData.Url, new ApiHttpHandler(mi.Method));
+                    handlers.Register(mi.MetaData.Url, new DynamicResourceHandler<,>(mi.Method));
                 }
 
                 // resource handlers
                 var asm = pluginType.GetTypeInfo().Assembly;
 
-                foreach (var resource in pluginType.GetTypeInfo().GetCustomAttributes<HttpResourceAttribute>())
+                foreach (var resource in pluginType.GetTypeInfo().GetCustomAttributes<HttpStaticResourceAttribute>())
                 {
                     Logger.LogInformation($"register HTTP handler: \"{resource.Url}\" ({resource.GetType().FullName})");
-                    handlers.Register(resource.Url, new ResourceHttpHandler(asm, resource));
+                    handlers.Register(resource.Url, new StaticResourceHandler(asm, resource));
                 }
             }
 

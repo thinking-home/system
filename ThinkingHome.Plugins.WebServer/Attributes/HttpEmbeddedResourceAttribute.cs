@@ -8,13 +8,12 @@ namespace ThinkingHome.Plugins.WebServer.Attributes
         public string ResourcePath { get; }
 
         public HttpEmbeddedResourceAttribute(string url, string resourcePath, string contentType = "text/plain")
-            :base(url, contentType)
+            :base(url, contentType, true)
         {
             ResourcePath = resourcePath;
         }
 
-
-        public override byte[] GetContent(Assembly assembly)
+        public byte[] GetContent(Assembly assembly)
         {
             byte[] result;
 
