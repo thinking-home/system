@@ -6,6 +6,7 @@ namespace ThinkingHome.Plugins.WebServer.Handlers
 {
     public class HttpRequestParams
     {
+        public readonly PathString path;
         public readonly IQueryCollection urlData;
         public readonly IFormCollection formData;
 
@@ -13,12 +14,14 @@ namespace ThinkingHome.Plugins.WebServer.Handlers
         {
             if (request == null) throw new ArgumentNullException(nameof(request));
 
+            path = request.Path;
             urlData = request.Query;
             formData = request.HasFormContentType ? request.Form : null;
         }
 
-        public HttpRequestParams(IQueryCollection urlData, IFormCollection formData)
+        public HttpRequestParams(PathString path, IQueryCollection urlData, IFormCollection formData)
         {
+            this.path = path;
             this.urlData = urlData;
             this.formData = formData;
         }
