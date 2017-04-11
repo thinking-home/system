@@ -1,7 +1,6 @@
 ﻿using System;
-using Microsoft.Extensions.Caching.Memory;
 
-namespace ThinkingHome.Plugins.WebServer.Attributes
+namespace ThinkingHome.Plugins.WebServer.Attributes.Base
 {
     public abstract class HttpResourceAttribute : Attribute
     {

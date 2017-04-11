@@ -76,7 +76,7 @@ namespace ThinkingHome.Plugins.WebUi
         }
 
 
-        [HttpCommand("/webapp/config.json")]
+        [HttpJsonDynamicResource("/webapp/config.json")]
         public object LoadParams(HttpRequestParams request)
         {
             return new

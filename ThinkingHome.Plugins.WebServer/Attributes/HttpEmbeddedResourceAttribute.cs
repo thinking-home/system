@@ -1,5 +1,6 @@
 ﻿using System.Reflection;
 using System.Resources;
+using ThinkingHome.Plugins.WebServer.Attributes.Base;
 
 namespace ThinkingHome.Plugins.WebServer.Attributes
 {

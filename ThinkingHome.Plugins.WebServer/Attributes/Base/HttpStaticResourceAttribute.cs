@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Reflection;
 
-namespace ThinkingHome.Plugins.WebServer.Attributes
+namespace ThinkingHome.Plugins.WebServer.Attributes.Base
 {
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
     public abstract class HttpStaticResourceAttribute : HttpResourceAttribute

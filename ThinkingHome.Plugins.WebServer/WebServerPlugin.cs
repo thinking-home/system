@@ -7,6 +7,7 @@ using Microsoft.Extensions.Logging;
 using ThinkingHome.Core.Plugins;
 using ThinkingHome.Core.Plugins.Utils;
 using ThinkingHome.Plugins.WebServer.Attributes;
+using ThinkingHome.Plugins.WebServer.Attributes.Base;
 using ThinkingHome.Plugins.WebServer.Handlers;
 
 namespace ThinkingHome.Plugins.WebServer
