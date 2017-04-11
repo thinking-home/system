@@ -12,7 +12,7 @@ namespace ThinkingHome.Plugins.Scripts.WebApi
     {
         #region scripts
 
-        [HttpCommand("/api/scripts/list")]
+        [HttpJsonDynamicResource("/api/scripts/list")]
         public object GetScriptList(HttpRequestParams request)
         {
             using (var session = Context.Require<DatabasePlugin>().OpenSession())
@@ -25,7 +25,7 @@ namespace ThinkingHome.Plugins.Scripts.WebApi
             }
         }
 
-        [HttpCommand("/api/scripts/get")]
+        [HttpJsonDynamicResource("/api/scripts/get")]
         public object LoadScript(HttpRequestParams request)
         {
             var id = request.GetRequiredGuid("id");
@@ -40,7 +40,7 @@ namespace ThinkingHome.Plugins.Scripts.WebApi
             }
         }
 
-        [HttpCommand("/api/scripts/save")]
+        [HttpJsonDynamicResource("/api/scripts/save")]
         public object SaveScript(HttpRequestParams request)
         {
             var id = request.GetGuid("id");
@@ -69,7 +69,7 @@ namespace ThinkingHome.Plugins.Scripts.WebApi
             }
         }
 
-        [HttpCommand("/api/scripts/delete")]
+        [HttpJsonDynamicResource("/api/scripts/delete")]
         public object DeleteScript(HttpRequestParams request)
         {
             var id = request.GetRequiredGuid("id");
@@ -85,7 +85,7 @@ namespace ThinkingHome.Plugins.Scripts.WebApi
             return null;
         }
 
-        [HttpCommand("/api/scripts/execute")]
+        [HttpJsonDynamicResource("/api/scripts/execute")]
         public object RunScript(HttpRequestParams request)
         {
             var id = request.GetRequiredGuid("id");
@@ -102,7 +102,7 @@ namespace ThinkingHome.Plugins.Scripts.WebApi
 
         #region script event
 
-        [HttpCommand("/api/scripts/subscription/list")]
+        [HttpJsonDynamicResource("/api/scripts/subscription/list")]
         public object GetSubscriptionList(HttpRequestParams request)
         {
             using (var session = Context.Require<DatabasePlugin>().OpenSession())
@@ -121,7 +121,7 @@ namespace ThinkingHome.Plugins.Scripts.WebApi
             }
         }
 
-        [HttpCommand("/api/scripts/subscription/add")]
+        [HttpJsonDynamicResource("/api/scripts/subscription/add")]
         public object AddSubscription(HttpRequestParams request)
         {
             var scriptId = request.GetRequiredGuid("scriptId");
@@ -145,7 +145,7 @@ namespace ThinkingHome.Plugins.Scripts.WebApi
             }
         }
 
-        [HttpCommand("/api/scripts/subscription/delete")]
+        [HttpJsonDynamicResource("/api/scripts/subscription/delete")]
         public object DeleteSubscription(HttpRequestParams request)
         {
             var subscriptionId = request.GetRequiredGuid("subscriptionId");

@@ -4,17 +4,17 @@ using ThinkingHome.Plugins.WebServer.Attributes.Base;
 
 namespace ThinkingHome.Plugins.WebServer.Attributes
 {
-    public class HttpEmbeddedResourceAttribute : HttpResourceAttribute
+    public class HttpEmbeddedResourceAttribute : HttpStaticResourceAttribute
     {
         public string ResourcePath { get; }
 
         public HttpEmbeddedResourceAttribute(string url, string resourcePath, string contentType = "text/plain")
-            :base(url, contentType, true)
+            :base(url, contentType)
         {
             ResourcePath = resourcePath;
         }
 
-        public byte[] GetContent(Assembly assembly)
+        public override byte[] GetContent(Assembly assembly)
         {
             byte[] result;
 

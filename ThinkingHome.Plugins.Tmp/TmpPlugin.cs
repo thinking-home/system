@@ -51,7 +51,6 @@ namespace ThinkingHome.Plugins.Tmp
             {
                 db.Set<SmallPig>().ToList()
                     .ForEach(pig => Logger.LogWarning($"{pig.Name}, size: {pig.Size} ({pig.Id})"));
-
             }
         }
 
@@ -87,20 +86,20 @@ namespace ThinkingHome.Plugins.Tmp
             }
         }
 
-        [HttpCommand("/wefwefwef")]
+        [HttpJsonDynamicResource("/wefwefwef")]
         public object TmpHandlerMethod(HttpRequestParams requestParams)
         {
             Context.Require<ScriptsPlugin>().EmitScriptEvent("mimi", 1,2,3, "GUID-111");
             return null;
         }
 
-        [HttpCommand("/index42")]
+        [HttpJsonDynamicResource("/index42")]
         public object TmpHandlerMethod42(HttpRequestParams requestParams)
         {
             return new { answer = 42, name = requestParams.GetString("name") };
         }
 
-        [HttpCommand("/pigs")]
+        [HttpJsonDynamicResource("/pigs")]
         public object TmpHandlerMethod43(HttpRequestParams requestParams)
         {
             using (var db = Context.Require<DatabasePlugin>().OpenSession())

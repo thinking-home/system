@@ -31,13 +31,13 @@ namespace ThinkingHome.Plugins.WebUi.Apps
 
         #region web api
 
-        [HttpCommand("/api/webui/apps/user")]
+        [HttpJsonDynamicResource("/api/webui/apps/user")]
         public object LoadUserSections(HttpRequestParams request)
         {
             return GetSectionList(SectionType.User);
         }
 
-        [HttpCommand("/api/webui/apps/system")]
+        [HttpJsonDynamicResource("/api/webui/apps/system")]
         public object LoadSystemSections(HttpRequestParams request)
         {
             return GetSectionList(SectionType.System);

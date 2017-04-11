@@ -3,9 +3,9 @@ using ThinkingHome.Plugins.WebServer.Attributes.Base;
 
 namespace ThinkingHome.Plugins.WebServer.Attributes
 {
-    public class HttpTextDynamicResource : HttpDynamicResourceAttribute
+    public class HttpTextDynamicResourceAttribute : HttpDynamicResourceAttribute
     {
-        public HttpTextDynamicResource(string url, string contentType = "text/plain")
+        public HttpTextDynamicResourceAttribute(string url, string contentType = "text/plain")
             :base(url, contentType)
         {
         }

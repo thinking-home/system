@@ -2,9 +2,9 @@
 
 namespace ThinkingHome.Plugins.WebServer.Attributes
 {
-    public class HttpBinaryDynamicResource : HttpDynamicResourceAttribute
+    public class HttpBinaryDynamicResourceAttribute : HttpDynamicResourceAttribute
     {
-        public HttpBinaryDynamicResource(string url, string contentType = "application/octet-stream")
+        public HttpBinaryDynamicResourceAttribute(string url, string contentType = "application/octet-stream")
             :base(url, contentType)
         {
         }

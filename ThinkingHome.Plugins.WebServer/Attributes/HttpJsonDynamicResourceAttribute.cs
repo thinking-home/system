@@ -4,9 +4,9 @@ using ThinkingHome.Plugins.WebServer.Attributes.Base;
 
 namespace ThinkingHome.Plugins.WebServer.Attributes
 {
-    public class HttpJsonDynamicResource : HttpDynamicResourceAttribute
+    public class HttpJsonDynamicResourceAttribute : HttpDynamicResourceAttribute
     {
-        public HttpJsonDynamicResource(string url) : base(url, "application/json;charset=utf-8")
+        public HttpJsonDynamicResourceAttribute(string url) : base(url, "application/json;charset=utf-8")
         {
         }
 
