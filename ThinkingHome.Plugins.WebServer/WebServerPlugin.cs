@@ -6,7 +6,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using ThinkingHome.Core.Plugins;
 using ThinkingHome.Core.Plugins.Utils;
-using ThinkingHome.Plugins.WebServer.Attributes;
 using ThinkingHome.Plugins.WebServer.Attributes.Base;
 using ThinkingHome.Plugins.WebServer.Handlers;
 
@@ -34,19 +33,19 @@ namespace ThinkingHome.Plugins.WebServer
                 .Build();
         }
 
-        private InternalDictionary<IHttpHandler> RegisterHandlers()
+        private InternalDictionary<IHandler> RegisterHandlers()
         {
-            var handlers = new InternalDictionary<IHttpHandler>();
+            var handlers = new InternalDictionary<IHandler>();
 
             foreach (var plugin in Context.GetAllPlugins())
             {
                 var pluginType = plugin.GetType();
 
                 // api handlers
-                foreach (var mi in plugin.FindMethodsByAttribute<HttpCommandAttribute, HttpHandlerDelegate>())
+                foreach (var mi in plugin.FindMethodsByAttribute<HttpDynamicResourceAttribute, HttpHandlerDelegate>())
                 {
                     Logger.LogInformation($"register HTTP handler: \"{mi.MetaData.Url}\" ({pluginType.FullName})");
-                    handlers.Register(mi.MetaData.Url, new DynamicResourceHandler<,>(mi.Method));
+                    handlers.Register(mi.MetaData.Url, new DynamicResourceHandler(mi.Method, mi.MetaData));
                 }
 
                 // resource handlers

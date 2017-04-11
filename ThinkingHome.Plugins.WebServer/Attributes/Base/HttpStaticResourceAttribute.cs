@@ -3,6 +3,9 @@ using System.Reflection;
 
 namespace ThinkingHome.Plugins.WebServer.Attributes.Base
 {
+    /// <summary>
+    /// Статический HTTP ресурс (кэшируется)
+    /// </summary>
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
     public abstract class HttpStaticResourceAttribute : HttpResourceAttribute
     {

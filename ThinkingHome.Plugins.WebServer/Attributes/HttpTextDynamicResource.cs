@@ -10,7 +10,7 @@ namespace ThinkingHome.Plugins.WebServer.Attributes
         {
         }
 
-        public override byte[] GetContent(object methodResult)
+        public override byte[] PrepareResult(object methodResult)
         {
             var text = methodResult?.ToString();
             return Encoding.UTF8.GetBytes(text);

@@ -9,7 +9,7 @@ namespace ThinkingHome.Plugins.WebServer.Attributes
         {
         }
 
-        public override byte[] GetContent(object methodResult)
+        public override byte[] PrepareResult(object methodResult)
         {
             return methodResult as byte[];
         }

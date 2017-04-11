@@ -5,12 +5,11 @@ using ThinkingHome.Plugins.WebServer.Attributes.Base;
 
 namespace ThinkingHome.Plugins.WebServer.Handlers
 {
-    public class DynamicResourceHandler<TResourceAttribute> :BaseHandler<TResourceAttribute>
-        where TResourceAttribute : HttpDynamicResourceAttribute
+    public class DynamicResourceHandler :BaseHandler<HttpDynamicResourceAttribute>
     {
         private readonly HttpHandlerDelegate method;
 
-        public DynamicResourceHandler(HttpHandlerDelegate method, TResourceAttribute resource)
+        public DynamicResourceHandler(HttpHandlerDelegate method, HttpDynamicResourceAttribute resource)
             :base(resource)
         {
             if (method == null) throw new ArgumentNullException(nameof(method));
@@ -22,11 +21,7 @@ namespace ThinkingHome.Plugins.WebServer.Handlers
         {
             var parameters = new HttpRequestParams(context.Request);
 
-            return await Task.Run(() =>
-            {
-                object methodResult = method(parameters);
-                return Resource.GetContent(methodResult);
-            });
+            return await Task.Run(() => Resource.PrepareResult(method(parameters)));
         }
     }
 }

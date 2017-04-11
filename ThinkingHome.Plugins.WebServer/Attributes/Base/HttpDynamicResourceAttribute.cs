@@ -2,6 +2,9 @@
 
 namespace ThinkingHome.Plugins.WebServer.Attributes.Base
 {
+    /// <summary>
+    /// HTTP ресурс с динамически формируемым содержимым (не кэшируется)
+    /// </summary>
     [AttributeUsage(AttributeTargets.Method, AllowMultiple = true)]
     public abstract class HttpDynamicResourceAttribute : HttpResourceAttribute
     {
@@ -10,6 +13,9 @@ namespace ThinkingHome.Plugins.WebServer.Attributes.Base
         {
         }
 
-        public abstract byte[] GetContent(object methodResult);
+        /// <summary>
+        /// Преобразует результат работы метода в массив байтов, который будет отправлен на клиент
+        /// </summary>
+        public abstract byte[] PrepareResult(object methodResult);
     }
 }
