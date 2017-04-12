@@ -1,4 +1,8 @@
-﻿using System.Reflection;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+using System.Text;
 using Microsoft.Extensions.Configuration;
 using ThinkingHome.Core.Plugins;
 using ThinkingHome.Core.Plugins.Utils;
@@ -23,7 +27,7 @@ namespace ThinkingHome.Plugins.WebUi
     [HttpEmbeddedResource("/webapp/dummy.tpl", "ThinkingHome.Plugins.WebUi.Resources.Application.dummy.tpl")]
 
     // css
-    [CssResource("/webapp/index.css", "ThinkingHome.Plugins.WebUi.Resources.Application.index.css")]
+    [CssResource("/webapp/index.css", "ThinkingHome.Plugins.WebUi.Resources.Application.index.css", AutoLoad = true)]
 
     // vendor
 
@@ -54,6 +58,7 @@ namespace ThinkingHome.Plugins.WebUi
     public class WebUiPlugin : PluginBase
     {
         private readonly InternalDictionary<string> aliases = new InternalDictionary<string>();
+        private readonly HashSet<string> alautoLoadedStyles = new HashSet<string>();
 
         public override void InitPlugin()
         {
@@ -72,7 +77,25 @@ namespace ThinkingHome.Plugins.WebUi
                         aliases.Register(jsinfo.Alias, jsinfo.Url);
                     }
                 }
+
+                foreach (var cssinfo in type.GetCustomAttributes<CssResourceAttribute>().Where(a => a.AutoLoad))
+                {
+                    alautoLoadedStyles.Add(cssinfo.Url);
+                }
             }
+        }
+
+        [HttpTextDynamicResource("/webapp/dynamic-imports.css", "text/css")]
+        public object LoadCssImports(HttpRequestParams request)
+        {
+            var sb = new StringBuilder();
+
+            foreach (var url in alautoLoadedStyles.Select(url => Uri.EscapeUriString(url).ToJson()))
+            {
+                sb.AppendLine($"@import url({url});");
+            }
+
+            return sb;
         }
 
 
