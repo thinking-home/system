@@ -1,6 +1,6 @@
 var lib = require('lib');
 var layoutTemplate = '<h1 class="js-title"></h1><div class="js-list"></div>';
-var itemTemplate = '<h4><i class="fa fa-fw fa-{{icon}} text-muted"></i> <a href="#" class="js-section-link">{{title}}</a></h4>';
+var itemTemplate = '<i class="fa fa-fw fa-{{icon}}"></i> <a href="#" class="js-section-link">{{title}}</a>';
 
 //#region entities
 
@@ -15,11 +15,13 @@ var SectionCollection = lib.backbone.Collection.extend({
     comparator: 'sortOrder'
 });
 
-var loadSections = function (url) {
-    return lib.$.getJSON(url)
-        .then(function(data) {
-            return new SectionCollection(data);
-        });
+var api = {
+    loadSections: function (url) {
+        return lib.$.getJSON(url)
+            .then(function(data) {
+                return new SectionCollection(data);
+            });
+    }
 };
 
 //#endregion
@@ -29,6 +31,7 @@ var loadSections = function (url) {
 var ItemView = lib.marionette.View.extend({
     template: lib.handlebars.compile(itemTemplate),
     tagName: 'li',
+    className: 'th-app-list-item',
     triggers: {
         'click .js-section-link': 'navigate'
     }
@@ -62,9 +65,10 @@ var Section = lib.common.AppSection.extend({
 
         this.application.setContentView(this.view);
 
-        loadSections(this.getOption('url')).then(
-            this.bind('displayList'),
-            function() { alert('error!'); });
+        api.loadSections(this.getOption('url'))
+            .then(
+                this.bind('displayList'),
+                function(error) { alert(error); });
     },
     displayList: function (items) {
         var listView = new ListView({ collection: items });
