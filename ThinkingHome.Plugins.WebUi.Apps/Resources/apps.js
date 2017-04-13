@@ -18,9 +18,9 @@ var SectionCollection = lib.backbone.Collection.extend({
 var api = {
     loadSections: function (url) {
         return lib.$.getJSON(url)
-            .then(function(data) {
-                return new SectionCollection(data);
-            });
+            .then(
+                function(data) { return new SectionCollection(data) },
+                function() { throw new Error('Can\'t load url: ' + url) });
     }
 };
 
@@ -68,13 +68,16 @@ var Section = lib.common.AppSection.extend({
         api.loadSections(this.getOption('url'))
             .then(
                 this.bind('displayList'),
-                function(error) { alert(error); });
+                this.bind('displayError', 'Can\'t load app list'));
     },
     displayList: function (items) {
         var listView = new ListView({ collection: items });
         this.listenTo(listView, "childview:navigate", this.bind('onSectionSelect'));
 
         this.view.showChildView('list', listView);
+    },
+    displayError: function (title, error) {
+        this.application.showError(title, error.message);
     },
     onSectionSelect: function(childView) {
         var url = childView.model.get('url');
