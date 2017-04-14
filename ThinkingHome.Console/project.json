@@ -16,6 +16,7 @@
         "ThinkingHome.Plugins.Database": { "target": "project" },
         "ThinkingHome.Plugins.Scripts": { "target": "project" },
         "ThinkingHome.Plugins.Scripts.WebApi": { "target": "project" },
+        "ThinkingHome.Plugins.Scripts.WebUi": { "target": "project" },
         "ThinkingHome.Plugins.Timer": { "target": "project" },
         "ThinkingHome.Plugins.Tmp": { "target": "project" },
         "Serilog.Sinks.Literate": "2.1.0",
