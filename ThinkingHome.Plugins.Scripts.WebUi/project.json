@@ -11,6 +11,7 @@
         "Microsoft.Extensions.Configuration": "1.1.0",
         "Microsoft.Extensions.Logging": "1.1.0",
         "ThinkingHome.Plugins.Scripts": { "target": "project" },
+        "ThinkingHome.Plugins.Scripts.WebApi": { "target": "project" },
         "ThinkingHome.Plugins.WebServer": { "target": "project" },
         "ThinkingHome.Plugins.WebUi": { "target": "project" },
         "ThinkingHome.Plugins.WebUi.Apps": { "target": "project" },
