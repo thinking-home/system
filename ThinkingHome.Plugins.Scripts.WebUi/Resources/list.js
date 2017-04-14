@@ -1,6 +1,8 @@
 var lib = require('lib');
-var layoutTemplate = '<h1>Script list</h1><div class="js-script-list"></div>';
-var itemTemplate = '<a href="#">{{name}}</a>';
+var itemTemplate = '<a href="#" class="js-script-edit">{{name}}</a>';
+var layoutTemplate = '<h1>Script list</h1>' +
+    '<p><a href="#" class="btn btn-secondary js-script-add">Create</a></p>' +
+    '<div class="js-script-list"></div>';
 
 //#region entities
 
@@ -25,7 +27,10 @@ var api = {
 
 var ItemView = lib.marionette.View.extend({
     template: lib.handlebars.compile(itemTemplate),
-    tagName: 'li'
+    tagName: 'li',
+    triggers: {
+        'click .js-script-edit': 'scripts:edit'
+    }
 });
 
 var ListView = lib.marionette.CollectionView.extend({
@@ -38,6 +43,9 @@ var LayoutView = lib.marionette.View.extend({
     template: lib.handlebars.compile(layoutTemplate),
     regions: {
         list: '.js-script-list'
+    },
+    triggers: {
+        'click .js-script-add': 'scripts:create'
     }
 });
 
@@ -46,6 +54,8 @@ var LayoutView = lib.marionette.View.extend({
 var Section = lib.common.AppSection.extend({
     start: function() {
         this.view = new LayoutView();
+        this.listenTo(this.view, 'scripts:create', this.bind('addScript'));
+
         this.application.setContentView(this.view);
 
         api.loadScripts('/api/scripts/list').then(
@@ -54,10 +64,21 @@ var Section = lib.common.AppSection.extend({
     },
     displayList: function (items) {
         var listView = new ListView({ collection: items });
+
+        this.listenTo(listView, 'childview:scripts:edit', this.bind('editScript'));
         this.view.showChildView('list', listView);
     },
     displayError: function (title, error) {
         this.application.showError(title, error.message);
+    },
+
+    addScript: function () {
+        this.application.navigate('/webapp/scripts/editor.js');
+    },
+
+    editScript: function (view) {
+        var scriptId = view.model.get('id');
+        this.application.navigate('/webapp/scripts/editor.js', scriptId);
     }
 });
 
