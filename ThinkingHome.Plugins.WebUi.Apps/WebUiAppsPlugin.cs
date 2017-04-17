@@ -8,9 +8,9 @@ using ThinkingHome.Plugins.WebUi.Attributes;
 
 namespace ThinkingHome.Plugins.WebUi.Apps
 {
-    [CssResource("/webapp/apps.css", "ThinkingHome.Plugins.WebUi.Apps.Resources.apps.css", AutoLoad = true)]
-    [JavaScriptResource("/webapp/apps.js", "ThinkingHome.Plugins.WebUi.Apps.Resources.apps.js")]
-    [JavaScriptResource("/webapp/settings.js", "ThinkingHome.Plugins.WebUi.Apps.Resources.settings.js")]
+    [CssResource("/static/webui/apps/apps.css", "ThinkingHome.Plugins.WebUi.Apps.Resources.apps.css", AutoLoad = true)]
+    [JavaScriptResource("/static/webui/apps.js", "ThinkingHome.Plugins.WebUi.Apps.Resources.apps.js")]
+    [JavaScriptResource("/static/webui/settings.js", "ThinkingHome.Plugins.WebUi.Apps.Resources.settings.js")]
     public class WebUiAppsPlugin : PluginBase
     {
         private readonly List<AppSectionAttribute> sections = new List<AppSectionAttribute>();

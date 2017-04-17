@@ -85,3 +85,27 @@ WEB SERVER
   - script API (methods + events)
   - HTTP API и ресурсы
   - параметры конфига
+  
+## URLS
+
+### Методы API
+
+`/api/{pluginAlias}/{methodAlias}`
+
+`/api/{pluginAlias}/{entityALias}/{methodAlias}`
+
+### Статические файлы
+
+`/static/{pluginAlias}/{filePath}`
+
+### Библиотеки от сторонних разработчиков
+
+Суффикс `.min` в url не указываем.
+
+`/vendor/js/{filePath}`
+`/vendor/css/{filePath}`
+`/vendor/fonts/{filePath}`
+
+### Ядро веб-приложения
+
+`/webapp/{filePath}`
