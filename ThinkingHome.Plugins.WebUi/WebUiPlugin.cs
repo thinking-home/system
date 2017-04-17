@@ -15,6 +15,7 @@ namespace ThinkingHome.Plugins.WebUi
     // webapp
     [HttpEmbeddedResource("/", "ThinkingHome.Plugins.WebUi.Resources.Application.index.html", "text/html")]
     [HttpEmbeddedResource("/favicon.ico", "ThinkingHome.Plugins.WebUi.Resources.Application.favicon.ico", "image/x-icon")]
+
     [JavaScriptResource("/webapp/index.js", "ThinkingHome.Plugins.WebUi.Resources.Application.index.js")]
     [JavaScriptResource("/webapp/lib.js", "ThinkingHome.Plugins.WebUi.Resources.Application.lib.js", Alias = "lib")]
     [JavaScriptResource("/webapp/core/app.js", "ThinkingHome.Plugins.WebUi.Resources.Application.core.app.js")]
