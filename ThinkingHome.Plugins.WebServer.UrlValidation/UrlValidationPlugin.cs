@@ -67,7 +67,7 @@ namespace ThinkingHome.Plugins.WebServer.UrlValidation
             }
         }
 
-        [HttpTextDynamicResource("/url-errors")]
+        [HttpTextDynamicResource("/api/web-server/url-validation/errors")]
         public object GetUrlErrors(HttpRequestParams requestParams)
         {
             var sb = new StringBuilder();
