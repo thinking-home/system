@@ -1,0 +1,18 @@
+﻿{
+    "version": "4.0.0-alpha1",
+    "buildOptions": {
+        "debugType": "portable"
+    },
+    "dependencies": {
+        "NETStandard.Library": "1.6.1",
+        "Microsoft.Extensions.Configuration": "1.1.0",
+        "Microsoft.Extensions.Logging": "1.1.0",
+        "ThinkingHome.Core.Plugins": { "target": "project" },
+        "ThinkingHome.Plugins.WebServer": { "target": "project" }
+    },
+    "frameworks": {
+        "netstandard1.6": {
+            "imports": "dnxcore50"
+        }
+    }
+}

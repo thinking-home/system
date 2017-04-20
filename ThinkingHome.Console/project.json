@@ -11,6 +11,7 @@
         "ThinkingHome.Core.Infrastructure": { "target": "project" },
         "ThinkingHome.Core.Plugins": { "target": "project" },
         "ThinkingHome.Plugins.WebServer": { "target": "project" },
+        "ThinkingHome.Plugins.WebServer.UrlValidation": { "target": "project" },
         "ThinkingHome.Plugins.WebUi": { "target": "project" },
         "ThinkingHome.Plugins.WebUi.Apps": { "target": "project" },
         "ThinkingHome.Plugins.Database": { "target": "project" },

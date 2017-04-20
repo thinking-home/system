@@ -1,14 +1,13 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
-using Microsoft.Extensions.Logging;
 using ThinkingHome.Core.Plugins;
-using ThinkingHome.Plugins.Scripts;
 using ThinkingHome.Plugins.WebServer.Attributes;
 using ThinkingHome.Plugins.WebServer.Attributes.Base;
 using ThinkingHome.Plugins.WebServer.Handlers;
 
-namespace ThinkingHome.Plugins.Tmp
+namespace ThinkingHome.Plugins.WebServer.UrlValidation
 {
     public class UrlValidationPlugin : PluginBase
     {
@@ -52,9 +51,18 @@ namespace ThinkingHome.Plugins.Tmp
 
             foreach (var resource in type.GetCustomAttributes<HttpStaticResourceAttribute>())
             {
-                if (!resource.Url.StartsWith(prefix))
+                var isVendor = resource.Url.StartsWith("/vendor/");
+
+                if (isVendor)
                 {
-                    AddError(type, $"invalid url prefix: {resource.Url} (required: {prefix})");
+
+                }
+                else
+                {
+                    if (!resource.Url.StartsWith(prefix))
+                    {
+                        AddError(type, $"invalid url prefix: {resource.Url} (required: {prefix})");
+                    }
                 }
             }
         }
