@@ -73,12 +73,12 @@ var Section = lib.common.AppSection.extend({
     },
 
     addScript: function () {
-        this.application.navigate('/webapp/scripts/editor.js');
+        this.application.navigate('/static/scripts/webui/editor.js');
     },
 
     editScript: function (view) {
         var scriptId = view.model.get('id');
-        this.application.navigate('/webapp/scripts/editor.js', scriptId);
+        this.application.navigate('/static/scripts/webui/editor.js', scriptId);
     }
 });
 
