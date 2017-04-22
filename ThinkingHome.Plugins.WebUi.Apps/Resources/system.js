@@ -1,4 +1,4 @@
-var appsSection = require('/static/webui/apps/common.js');
+var appsSection = require('/static/web-ui/apps/common.js');
 
 module.exports = appsSection.extend({
     title: 'System settings',
