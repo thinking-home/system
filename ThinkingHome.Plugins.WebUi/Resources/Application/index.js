@@ -10,7 +10,7 @@ SystemJS.config({
 SystemJS.import('/webapp/config.json')
     .then(function(config) {
         SystemJS.config(config.systemjs);
-        SystemJS.import('webapp/app.js')
+        SystemJS.import('static/web-ui/application.js')
             .then(function(application) {
                 window.app = new application(config.app);
                 window.app.start();

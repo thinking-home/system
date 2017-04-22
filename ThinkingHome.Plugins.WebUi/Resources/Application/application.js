@@ -1,6 +1,6 @@
 var lib = require('lib');
-var layout = require('webapp/layout.js');
-var router = require('webapp/router.js');
+var router = require('static/web-ui/router.js');
+var layout = require('static/web-ui/layout.js');
 
 var homeApplication = lib.marionette.Application.extend({
 

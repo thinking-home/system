@@ -16,19 +16,19 @@ namespace ThinkingHome.Plugins.WebUi
     [HttpEmbeddedResource("/", "ThinkingHome.Plugins.WebUi.Resources.index.html", "text/html")]
     [HttpEmbeddedResource("/favicon.ico", "ThinkingHome.Plugins.WebUi.Resources.favicon.ico", "image/x-icon")]
 
-    [JavaScriptResource("/webapp/index.js", "ThinkingHome.Plugins.WebUi.Resources.Application.index.js")]
-    [JavaScriptResource("/webapp/lib.js", "ThinkingHome.Plugins.WebUi.Resources.Application.lib.js", Alias = "lib")]
-    [JavaScriptResource("/webapp/app.js", "ThinkingHome.Plugins.WebUi.Resources.Application.app.js")]
-    [JavaScriptResource("/webapp/router.js", "ThinkingHome.Plugins.WebUi.Resources.Application.router.js")]
-    [JavaScriptResource("/webapp/layout.js", "ThinkingHome.Plugins.WebUi.Resources.Application.layout.js")]
-    [HttpEmbeddedResource("/webapp/layout.tpl", "ThinkingHome.Plugins.WebUi.Resources.Application.layout.tpl")]
+    [JavaScriptResource("/static/web-ui/index.js", "ThinkingHome.Plugins.WebUi.Resources.Application.index.js")]
+    [JavaScriptResource("/static/web-ui/lib.js", "ThinkingHome.Plugins.WebUi.Resources.Application.lib.js", Alias = "lib")]
+    [JavaScriptResource("/static/web-ui/application.js", "ThinkingHome.Plugins.WebUi.Resources.Application.application.js")]
+    [JavaScriptResource("/static/web-ui/router.js", "ThinkingHome.Plugins.WebUi.Resources.Application.router.js")]
+    [JavaScriptResource("/static/web-ui/layout.js", "ThinkingHome.Plugins.WebUi.Resources.Application.layout.js")]
+    [HttpEmbeddedResource("/static/web-ui/layout.tpl", "ThinkingHome.Plugins.WebUi.Resources.Application.layout.tpl")]
 
     // dummy
-    [JavaScriptResource("/webapp/dummy.js", "ThinkingHome.Plugins.WebUi.Resources.Application.dummy.js")]
-    [HttpEmbeddedResource("/webapp/dummy.tpl", "ThinkingHome.Plugins.WebUi.Resources.Application.dummy.tpl")]
+    [JavaScriptResource("/static/web-ui/dummy.js", "ThinkingHome.Plugins.WebUi.Resources.Application.dummy.js")]
+    [HttpEmbeddedResource("/static/web-ui/dummy.tpl", "ThinkingHome.Plugins.WebUi.Resources.Application.dummy.tpl")]
 
     // css
-    [CssResource("/webapp/index.css", "ThinkingHome.Plugins.WebUi.Resources.Application.index.css", AutoLoad = true)]
+    [CssResource("/static/web-ui/index.css", "ThinkingHome.Plugins.WebUi.Resources.Application.index.css", AutoLoad = true)]
 
     // vendor
 
@@ -63,9 +63,9 @@ namespace ThinkingHome.Plugins.WebUi
 
         public override void InitPlugin()
         {
-            aliases.Register("welcome", Configuration.GetValue("pages:welcome", "/webapp/dummy.js"));
-            aliases.Register("apps", Configuration.GetValue("pages:apps", "/webapp/dummy.js"));
-            aliases.Register("settings", Configuration.GetValue("pages:settings", "/webapp/dummy.js"));
+            aliases.Register("welcome", Configuration.GetValue("pages:welcome", "/static/web-ui/dummy.js"));
+            aliases.Register("apps", Configuration.GetValue("pages:apps", "/static/web-ui/dummy.js"));
+            aliases.Register("settings", Configuration.GetValue("pages:settings", "/static/web-ui/dummy.js"));
 
             foreach (var plugin in Context.GetAllPlugins())
             {
