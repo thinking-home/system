@@ -51,6 +51,8 @@ namespace ThinkingHome.Plugins.WebServer.UrlValidation
 
             foreach (var resource in type.GetCustomAttributes<HttpStaticResourceAttribute>())
             {
+                if (resource.Url == "/" || resource.Url == "/favicon.ico") continue;
+
                 var isVendor = resource.Url.StartsWith("/vendor/");
 
                 if (isVendor)

@@ -13,8 +13,8 @@ using ThinkingHome.Plugins.WebUi.Attributes;
 namespace ThinkingHome.Plugins.WebUi
 {
     // webapp
-    [HttpEmbeddedResource("/", "ThinkingHome.Plugins.WebUi.Resources.Application.index.html", "text/html")]
-    [HttpEmbeddedResource("/favicon.ico", "ThinkingHome.Plugins.WebUi.Resources.Application.favicon.ico", "image/x-icon")]
+    [HttpEmbeddedResource("/", "ThinkingHome.Plugins.WebUi.Resources.index.html", "text/html")]
+    [HttpEmbeddedResource("/favicon.ico", "ThinkingHome.Plugins.WebUi.Resources.favicon.ico", "image/x-icon")]
 
     [JavaScriptResource("/webapp/index.js", "ThinkingHome.Plugins.WebUi.Resources.Application.index.js")]
     [JavaScriptResource("/webapp/lib.js", "ThinkingHome.Plugins.WebUi.Resources.Application.lib.js", Alias = "lib")]
