@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
+using Microsoft.Extensions.Logging;
 using ThinkingHome.Core.Plugins;
 using ThinkingHome.Plugins.WebServer.Attributes;
 using ThinkingHome.Plugins.WebServer.Attributes.Base;
@@ -55,18 +57,18 @@ namespace ThinkingHome.Plugins.WebServer.UrlValidation
             {
                 if (resource.Url == "/" || resource.Url == "/favicon.ico") continue;
 
+                var ext = Path.GetExtension(resource.Url);
+
+                if (string.IsNullOrEmpty(ext))
+                {
+                    AddError(type, $"empty url extension: {resource.Url}");
+                }
+
                 var isVendor = resource.Url.StartsWith("/vendor/");
 
-                if (isVendor)
+                if (!isVendor && !resource.Url.StartsWith(prefix))
                 {
-
-                }
-                else
-                {
-                    if (!resource.Url.StartsWith(prefix))
-                    {
-                        AddError(type, $"invalid url prefix: {resource.Url} (required: {prefix})");
-                    }
+                    AddError(type, $"invalid url prefix: {resource.Url} (required: {prefix})");
                 }
             }
         }
