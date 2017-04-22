@@ -8,6 +8,7 @@
     },
     "dependencies": {
         "Microsoft.Extensions.Configuration": "1.1.0",
+        "Microsoft.Extensions.Configuration.Binder": "1.1.0",
         "Microsoft.Extensions.Logging": "1.1.0",
         "ThinkingHome.Core.Plugins": { "target": "project" },
         "ThinkingHome.Plugins.WebServer": { "target": "project" },

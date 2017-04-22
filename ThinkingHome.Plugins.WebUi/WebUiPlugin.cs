@@ -18,10 +18,10 @@ namespace ThinkingHome.Plugins.WebUi
 
     [JavaScriptResource("/webapp/index.js", "ThinkingHome.Plugins.WebUi.Resources.Application.index.js")]
     [JavaScriptResource("/webapp/lib.js", "ThinkingHome.Plugins.WebUi.Resources.Application.lib.js", Alias = "lib")]
-    [JavaScriptResource("/webapp/core/app.js", "ThinkingHome.Plugins.WebUi.Resources.Application.core.app.js")]
-    [JavaScriptResource("/webapp/core/router.js", "ThinkingHome.Plugins.WebUi.Resources.Application.core.router.js")]
-    [JavaScriptResource("/webapp/core/layout.js", "ThinkingHome.Plugins.WebUi.Resources.Application.core.layout.js")]
-    [HttpEmbeddedResource("/webapp/core/layout.tpl", "ThinkingHome.Plugins.WebUi.Resources.Application.core.layout.tpl")]
+    [JavaScriptResource("/webapp/app.js", "ThinkingHome.Plugins.WebUi.Resources.Application.app.js")]
+    [JavaScriptResource("/webapp/router.js", "ThinkingHome.Plugins.WebUi.Resources.Application.router.js")]
+    [JavaScriptResource("/webapp/layout.js", "ThinkingHome.Plugins.WebUi.Resources.Application.layout.js")]
+    [HttpEmbeddedResource("/webapp/layout.tpl", "ThinkingHome.Plugins.WebUi.Resources.Application.layout.tpl")]
 
     // dummy
     [JavaScriptResource("/webapp/dummy.js", "ThinkingHome.Plugins.WebUi.Resources.Application.dummy.js")]
