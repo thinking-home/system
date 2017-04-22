@@ -83,20 +83,20 @@ namespace ThinkingHome.Plugins.Tmp
             }
         }
 
-        [HttpJsonDynamicResource("/wefwefwef")]
+        [WebApiMethod("/api/tmp/wefwefwef")]
         public object TmpHandlerMethod(HttpRequestParams requestParams)
         {
             Context.Require<ScriptsPlugin>().EmitScriptEvent("mimi", 1,2,3, "GUID-111");
             return null;
         }
 
-        [HttpJsonDynamicResource("/index42")]
+        [WebApiMethod("/api/tmp/index42")]
         public object TmpHandlerMethod42(HttpRequestParams requestParams)
         {
             return new { answer = 42, name = requestParams.GetString("name") };
         }
 
-        [HttpJsonDynamicResource("/pigs")]
+        [WebApiMethod("/api/tmp/pigs")]
         public object TmpHandlerMethod43(HttpRequestParams requestParams)
         {
             using (var db = Context.Require<DatabasePlugin>().OpenSession())

@@ -4,15 +4,21 @@
 
 # UrlValidationPlugin
 
-Проверяет соответствие URL http-ресурсов подключенных плагинов правилам формирования URL. Список найденных ошибок доступен в веб-интерфейсе по адресу `/api/web-server/url-validation/errors`. 
+Проверяет соответствие URL http-ресурсов подключенных плагинов правилам формирования URL. Список найденных ошибок доступен в веб-интерфейсе по адресу `/dynamic/web-server/url-validation/errors.txt`. 
 
 ## Правила формирования URL
 
 ### Plugin alias
 
-В адресах используется значение `plugin alias` - это имя пакета, без префикса `ThinkingHome.Plugins.`, вместо точек разделитель - слэш `/`, в нижнем регистре.
+В адресах используется значение `plugin alias` - это: 
 
-`ThinkingHome.Plugins.MyPlugin.InnerPackage` => `myplugin/innerpackage`
+- имя пакета 
+- без префикса `ThinkingHome.Plugins.`;
+- camelCase преобразуется в разделители - дефис `-`;  
+- вместо точек разделитель - слэш `/`;
+- в нижнем регистре.
+
+`ThinkingHome.Plugins.MyPlugin.InnerPackage` => `my-plugin/inner-package`
 
 ### Методы API
 
@@ -20,18 +26,18 @@
 
 `/api/{pluginAlias}/{entityALias}/{methodAlias}`
 
+#### Генерируемые файлы
+
+`/dynamic/{pluginAlias}/{methodAlias}.{ext}`
+
 ### Статические файлы
 
-`/static/{pluginAlias}/{filePath}`
+`/static/{pluginAlias}/{filePath}.{ext}`
 
 ### Библиотеки от сторонних разработчиков
 
 Суффикс `.min` в url не указываем.
 
-`/vendor/js/{filePath}`
-`/vendor/css/{filePath}`
-`/vendor/fonts/{filePath}`
-
-### Ядро веб-приложения
-
-`/webapp/{filePath}`
+`/vendor/js/{filePath}.{ext}`
+`/vendor/css/{filePath}.{ext}`
+`/vendor/fonts/{filePath}.{ext}`
