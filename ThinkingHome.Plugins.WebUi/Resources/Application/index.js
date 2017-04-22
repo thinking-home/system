@@ -7,7 +7,7 @@ SystemJS.config({
 });
 
 // configure modules & start application
-SystemJS.import('/webapp/config.json')
+SystemJS.import('/dynamic/web-ui/config.json')
     .then(function(config) {
         SystemJS.config(config.systemjs);
         SystemJS.import('static/web-ui/application.js')
