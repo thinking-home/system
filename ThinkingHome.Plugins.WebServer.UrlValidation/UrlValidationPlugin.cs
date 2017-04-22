@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
+using System.Text.RegularExpressions;
 using ThinkingHome.Core.Plugins;
 using ThinkingHome.Plugins.WebServer.Attributes;
 using ThinkingHome.Plugins.WebServer.Attributes.Base;
@@ -11,6 +12,7 @@ namespace ThinkingHome.Plugins.WebServer.UrlValidation
 {
     public class UrlValidationPlugin : PluginBase
     {
+        private static Regex caseTransformer = new Regex("([a-z])([A-Z]+)", RegexOptions.Compiled);
         private readonly List<string> errors = new List<string>();
 
 
@@ -40,7 +42,7 @@ namespace ThinkingHome.Plugins.WebServer.UrlValidation
                 name = name.Substring(PREFIX.Length);
             }
 
-            return name.Replace(".", "/").ToLower();
+            return caseTransformer.Replace(name, "$1-$2").Replace(".", "/").ToLower();
         }
 
         private void ValidateStaticResources(PluginBase plugin)
