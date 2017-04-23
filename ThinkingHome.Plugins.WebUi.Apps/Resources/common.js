@@ -57,7 +57,7 @@ var LayoutView = lib.marionette.View.extend({
 
 var Section = lib.common.AppSection.extend({
     title: 'Applications',
-    url: '/api/webui/apps/user',
+    url: '/api/web-ui/apps/user',
     start: function() {
         this.view = new LayoutView({
             title: this.getOption('title')
