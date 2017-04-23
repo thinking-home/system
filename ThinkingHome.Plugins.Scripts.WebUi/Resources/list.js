@@ -58,7 +58,7 @@ var Section = lib.common.AppSection.extend({
 
         this.application.setContentView(this.view);
 
-        api.loadScripts('/api/scripts/list').then(
+        api.loadScripts('/api/scripts/web-api/list').then(
             this.bind('displayList'),
             this.bind('displayError', 'Can\'t load script list'));
     },

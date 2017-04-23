@@ -8,7 +8,7 @@
 
 ## HTTP API
 
-### `/api/scripts/save`
+### `/api/scripts/web-api/save`
 
 Сохраняет в системе информацию о сценарии: его название и текст.
 
@@ -27,10 +27,10 @@
 #### Пример
 
 ```bash
-curl 'http://localhost:8080/api/scripts/save?name=say-hello&body=host.log.fatal(%22hello%20world%22);'
+curl 'http://localhost:8080/api/scripts/web-api/save?name=say-hello&body=host.log.fatal(%22hello%20world%22);'
 ```
 
-### `/api/scripts/get`
+### `/api/scripts/web-api/get`
 
 Получает информацию о ранее сохраненном сценарии.
 
@@ -51,10 +51,10 @@ curl 'http://localhost:8080/api/scripts/save?name=say-hello&body=host.log.fatal(
 #### Пример
 
 ```bash
-curl 'http://localhost:8080/api/scripts/get?id=21222eed-5a92-42ad-b7c9-23f548482024'
+curl 'http://localhost:8080/api/scripts/web-api/get?id=21222eed-5a92-42ad-b7c9-23f548482024'
 ```
 
-### `/api/scripts/delete`
+### `/api/scripts/web-api/delete`
 
 Удаляет сценарий с указанным id.
 
@@ -71,10 +71,10 @@ null
 #### Пример
 
 ```bash
-curl 'http://localhost:8080/api/scripts/delete?id=21222eed-5a92-42ad-b7c9-23f548482024'
+curl 'http://localhost:8080/api/scripts/web-api/delete?id=21222eed-5a92-42ad-b7c9-23f548482024'
 ```
 
-### `/api/scripts/list`
+### `/api/scripts/web-api/list`
 
 Возвращает список сценариев, сохраненных в системе.
 
@@ -100,10 +100,10 @@ curl 'http://localhost:8080/api/scripts/delete?id=21222eed-5a92-42ad-b7c9-23f548
 #### Пример
 
 ```bash
-curl 'http://localhost:8080/api/scripts/list'
+curl 'http://localhost:8080/api/scripts/web-api/list'
 ```
 
-### `/api/scripts/execute`
+### `/api/scripts/web-api/execute`
 
 Запускает сценарий с указанным id.
 
@@ -116,10 +116,10 @@ curl 'http://localhost:8080/api/scripts/list'
 #### Пример
 
 ```bash
-curl 'http://localhost:8080/api/scripts/execute?id=c91f45c6-2da1-4cc6-a2b8-8190adf5144f'
+curl 'http://localhost:8080/api/scripts/web-api/execute?id=c91f45c6-2da1-4cc6-a2b8-8190adf5144f'
 ```
 
-### `/api/scripts/subscription/list`
+### `/api/scripts/web-api/subscription/list`
 
 Возвращает список сценариев, подписанных на сценарные события.
 
@@ -146,7 +146,7 @@ curl 'http://localhost:8080/api/scripts/execute?id=c91f45c6-2da1-4cc6-a2b8-8190a
 ]
 ```
 
-### `/api/scripts/subscription/add`
+### `/api/scripts/web-api/subscription/add`
 
 Добавляет подписку сценария на заданное сценарное событие.
 
@@ -164,10 +164,10 @@ curl 'http://localhost:8080/api/scripts/execute?id=c91f45c6-2da1-4cc6-a2b8-8190a
 #### Пример
 
 ```bash
-curl 'http://localhost:8080/api/scripts/subscription/add?scriptId=a634a269-d250-40bc-a9ca-0e76b19d84b5&eventAlias=my-event'
+curl 'http://localhost:8080/api/scripts/web-api/subscription/add?scriptId=a634a269-d250-40bc-a9ca-0e76b19d84b5&eventAlias=my-event'
 ```
 
-### `/api/scripts/subscription/delete`
+### `/api/scripts/web-api/subscription/delete`
 
 Удаляет подписку сценария на сценарное событие.
 
@@ -184,5 +184,5 @@ null
 #### Пример
 
 ```bash
-curl 'http://localhost:8080/api/scripts/subscription/delete?subscriptionId=fa170f1a-4665-40df-884b-307f0731fa86'
+curl 'http://localhost:8080/api/scripts/web-api/subscription/delete?subscriptionId=fa170f1a-4665-40df-884b-307f0731fa86'
 ```
