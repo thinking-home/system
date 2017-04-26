@@ -15,15 +15,6 @@ var SectionCollection = lib.backbone.Collection.extend({
     comparator: 'sortOrder'
 });
 
-var api = {
-    loadSections: function (url) {
-        return lib.$.getJSON(url)
-            .then(
-                function(data) { return new SectionCollection(data) },
-                function() { throw new Error('Can\'t load url: ' + url) });
-    }
-};
-
 //#endregion
 
 //#region views
@@ -65,10 +56,9 @@ var Section = lib.common.AppSection.extend({
 
         this.application.setContentView(this.view);
 
-        api.loadSections(this.getOption('url'))
-            .then(
-                this.bind('displayList'),
-                this.bind('displayError', 'Can\'t load app list'));
+        lib.common.loadModel(this.getOption('url'), SectionCollection).then(
+            this.bind('displayList'),
+            this.bind('displayError', 'Can\'t load app list'));
     },
     displayList: function (items) {
         var listView = new ListView({ collection: items });

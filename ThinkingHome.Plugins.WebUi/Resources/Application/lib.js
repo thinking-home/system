@@ -26,10 +26,25 @@ define([
         start: function () { }
     });
 
+    /**
+     * Загружает данные в указанного url и создает экземпляр модели.
+     * @param {String} url Фрагмент схемы данных
+     * @param {Model} Model Конструктор модели
+     * @returns {Promise}
+     */
+    var loadModel = function(url, Model) {
+        console.log.apply(console, arguments);
+        return $.getJSON(url)
+            .then(
+                function(data) { return new Model(data) },
+                function() { throw new Error('Can\'t load url: ' + url) });
+    };
+
     return {
         common: {
             ApplicationBlock: applicationBlock,
-            AppSection: appSection
+            AppSection: appSection,
+            loadModel: loadModel
         },
         marionette: marionette,
         backbone: backbone,

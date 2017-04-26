@@ -12,16 +12,8 @@ var ScriptCollection = lib.backbone.Collection.extend({
     model: ScriptModel
 });
 
-var api = {
-    loadScripts: function (url) {
-        return lib.$.getJSON(url)
-            .then(
-                function(data) { return new ScriptCollection(data) },
-                function() { throw new Error('Can\'t load url: ' + url) });
-    }
-};
-
 //#endregion
+
 
 //#region views
 
@@ -58,7 +50,7 @@ var Section = lib.common.AppSection.extend({
 
         this.application.setContentView(this.view);
 
-        api.loadScripts('/api/scripts/web-api/list').then(
+        lib.common.loadModel('/api/scripts/web-api/list', ScriptCollection).then(
             this.bind('displayList'),
             this.bind('displayError', 'Can\'t load script list'));
     },
