@@ -65,7 +65,7 @@
 ## alpha2
 
 - [x] web-ui (~~app list~~)
-- [ ] scripts (UI: список скриптов, редактор скриптов, подписка на события)
+- [ ] scripts UI(список скриптов: запуск; редактор скриптов: сохранение, удаление, fullscreen, theme; подписка на события)
 - [ ] плагин utils (http запросы, email)
 
 ## alpha3
@@ -84,8 +84,10 @@
 - [ ] weather
 
 
-### мелкие
+### разное
 
+- [ ] dynamic DNS [инструкция](https://habrahabr.ru/post/310534), [токены](https://pddimp.yandex.ru/api2/admin/get_token?domain_name=thinking-home.ru)
+- [ ] плагин для homebridge, загружающий устройства из TH и перенаправляющий запросы к нему
 - [ ] telegram bot https://www.nuget.org/packages/Telegram.Bot/
 - [ ] slack
 
