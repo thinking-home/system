@@ -72,13 +72,16 @@
 
 - [ ] web-ui (dashboards),
 - [ ] локализация (после релиза .NET Core 2.0)
-- [ ] microclimate (Core, UI)
 - [ ] noolite (Core, API, UI)
+- [ ] scheduler
+- [ ] http listener (signalr)
+
+## alpha4
+
+- [ ] microclimate (Core, UI)
 - [ ] видеонаблюдение
 - [ ] ~~mqtt~~ rabbitmq http://www.rabbitmq.com/dotnet.html
 - [ ] weather
-- [ ] scheduler
-- [ ] http listener (signalr)
 
 
 ### мелкие

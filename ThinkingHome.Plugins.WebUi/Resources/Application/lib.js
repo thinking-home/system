@@ -28,13 +28,17 @@ define([
 
     /**
      * Загружает данные в указанного url и создает экземпляр модели.
-     * @param {String} url Фрагмент схемы данных
-     * @param {Model} Model Конструктор модели
+     * @param {String} url Url, по которому находятся данные
+     * @param {Object} [data] Параметры запроса
+     * @param {Model} [fn] Конструктор модели
      * @returns {Promise}
      */
-    var loadModel = function(url, Model) {
-        console.log.apply(console, arguments);
-        return $.getJSON(url)
+    var loadModel = function(url, data, fn) {
+        typeof data === 'function' && (fn = data, data = undefined);
+
+        var Model = fn || backbone.Model;
+
+        return $.getJSON(url, data)
             .then(
                 function(data) { return new Model(data) },
                 function() { throw new Error('Can\'t load url: ' + url) });
