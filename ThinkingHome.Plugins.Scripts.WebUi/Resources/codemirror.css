@@ -357,26 +357,25 @@ span.CodeMirror-selectedtext { background: none; }
 }
 
 /* Taken from the popular Visual Studio Vibrant Ink Schema */
-
-.cm-s-bootstrap.CodeMirror { background: #fcfcfc; color: #333333; border: 1px solid #d0d0d0; }
+.cm-s-bootstrap.CodeMirror { background: #f2f2f2; color: #333333; }
 .cm-s-bootstrap .CodeMirror-selected { background: #e4e4ea !important; }
 .cm-s-bootstrap .CodeMirror-matchingbracket { font-weight: bold; }
 
-.cm-s-bootstrap .CodeMirror-gutters { background: #efefef; border-right: 1px solid #e2e2e2; }
-.cm-s-bootstrap .CodeMirror-linenumber { color: #999; }
+.cm-s-bootstrap .CodeMirror-gutters { background: #ddd; }
+.cm-s-bootstrap .CodeMirror-linenumber { color: #808080; }
 .cm-s-bootstrap .CodeMirror-cursor { border-left: 1px solid #333 !important; }
 
 
 .cm-s-bootstrap .cm-keyword {  color: #2F6F9F; font-weight: bold; }
-.cm-s-bootstrap .cm-atom { color: #FC0; }
-.cm-s-bootstrap .cm-number { color:  #C7254E; }
+.cm-s-bootstrap .cm-atom { color: #275D85; }
+.cm-s-bootstrap .cm-number { color: #31a354; }
 .cm-s-bootstrap .cm-def { color: #999999; }
 .cm-s-bootstrap .cm-variable { color: #275D85; }
-.cm-s-bootstrap span.cm-variable-2, .cm-s-bootstrap span.cm-tag { color: #FFC66D }
-.cm-s-bootstrap span.cm-variable-3, .cm-s-bootstrap span.cm-def { color: #FFC66D }
+.cm-s-bootstrap span.cm-variable-2, .cm-s-bootstrap span.cm-tag { color: #275D85; }
+.cm-s-bootstrap span.cm-variable-3, .cm-s-bootstrap span.cm-def { color: #275D85; }
 .cm-s-bootstrap .cm-operator { color: #888; }
 .cm-s-bootstrap .cm-comment { color: gray; }
-.cm-s-bootstrap .cm-string { color:  #C7254E }
+.cm-s-bootstrap .cm-string { color: #756bb1 }
 .cm-s-bootstrap .cm-string-2 { color: red }
 .cm-s-bootstrap .cm-meta { color: #D8FA3C; }
 .cm-s-bootstrap .cm-error { border-bottom: 1px solid red; }
