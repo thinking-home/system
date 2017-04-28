@@ -44,11 +44,25 @@ define([
                 function() { throw new Error('Can\'t load url: ' + url) });
     };
 
+    /**
+     * Сериализует форму в json (для полей с одинаковым именем берется значение последнего)
+     * @param {jQuery} form форма
+     * @returns {Object}
+     */
+    var serializeForm = function(form) {
+        return form.serializeArray().reduce(function(obj, el) {
+            return obj[el.name] = el.value;
+
+            return obj;
+        }, {});
+    };
+
     return {
         common: {
             ApplicationBlock: applicationBlock,
             AppSection: appSection,
-            loadModel: loadModel
+            loadModel: loadModel,
+            serializeForm: serializeForm
         },
         marionette: marionette,
         backbone: backbone,
