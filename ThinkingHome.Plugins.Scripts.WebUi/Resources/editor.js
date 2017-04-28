@@ -7,13 +7,23 @@ var template = require('/static/scripts/web-ui/editor.tpl');
 var View = lib.marionette.View.extend({
     template: lib.handlebars.compile(template),
     onAttach: function() {
-        var textarea = this.$('.js-script-body').get(0);
+        var container = this.$('.js-script-body').get(0);
+        var value = this.model.get('body');
 
-        this.cm = codemirror.fromTextArea(textarea, {
+        this.cm = codemirror(container, {
+            value: value,
             mode: 'javascript',
             theme: 'bootstrap',
             lineNumbers: true
         });
+    },
+    getValue: function() {
+        return this.cm && this.cm.getValue();
+    },
+    triggers: {
+        'click .js-script-cancel': 'editor:cancel',
+        'click .js-script-save': 'editor:save',
+        'click .js-script-delete': 'editor:delete'
     }
 });
 
@@ -42,10 +52,30 @@ var Section = lib.common.AppSection.extend({
     createEditor: function (model) {
         var view = new View({ model: model });
 
-        this.listenTo(view, 'scripts:editor:cancel', this.bind('redirectToList'));
-        this.listenTo(view, 'scripts:editor:save', this.bind('save', view));
+        this.listenTo(view, 'editor:cancel', this.bind('redirectToList'));
+        this.listenTo(view, 'editor:save', this.bind('saveScript', view));
+        this.listenTo(view, 'editor:delete', this.bind('deleteScript', view));
 
         this.application.setContentView(view);
+    },
+
+    redirectToList: function() {
+        alert('cancel');
+    },
+
+    saveScript: function(view) {
+        var modelData = view.model.toJSON();
+        var scriptBody = view.getValue();
+
+        alert([
+            'save:',
+            JSON.stringify(modelData),
+            JSON.stringify(scriptBody)
+        ].join('\n'));
+    },
+
+    deleteScript: function(view) {
+        alert('delete');
     },
 
     displayError: function (error) {

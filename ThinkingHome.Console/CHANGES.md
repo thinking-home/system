@@ -65,6 +65,7 @@ WEB SERVER
   - отображение ошибки: `app.showError(title, 'message')`
   - отображение ошибки загрузки разделов
   - `lib.common.loadModel(url, [data], [Model])`
+  - `lib.common.serializeForm(form)`
   
 Теперь по умолчанию приложение ожидает Ctrl+C для остановки. Чтобы останавливалось по нажатию ENTER, нужно передать при запуске параметр -enter.
   

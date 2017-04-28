@@ -6,8 +6,6 @@
             <a href="#" class="btn btn-secondary js-script-cancel">Cancel</a>
             <a href="#" class="btn btn-danger float-right js-script-delete">Delete</a>
         </p>
-        <form>
-            <textarea name="body" class="js-script-body">{{body}}</textarea>
-        </form>
+        <div class="js-script-body"></div>
     </div>
 </div>
