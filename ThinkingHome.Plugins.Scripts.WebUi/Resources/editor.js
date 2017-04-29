@@ -76,7 +76,7 @@ var Section = lib.common.AppSection.extend({
     },
 
     displayError: function (error) {
-        this.application.showError('Can\'t load script', error.message);
+        this.application.showErrorPage('Can\'t load script', error.message);
     }
 });
 

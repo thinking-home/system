@@ -67,7 +67,7 @@ var Section = lib.common.AppSection.extend({
         this.view.showChildView('list', listView);
     },
     displayError: function (title, error) {
-        this.application.showError(title, error.message);
+        this.application.showErrorPage(title, error.message);
     },
     onSectionSelect: function(childView) {
         var url = childView.model.get('url');

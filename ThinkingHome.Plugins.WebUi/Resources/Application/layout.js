@@ -49,7 +49,7 @@ var Layout = lib.common.ApplicationBlock.extend({
         this.view.showChildView('content', view);
     },
 
-    showError: function(title, message) {
+    showErrorPage: function(title, message) {
         var errorView = new ErrorView({
             title: title,
             message: message

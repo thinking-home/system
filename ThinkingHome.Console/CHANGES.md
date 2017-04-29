@@ -62,7 +62,8 @@ WEB SERVER
   - списки разделов (и соответствующие атрибуты) в отдельном пакете
   - иконки для разделов (fa)
   - автозагрузка стилей без js (генерация файла с импортами)
-  - отображение ошибки: `app.showError(title, 'message')`
+  - отображение ошибки: `app.showErrorPage(title, 'message')` - заменяет контент на странице
+  - отображение ошибки: `app.showErrorMessage(title, 'message')`
   - отображение ошибки загрузки разделов
   - `lib.common.loadModel(url, [data], [Model])`
   - `lib.common.serializeForm(form)`

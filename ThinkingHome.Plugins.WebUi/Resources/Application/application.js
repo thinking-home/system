@@ -26,8 +26,8 @@ var homeApplication = lib.marionette.Application.extend({
         this.layout.setContentView(view);
     },
 
-    showError: function(title, message) {
-        this.layout.showError(title, message);
+    showErrorPage: function(title, message) {
+        this.layout.showErrorPage(title, message);
     },
 
     navigate: function (route) {
@@ -49,7 +49,7 @@ var homeApplication = lib.marionette.Application.extend({
             instance.start.apply(instance, args);
             self.router.setPath(route, args);
         }).catch(function(err) {
-            self.showError('Can\'t load section', err);
+            self.showErrorPage('Can\'t load section', err);
         });
     }
 });
