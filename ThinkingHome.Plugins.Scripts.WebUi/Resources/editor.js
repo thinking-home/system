@@ -60,18 +60,15 @@ var Section = lib.common.AppSection.extend({
     },
 
     redirectToList: function() {
-        alert('cancel');
+        this.application.navigate('/static/scripts/web-ui/list.js');
     },
 
     saveScript: function(view) {
-        var modelData = view.model.toJSON();
-        var scriptBody = view.getValue();
+        var data = view.model.toJSON();
+        data.body = view.getValue();
 
-        alert([
-            'save:',
-            JSON.stringify(modelData),
-            JSON.stringify(scriptBody)
-        ].join('\n'));
+        lib.$.post('/api/scripts/web-api/save', data)
+            .then(this.bind('redirectToList'), this.bind('displayError'));
     },
 
     deleteScript: function(view) {
