@@ -14,6 +14,7 @@ namespace ThinkingHome.Plugins.Scripts.WebUi
     // vendor
     [JavaScriptResource("/vendor/js/codemirror.js", "ThinkingHome.Plugins.Scripts.WebUi.Resources.codemirror.js", Alias = "codemirror")]
     [JavaScriptResource("/vendor/js/codemirror-javascript.js", "ThinkingHome.Plugins.Scripts.WebUi.Resources.codemirror-javascript.js", Alias = "codemirror-javascript")]
+    [JavaScriptResource("/vendor/js/codemirror-fullscreen.js", "ThinkingHome.Plugins.Scripts.WebUi.Resources.codemirror-fullscreen.js", Alias = "codemirror-fullscreen")]
     [CssResource("/vendor/css/codemirror.css", "ThinkingHome.Plugins.Scripts.WebUi.Resources.codemirror.css", AutoLoad = true)]
     public class ScriptsWebUiPlugin : PluginBase
     {

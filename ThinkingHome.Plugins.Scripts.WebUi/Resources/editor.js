@@ -1,4 +1,5 @@
 require('codemirror-javascript');
+require('codemirror-fullscreen');
 
 var lib = require('lib');
 var codemirror = require('codemirror');
@@ -23,15 +24,38 @@ var View = lib.marionette.View.extend({
             lineNumbers: true
         });
 
-        this.$('.js-script-delete').toggleClass('invisible', !script.id);
+        this.$('.js-script-delete').toggleClass('d-none', !script.id);
     },
     getValue: function() {
         return this.cm && this.cm.getValue();
     },
+    ui: {
+        editorPanel: '.js-editor-panel',
+        btnEnterFullscreen: '.js-enter-fullscreen',
+        btnExitFullscreen: '.js-exit-fullscreen'
+    },
     triggers: {
         'click .js-script-cancel': 'editor:cancel',
         'click .js-script-save': 'editor:save',
-        'click .js-script-delete': 'editor:delete'
+        'click .js-script-delete': 'editor:delete',
+        'click @ui.btnEnterFullscreen': 'editor:fullscreen:enter',
+        'click @ui.btnExitFullscreen': 'editor:fullscreen:exit'
+
+    },
+    toogleFuulscreen: function (flag) {
+        flag === undefined && (flag = !this.cm.getOption('fullScreen'));
+
+        this.cm.setOption('fullScreen', flag);
+        this.ui.editorPanel.toggleClass('CodeMirror-panel-fullscreen', flag);
+        this.ui.btnEnterFullscreen.toggleClass('d-none', flag);
+        this.ui.btnExitFullscreen.toggleClass('d-none', !flag);
+    },
+
+    onEditorFullscreenEnter: function () {
+        this.toogleFuulscreen(true);
+    },
+    onEditorFullscreenExit: function () {
+        this.toogleFuulscreen(false);
     }
 });
 

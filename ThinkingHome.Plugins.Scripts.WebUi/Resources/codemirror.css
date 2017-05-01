@@ -352,7 +352,6 @@ span.CodeMirror-selectedtext { background: none; }
   position: fixed;
   left: 0; right: 0; bottom: 0;
   height: 42px;
-  padding: 8px 5px;
   z-index: 9999;
 }
 
@@ -385,4 +384,6 @@ span.CodeMirror-selectedtext { background: none; }
 .cm-s-bootstrap .cm-header { color: #FF6400; }
 .cm-s-bootstrap .cm-hr { color: #AEAEAE; }
 .cm-s-bootstrap .cm-link { color: blue; }
-.cm-s-bootstrap-dark.CodeMirror-panel-fullscreen { background-color: #ddd; }
+
+.cm-s-bootstrap.CodeMirror-panel { padding: 8px 0; }
+.cm-s-bootstrap.CodeMirror-panel-fullscreen { padding: 8px 5px; }
