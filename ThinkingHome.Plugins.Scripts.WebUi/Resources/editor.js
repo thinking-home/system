@@ -14,14 +14,16 @@ var View = lib.marionette.View.extend({
     template: lib.handlebars.compile(template),
     onAttach: function() {
         var container = this.$('.js-script-body').get(0);
-        var value = this.model.get('body');
+        var script = this.model.toJSON();
 
         this.cm = codemirror(container, {
-            value: value,
+            value: script.body,
             mode: 'javascript',
             theme: 'bootstrap',
             lineNumbers: true
         });
+
+        this.$('.js-script-delete').toggleClass('invisible', !script.id);
     },
     getValue: function() {
         return this.cm && this.cm.getValue();
