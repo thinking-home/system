@@ -4,6 +4,12 @@ var lib = require('lib');
 var codemirror = require('codemirror');
 var template = require('/static/scripts/web-ui/editor.tpl');
 
+var EditorModel = lib.backbone.Model.extend({
+    defaults: {
+        body: ''
+    }
+});
+
 var View = lib.marionette.View.extend({
     template: lib.handlebars.compile(template),
     onAttach: function() {
@@ -39,13 +45,13 @@ var Section = lib.common.AppSection.extend({
 
     edit: function (scriptId) {
         lib.common
-            .loadModel('/api/scripts/web-api/get', { id: scriptId })
+            .loadModel('/api/scripts/web-api/get', { id: scriptId }, EditorModel)
             .then(this.bind('createEditor'), this.bind('displayError'));
     },
 
     add: function () {
         var name = window.prompt('Enter script name', '');
-        var model = new lib.backbone.Model({ name: name || 'noname' });
+        var model = new EditorModel({ name: name || 'noname' });
         this.createEditor(model);
     },
 
@@ -72,7 +78,12 @@ var Section = lib.common.AppSection.extend({
     },
 
     deleteScript: function(view) {
-        alert('delete');
+        var id = view.model.get('id');
+
+        if (window.confirm('The script will be deleted. Continue?')) {
+            lib.$.post('/api/scripts/web-api/delete', { id: id })
+                .then(this.bind('redirectToList'), this.bind('displayError'));
+        }
     },
 
     displayError: function (error) {

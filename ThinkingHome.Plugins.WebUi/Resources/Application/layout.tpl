@@ -17,6 +17,6 @@
         </ul>
     </div>
 </nav>
-<div class="th-container js-container">
-    <div class="container-fluid th-content js-content"></div>
+<div class="th-container">
+    <div class="container-fluid js-content"></div>
 </div>
