@@ -1,5 +1,6 @@
 var lib = require('lib');
-var itemTemplate = '<a href="#" class="js-script-edit">{{name}}</a>';
+var itemTemplate = '<a href="#" class="fa fa-fw fa-play-circle js-script-execute"></a>&nbsp;' +
+    '<a href="#" class="js-script-edit">{{name}}</a>';
 var layoutTemplate = '<h1>Script list</h1>' +
     '<p><a href="#" class="btn btn-secondary js-script-add">Create</a></p>' +
     '<div class="js-script-list"></div>';
@@ -20,6 +21,7 @@ var ScriptCollection = lib.backbone.Collection.extend({
 var ItemView = lib.marionette.View.extend({
     template: lib.handlebars.compile(itemTemplate),
     tagName: 'li',
+    className: 'th-list-item',
     triggers: {
         'click .js-script-edit': 'scripts:edit'
     }

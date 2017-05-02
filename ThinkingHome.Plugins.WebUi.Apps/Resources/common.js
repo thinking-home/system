@@ -1,6 +1,6 @@
 var lib = require('lib');
 var layoutTemplate = '<h1 class="js-title"></h1><div class="js-list"></div>';
-var itemTemplate = '<i class="fa fa-fw fa-{{icon}}"></i> <a href="#" class="js-section-link">{{title}}</a>';
+var itemTemplate = '<i class="fa fa-fw fa-{{icon}}"></i>&nbsp;<a href="#" class="js-section-link">{{title}}</a>';
 
 //#region entities
 
@@ -22,7 +22,7 @@ var SectionCollection = lib.backbone.Collection.extend({
 var ItemView = lib.marionette.View.extend({
     template: lib.handlebars.compile(itemTemplate),
     tagName: 'li',
-    className: 'th-app-list-item',
+    className: 'th-list-item',
     triggers: {
         'click .js-section-link': 'navigate'
     }

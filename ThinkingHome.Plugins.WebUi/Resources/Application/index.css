@@ -11,3 +11,13 @@
 .th-error p {
     white-space: pre-wrap;
 }
+
+.th-list-item {
+    font-size: 1.5rem;
+    line-height: 1.7;
+    color: #999;
+}
+
+.th-list-item a.fa {
+    text-decoration: none;
+}

@@ -8,7 +8,6 @@ using ThinkingHome.Plugins.WebUi.Attributes;
 
 namespace ThinkingHome.Plugins.WebUi.Apps
 {
-    [CssResource("/static/web-ui/apps/all.css", "ThinkingHome.Plugins.WebUi.Apps.Resources.all.css", AutoLoad = true)]
     [JavaScriptResource("/static/web-ui/apps/common.js", "ThinkingHome.Plugins.WebUi.Apps.Resources.common.js")]
     [JavaScriptResource("/static/web-ui/apps/system.js", "ThinkingHome.Plugins.WebUi.Apps.Resources.system.js")]
     public class WebUiAppsPlugin : PluginBase
