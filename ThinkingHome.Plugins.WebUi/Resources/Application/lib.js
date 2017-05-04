@@ -27,6 +27,19 @@ define([
     });
 
     /**
+     * Загружает JSON с указанного URL с обработкой ошибок
+     * @param {String} url Url, по которому находятся данные
+     * @param {Object} [data] Параметры запроса
+     * @returns {Promise}
+     */
+    var getJSON = function(url, data) {
+
+        return $.getJSON(url, data).catch(function() {
+            throw new Error('Can\'t load url: ' + url);
+        });
+    };
+
+    /**
      * Загружает данные в указанного url и создает экземпляр модели.
      * @param {String} url Url, по которому находятся данные
      * @param {Object} [data] Параметры запроса
@@ -38,10 +51,10 @@ define([
 
         var Model = fn || backbone.Model;
 
-        return $.getJSON(url, data)
-            .then(
-                function(data) { return new Model(data) },
-                function() { throw new Error('Can\'t load url: ' + url) });
+        return getJSON(url, data)
+            .then(function(data) {
+                return new Model(data);
+            });
     };
 
     /**
@@ -51,8 +64,7 @@ define([
      */
     var serializeForm = function(form) {
         return form.serializeArray().reduce(function(obj, el) {
-            return obj[el.name] = el.value;
-
+            obj[el.name] = el.value;
             return obj;
         }, {});
     };
@@ -61,6 +73,7 @@ define([
         common: {
             ApplicationBlock: applicationBlock,
             AppSection: appSection,
+            getJSON: getJSON,
             loadModel: loadModel,
             serializeForm: serializeForm
         },

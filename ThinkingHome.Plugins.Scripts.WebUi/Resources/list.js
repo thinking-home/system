@@ -23,7 +23,8 @@ var ItemView = lib.marionette.View.extend({
     tagName: 'li',
     className: 'th-list-item',
     triggers: {
-        'click .js-script-edit': 'scripts:edit'
+        'click .js-script-edit': 'scripts:edit',
+        'click .js-script-execute': 'scripts:execute'
     }
 });
 
@@ -60,6 +61,7 @@ var Section = lib.common.AppSection.extend({
         var listView = new ListView({ collection: items });
 
         this.listenTo(listView, 'childview:scripts:edit', this.bind('editScript'));
+        this.listenTo(listView, 'childview:scripts:execute', this.bind('executeScript'));
         this.view.showChildView('list', listView);
     },
     displayError: function (title, error) {
@@ -73,6 +75,14 @@ var Section = lib.common.AppSection.extend({
     editScript: function (view) {
         var scriptId = view.model.get('id');
         this.application.navigate('/static/scripts/web-ui/editor.js', scriptId);
+    },
+
+    executeScript: function (view) {
+        var scriptId = view.model.get('id');
+        lib.common.getJSON('/api/scripts/web-api/execute', { id: scriptId })
+            .then(
+                function() { alert('The script has been executed'); },
+                function(err) { alert(err.message); });
     }
 });
 
