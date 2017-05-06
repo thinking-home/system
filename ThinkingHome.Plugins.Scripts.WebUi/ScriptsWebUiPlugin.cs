@@ -11,6 +11,9 @@ namespace ThinkingHome.Plugins.Scripts.WebUi
     [HttpEmbeddedResource("/static/scripts/web-ui/editor.tpl", "ThinkingHome.Plugins.Scripts.WebUi.Resources.editor.tpl")]
     [CssResource("/static/scripts/web-ui/all.css", "ThinkingHome.Plugins.Scripts.WebUi.Resources.all.css", AutoLoad = true)]
 
+    [AppSection(SectionType.System, "Script events", "/static/scripts/web-ui/subscriptions.js", "ThinkingHome.Plugins.Scripts.WebUi.Resources.subscriptions.js")]
+    [HttpEmbeddedResource("/static/scripts/web-ui/subscriptions.tpl", "ThinkingHome.Plugins.Scripts.WebUi.Resources.subscriptions.tpl")]
+
     // vendor
     [JavaScriptResource("/vendor/js/codemirror.js", "ThinkingHome.Plugins.Scripts.WebUi.Resources.codemirror.js", Alias = "codemirror")]
     [JavaScriptResource("/vendor/js/codemirror-javascript.js", "ThinkingHome.Plugins.Scripts.WebUi.Resources.codemirror-javascript.js", Alias = "codemirror-javascript")]
