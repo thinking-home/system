@@ -14,7 +14,7 @@
         </form>
     </div>
     <div class="col-md-8">
-        <table class="table">
+        <table class="table js-table-subscriptions">
             <thead class="thead-default">
                 <tr>
                     <th>Event</th>
@@ -22,7 +22,7 @@
                     <th></th>
                 </tr>
             </thead>
-            <tbody class="js-subscriptions-list"></tbody>
+            <tbody></tbody>
         </table>
     </div>
 </div>

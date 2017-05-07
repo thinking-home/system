@@ -20,7 +20,7 @@ var LayoutView = lib.marionette.View.extend({
     template: lib.handlebars.compile(layoutTemplate),
     regions: {
         subscriptions: {
-            el: '.js-subscriptions-list',
+            el: '.js-table-subscriptions tbody',
             replaceElement: true
         }
     },
@@ -37,24 +37,21 @@ var LayoutView = lib.marionette.View.extend({
 
 var Section = lib.common.AppSection.extend({
     start: function() {
+
+        lib.common.loadModel('/api/scripts/web-api/subscription/list', lib.backbone.Collection)
+            .then(this.bind('displayPage'), this.bind('showError'));
+    },
+
+    displayPage: function(subscriptions) {
         var view = new LayoutView({
-            subscriptions: new lib.backbone.Collection([
-                {
-                    "id":"b308f0e7-7f0c-4599-ba89-65cff22ae043",
-                    "scriptId":"a634a269-d250-40bc-a9ca-0e76b19d84b5",
-                    "scriptName":"debug-tool",
-                    "eventAlias":"mimi"
-                },
-                {
-                    "id":"7db0be77-be8b-44e8-8212-0b882e886ecb",
-                    "scriptId":"a634a269-d250-40bc-a9ca-0e76b19d84b5",
-                    "scriptName":"debug-tool",
-                    "eventAlias":"skdjsdhvsdvb"
-                }
-            ])
+            subscriptions: subscriptions
         });
 
         this.application.setContentView(view);
+    },
+
+    showError: function(err) {
+        alert(err);
     }
 });
 
