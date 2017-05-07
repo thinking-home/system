@@ -9,6 +9,8 @@ var Section = lib.common.AppSection.extend({
     start: function() {
         var view = new View();
         this.application.setContentView(view);
+
+        return lib.common.getJSON('/qwdqwkfqwgqwgqwgqwgqwg');
     }
 });
 

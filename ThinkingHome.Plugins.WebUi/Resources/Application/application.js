@@ -45,9 +45,10 @@ var homeApplication = lib.marionette.Application.extend({
         SystemJS.import(route).then(function(appSection) {
             self.appSection && self.appSection.destroy();
 
-            var instance = self.appSection = new appSection({ application: self });
-            instance.start.apply(instance, args);
             self.router.setPath(route, args);
+
+            var instance = self.appSection = new appSection({ application: self });
+            return instance.start.apply(instance, args);
         }).catch(function(err) {
             self.showErrorPage('Can\'t load section', err);
         });
