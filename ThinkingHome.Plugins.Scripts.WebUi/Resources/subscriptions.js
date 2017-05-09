@@ -37,9 +37,9 @@ var LayoutView = lib.marionette.View.extend({
 
 var Section = lib.common.AppSection.extend({
     start: function() {
-
-        lib.common.loadModel('/api/scripts/web-api/subscription/list', lib.backbone.Collection)
-            .then(this.bind('displayPage'), this.bind('showError'));
+        return lib.common
+            .loadModel('/api/scripts/web-api/subscription/list', lib.backbone.Collection)
+            .then(this.bind('displayPage'));
     },
 
     displayPage: function(subscriptions) {
@@ -48,10 +48,6 @@ var Section = lib.common.AppSection.extend({
         });
 
         this.application.setContentView(view);
-    },
-
-    showError: function(err) {
-        alert(err);
     }
 });
 

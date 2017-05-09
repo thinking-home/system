@@ -1,18 +1,5 @@
 var lib = require('lib');
 var layoutTemplate = require('static/web-ui/layout.tpl');
-var errorTemplate = '<h1><i class="fa fa-times-circle fa-fw text-danger"></i> {{title}}</h1>' +
-    '<p class="lead">{{message}}</p>';
-
-var ErrorView = lib.marionette.View.extend({
-    className: 'th-error',
-    template: lib.handlebars.compile(errorTemplate),
-    templateContext: function() {
-        return {
-            title: this.getOption('title'),
-            message: this.getOption('message')
-        }
-    }
-});
 
 var LayoutView = lib.marionette.View.extend({
     el: 'body',
@@ -47,19 +34,6 @@ var Layout = lib.common.ApplicationBlock.extend({
     // api
     setContentView: function(view) {
         this.view.showChildView('content', view);
-    },
-
-    showErrorPage: function(title, message) {
-        var errorView = new ErrorView({
-            title: title,
-            message: message
-        });
-
-        this.view.showChildView('content', errorView);
-    },
-
-    loading: function() {
-
     }
 });
 

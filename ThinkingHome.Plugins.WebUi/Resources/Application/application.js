@@ -1,6 +1,7 @@
 var lib = require('lib');
 var router = require('static/web-ui/router.js');
 var layout = require('static/web-ui/layout.js');
+var errors = require('static/web-ui/errors.js');
 
 var homeApplication = lib.marionette.Application.extend({
 
@@ -26,10 +27,6 @@ var homeApplication = lib.marionette.Application.extend({
         this.layout.setContentView(view);
     },
 
-    showErrorPage: function(title, message) {
-        this.layout.showErrorPage(title, message);
-    },
-
     navigate: function (route) {
         var args = Array.prototype.slice.call(arguments, 1);
         this._loadPage(route, args);
@@ -42,16 +39,23 @@ var homeApplication = lib.marionette.Application.extend({
         route = route || 'welcome';
         args = args || [];
 
-        SystemJS.import(route).then(function(appSection) {
-            self.appSection && self.appSection.destroy();
+        SystemJS.import(route)
+            .then(function(appSection) {
+                self.appSection && self.appSection.destroy();
 
-            self.router.setPath(route, args);
+                self.router.setPath(route, args);
 
-            var instance = self.appSection = new appSection({ application: self });
-            return instance.start.apply(instance, args);
-        }).catch(function(err) {
-            self.showErrorPage('Can\'t load section', err);
-        });
+                var instance = self.appSection = new appSection({ application: self });
+
+                return instance.start.apply(instance, args);
+            })
+            .catch(function(error) {
+                // show error page
+                self.setContentView(new errors.ErrorView({
+                    title: 'Can\'t load section',
+                    message: error
+                }));
+            });
     }
 });
 

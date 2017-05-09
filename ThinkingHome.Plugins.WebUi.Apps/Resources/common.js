@@ -56,18 +56,15 @@ var Section = lib.common.AppSection.extend({
 
         this.application.setContentView(this.view);
 
-        lib.common.loadModel(this.getOption('url'), SectionCollection).then(
-            this.bind('displayList'),
-            this.bind('displayError', 'Can\'t load app list'));
+        return lib.common
+            .loadModel(this.getOption('url'), SectionCollection)
+            .then(this.bind('displayList'));
     },
     displayList: function (items) {
         var listView = new ListView({ collection: items });
         this.listenTo(listView, "childview:navigate", this.bind('onSectionSelect'));
 
         this.view.showChildView('list', listView);
-    },
-    displayError: function (title, error) {
-        this.application.showErrorPage(title, error.message);
     },
     onSectionSelect: function(childView) {
         var url = childView.model.get('url');

@@ -20,6 +20,7 @@ namespace ThinkingHome.Plugins.WebUi
     [JavaScriptResource("/static/web-ui/lib.js", "ThinkingHome.Plugins.WebUi.Resources.Application.lib.js", Alias = "lib")]
     [JavaScriptResource("/static/web-ui/application.js", "ThinkingHome.Plugins.WebUi.Resources.Application.application.js")]
     [JavaScriptResource("/static/web-ui/router.js", "ThinkingHome.Plugins.WebUi.Resources.Application.router.js")]
+    [JavaScriptResource("/static/web-ui/errors.js", "ThinkingHome.Plugins.WebUi.Resources.Application.errors.js")]
     [JavaScriptResource("/static/web-ui/layout.js", "ThinkingHome.Plugins.WebUi.Resources.Application.layout.js")]
     [HttpEmbeddedResource("/static/web-ui/layout.tpl", "ThinkingHome.Plugins.WebUi.Resources.Application.layout.tpl")]
 

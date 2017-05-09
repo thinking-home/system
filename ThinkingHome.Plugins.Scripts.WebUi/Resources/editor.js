@@ -62,17 +62,16 @@ var View = lib.marionette.View.extend({
 var Section = lib.common.AppSection.extend({
 
     start: function(scriptId) {
-        if (scriptId) {
-            this.edit(scriptId);
-        } else {
-            this.add();
-        }
+
+        return scriptId
+            ? this.edit(scriptId)
+            : this.add();
     },
 
     edit: function (scriptId) {
-        lib.common
+        return lib.common
             .loadModel('/api/scripts/web-api/get', { id: scriptId }, EditorModel)
-            .then(this.bind('createEditor'), this.bind('displayError'));
+            .then(this.bind('createEditor'));
     },
 
     add: function () {
@@ -100,7 +99,7 @@ var Section = lib.common.AppSection.extend({
         data.body = view.getValue();
 
         lib.$.post('/api/scripts/web-api/save', data)
-            .then(this.bind('redirectToList'), this.bind('displayError'));
+            .then(this.bind('redirectToList'), function(err) { alert(err.message); });
     },
 
     deleteScript: function(view) {
@@ -108,12 +107,8 @@ var Section = lib.common.AppSection.extend({
 
         if (window.confirm('The script will be deleted. Continue?')) {
             lib.$.post('/api/scripts/web-api/delete', { id: id })
-                .then(this.bind('redirectToList'), this.bind('displayError'));
+                .then(this.bind('redirectToList'), function(err) { alert(err.message); });
         }
-    },
-
-    displayError: function (error) {
-        this.application.showErrorPage('Can\'t load script', error.message);
     }
 });
 

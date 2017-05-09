@@ -53,19 +53,17 @@ var Section = lib.common.AppSection.extend({
 
         this.application.setContentView(this.view);
 
-        lib.common.loadModel('/api/scripts/web-api/list', ScriptCollection).then(
-            this.bind('displayList'),
-            this.bind('displayError', 'Can\'t load script list'));
+        return lib.common
+            .loadModel('/api/scripts/web-api/list', ScriptCollection)
+            .then(this.bind('displayList'));
     },
+
     displayList: function (items) {
         var listView = new ListView({ collection: items });
 
         this.listenTo(listView, 'childview:scripts:edit', this.bind('editScript'));
         this.listenTo(listView, 'childview:scripts:execute', this.bind('executeScript'));
         this.view.showChildView('list', listView);
-    },
-    displayError: function (title, error) {
-        this.application.showErrorPage(title, error.message);
     },
 
     addScript: function () {
