@@ -18,6 +18,10 @@ var SubscriptionListView = lib.marionette.CollectionView.extend({
 
 var LayoutView = lib.marionette.View.extend({
     template: lib.handlebars.compile(layoutTemplate),
+    ui: {
+        eventAlias: '.js-event-name',
+        scriptList: '.js-script-list'
+    },
     regions: {
         subscriptions: {
             el: '.js-table-subscriptions tbody',
@@ -26,12 +30,9 @@ var LayoutView = lib.marionette.View.extend({
     },
 
     onRender: function() {
-        var select = this.$('.js-script-list');
 
         // script list
-        this.getOption('scripts').each(function(el) {
-            lib.$('<option />').val(el.get('id')).text(el.get('name')).appendTo(select);
-        });
+        lib.form.setOptions(this.ui.scriptList, this.getOption('scripts'));
 
         // subscriptions table
         var subscriptionList = new SubscriptionListView({

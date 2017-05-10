@@ -26,6 +26,9 @@ define([
         start: function () { }
     });
 
+    //region ajax
+
+
     /**
      * Загружает JSON с указанного URL с обработкой ошибок
      * @param {String} url Url, по которому находятся данные
@@ -70,6 +73,10 @@ define([
             });
     };
 
+    //endregion
+
+    //region form
+
     /**
      * Сериализует форму в json (для полей с одинаковым именем берется значение последнего)
      * @param {jQuery} form форма
@@ -82,11 +89,42 @@ define([
         }, {});
     };
 
+    /**
+     * @param {jQuery} select выпадающий список
+     * @param {Collection} collection коллекция элементов
+     * @param {Object} [options] дополнительные параметры
+     * @param {String} [options.textField] название поля, содержащего название элемента (по умолчанию 'name')
+     * @param {String} [options.valueField] название поля, содержащего id элемента (по умолчанию 'id')
+     * @returns {jQuery}
+    */
+    var setOptions = function(select, collection, options) {
+        !options && (options = {});
+
+        var textField = options.textField || 'name';
+        var valueField = options.valueField || 'id';
+
+        select.empty();
+
+        collection.each(function(item) {
+            var val = item.get(valueField),
+                text = item.get(textField);
+
+            $('<option />').val(val).text(text).appendTo(select);
+        });
+
+        return select;
+    };
+
+    //endregion
+
     return {
         common: {
             ApplicationBlock: applicationBlock,
-            AppSection: appSection,
-            serializeForm: serializeForm
+            AppSection: appSection
+        },
+        form: {
+            setOptions: setOptions,
+            serialize: serializeForm
         },
         ajax: {
             loadModel: loadModel,
