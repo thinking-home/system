@@ -77,7 +77,7 @@ var Section = lib.common.AppSection.extend({
 
     executeScript: function (view) {
         var scriptId = view.model.get('id');
-        lib.common.getJSON('/api/scripts/web-api/execute', { id: scriptId })
+        lib.ajax.getJSON('/api/scripts/web-api/execute', { id: scriptId })
             .then(
                 function() { alert('The script has been executed'); },
                 function(err) { alert(err.message); });

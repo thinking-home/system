@@ -86,7 +86,6 @@ define([
         common: {
             ApplicationBlock: applicationBlock,
             AppSection: appSection,
-            getJSON: getJSON,
             serializeForm: serializeForm
         },
         ajax: {

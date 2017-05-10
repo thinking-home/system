@@ -10,7 +10,7 @@ var Section = lib.common.AppSection.extend({
         var view = new View();
         this.application.setContentView(view);
 
-        return lib.common.getJSON('/qwdqwkfqwgqwgqwgqwgqwg');
+        return lib.ajax.getJSON('/qwdqwkfqwgqwgqwgqwgqwg');
     }
 });
 
