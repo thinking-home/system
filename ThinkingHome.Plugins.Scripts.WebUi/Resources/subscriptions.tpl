@@ -4,7 +4,7 @@
         <form>
             <div class="form-group">
                 <label>Event alias</label>
-                <select class="form-control js-event-list"></select>
+                <select class="form-control js-event-alias"></select>
             </div>
             <div class="form-group">
                 <label>Script</label>
