@@ -87,7 +87,6 @@ define([
             ApplicationBlock: applicationBlock,
             AppSection: appSection,
             getJSON: getJSON,
-            loadModel: loadModel,
             serializeForm: serializeForm
         },
         ajax: {

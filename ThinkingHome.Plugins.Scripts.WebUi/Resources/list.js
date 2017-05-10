@@ -53,7 +53,7 @@ var Section = lib.common.AppSection.extend({
 
         this.application.setContentView(this.view);
 
-        return lib.common
+        return lib.ajax
             .loadModel('/api/scripts/web-api/list', ScriptCollection)
             .then(this.bind('displayList'));
     },

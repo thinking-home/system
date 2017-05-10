@@ -56,7 +56,7 @@ var Section = lib.common.AppSection.extend({
 
         this.application.setContentView(this.view);
 
-        return lib.common
+        return lib.ajax
             .loadModel(this.getOption('url'), SectionCollection)
             .then(this.bind('displayList'));
     },

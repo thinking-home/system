@@ -46,8 +46,8 @@ var LayoutView = lib.marionette.View.extend({
 var Section = lib.common.AppSection.extend({
     start: function() {
         return Promise.all([
-                lib.common.loadModel('/api/scripts/web-api/subscription/list', lib.backbone.Collection),
-                lib.common.loadModel('/api/scripts/web-api/list', lib.backbone.Collection)])
+                lib.ajax.loadModel('/api/scripts/web-api/subscription/list', lib.backbone.Collection),
+                lib.ajax.loadModel('/api/scripts/web-api/list', lib.backbone.Collection)])
             .then(this.bind('displayPage'));
     },
 

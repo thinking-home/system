@@ -63,7 +63,9 @@ WEB SERVER
   - иконки для разделов (fa)
   - автозагрузка стилей без js (генерация файла с импортами)
   - отображение ошибки загрузки разделов
-  - `lib.common.loadModel(url, [data], [Model])`
+  - `lib.ajax.loadModel(url, [data], [Model])`
+  - `lib.ajax.getJSON(url, [data])`
+  - `lib.ajax.postJSON(url, [data])`
   - `lib.common.serializeForm(form)`
   - обработка асинхронных исключений в метода start (нужно вернуть промис из него)
   

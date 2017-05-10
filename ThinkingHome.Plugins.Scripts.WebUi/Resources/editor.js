@@ -69,7 +69,7 @@ var Section = lib.common.AppSection.extend({
     },
 
     edit: function (scriptId) {
-        return lib.common
+        return lib.ajax
             .loadModel('/api/scripts/web-api/get', { id: scriptId }, EditorModel)
             .then(this.bind('createEditor'));
     },
