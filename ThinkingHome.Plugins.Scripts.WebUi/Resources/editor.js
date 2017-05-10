@@ -98,16 +98,16 @@ var Section = lib.common.AppSection.extend({
         var data = view.model.toJSON();
         data.body = view.getValue();
 
-        lib.$.post('/api/scripts/web-api/save', data)
-            .then(this.bind('redirectToList'), function(err) { alert(err.message); });
+        lib.ajax.postJSON('/api/scripts/web-api/save', data)
+            .then(this.bind('redirectToList'), alert);
     },
 
     deleteScript: function(view) {
         var id = view.model.get('id');
 
         if (window.confirm('The script will be deleted. Continue?')) {
-            lib.$.post('/api/scripts/web-api/delete', { id: id })
-                .then(this.bind('redirectToList'), function(err) { alert(err.message); });
+            lib.ajax.postJSON('/api/scripts/web-api/delete', { id: id })
+                .then(this.bind('redirectToList'), alert);
         }
     }
 });

@@ -40,6 +40,19 @@ define([
     };
 
     /**
+     * Загружает JSON с указанного URL с обработкой ошибок
+     * @param {String} url Url, по которому находятся данные
+     * @param {Object} [data] Параметры запроса
+     * @returns {Promise}
+     */
+    var postJSON = function(url, data) {
+
+        return $.post(url, data).catch(function() {
+            throw new Error('Request failed: ' + url);
+        });
+    };
+
+    /**
      * Загружает данные в указанного url и создает экземпляр модели.
      * @param {String} url Url, по которому находятся данные
      * @param {Object} [data] Параметры запроса
@@ -76,6 +89,11 @@ define([
             getJSON: getJSON,
             loadModel: loadModel,
             serializeForm: serializeForm
+        },
+        ajax: {
+            loadModel: loadModel,
+            getJSON: getJSON,
+            postJSON: postJSON
         },
         marionette: marionette,
         backbone: backbone,
