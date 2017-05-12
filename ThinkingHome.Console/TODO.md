@@ -74,27 +74,34 @@
 
 ## alpha3
 
-- [ ] web-ui (dashboards),
+### core
+
 - [ ] локализация (после релиза .NET Core 2.0)
-- [ ] noolite (Core, API, UI)
-- [ ] scheduler
 - [ ] http listener (signalr)
+- [ ] scheduler
 
-## alpha4
+### hardware
 
-- [ ] microclimate (Core, UI)
+- [ ] noolite (Core, API, UI)
 - [ ] видеонаблюдение
-- [ ] ~~mqtt~~ rabbitmq http://www.rabbitmq.com/dotnet.html
-- [ ] weather
-
-
-### разное
-
-- [ ] dynamic DNS [инструкция](https://habrahabr.ru/post/310534), [токены](https://pddimp.yandex.ru/api2/admin/get_token?domain_name=thinking-home.ru)
 - [ ] плагин для homebridge, загружающий устройства из TH и перенаправляющий запросы к нему
+
+### protocols
+
+- [ ] mqtt 
+- [ ] rabbitmq http://www.rabbitmq.com/dotnet.html
+
+### messenger
+
 - [ ] telegram bot https://www.nuget.org/packages/Telegram.Bot/
 - [ ] slack
 
+### others
+
+- [ ] web-ui (dashboards),
+- [ ] microclimate (Core, UI)
+- [ ] weather
+- [ ] dynamic DNS [инструкция](https://habrahabr.ru/post/310534), [токены](https://pddimp.yandex.ru/api2/admin/get_token?domain_name=thinking-home.ru)
 - [ ] audio ?
 
 ====

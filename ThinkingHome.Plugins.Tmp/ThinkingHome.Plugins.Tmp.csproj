@@ -1,0 +1,40 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <VersionPrefix>4.0.0-alpha1</VersionPrefix>
+    <TargetFramework>netstandard1.6</TargetFramework>
+    <DebugType>portable</DebugType>
+    <AssemblyName>ThinkingHome.Plugins.Tmp</AssemblyName>
+    <PackageId>ThinkingHome.Plugins.Tmp</PackageId>
+    <NetStandardImplicitPackageVersion>1.6.1</NetStandardImplicitPackageVersion>
+    <PackageTargetFallback>$(PackageTargetFallback);dnxcore50</PackageTargetFallback>
+    <GenerateAssemblyTitleAttribute>false</GenerateAssemblyTitleAttribute>
+    <GenerateAssemblyDescriptionAttribute>false</GenerateAssemblyDescriptionAttribute>
+    <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
+    <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
+    <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
+    <GenerateAssemblyCopyrightAttribute>false</GenerateAssemblyCopyrightAttribute>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\**\*" Exclude="bin\**;obj\**;**\*.xproj;packages\**;@(EmbeddedResource)" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../ThinkingHome.Core.Plugins/ThinkingHome.Core.Plugins.csproj" />
+    <ProjectReference Include="../ThinkingHome.Plugins.Database/ThinkingHome.Plugins.Database.csproj" />
+    <ProjectReference Include="../ThinkingHome.Plugins.Scripts/ThinkingHome.Plugins.Scripts.csproj" />
+    <ProjectReference Include="../ThinkingHome.Plugins.WebServer/ThinkingHome.Plugins.WebServer.csproj" />
+    <ProjectReference Include="../ThinkingHome.Plugins.WebUi.Apps/ThinkingHome.Plugins.WebUi.Apps.csproj" />
+    <ProjectReference Include="../ThinkingHome.Plugins.WebUi/ThinkingHome.Plugins.WebUi.csproj" />
+    <ProjectReference Include="../ThinkingHome.Plugins.Timer/ThinkingHome.Plugins.Timer.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="1.1.1" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="1.1.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="1.1.1" />
+    <PackageReference Include="ThinkingHome.Migrator.Framework" Version="3.0.0-alpha7" />
+  </ItemGroup>
+
+</Project>
