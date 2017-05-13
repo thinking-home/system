@@ -19,7 +19,7 @@ var SubscriptionListView = lib.marionette.CollectionView.extend({
 var LayoutView = lib.marionette.View.extend({
     template: lib.handlebars.compile(layoutTemplate),
     ui: {
-        eventAlias: '.js-event-name',
+        eventAlias: '.js-event-alias',
         scriptList: '.js-script-list'
     },
     regions: {
@@ -28,7 +28,9 @@ var LayoutView = lib.marionette.View.extend({
             replaceElement: true
         }
     },
-
+    triggers: { 
+        'click .js-btn-add-subscription': 'subscriptions:add' 
+    },
     onRender: function() {
 
         // script list
@@ -58,7 +60,22 @@ var Section = lib.common.AppSection.extend({
             scripts: args[1]
         });
 
+        this.listenTo(view, 'subscriptions:add', this.bind('addSubscription', view));
+
         this.application.setContentView(view);
+    },
+
+    addSubscription: function(view) {
+        var scriptId = view.ui.scriptList.val();
+        var eventAlias = view.ui.eventAlias.val();
+
+        scriptId && eventAlias && lib.ajax
+            .postJSON('/api/scripts/web-api/subscription/add', { scriptId: scriptId, eventAlias: eventAlias })
+            .then(this.bind('updateList'), alert);
+    },
+
+    updateList: function() {
+        alert('Subscriptions has been added.');
     }
 });
 
