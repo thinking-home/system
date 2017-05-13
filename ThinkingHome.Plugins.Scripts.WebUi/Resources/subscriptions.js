@@ -55,27 +55,34 @@ var Section = lib.common.AppSection.extend({
     },
 
     displayPage: function(args) {
-        var view = new LayoutView({
+        var view = this.view = new LayoutView({
             subscriptions: args[0],
             scripts: args[1]
         });
 
-        this.listenTo(view, 'subscriptions:add', this.bind('addSubscription', view));
+        this.listenTo(view, 'subscriptions:add', this.bind('addSubscription'));
 
         this.application.setContentView(view);
     },
 
-    addSubscription: function(view) {
-        var scriptId = view.ui.scriptList.val();
-        var eventAlias = view.ui.eventAlias.val();
+    addSubscription: function() {
+        var ui = this.view.ui;
+        var scriptId = ui.scriptList.val();
+        var eventAlias = ui.eventAlias.val();
 
         scriptId && eventAlias && lib.ajax
             .postJSON('/api/scripts/web-api/subscription/add', { scriptId: scriptId, eventAlias: eventAlias })
-            .then(this.bind('updateList'), alert);
+            .then(this.bind('updateList'))
+            .catch(alert);
     },
 
     updateList: function() {
-        alert('Subscriptions has been added.');
+        var subscriptions = this.view.getOption('subscriptions');
+
+        return lib.ajax.loadModel('/api/scripts/web-api/subscription/list', lib.backbone.Collection)
+            .then(function(data) {
+                subscriptions.reset(data.toJSON());
+            });
     }
 });
 
