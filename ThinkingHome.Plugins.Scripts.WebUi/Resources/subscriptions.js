@@ -1,13 +1,13 @@
 var lib = require('lib');
 var layoutTemplate = require('static/scripts/web-ui/subscriptions.tpl');
 var itemTemplate = '<td>{{eventAlias}}</td><td>{{scriptName}}</td>' +
-    '<td><a href="#" class="js-detach-link">detach</a></td>';
+    '<td><a href="#" class="js-delete-link">delete</a></td>';
 
 var SubscriptionView = lib.marionette.View.extend({
     template: lib.handlebars.compile(itemTemplate),
     tagName: 'tr',
     triggers: {
-        'click .js-detach-link': 'detach'
+        'click .js-delete-link': 'subscription:delete'
     }
 });
 
@@ -29,7 +29,7 @@ var LayoutView = lib.marionette.View.extend({
         }
     },
     triggers: { 
-        'click .js-btn-add-subscription': 'subscriptions:add' 
+        'click .js-btn-add-subscription': 'subscription:add' 
     },
     onRender: function() {
 
@@ -38,7 +38,11 @@ var LayoutView = lib.marionette.View.extend({
 
         // subscriptions table
         var subscriptionList = new SubscriptionListView({
-            collection: this.getOption('subscriptions')
+            collection: this.getOption('subscriptions'),
+            onChildviewSubscriptionDelete: function(childView) {
+                var id = childView.model.get('id');
+                this.trigger('subscription:delete', id);
+            }.bind(this)
         });
 
         this.showChildView('subscriptions', subscriptionList);
@@ -60,7 +64,8 @@ var Section = lib.common.AppSection.extend({
             scripts: args[1]
         });
 
-        this.listenTo(view, 'subscriptions:add', this.bind('addSubscription'));
+        this.listenTo(view, 'subscription:add', this.bind('addSubscription'));
+        this.listenTo(view, 'subscription:delete', this.bind('deleteSubscription'));
 
         this.application.setContentView(view);
     },
@@ -72,6 +77,13 @@ var Section = lib.common.AppSection.extend({
 
         scriptId && eventAlias && lib.ajax
             .postJSON('/api/scripts/web-api/subscription/add', { scriptId: scriptId, eventAlias: eventAlias })
+            .then(this.bind('updateList'))
+            .catch(alert);
+    },
+
+    deleteSubscription: function(id) {
+        confirm('Subscription will be deleted. Continue?') && lib.ajax
+            .postJSON('/api/scripts/web-api/subscription/delete', { subscriptionId: id })
             .then(this.bind('updateList'))
             .catch(alert);
     },

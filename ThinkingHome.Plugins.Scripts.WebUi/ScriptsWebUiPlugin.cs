@@ -21,9 +21,5 @@ namespace ThinkingHome.Plugins.Scripts.WebUi
     [CssResource("/vendor/css/codemirror.css", "ThinkingHome.Plugins.Scripts.WebUi.Resources.codemirror.css", AutoLoad = true)]
     public class ScriptsWebUiPlugin : PluginBase
     {
-        public override void InitPlugin()
-        {
-            Logger.LogCritical("scripts web ui inited");
-        }
     }
 }
