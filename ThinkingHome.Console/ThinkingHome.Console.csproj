@@ -36,6 +36,7 @@
     <ProjectReference Include="../ThinkingHome.Plugins.Scripts.WebUi/ThinkingHome.Plugins.Scripts.WebUi.csproj" />
     <ProjectReference Include="../ThinkingHome.Plugins.Timer/ThinkingHome.Plugins.Timer.csproj" />
     <ProjectReference Include="../ThinkingHome.Plugins.Tmp/ThinkingHome.Plugins.Tmp.csproj" />
+    <ProjectReference Include="..\ThinkingHome.Plugins.Mail\ThinkingHome.Plugins.Mail.csproj" />
   </ItemGroup>
 
   <ItemGroup>

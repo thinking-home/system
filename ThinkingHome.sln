@@ -232,4 +232,41 @@ Global
 		{9F8D813F-8599-47EF-BBE9-4EEABEC09BB6} = {5DF04DCB-BC26-42FA-B7D6-CFC24963F1A8}
 		{A90E1D08-C1AE-4FBF-B99F-978212DC5F7C} = {5DF04DCB-BC26-42FA-B7D6-CFC24963F1A8}
 	EndGlobalSection
+	GlobalSection(MonoDevelopProperties) = preSolution
+		Policies = $0
+		$0.TextStylePolicy = $1
+		$1.TabsToSpaces = True
+		$1.NoTabsAfterNonTabs = True
+		$1.scope = text/x-json
+		$0.JSONFormattingPolicy = $2
+		$2.AutoStructureCompletion = True
+		$2.BracePositions = SemiExpanded
+		$2.FormatOnPaste = True
+		$2.scope = text/x-json
+		$0.TextStylePolicy = $3
+		$3.inheritsSet = null
+		$3.scope = text/x-csharp
+		$0.CSharpFormattingPolicy = $4
+		$4.scope = text/x-csharp
+		$0.TextStylePolicy = $5
+		$5.FileWidth = 80
+		$5.TabsToSpaces = True
+		$5.scope = text/plain
+		$0.TextStylePolicy = $6
+		$6.inheritsSet = null
+		$6.scope = text/x-web
+		$0.TextStylePolicy = $7
+		$7.inheritsSet = null
+		$7.scope = text/x-vs
+		$0.TextStylePolicy = $8
+		$8.inheritsSet = null
+		$8.scope = application/javascript
+		$0.TextStylePolicy = $9
+		$9.inheritsSet = null
+		$9.scope = text/x-html
+		$0.HTMLFormattingPolicy = $10
+		$10.FormatOnPaste = True
+		$10.XHTMLCodingStyle = True
+		$10.scope = text/x-html
+	EndGlobalSection
 EndGlobal

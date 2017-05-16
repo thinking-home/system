@@ -110,7 +110,3 @@
 
 - [ ] сделать поддержку нескольких СУБД
 
-
-
-https://github.com/dotnet/core/blob/master/release-notes/download-archives/1.1-preview2.1-download.md
-

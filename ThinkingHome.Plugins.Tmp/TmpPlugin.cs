@@ -11,6 +11,7 @@ using ThinkingHome.Plugins.Timer;
 using ThinkingHome.Plugins.WebServer.Attributes;
 using ThinkingHome.Plugins.WebServer.Handlers;
 using ThinkingHome.Plugins.WebUi.Apps;
+using ThinkingHome.Plugins.Mail;
 
 namespace ThinkingHome.Plugins.Tmp
 {
@@ -106,5 +107,15 @@ namespace ThinkingHome.Plugins.Tmp
                     .ToList();
             }
         }
-    }
+
+		[WebApiMethod("/api/tmp/send")]
+		public object SendEmail(HttpRequestParams requestParams)
+		{
+            Context.Require<MailPlugin>()
+                   .SendEmail("dima117a@gmail.com", "test2", Guid.NewGuid().ToString());
+            
+            return null;
+		}
+
+	}
 }
