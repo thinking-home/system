@@ -21,7 +21,7 @@
             "fromName": "Cow",
             "fromMail": "cow@example.com",
             "smtpHost": "localhost",
-            "smtpPort": "1025",
+            "smtpPort": 1025,
             "useSSL": true,
             "disableCertificateValidation": false,
             "auth": {
@@ -58,4 +58,35 @@ Context.Require<MailPlugin>()
 ```js
 host.api.sendMail('test@example.com', 'My subject', 'My message body.');
 
+```
+
+## Примеры подключения к почтовым сервисам
+
+### Яндекс Почта
+
+```js
+{
+    "smtpHost": "smtp.yandex.com",
+    "smtpPort": 465,
+    "useSSL": true,
+    "auth": {
+        "login": "example@yandex.ru",
+        "password": "<пароль>"
+    }
+}
+```
+
+### GMail
+
+```js
+{
+    "smtpHost": "smtp.gmail.com",
+    "smtpPort": 465,
+    "useSSL": true,
+    "disableCertificateValidation": true,
+    "auth": {
+        "login": "example@gmail.com",
+        "password": "<пароль для приложений>"
+    }
+}
 ```

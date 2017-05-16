@@ -72,7 +72,7 @@
 
 - [x] web-ui (~~app list~~)
 - [x] scripts UI(~~запуск скриптов~~, ~~сохранение~~, ~~удаление~~, ~~fullscreen~~, ~~theme~~, ~~подписка на события~~)
-- [ ] плагин utils (http запросы, email)
+- [x] ~~плагин email~~
 
 ## alpha3
 
@@ -105,6 +105,7 @@
 - [ ] weather
 - [ ] dynamic DNS [инструкция](https://habrahabr.ru/post/310534), [токены](https://pddimp.yandex.ru/api2/admin/get_token?domain_name=thinking-home.ru)
 - [ ] audio ?
+- [ ] http запросы
 
 ====
 
