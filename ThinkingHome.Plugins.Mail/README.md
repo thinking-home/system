@@ -22,6 +22,8 @@
             "fromMail": "cow@example.com",
             "smtpHost": "localhost",
             "smtpPort": "1025",
+            "useSSL": true,
+            "disableCertificateValidation": false,
             "auth": {
                 "login": "cow@example.com",
                 "password": "password"

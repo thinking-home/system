@@ -112,7 +112,7 @@ namespace ThinkingHome.Plugins.Tmp
 		public object SendEmail(HttpRequestParams requestParams)
 		{
             Context.Require<MailPlugin>()
-                   .SendEmail("dima117a@gmail.com", "test2", Guid.NewGuid().ToString());
+                   .SendMail("dima117a@gmail.com", "test2", Guid.NewGuid().ToString());
             
             return null;
 		}
