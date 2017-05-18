@@ -106,6 +106,7 @@
 - [ ] dynamic DNS [инструкция](https://habrahabr.ru/post/310534), [токены](https://pddimp.yandex.ru/api2/admin/get_token?domain_name=thinking-home.ru)
 - [ ] audio ?
 - [ ] http запросы
+- [ ] twitter https://coretweet.github.io
 
 ====
 

@@ -117,5 +117,12 @@ namespace ThinkingHome.Plugins.Tmp
             return null;
 		}
 
+		[ScriptCommand("generateBuffer")]
+        public Scripts.Buffer GetTestBuffer() {
+            var content = Guid.NewGuid().ToString();
+            var bytes = System.Text.Encoding.UTF8.GetBytes(content);
+
+            return new Scripts.Buffer(bytes);
+        }
 	}
 }
