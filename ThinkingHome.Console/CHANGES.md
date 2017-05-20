@@ -48,6 +48,7 @@ WEB SERVER
   - обработчики сценарных событий запускаются асинхронно
   - изменены параметры http api сценариев
   - сценарные плагины (core, http api) в отдельных пакетах
+  - Buffer - представление бинарных данных в сценариях
 - WEB UI
   - marionette v3
   - bootstrap 4 alpha
@@ -68,7 +69,8 @@ WEB SERVER
   - `lib.ajax.postJSON(url, [data])`
   - `lib.common.serializeForm(form)`
   - обработка асинхронных исключений в метода start (нужно вернуть промис из него)
-  
+- mail plugin: `sendMail` + + `host.api.sendMail`, `host.api.sendMailWithAttachment` 
+
 Теперь по умолчанию приложение ожидает Ctrl+C для остановки. Чтобы останавливалось по нажатию ENTER, нужно передать при запуске параметр -enter.
   
   

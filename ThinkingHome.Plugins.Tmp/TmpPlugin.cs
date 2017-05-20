@@ -87,7 +87,7 @@ namespace ThinkingHome.Plugins.Tmp
         [WebApiMethod("/api/tmp/wefwefwef")]
         public object TmpHandlerMethod(HttpRequestParams requestParams)
         {
-            Context.Require<ScriptsPlugin>().EmitScriptEvent("mimi", 1,2,3, "GUID-111");
+            Context.Require<ScriptsPlugin>().EmitScriptEvent("mimi", 1, 2, 3, "GUID-111");
             return null;
         }
 
@@ -103,26 +103,27 @@ namespace ThinkingHome.Plugins.Tmp
             using (var db = Context.Require<DatabasePlugin>().OpenSession())
             {
                 return db.Set<SmallPig>()
-                    .Select(pig => new { id = pig.Id, name = pig.Name, size = pig.Size})
+                    .Select(pig => new { id = pig.Id, name = pig.Name, size = pig.Size })
                     .ToList();
             }
         }
 
-		[WebApiMethod("/api/tmp/send")]
-		public object SendEmail(HttpRequestParams requestParams)
-		{
+        [WebApiMethod("/api/tmp/send")]
+        public object SendEmail(HttpRequestParams requestParams)
+        {
             Context.Require<MailPlugin>()
                    .SendMail("dima117a@gmail.com", "test2", Guid.NewGuid().ToString());
-            
-            return null;
-		}
 
-		[ScriptCommand("generateBuffer")]
-        public Scripts.Buffer GetTestBuffer() {
+            return null;
+        }
+
+        [ScriptCommand("generateBuffer")]
+        public Scripts.Buffer GetTestBuffer()
+        {
             var content = Guid.NewGuid().ToString();
             var bytes = System.Text.Encoding.UTF8.GetBytes(content);
 
             return new Scripts.Buffer(bytes);
         }
-	}
+    }
 }

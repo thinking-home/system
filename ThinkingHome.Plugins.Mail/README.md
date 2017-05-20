@@ -47,6 +47,36 @@ Context.Require<MailPlugin>()
 
 ```
 
+### `void SendEmail(string email, string subject, string message, string fileName, byte[] fileContent)`
+
+Отправляет письмо с прикрепленным файлом.
+
+#### Пример
+
+```csharp
+var bytes = File.ReadAllBytes("image.jpg");
+
+Context.Require<MailPlugin>()
+    .SendEmail("test@example.com", "My subject", "My message body.", "image.jpg", bytes);
+
+```
+
+### `void SendEmail(string email, string subject, string message, string fileName, Buffer fileContent)`
+
+Отправляет письмо с прикрепленным файлом. Этот метод принимает содержимое файла в виде 
+экземпляра класса `ThinkingHome.Plugins.Scripts.Buffer` (нужен для использования в сценариях).
+
+#### Пример
+
+```csharp
+var bytes = File.ReadAllBytes("image.jpg");
+var buffer = new Buffer(bytes);
+
+Context.Require<MailPlugin>()
+    .SendEmail("test@example.com", "My subject", "My message body.", "image.jpg", buffer);
+
+```
+
 ## API сценариев
 
 ### sendMail
@@ -57,6 +87,24 @@ Context.Require<MailPlugin>()
 
 ```js
 host.api.sendMail('test@example.com', 'My subject', 'My message body.');
+
+```
+
+### sendMailWithAttachment
+
+Отправляет письмо с прикрепленным файлом.
+
+#### Пример
+
+```js
+var file = host.api.getExampleImage(); // Buffer
+
+host.api.sendMailWithAttachment(
+    'test@example.com',
+    'My subject',
+    'My message body.',
+    'my-file.jpg',
+    file);
 
 ```
 
