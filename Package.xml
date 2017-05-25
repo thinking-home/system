@@ -1,0 +1,5 @@
+<Project>
+    <PropertyGroup>
+        <VersionPrefix>4.0.0-alpha2</VersionPrefix>
+    </PropertyGroup>
+</Project>
