@@ -1,20 +1,18 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <Import Project="../Package.xml" />
+	
 
 	<PropertyGroup>
+        <PackageId>ThinkingHome.Core.Plugins</PackageId>
+        <AssemblyTitle>ThinkingHome.Core.Plugins</AssemblyTitle>
+        <Description>This package contains base classes for other plugins.</Description>
+		
 		<TargetFramework>netstandard1.6</TargetFramework>
 		<DebugType>portable</DebugType>
 		<AssemblyName>ThinkingHome.Core.Plugins</AssemblyName>
-		<PackageId>ThinkingHome.Core.Plugins</PackageId>
 		<NetStandardImplicitPackageVersion>1.6.1</NetStandardImplicitPackageVersion>
 		<PackageTargetFallback>$(PackageTargetFallback);dnxcore50</PackageTargetFallback>
-		<GenerateAssemblyTitleAttribute>false</GenerateAssemblyTitleAttribute>
-		<GenerateAssemblyDescriptionAttribute>false</GenerateAssemblyDescriptionAttribute>
-		<GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
-		<GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
-		<GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
-		<GenerateAssemblyCopyrightAttribute>false</GenerateAssemblyCopyrightAttribute>
 	</PropertyGroup>
 
 	<ItemGroup>

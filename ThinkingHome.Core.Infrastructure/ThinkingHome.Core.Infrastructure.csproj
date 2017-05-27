@@ -1,34 +1,31 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <Import Project="../Package.xml" />
+    <Import Project="../Package.xml" />
 
-  <PropertyGroup>
-    <TargetFramework>netstandard1.6</TargetFramework>
-    <DebugType>portable</DebugType>
-    <AssemblyName>ThinkingHome.Core.Infrastructure</AssemblyName>
-    <PackageId>ThinkingHome.Core.Infrastructure</PackageId>
-    <NetStandardImplicitPackageVersion>1.6.1</NetStandardImplicitPackageVersion>
-    <PackageTargetFallback>$(PackageTargetFallback);dnxcore50</PackageTargetFallback>
-    <GenerateAssemblyTitleAttribute>false</GenerateAssemblyTitleAttribute>
-    <GenerateAssemblyDescriptionAttribute>false</GenerateAssemblyDescriptionAttribute>
-    <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
-    <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
-    <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
-    <GenerateAssemblyCopyrightAttribute>false</GenerateAssemblyCopyrightAttribute>
-  </PropertyGroup>
+    <PropertyGroup>
+        <PackageId>ThinkingHome.Core.Infrastructure</PackageId>
+        <AssemblyTitle>ThinkingHome.Core.Infrastructure</AssemblyTitle>
+        <Description></Description>
 
-  <ItemGroup>
-    <ProjectReference Include="../ThinkingHome.Core.Plugins/ThinkingHome.Core.Plugins.csproj" />
-  </ItemGroup>
+	    <TargetFramework>netstandard1.6</TargetFramework>
+	    <DebugType>portable</DebugType>
+	    <AssemblyName>ThinkingHome.Core.Infrastructure</AssemblyName>
+	    <NetStandardImplicitPackageVersion>1.6.1</NetStandardImplicitPackageVersion>
+	    <PackageTargetFallback>$(PackageTargetFallback);dnxcore50</PackageTargetFallback>
+    </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="System.Runtime.Loader" Version="4.3.0" />
-    <PackageReference Include="Microsoft.Extensions.Configuration" Version="1.1.1" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="1.1.1" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="1.1.0" />
-    <PackageReference Include="Microsoft.Extensions.Logging" Version="1.1.1" />
-    <PackageReference Include="Serilog.Extensions.Logging" Version="1.4.0" />
-    <PackageReference Include="Serilog.Settings.Configuration" Version="2.2.0" />
-  </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="../ThinkingHome.Core.Plugins/ThinkingHome.Core.Plugins.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="System.Runtime.Loader" Version="4.3.0" />
+		<PackageReference Include="Microsoft.Extensions.Configuration" Version="1.1.1" />
+		<PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="1.1.1" />
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="1.1.0" />
+		<PackageReference Include="Microsoft.Extensions.Logging" Version="1.1.1" />
+		<PackageReference Include="Serilog.Extensions.Logging" Version="1.4.0" />
+		<PackageReference Include="Serilog.Settings.Configuration" Version="2.2.0" />
+	</ItemGroup>
 
 </Project>

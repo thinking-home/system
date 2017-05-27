@@ -1,24 +1,28 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <Import Project="../Package.xml" />
+    <Import Project="../Package.xml" />
 
-  <PropertyGroup>
-    <TargetFramework>netstandard1.6</TargetFramework>
-    <DebugType>portable</DebugType>
-    <AssemblyName>ThinkingHome.Plugins.WebServer.UrlValidation</AssemblyName>
-    <PackageId>ThinkingHome.Plugins.WebServer.UrlValidation</PackageId>
-    <NetStandardImplicitPackageVersion>1.6.1</NetStandardImplicitPackageVersion>
-    <PackageTargetFallback>$(PackageTargetFallback);dnxcore50</PackageTargetFallback>
-  </PropertyGroup>
+    <PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="../ThinkingHome.Core.Plugins/ThinkingHome.Core.Plugins.csproj" />
-    <ProjectReference Include="../ThinkingHome.Plugins.WebServer/ThinkingHome.Plugins.WebServer.csproj" />
-  </ItemGroup>
+        <PackageId>ThinkingHome.Plugins.WebServer.UrlValidation</PackageId>
+        <AssemblyTitle>ThinkingHome.Plugins.WebServer.UrlValidation</AssemblyTitle>
+        <Description></Description>
 
-  <ItemGroup>
-    <PackageReference Include="Microsoft.Extensions.Configuration" Version="1.1.1" />
-    <PackageReference Include="Microsoft.Extensions.Logging" Version="1.1.1" />
-  </ItemGroup>
+		<TargetFramework>netstandard1.6</TargetFramework>
+	    <DebugType>portable</DebugType>
+	    <AssemblyName>ThinkingHome.Plugins.WebServer.UrlValidation</AssemblyName>
+	    <NetStandardImplicitPackageVersion>1.6.1</NetStandardImplicitPackageVersion>
+	    <PackageTargetFallback>$(PackageTargetFallback);dnxcore50</PackageTargetFallback>
+    </PropertyGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="../ThinkingHome.Core.Plugins/ThinkingHome.Core.Plugins.csproj" />
+		<ProjectReference Include="../ThinkingHome.Plugins.WebServer/ThinkingHome.Plugins.WebServer.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.Extensions.Configuration" Version="1.1.1" />
+		<PackageReference Include="Microsoft.Extensions.Logging" Version="1.1.1" />
+	</ItemGroup>
 
 </Project>

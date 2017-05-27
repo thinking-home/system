@@ -1,32 +1,30 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <Import Project="../Package.xml" />
+    <Import Project="../Package.xml" />
 
-  <PropertyGroup>
-    <TargetFramework>netstandard1.6</TargetFramework>
-    <DebugType>portable</DebugType>
-    <AssemblyName>ThinkingHome.Plugins.Scripts.WebApi</AssemblyName>
-    <PackageId>ThinkingHome.Plugins.Scripts.WebApi</PackageId>
-    <NetStandardImplicitPackageVersion>1.6.1</NetStandardImplicitPackageVersion>
-    <PackageTargetFallback>$(PackageTargetFallback);dnxcore50</PackageTargetFallback>
-    <GenerateAssemblyTitleAttribute>false</GenerateAssemblyTitleAttribute>
-    <GenerateAssemblyDescriptionAttribute>false</GenerateAssemblyDescriptionAttribute>
-    <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
-    <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
-    <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
-    <GenerateAssemblyCopyrightAttribute>false</GenerateAssemblyCopyrightAttribute>
-  </PropertyGroup>
+    <PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="../ThinkingHome.Plugins.Database/ThinkingHome.Plugins.Database.csproj" />
-    <ProjectReference Include="../ThinkingHome.Plugins.Scripts/ThinkingHome.Plugins.Scripts.csproj" />
-    <ProjectReference Include="../ThinkingHome.Plugins.WebServer/ThinkingHome.Plugins.WebServer.csproj" />
-    <ProjectReference Include="../ThinkingHome.Core.Plugins/ThinkingHome.Core.Plugins.csproj" />
-  </ItemGroup>
+        <PackageId>ThinkingHome.Plugins.Scripts.WebApi</PackageId>
+        <AssemblyTitle>ThinkingHome.Plugins.Scripts.WebApi</AssemblyTitle>
+        <Description></Description>
 
-  <ItemGroup>
-    <PackageReference Include="Microsoft.Extensions.Configuration" Version="1.1.1" />
-    <PackageReference Include="Microsoft.Extensions.Logging" Version="1.1.1" />
-  </ItemGroup>
+		<TargetFramework>netstandard1.6</TargetFramework>
+	    <DebugType>portable</DebugType>
+	    <AssemblyName>ThinkingHome.Plugins.Scripts.WebApi</AssemblyName>
+	    <NetStandardImplicitPackageVersion>1.6.1</NetStandardImplicitPackageVersion>
+	    <PackageTargetFallback>$(PackageTargetFallback);dnxcore50</PackageTargetFallback>
+    </PropertyGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="../ThinkingHome.Plugins.Database/ThinkingHome.Plugins.Database.csproj" />
+		<ProjectReference Include="../ThinkingHome.Plugins.Scripts/ThinkingHome.Plugins.Scripts.csproj" />
+		<ProjectReference Include="../ThinkingHome.Plugins.WebServer/ThinkingHome.Plugins.WebServer.csproj" />
+		<ProjectReference Include="../ThinkingHome.Core.Plugins/ThinkingHome.Core.Plugins.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.Extensions.Configuration" Version="1.1.1" />
+		<PackageReference Include="Microsoft.Extensions.Logging" Version="1.1.1" />
+	</ItemGroup>
 
 </Project>
