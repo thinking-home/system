@@ -100,6 +100,7 @@
 
 ### others
 
+- [ ] графики
 - [ ] web-ui (dashboards),
 - [ ] microclimate (Core, UI)
 - [ ] weather

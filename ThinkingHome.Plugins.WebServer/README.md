@@ -26,29 +26,9 @@
 }
 ```
 
-## API
+## Статические ресурсы
 
-### `[HttpCommand]`
-
-Вы можете отметить методы своего плагина атрибутом `ThinkingHome.Plugins.WebServer.Attributes.HttpCommandAttribute` и указать в его параметрах URL. Метод вашего плагина будет автоматически вызван при получении HTTP запроса к указанному URL.
-
-Сигнатура метода, обрабатывающего HTTP запрос, должна соответствовать делегату `HttpHandlerDelegate`:
-
-```csharp
-public delegate object HttpHandlerDelegate(HttpRequestParams requestParams);
-```
-
-Входной параметр `requestParams` содержит информацию о параметрах HTTP запроса. Возвращаемое из метода значение будет сериализовано в JSON и передано обратно на клиент.
-
-#### Пример
-
-```csharp
-[HttpCommand("/questions/main")]
-public object TmpHandlerMethod42(HttpRequestParams requestParams)
-{
-    return new { answer = 42 };
-}
-```
+Статические ресурсы возвращают одинаковое содержимое при каждом запросе к ним. Статические ресурсы кэшируются на клиенте и сервере.
 
 ### `[HttpEmbeddedResource]`
 
@@ -65,3 +45,91 @@ public class MyPlugin : PluginBase
 
 }
 ```
+
+## Динамические ресурсы
+
+Содержимое динамических ресурсов генерируется при каждом запросе к ним. За генерацию содержимого отвечают методы плагинов, отмеченные специальными атрибутами. Нужный метод будет вызван автоматически при получении HTTP запроса на URL, указанный в его атрибуте. Динамические ресурсы не кэшируются.
+
+Сигнатура метода, обрабатывающего HTTP запрос, должна соответствовать делегату `HttpHandlerDelegate`:
+
+```csharp
+public delegate object HttpHandlerDelegate(HttpRequestParams requestParams);
+```
+
+Входной параметр `requestParams` содержит информацию о параметрах HTTP запроса. Возвращаемое из метода значение будет передано на клиент в качестве содержимого запрошенного ресурса.
+
+
+### `[WebApiMethod]`
+
+С помощью атрибута `ThinkingHome.Plugins.WebServer.Attributes.WebApiMethodAttribute` вы можете указать, что метод плагина является методом Web API и доступен для обращения по HTTP.
+
+Результат работы метода будет сериализован в JSON и передан на клиент.
+
+#### Пример
+
+```csharp
+[HttpCommand("/cow/add")]
+public object AddCow(HttpRequestParams requestParams)
+{
+    var name = requestParams.GetRequiredString("name");
+
+    // ... add new cow with specified name
+
+    return new { success = true, message = "Cow is added." };
+}
+```
+
+### `[HttpJsonDynamicResource]`
+
+Атрибут `ThinkingHome.Plugins.WebServer.Attributes.HttpJsonDynamicResourceAttribute` позволяет обращаться к методу плагина по HTTP как к файлу JSON.
+
+По сути атрибуты `[WebApiMethod]` и `[HttpJsonDynamicResource]` делают одно и то же - сериализуют результат метода в JSON и отправляют на клиент. Разница между ними в том, что первый для клиента выглядит как метод API (выполнение действий), а второй - как файл (получение контента). Сейчас между ними нет технических различий, но в будущем они могут появиться.  
+
+#### Пример
+
+```csharp
+[HttpCommand("/settings.json")]
+public object TmpHandlerMethod42(HttpRequestParams requestParams)
+{
+    return new { 
+        rootDir = GetRootDir(), 
+        lang = GetCurrentLang()
+    };
+}
+```
+
+### `[HttpTextDynamicResource]`
+
+Атрибут `ThinkingHome.Plugins.WebServer.Attributes.HttpTextDynamicResourceAttribute` позволяет обращаться к методу плагина по HTTP как к текстовому файлу.
+
+Результат работы метода будет преобразован в строку (`ToString()`) и отправлен на клиент с заданным content type.
+
+#### Пример
+
+```csharp
+[HttpTextDynamicResource("/settings.css", "text/css")]
+public object TmpHandlerMethod42(HttpRequestParams requestParams)
+{
+    return "body { color: red; }";
+}
+```
+
+### `[HttpBinaryDynamicResource]`
+
+Атрибут `ThinkingHome.Plugins.WebServer.Attributes.HttpBinaryDynamicResourceAttribute` позволяет обращаться к методу плагина по HTTP как к бинарному файлу. Например, с помощью этого метода  можно вернуть на клиент динамически сгенерированное изображение.
+
+Результат работы метода будет приведен к типу `byte[]` (массив байтов) и отправлен на клиент с заданным content type (по умолчанию `"application/octet-stream"`).
+
+#### Пример
+
+```csharp
+[HttpBinaryDynamicResource("/settings.css", "text/css")]
+public object TmpHandlerMethod42(HttpRequestParams requestParams)
+{
+    var strDate = DateTime.Now.ToLongDateString();
+
+    return Encoding.UTF8.GetBytes(strDate);
+}
+```
+
+
