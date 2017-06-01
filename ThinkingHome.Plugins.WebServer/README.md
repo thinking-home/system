@@ -132,4 +132,57 @@ public object TmpHandlerMethod42(HttpRequestParams requestParams)
 }
 ```
 
+## Собственные типы ресурсов
 
+Вы можете реализовать поддержку собственных типов статических и динамических ресурсов. 
+
+Например, вы можете описать тип статических ресурсов, получающий содержимое из файловой системы (или из любого другого источника). Также вы можете описать собственный тип динамических ресурсов для сериализации результатов работы методов плагинов в нужный формат (например, в XML).
+
+### `HttpStaticResourceAttribute`
+
+Чтобы описать атрибут для собственного типа статических ресурсов, необходимо создать класс, унаследованнй от абстрактного класса `ThinkingHome.Plugins.WebServer.Attributes.Base.HttpStaticResourceAttribute` и реализовать в нем метод `public abstract byte[] GetContent(Assembly assembly)`.
+
+В качестве входного параметра в метод приходит информация о сборке, в которой находится плагин, помеченный атрибутом. В качестве результата необходимо вернуть массив байтов, содержащий нужный контент.
+
+#### Пример
+
+```csharp
+public class HttpFileSystemResourceAttribute : HttpStaticResourceAttribute
+{
+    public string Path { get; }
+
+    public HttpFileSystemResourceAttribute(string url, string path, string contentType = "text/plain")
+        :base(url, contentType)
+    {
+        Path = resourcePath;
+    }
+
+    public override byte[] GetContent(Assembly assembly)
+    {
+        return File.ReadAllBytes(Path);
+    }
+}
+```
+
+### `HttpDynamicResourceAttribute`
+
+Чтобы описать собственный тип динамических ресурсов, создайте класс, унаследованный от абстрактного класса `ThinkingHome.Plugins.WebServer.Attributes.Base.HttpDynamicResourceAttribute` и реализуйте в нем метод `public byte[] PrepareResult(object methodResult)`.
+
+Теперь вы можете отметить этим атрибутом методы плагинов, сигнатура которых соответствует делегату `HttpHandlerDelegate` и эти методы будут автоматически вызваны при поступлении HTTP запроса на адрес, заданный в параметрах атрибута. Результат работы выванного метода будет передан в метод `PrepareResult`, который должен вернуть массив байтов, которые будут отправлены на клиент.
+
+#### Пример
+
+```csharp
+public class HttpBinaryDynamicResourceAttribute : HttpDynamicResourceAttribute
+{
+    public HttpBinaryDynamicResourceAttribute(string url, string contentType = "application/octet-stream")
+        :base(url, contentType)
+    {
+    }
+
+    public override byte[] PrepareResult(object methodResult)
+    {
+        return methodResult as byte[];
+    }
+}
+```
