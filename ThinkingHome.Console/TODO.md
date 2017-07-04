@@ -74,12 +74,12 @@
 - [x] ~~плагин email~~
 
 ## alpha3
+- [ ] scheduler
 
 ### core
 
 - [ ] локализация (после релиза .NET Core 2.0)
 - [ ] http listener (signalr)
-- [ ] scheduler
 
 ### hardware
 
@@ -96,6 +96,7 @@
 
 - [ ] telegram bot https://www.nuget.org/packages/Telegram.Bot/
 - [ ] slack
+- [ ] SMS
 
 ### others
 

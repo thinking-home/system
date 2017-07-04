@@ -7,7 +7,7 @@
         <NeutralLanguage>en-US</NeutralLanguage>
         <Copyright>Thinking-Home.RU © 2017</Copyright>
 
-		<PackageTags>thinking home;core</PackageTags>
+		<PackageTags>thinking-home;core</PackageTags>
 		<PackageProjectUrl>https://github.com/thinking-home/system</PackageProjectUrl>
 		<PackageLicenseUrl>https://github.com/thinking-home/system/blob/master/LICENSE</PackageLicenseUrl>
         <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
