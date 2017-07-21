@@ -6,14 +6,13 @@
 
         <PackageId>ThinkingHome.Console</PackageId>
         <AssemblyTitle>ThinkingHome.Console</AssemblyTitle>
-        <Description></Description>
+        <Description />
 
-		<TargetFramework>netcoreapp1.1</TargetFramework>
+		<TargetFramework>netcoreapp2.0</TargetFramework>
 		<DebugType>portable</DebugType>
 		<AssemblyName>ThinkingHome.Console</AssemblyName>
 		<OutputType>Exe</OutputType>
-		<PackageTargetFallback>$(PackageTargetFallback);dnxcore50</PackageTargetFallback>
-		<RuntimeFrameworkVersion>1.1.1</RuntimeFrameworkVersion>
+		<RuntimeFrameworkVersion>2.0.0-preview2-25407-01</RuntimeFrameworkVersion>
     </PropertyGroup>
 
     <ItemGroup>
@@ -28,22 +27,22 @@
 	<ItemGroup>
 		<ProjectReference Include="../ThinkingHome.Core.Infrastructure/ThinkingHome.Core.Infrastructure.csproj" />
 		<ProjectReference Include="../ThinkingHome.Core.Plugins/ThinkingHome.Core.Plugins.csproj" />
-		<ProjectReference Include="../ThinkingHome.Plugins.WebServer/ThinkingHome.Plugins.WebServer.csproj" />
-		<ProjectReference Include="../ThinkingHome.Plugins.WebServer.UrlValidation/ThinkingHome.Plugins.WebServer.UrlValidation.csproj" />
-		<ProjectReference Include="../ThinkingHome.Plugins.WebUi/ThinkingHome.Plugins.WebUi.csproj" />
-		<ProjectReference Include="../ThinkingHome.Plugins.WebUi.Apps/ThinkingHome.Plugins.WebUi.Apps.csproj" />
-		<ProjectReference Include="../ThinkingHome.Plugins.Database/ThinkingHome.Plugins.Database.csproj" />
-		<ProjectReference Include="../ThinkingHome.Plugins.Scripts/ThinkingHome.Plugins.Scripts.csproj" />
-		<ProjectReference Include="../ThinkingHome.Plugins.Scripts.WebApi/ThinkingHome.Plugins.Scripts.WebApi.csproj" />
-		<ProjectReference Include="../ThinkingHome.Plugins.Scripts.WebUi/ThinkingHome.Plugins.Scripts.WebUi.csproj" />
-		<ProjectReference Include="../ThinkingHome.Plugins.Timer/ThinkingHome.Plugins.Timer.csproj" />
-		<ProjectReference Include="../ThinkingHome.Plugins.Tmp/ThinkingHome.Plugins.Tmp.csproj" />
-		<ProjectReference Include="../ThinkingHome.Plugins.Mail/ThinkingHome.Plugins.Mail.csproj" />
-		<ProjectReference Include="../ThinkingHome.Plugins.Scheduler/ThinkingHome.Plugins.Scheduler.csproj" />
+		<!--<ProjectReference Include="../ThinkingHome.Plugins.WebServer/ThinkingHome.Plugins.WebServer.csproj" />-->
+		<!--<ProjectReference Include="../ThinkingHome.Plugins.WebServer.UrlValidation/ThinkingHome.Plugins.WebServer.UrlValidation.csproj" />-->
+		<!--<ProjectReference Include="../ThinkingHome.Plugins.WebUi/ThinkingHome.Plugins.WebUi.csproj" />-->
+		<!--<ProjectReference Include="../ThinkingHome.Plugins.WebUi.Apps/ThinkingHome.Plugins.WebUi.Apps.csproj" />-->
+		<!--<ProjectReference Include="../ThinkingHome.Plugins.Database/ThinkingHome.Plugins.Database.csproj" />-->
+		<!--<ProjectReference Include="../ThinkingHome.Plugins.Scripts/ThinkingHome.Plugins.Scripts.csproj" />-->
+		<!--<ProjectReference Include="../ThinkingHome.Plugins.Scripts.WebApi/ThinkingHome.Plugins.Scripts.WebApi.csproj" />-->
+		<!--<ProjectReference Include="../ThinkingHome.Plugins.Scripts.WebUi/ThinkingHome.Plugins.Scripts.WebUi.csproj" />-->
+		<!--<ProjectReference Include="../ThinkingHome.Plugins.Timer/ThinkingHome.Plugins.Timer.csproj" />-->
+		<!--<ProjectReference Include="../ThinkingHome.Plugins.Tmp/ThinkingHome.Plugins.Tmp.csproj" />-->
+		<!--<ProjectReference Include="../ThinkingHome.Plugins.Mail/ThinkingHome.Plugins.Mail.csproj" />-->
+		<!--<ProjectReference Include="../ThinkingHome.Plugins.Scheduler/ThinkingHome.Plugins.Scheduler.csproj" />-->
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Serilog.Sinks.Literate" Version="2.1.0" />
+		<PackageReference Include="Serilog.Sinks.Console" Version="3.0.1" />
 		<PackageReference Include="Serilog.Sinks.RollingFile" Version="3.3.0" />
 	</ItemGroup>
 
