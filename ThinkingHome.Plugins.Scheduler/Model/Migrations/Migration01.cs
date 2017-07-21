@@ -21,7 +21,7 @@ namespace ThinkingHome.Plugins.Scheduler.Model.Migrations
 
 		public override void Revert()
 		{
-			Database.RemoveTable("Scripts_UserScript");
+			Database.RemoveTable("Scheduler_SchedulerEvent");
 		}
 	}
 }
