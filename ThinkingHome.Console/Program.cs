@@ -18,28 +18,20 @@ namespace ThinkingHome.Console
             app.StartServices(config);
 
             // finalize
-            Action shutdown = () =>
+            void Shutdown()
             {
-                System.Console.WriteLine("Application is shutting down...");
+                System.Console.WriteLine("\nApplication is shutting down...");
                 app.StopServices();
                 System.Console.WriteLine("Done");
-            };
+            }
 
-            AssemblyLoadContext.Default.Unloading += context => { shutdown(); };
-            System.Console.CancelKeyPress += (sender, eventArgs) => { shutdown(); };
+            AssemblyLoadContext.Default.Unloading += context => { Shutdown(); };
+            System.Console.CancelKeyPress += (sender, eventArgs) => { Shutdown(); };
 
             // wait
-            if (args.Any(value => value == "-enter"))
-            {
-                System.Console.WriteLine("Service is available. Press ENTER to exit.");
-                System.Console.ReadLine();
-            }
-            else
-            {
-                System.Console.WriteLine("Service is available. Press Ctrl+C to exit.");
-                var done = new AutoResetEvent(false);
-                done.WaitOne();
-            }
+            System.Console.WriteLine("Service is available. Press Ctrl+C to exit.");
+            var done = new AutoResetEvent(false);
+            done.WaitOne();
         }
     }
 }
