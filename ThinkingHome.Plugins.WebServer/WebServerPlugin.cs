@@ -28,8 +28,8 @@ namespace ThinkingHome.Plugins.WebServer
                     .UseMiddleware<HomePluginsMiddleware>(handlers))
                 .ConfigureServices(services => services
                     .AddMemoryCache())
-                .ConfigureLogging(loggerFactory =>
-                    loggerFactory.AddProxy(Logger))
+                .ConfigureLogging(builder =>
+                    builder.AddProxy(Logger))
                 .Build();
         }
 
