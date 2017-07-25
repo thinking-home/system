@@ -1,6 +1,7 @@
 ﻿using System.Data;
 using ThinkingHome.Migrator.Framework;
 using ThinkingHome.Migrator.Framework.Extensions;
+using ForeignKeyConstraint = ThinkingHome.Migrator.Framework.ForeignKeyConstraint;
 
 namespace ThinkingHome.Plugins.Scripts.Model.Migrations
 {

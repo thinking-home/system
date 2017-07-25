@@ -1,29 +1,22 @@
-<Project Sdk="Microsoft.NET.Sdk">
-
-    <Import Project="../Package.xml" />
-	
-    <PropertyGroup>
-
-        <PackageId>ThinkingHome.Plugins.Mail</PackageId>
-        <AssemblyTitle>ThinkingHome.Plugins.Mail</AssemblyTitle>
-        <Description></Description>
-
-		<TargetFramework>netstandard1.6</TargetFramework>
-		<DebugType>portable</DebugType>
-		<AssemblyName>ThinkingHome.Plugins.Mail</AssemblyName>
-		<NetStandardImplicitPackageVersion>1.6.1</NetStandardImplicitPackageVersion>
-		<PackageTargetFallback>$(PackageTargetFallback);dnxcore50</PackageTargetFallback>
-	</PropertyGroup>
-
-	<ItemGroup>
-		<ProjectReference Include="..\ThinkingHome.Core.Plugins\ThinkingHome.Core.Plugins.csproj" />
-		<ProjectReference Include="..\ThinkingHome.Plugins.Scripts\ThinkingHome.Plugins.Scripts.csproj" />
-	</ItemGroup>
-	
-	<ItemGroup>
-		<PackageReference Include="MailKit" Version="1.16.1" />
-		<PackageReference Include="Microsoft.Extensions.Configuration" Version="1.1.2" />
-		<PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="1.1.2" />
-		<PackageReference Include="Microsoft.Extensions.Logging" Version="1.1.1" />
-	</ItemGroup>
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="../Package.xml" />
+  <PropertyGroup>
+    <PackageId>ThinkingHome.Plugins.Mail</PackageId>
+    <AssemblyTitle>ThinkingHome.Plugins.Mail</AssemblyTitle>
+    <Description />
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <DebugType>portable</DebugType>
+    <AssemblyName>ThinkingHome.Plugins.Mail</AssemblyName>
+    <NetStandardImplicitPackageVersion>2.0.0-preview2-25401-01</NetStandardImplicitPackageVersion>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ThinkingHome.Core.Plugins\ThinkingHome.Core.Plugins.csproj" />
+    <ProjectReference Include="..\ThinkingHome.Plugins.Scripts\ThinkingHome.Plugins.Scripts.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="MailKit" Version="1.16.2" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="2.0.0-preview2-final" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="2.0.0-preview2-final" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="2.0.0-preview2-final" />
+  </ItemGroup>
 </Project>
