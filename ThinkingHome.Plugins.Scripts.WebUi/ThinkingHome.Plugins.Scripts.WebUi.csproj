@@ -1,40 +1,30 @@
-<Project Sdk="Microsoft.NET.Sdk">
-
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <Import Project="../Package.xml" />
-
   <PropertyGroup>
-
-        <PackageId>ThinkingHome.Plugins.Scripts.WebUi</PackageId>
-        <AssemblyTitle>ThinkingHome.Plugins.Scripts.WebUi</AssemblyTitle>
-        <Description></Description>
-
-		<TargetFramework>netstandard1.6</TargetFramework>
-        <DebugType>portable</DebugType>
-        <AssemblyName>ThinkingHome.Plugins.Scripts.WebUi</AssemblyName>
-        <NetStandardImplicitPackageVersion>1.6.1</NetStandardImplicitPackageVersion>
-        <PackageTargetFallback>$(PackageTargetFallback);dnxcore50</PackageTargetFallback>
+    <PackageId>ThinkingHome.Plugins.Scripts.WebUi</PackageId>
+    <AssemblyTitle>ThinkingHome.Plugins.Scripts.WebUi</AssemblyTitle>
+    <Description />
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <DebugType>portable</DebugType>
+    <AssemblyName>ThinkingHome.Plugins.Scripts.WebUi</AssemblyName>
+    <NetStandardImplicitPackageVersion>2.0.0-preview2-25401-01</NetStandardImplicitPackageVersion>
   </PropertyGroup>
-
-	<ItemGroup>
-	    <None Remove="Resources\**\*" />
-	</ItemGroup>
-
-	<ItemGroup>
-	    <EmbeddedResource Include="Resources\**\*" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<ProjectReference Include="../ThinkingHome.Plugins.Scripts/ThinkingHome.Plugins.Scripts.csproj" />
-		<ProjectReference Include="../ThinkingHome.Plugins.Scripts.WebApi/ThinkingHome.Plugins.Scripts.WebApi.csproj" />
-		<ProjectReference Include="../ThinkingHome.Plugins.WebServer/ThinkingHome.Plugins.WebServer.csproj" />
-		<ProjectReference Include="../ThinkingHome.Plugins.WebUi/ThinkingHome.Plugins.WebUi.csproj" />
-		<ProjectReference Include="../ThinkingHome.Plugins.WebUi.Apps/ThinkingHome.Plugins.WebUi.Apps.csproj" />
-		<ProjectReference Include="../ThinkingHome.Core.Plugins/ThinkingHome.Core.Plugins.csproj" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<PackageReference Include="Microsoft.Extensions.Configuration" Version="1.1.1" />
-		<PackageReference Include="Microsoft.Extensions.Logging" Version="1.1.1" />
-	</ItemGroup>
-
+  <ItemGroup>
+    <None Remove="Resources\**\*" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\**\*" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="../ThinkingHome.Plugins.Scripts/ThinkingHome.Plugins.Scripts.csproj" />
+    <ProjectReference Include="../ThinkingHome.Plugins.Scripts.WebApi/ThinkingHome.Plugins.Scripts.WebApi.csproj" />
+    <ProjectReference Include="../ThinkingHome.Plugins.WebServer/ThinkingHome.Plugins.WebServer.csproj" />
+    <ProjectReference Include="../ThinkingHome.Plugins.WebUi/ThinkingHome.Plugins.WebUi.csproj" />
+    <ProjectReference Include="../ThinkingHome.Plugins.WebUi.Apps/ThinkingHome.Plugins.WebUi.Apps.csproj" />
+    <ProjectReference Include="../ThinkingHome.Core.Plugins/ThinkingHome.Core.Plugins.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="2.0.0-preview2-final" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="2.0.0-preview2-final" />
+  </ItemGroup>
 </Project>

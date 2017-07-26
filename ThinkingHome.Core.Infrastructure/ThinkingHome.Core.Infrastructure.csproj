@@ -1,31 +1,25 @@
-<Project Sdk="Microsoft.NET.Sdk">
-
-    <Import Project="../Package.xml" />
-
-    <PropertyGroup>
-        <PackageId>ThinkingHome.Core.Infrastructure</PackageId>
-        <AssemblyTitle>ThinkingHome.Core.Infrastructure</AssemblyTitle>
-        <Description></Description>
-
-	    <TargetFramework>netstandard1.6</TargetFramework>
-	    <DebugType>portable</DebugType>
-	    <AssemblyName>ThinkingHome.Core.Infrastructure</AssemblyName>
-	    <NetStandardImplicitPackageVersion>1.6.1</NetStandardImplicitPackageVersion>
-	    <PackageTargetFallback>$(PackageTargetFallback);dnxcore50</PackageTargetFallback>
-    </PropertyGroup>
-
-    <ItemGroup>
-        <ProjectReference Include="../ThinkingHome.Core.Plugins/ThinkingHome.Core.Plugins.csproj" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<PackageReference Include="System.Runtime.Loader" Version="4.3.0" />
-		<PackageReference Include="Microsoft.Extensions.Configuration" Version="1.1.1" />
-		<PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="1.1.1" />
-		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="1.1.0" />
-		<PackageReference Include="Microsoft.Extensions.Logging" Version="1.1.1" />
-		<PackageReference Include="Serilog.Extensions.Logging" Version="1.4.0" />
-		<PackageReference Include="Serilog.Settings.Configuration" Version="2.2.0" />
-	</ItemGroup>
-
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="../Package.xml" />
+  <PropertyGroup>
+    <PackageId>ThinkingHome.Core.Infrastructure</PackageId>
+    <AssemblyTitle>ThinkingHome.Core.Infrastructure</AssemblyTitle>
+    <Description>
+    </Description>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <DebugType>portable</DebugType>
+    <AssemblyName>ThinkingHome.Core.Infrastructure</AssemblyName>
+    <NetStandardImplicitPackageVersion>2.0.0-preview2-25401-01</NetStandardImplicitPackageVersion>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../ThinkingHome.Core.Plugins/ThinkingHome.Core.Plugins.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="2.0.0-preview2-final" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="2.0.0-preview2-final" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="2.0.0-preview2-final" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="2.0.0-preview2-final" />
+    <PackageReference Include="Serilog.Settings.Configuration" Version="2.4.0" />
+    <PackageReference Include="System.Runtime.Loader" Version="4.3.0" />
+    <PackageReference Include="Serilog.Extensions.Logging" Version="1.4.0" />
+  </ItemGroup>
 </Project>

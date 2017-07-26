@@ -24,10 +24,10 @@ namespace ThinkingHome.Plugins.WebServer
 
     public static class ProxyLoggerProviderExtensions
     {
-        public static ILoggerFactory AddProxy(this ILoggerFactory factory, ILogger logger)
+        public static ILoggingBuilder AddProxy(this ILoggingBuilder builder, ILogger logger)
         {
-            factory.AddProvider(new ProxyLoggerProvider(logger));
-            return factory;
+            builder.AddProvider(new ProxyLoggerProvider(logger));
+            return builder;
         }
     }
 }

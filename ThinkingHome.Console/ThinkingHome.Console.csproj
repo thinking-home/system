@@ -6,14 +6,13 @@
 
         <PackageId>ThinkingHome.Console</PackageId>
         <AssemblyTitle>ThinkingHome.Console</AssemblyTitle>
-        <Description></Description>
+        <Description />
 
-		<TargetFramework>netcoreapp1.1</TargetFramework>
+		<TargetFramework>netcoreapp2.0</TargetFramework>
 		<DebugType>portable</DebugType>
 		<AssemblyName>ThinkingHome.Console</AssemblyName>
 		<OutputType>Exe</OutputType>
-		<PackageTargetFallback>$(PackageTargetFallback);dnxcore50</PackageTargetFallback>
-		<RuntimeFrameworkVersion>1.1.1</RuntimeFrameworkVersion>
+		<RuntimeFrameworkVersion>2.0.0-preview2-25407-01</RuntimeFrameworkVersion>
     </PropertyGroup>
 
     <ItemGroup>
@@ -43,7 +42,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Serilog.Sinks.Literate" Version="2.1.0" />
+		<PackageReference Include="Serilog.Sinks.Console" Version="3.0.1" />
 		<PackageReference Include="Serilog.Sinks.RollingFile" Version="3.3.0" />
 	</ItemGroup>
 
