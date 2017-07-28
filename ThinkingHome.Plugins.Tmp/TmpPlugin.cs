@@ -12,6 +12,8 @@ using ThinkingHome.Plugins.WebServer.Attributes;
 using ThinkingHome.Plugins.WebServer.Handlers;
 using ThinkingHome.Plugins.WebUi.Apps;
 using ThinkingHome.Plugins.Mail;
+using ThinkingHome.Plugins.Scheduler;
+using ThinkingHome.Plugins.Scheduler.Model;
 
 namespace ThinkingHome.Plugins.Tmp
 {
@@ -84,6 +86,32 @@ namespace ThinkingHome.Plugins.Tmp
             }
         }
 
+        [WebApiMethod("/api/tmp/add-schedule")]
+        public object AddTimer(HttpRequestParams requestParams)
+        {
+            using (var db = Context.Require<DatabasePlugin>().OpenSession())
+            {
+                var time = DateTime.Now.AddMinutes(1); 
+                
+                var e = new SchedulerEvent
+                {
+                    Hours = time.Hour,
+                    Minutes = time.Minute,
+                    Id = Guid.NewGuid(),
+                    Enabled = true,
+                    EventAlias = $"event:{time.ToShortTimeString()}",
+                    Name = $"time:{time.ToShortTimeString()}"
+                };
+
+                db.Set<SchedulerEvent>().Add(e);
+                db.SaveChanges();
+            }
+            
+            Context.Require<SchedulerPlugin>().ReloadTimes();
+
+            return 200;
+        }
+        
         [WebApiMethod("/api/tmp/wefwefwef")]
         public object TmpHandlerMethod(HttpRequestParams requestParams)
         {
