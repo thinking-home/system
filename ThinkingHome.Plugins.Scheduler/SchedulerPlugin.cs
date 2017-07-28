@@ -6,6 +6,7 @@ using Microsoft.Extensions.Logging;
 using ThinkingHome.Core.Plugins;
 using ThinkingHome.Plugins.Database;
 using ThinkingHome.Plugins.Scheduler.Model;
+using ThinkingHome.Plugins.Scripts;
 using ThinkingHome.Plugins.Timer;
 
 namespace ThinkingHome.Plugins.Scheduler
@@ -63,7 +64,16 @@ namespace ThinkingHome.Plugins.Scheduler
                 if (alarms.Any())
                 {
                     lastEventTime = now;
-                    Logger.LogWarning(string.Join(", ", alarms.Select(a => a.EventAlias)));
+
+                    var scriptPlugin = Context.Require<ScriptsPlugin>();
+
+                    using (var session = Context.Require<DatabasePlugin>().OpenSession())
+                    {
+                        foreach (var alarm in alarms)
+                        {
+                            scriptPlugin.EmitScriptEvent(session, alarm.EventAlias);
+                        }
+                    }
                 }
             }
         }

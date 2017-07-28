@@ -70,19 +70,24 @@ namespace ThinkingHome.Plugins.Scripts
 
         public void EmitScriptEvent(string eventAlias, params object[] args)
         {
-            Logger.LogDebug($"execute script event handlers ({eventAlias})");
-
             using (var session = Context.Require<DatabasePlugin>().OpenSession())
             {
-                // find all subscribed scripts
-                var scripts = session.Set<ScriptEventHandler>()
-                    .Where(s => s.EventAlias == eventAlias)
-                    .Select(x => x.UserScript)
-                    .ToList();
+                EmitScriptEvent(session, eventAlias, args);
+            }    
+        }
 
-                // execute scripts async
-                scripts.ForEach(script => SafeInvoke(script, s => ExecuteScript(s, args), true));
-            }
+        public void EmitScriptEvent(DbContext session, string eventAlias, params object[] args)
+        {
+            Logger.LogDebug($"execute script event handlers ({eventAlias})");
+
+            // find all subscribed scripts
+            var scripts = session.Set<ScriptEventHandler>()
+                .Where(s => s.EventAlias == eventAlias)
+                .Select(x => x.UserScript)
+                .ToList();
+
+            // execute scripts async
+            scripts.ForEach(script => SafeInvoke(script, s => ExecuteScript(s, args), true));
         }
 
         #endregion
