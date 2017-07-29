@@ -116,8 +116,6 @@ namespace ThinkingHome.Plugins.Scheduler
             // и будильник сегодня еще не звонил
             var date = GetNextDateTime(time, now, lastEventDateTime);
 
-            Logger.LogInformation($"date: {date}, now: {now}, last: {lastEventDateTime}");
-            
             return lastEventDateTime < date && date < now;
         }
 
