@@ -1,41 +1,56 @@
-﻿using System;
-using Microsoft.Extensions.Logging;
+﻿using System.Linq;
 using ThinkingHome.Core.Plugins;
+using ThinkingHome.Plugins.Database;
+using ThinkingHome.Plugins.Scheduler.Model;
+using ThinkingHome.Plugins.WebServer.Attributes;
+using ThinkingHome.Plugins.WebServer.Handlers;
 
 namespace ThinkingHome.Plugins.Scheduler.WebApi
 {
     public class SchedulerWebApiPlugin : PluginBase
     {
-        /*
-        
-        [WebApiMethod("/api/scripts/web-api/list")]
-        public object GetScriptList(HttpRequestParams request)
+        private object ToApiModel(SchedulerEvent e)
+        {
+            return new
+            {
+                id = e.Id,
+                name = e.Name,
+                eventAlias = e.EventAlias,
+                enabled = e.Enabled,
+                hours = e.Hours,
+                minutes = e.Minutes
+            };
+        }
+
+        [WebApiMethod("/api/scheduler/web-api/list")]
+        public object GetSchedulerEventList(HttpRequestParams request)
         {
             using (var session = Context.Require<DatabasePlugin>().OpenSession())
             {
-                var list = session.Set<UserScript>()
-                    .Select(x => new { id = x.Id, name = x.Name })
+                var list = session.Set<SchedulerEvent>()
+                    .OrderBy(e => e.Hours)
+                    .ThenBy(e => e.Minutes)
+                    .Select(ToApiModel)
                     .ToArray();
 
                 return list;
             }
         }
 
-        [WebApiMethod("/api/scripts/web-api/get")]
-        public object LoadScript(HttpRequestParams request)
+        [WebApiMethod("/api/scheduler/web-api/get")]
+        public object LoadSchedulerEvent(HttpRequestParams request)
         {
             var id = request.GetRequiredGuid("id");
 
             using (var session = Context.Require<DatabasePlugin>().OpenSession())
             {
-                var script = session.Set<UserScript>()
-                    .Select(x => new { id = x.Id, name = x.Name, body = x.Body })
-                    .Single(x => x.id == id);
-
-                return script;
+                var schedulerEvent = session.Set<SchedulerEvent>().Single(x => x.Id == id);
+                
+                return ToApiModel(schedulerEvent);
             }
         }
 
+        /*
         [WebApiMethod("/api/scripts/web-api/save")]
         public object SaveScript(HttpRequestParams request)
         {
