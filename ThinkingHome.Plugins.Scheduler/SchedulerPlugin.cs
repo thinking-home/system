@@ -21,11 +21,33 @@ namespace ThinkingHome.Plugins.Scheduler
         private DateTime lastEventTime = DateTime.MinValue;
         
         private List<SchedulerEvent> times;
+        private List<SchedulerEventHandlerDelegate> handlers;
         
         [DbModelBuilder]
         public void InitModel(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<SchedulerEvent>(cfg => cfg.ToTable("Scheduler_SchedulerEvent"));
+
+            handlers = RegisterHandlers();
+        }
+
+        private List<SchedulerEventHandlerDelegate> RegisterHandlers()
+        {
+            var list = new List<SchedulerEventHandlerDelegate>();
+
+            foreach (var plugin in Context.GetAllPlugins())
+            {
+                var pluginType = plugin.GetType();
+
+                // api handlers
+                foreach (var mi in plugin.FindMethodsByAttribute<SchedulerEventHandlerAttribute, SchedulerEventHandlerDelegate>())
+                {
+                    Logger.LogInformation($"register scheduler event handler: \"{mi.Method.Method.Name}\" ({pluginType.FullName})");
+                    handlers.Add(mi.Method);
+                }
+            }
+
+            return list;
         }
 
         #region public
@@ -72,6 +94,10 @@ namespace ThinkingHome.Plugins.Scheduler
                         foreach (var alarm in alarms)
                         {
                             scriptPlugin.EmitScriptEvent(session, alarm.EventAlias);
+
+                            SafeInvoke(handlers, h => h(alarm.Id), true);
+                            
+                            scriptPlugin.EmitScriptEvent(session, "scheduler:event:emited", alarm.Id);
                         }
                     }
                 }

@@ -11,6 +11,7 @@
   - остановка плагинов
 - CORE
   - события - синхронные/асинхронные (определяет плагин) `SafeInvoke`
+  - `SafeInvoke` может выполнить отдельный обработчик и коллекцию обработчиков
   - подписка на события вручную
   - изменилось API Context: `Context.Using`, `Context.Require`, `GetAllPlugins<T>`
   - API для работы с конфигами: Microsoft.Extensions.Configuration (хелперы: Microsoft.Extensions.Configuration.Binder)

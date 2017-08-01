@@ -80,6 +80,16 @@ namespace ThinkingHome.Core.Plugins
 
         #endregion
 
+        public void SafeInvoke<T>(IEnumerable<T> handlers, Action<T> action, bool async = false)
+        {
+            if (handlers == null) return;
+            
+            foreach (var handler in handlers)
+            {
+                SafeInvoke(handler, action, async);    
+            }
+        }
+
         public void SafeInvoke<T>(T handler, Action<T> action, bool async = false)
         {
             if (handler == null) return;
