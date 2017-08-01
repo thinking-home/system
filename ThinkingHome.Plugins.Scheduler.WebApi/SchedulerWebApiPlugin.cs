@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using ThinkingHome.Core.Plugins;
 using ThinkingHome.Plugins.Database;
 using ThinkingHome.Plugins.Scheduler.Model;
@@ -50,53 +51,61 @@ namespace ThinkingHome.Plugins.Scheduler.WebApi
             }
         }
 
-        /*
-        [WebApiMethod("/api/scripts/web-api/save")]
-        public object SaveScript(HttpRequestParams request)
+        [WebApiMethod("/api/scheduler/web-api/save")]
+        public object SaveSchedulerEvent(HttpRequestParams request)
         {
             var id = request.GetGuid("id");
             var name = request.GetRequiredString("name");
-            var body = request.GetRequiredString("body");
+            var eventAlias = request.GetRequiredString("event");
+            var enabled = request.GetRequiredBool("enabled");
+            var hours = request.GetRequiredInt32("hours");
+            var minutes = request.GetRequiredInt32("minutes");
 
             using (var session = Context.Require<DatabasePlugin>().OpenSession())
             {
-                UserScript script;
+                SchedulerEvent schedulerEvent;
 
                 if (id.HasValue)
                 {
-                    script = session.Set<UserScript>().Single(s => s.Id == id.Value);
+                    schedulerEvent = session.Set<SchedulerEvent>().Single(s => s.Id == id.Value);
                 }
                 else
                 {
-                    script = new UserScript { Id = Guid.NewGuid() };
-                    session.Set<UserScript>().Add(script);
+                    schedulerEvent = new SchedulerEvent { Id = Guid.NewGuid() };
+                    session.Set<SchedulerEvent>().Add(schedulerEvent);
                 }
 
-                script.Name = name;
-                script.Body = body;
+                schedulerEvent.Name = name;
+                schedulerEvent.EventAlias = eventAlias;
+                schedulerEvent.Enabled = enabled;
+                schedulerEvent.Hours = hours;
+                schedulerEvent.Minutes = minutes;
                 session.SaveChanges();
+                
+                // reset scheduler event cache
+                Context.Require<SchedulerPlugin>().ReloadTimes();
 
-                return script.Id;
+                return schedulerEvent.Id;
             }
         }
 
-        [WebApiMethod("/api/scripts/web-api/delete")]
-        public object DeleteScript(HttpRequestParams request)
+        [WebApiMethod("/api/scheduler/web-api/delete")]
+        public object DeleteSchedulerEvent(HttpRequestParams request)
         {
             var id = request.GetRequiredGuid("id");
 
             using (var session = Context.Require<DatabasePlugin>().OpenSession())
             {
-                var script = session.Set<UserScript>().Single(s => s.Id == id);
+                var schedulerEvent = session.Set<SchedulerEvent>().Single(s => s.Id == id);
 
-                session.Set<UserScript>().Remove(script);
+                session.Set<SchedulerEvent>().Remove(schedulerEvent);
                 session.SaveChanges();
+                
+                // reset scheduler event cache
+                Context.Require<SchedulerPlugin>().ReloadTimes();
             }
 
             return null;
-        }
-        
-        */
-        
+        }        
     }
 }
