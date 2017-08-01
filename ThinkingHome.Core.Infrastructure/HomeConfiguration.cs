@@ -18,7 +18,8 @@ namespace ThinkingHome.Core.Infrastructure
         {
             var builder = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
-                .AddJsonFile("appsettings.json", true);
+                .AddJsonFile("appsettings.json", true)
+                .AddEnvironmentVariables();
 
             Configuration = builder.Build();
 

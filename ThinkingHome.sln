@@ -39,6 +39,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	ProjectSection(SolutionItems) = preProject
 		Package.xml = Package.xml
 		README.md = README.md
+		build.sh = build.sh
+		Dockerfile = Dockerfile
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ThinkingHome.Plugins.Scheduler", "ThinkingHome.Plugins.Scheduler\ThinkingHome.Plugins.Scheduler.csproj", "{281572C3-DCC3-4C25-BF9F-CDB5527DF027}"
