@@ -33,6 +33,7 @@
     <ProjectReference Include="../ThinkingHome.Plugins.Tmp/ThinkingHome.Plugins.Tmp.csproj" />
     <ProjectReference Include="../ThinkingHome.Plugins.Mail/ThinkingHome.Plugins.Mail.csproj" />
     <ProjectReference Include="../ThinkingHome.Plugins.Scheduler/ThinkingHome.Plugins.Scheduler.csproj" />
+    <ProjectReference Include="../ThinkingHome.Plugins.Scheduler.WebApi/ThinkingHome.Plugins.Scheduler.WebApi.csproj" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Serilog.Sinks.Console" Version="3.0.1" />

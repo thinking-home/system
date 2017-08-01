@@ -43,6 +43,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ThinkingHome.Plugins.Scheduler", "ThinkingHome.Plugins.Scheduler\ThinkingHome.Plugins.Scheduler.csproj", "{281572C3-DCC3-4C25-BF9F-CDB5527DF027}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ThinkingHome.Plugins.Scheduler.WebApi", "ThinkingHome.Plugins.Scheduler.WebApi\ThinkingHome.Plugins.Scheduler.WebApi.csproj", "{CE25A976-C5C3-4A71-950E-18DBF1091F1E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -233,6 +235,18 @@ Global
 		{281572C3-DCC3-4C25-BF9F-CDB5527DF027}.Release|x64.Build.0 = Release|Any CPU
 		{281572C3-DCC3-4C25-BF9F-CDB5527DF027}.Release|x86.ActiveCfg = Release|Any CPU
 		{281572C3-DCC3-4C25-BF9F-CDB5527DF027}.Release|x86.Build.0 = Release|Any CPU
+		{CE25A976-C5C3-4A71-950E-18DBF1091F1E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CE25A976-C5C3-4A71-950E-18DBF1091F1E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CE25A976-C5C3-4A71-950E-18DBF1091F1E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CE25A976-C5C3-4A71-950E-18DBF1091F1E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CE25A976-C5C3-4A71-950E-18DBF1091F1E}.Debug|x64.ActiveCfg = Debug|x64
+		{CE25A976-C5C3-4A71-950E-18DBF1091F1E}.Debug|x64.Build.0 = Debug|x64
+		{CE25A976-C5C3-4A71-950E-18DBF1091F1E}.Debug|x86.ActiveCfg = Debug|x86
+		{CE25A976-C5C3-4A71-950E-18DBF1091F1E}.Debug|x86.Build.0 = Debug|x86
+		{CE25A976-C5C3-4A71-950E-18DBF1091F1E}.Release|x64.ActiveCfg = Release|x64
+		{CE25A976-C5C3-4A71-950E-18DBF1091F1E}.Release|x64.Build.0 = Release|x64
+		{CE25A976-C5C3-4A71-950E-18DBF1091F1E}.Release|x86.ActiveCfg = Release|x86
+		{CE25A976-C5C3-4A71-950E-18DBF1091F1E}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -252,6 +266,7 @@ Global
 		{9F8D813F-8599-47EF-BBE9-4EEABEC09BB6} = {5DF04DCB-BC26-42FA-B7D6-CFC24963F1A8}
 		{A90E1D08-C1AE-4FBF-B99F-978212DC5F7C} = {5DF04DCB-BC26-42FA-B7D6-CFC24963F1A8}
 		{281572C3-DCC3-4C25-BF9F-CDB5527DF027} = {5DF04DCB-BC26-42FA-B7D6-CFC24963F1A8}
+		{CE25A976-C5C3-4A71-950E-18DBF1091F1E} = {5DF04DCB-BC26-42FA-B7D6-CFC24963F1A8}
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
 		Policies = $0
