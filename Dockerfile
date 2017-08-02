@@ -5,7 +5,7 @@ FROM microsoft/dotnet:2.0-runtime
 WORKDIR /system
 
 # копируем бинарники для публикации нашего приложения(напомню,что dockerfile лежит в корневой папке проекта) в рабочую директорию
-COPY /ThinkingHome.Console/publish /system
+COPY /ThinkingHome.Console/bin/publish /system
 
 # пробрасываем из контейнера порт 8080
 EXPOSE 8080
