@@ -1,8 +1,10 @@
 var lib = require('lib');
 
-var itemTemplate = '{{hours}}:{{pad minutes 2}} <a href="#">{{name}}</a>';
+var itemTemplate = '{{hours}}:{{pad minutes 2}} <a href="#">{{name}}</a> {{#unless enabled}}disabled{{/unless}}';
 
-var layoutTemplate = '<h1>Event list</h1><div class="js-event-list"></div>';
+var layoutTemplate = '<h1>Scheduler tasks</h1>' +
+    '<p><a href="#" class="btn btn-secondary js-event-add">Create</a></p>' +
+    '<div class="js-event-list"></div>';
 
 //#region entities
 
@@ -32,6 +34,9 @@ var LayoutView = lib.marionette.View.extend({
     template: lib.handlebars.compile(layoutTemplate),
     regions: {
         list: '.js-event-list'
+    },
+    triggers: {
+        'click .js-event-add': 'event:create'
     }
 });
 
@@ -41,6 +46,8 @@ var LayoutView = lib.marionette.View.extend({
 var Section = lib.common.AppSection.extend({
     start: function() {
         this.view = new LayoutView();
+        this.listenTo(this.view, 'event:create', this.bind('addTask'));
+        
         this.application.setContentView(this.view);
 
         return lib.ajax
@@ -52,6 +59,10 @@ var Section = lib.common.AppSection.extend({
         var listView = new ListView({ collection: items });
 
         this.view.showChildView('list', listView);
+    },
+
+    addTask: function () {
+        alert('add');
     }
 });
 
