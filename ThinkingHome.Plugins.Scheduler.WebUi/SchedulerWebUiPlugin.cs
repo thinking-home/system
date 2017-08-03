@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Logging;
 using ThinkingHome.Core.Plugins;
 using ThinkingHome.Plugins.WebUi.Apps;
+using ThinkingHome.Plugins.WebUi.Attributes;
 
 namespace ThinkingHome.Plugins.Scheduler.WebUi
 {

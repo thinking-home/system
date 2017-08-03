@@ -9,7 +9,6 @@ namespace ThinkingHome.Plugins.Scripts.WebUi
     [AppSection(SectionType.System, "Scripts", "/static/scripts/web-ui/list.js", "ThinkingHome.Plugins.Scripts.WebUi.Resources.list.js", Icon = "code")]
     [JavaScriptResource("/static/scripts/web-ui/editor.js", "ThinkingHome.Plugins.Scripts.WebUi.Resources.editor.js")]
     [HttpEmbeddedResource("/static/scripts/web-ui/editor.tpl", "ThinkingHome.Plugins.Scripts.WebUi.Resources.editor.tpl")]
-    [CssResource("/static/scripts/web-ui/all.css", "ThinkingHome.Plugins.Scripts.WebUi.Resources.all.css", AutoLoad = true)]
 
     [AppSection(SectionType.System, "Script events", "/static/scripts/web-ui/subscriptions.js", "ThinkingHome.Plugins.Scripts.WebUi.Resources.subscriptions.js")]
     [HttpEmbeddedResource("/static/scripts/web-ui/subscriptions.tpl", "ThinkingHome.Plugins.Scripts.WebUi.Resources.subscriptions.tpl")]

@@ -1,6 +1,6 @@
 var lib = require('lib');
 
-var itemTemplate = '<a href="#">{{name}}</a> <input type="checkbox" class="switcher"/>';
+var itemTemplate = '{{hours}}:{{pad minutes 2}} <a href="#">{{name}}</a>';
 
 var layoutTemplate = '<h1>Event list</h1><div class="js-event-list"></div>';
 

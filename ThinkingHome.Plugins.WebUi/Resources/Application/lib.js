@@ -117,6 +117,28 @@ define([
 
     //endregion
 
+    //region handlebars helpers
+    handlebars.default.registerHelper('range', function (from, to, incr, options) {
+
+        var out = '', i;
+
+        for (i = from; i <= to; i += incr) {
+
+            out += options.fn(i);
+        }
+
+        return out;
+    });
+
+    handlebars.default.registerHelper('pad', function (value, length) {
+        value = value + '';
+        length = length || 0;
+
+        return (Array(length + 1).join('0') + value).slice(-length);
+    });
+
+    //endregion
+
     return {
         common: {
             ApplicationBlock: applicationBlock,
