@@ -1,6 +1,6 @@
 var lib = require('lib');
 
-var itemTemplate = '{{hours}}:{{pad minutes 2}} <a href="#">{{name}}</a> {{#unless enabled}}disabled{{/unless}}';
+var itemTemplate = '{{hours}}:{{pad minutes 2}} <a href="#" class="js-task-edit">{{name}}</a> {{#unless enabled}}disabled{{/unless}}';
 
 var layoutTemplate = '<h1>Scheduler tasks</h1>' +
     '<p><a href="#" class="btn btn-secondary js-event-add">Create</a></p>' +
@@ -21,7 +21,10 @@ var SchedulerEventCollection = lib.backbone.Collection.extend({
 var ItemView = lib.marionette.View.extend({
     template: lib.handlebars.compile(itemTemplate),
     tagName: 'li',
-    className: 'th-list-item'
+    className: 'th-list-item',
+    triggers: {
+        'click .js-task-edit': 'task:edit'
+    }
 });
 
 var ListView = lib.marionette.CollectionView.extend({
@@ -58,11 +61,17 @@ var Section = lib.common.AppSection.extend({
     displayList: function (items) {
         var listView = new ListView({ collection: items });
 
+        this.listenTo(listView, 'childview:task:edit', this.bind('editTask'));
         this.view.showChildView('list', listView);
     },
 
     addTask: function () {
-        alert('add');
+        this.application.navigate('/static/scheduler/web-ui/editor.js');
+    },
+
+    editTask: function (view) {
+        var taskId = view.model.get('id');
+        this.application.navigate('/static/scheduler/web-ui/editor.js', taskId);
     }
 });
 
