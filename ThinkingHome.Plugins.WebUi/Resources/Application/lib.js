@@ -1,11 +1,12 @@
 define([
     'marionette',
     'backbone',
+    'syphon',
     'handlebars',
     'moment',
     'underscore',
     'jquery'
-], function(marionette, backbone, handlebars, moment, _, $) {
+], function(marionette, backbone, syphon, handlebars, moment, _, $) {
 
     var applicationBlock = marionette.Object.extend({
         bind: function (fn) {
@@ -76,19 +77,7 @@ define([
     //endregion
 
     //region form
-
-    /**
-     * Сериализует форму в json (для полей с одинаковым именем берется значение последнего)
-     * @param {jQuery} form форма
-     * @returns {Object}
-     */
-    var serializeForm = function(form) {
-        return form.serializeArray().reduce(function(obj, el) {
-            obj[el.name] = el.value;
-            return obj;
-        }, {});
-    };
-
+    
     /**
      * @param {jQuery} select выпадающий список
      * @param {Collection} collection коллекция элементов
@@ -145,8 +134,7 @@ define([
             AppSection: appSection
         },
         form: {
-            setOptions: setOptions,
-            serialize: serializeForm
+            setOptions: setOptions
         },
         ajax: {
             loadModel: loadModel,
@@ -155,6 +143,7 @@ define([
         },
         marionette: marionette,
         backbone: backbone,
+        syphon: syphon,
         handlebars: handlebars,
         moment: moment,
         _: _,
