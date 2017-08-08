@@ -1,0 +1,21 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="../Package.xml" />
+  <PropertyGroup>
+    <PackageId>ThinkingHome.Plugins.Mqtt</PackageId>
+    <AssemblyTitle>ThinkingHome.Plugins.Mqtt</AssemblyTitle>
+    <Description />
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <DebugType>portable</DebugType>
+    <AssemblyName>ThinkingHome.Plugins.Mqtt</AssemblyName>
+    <NetStandardImplicitPackageVersion>2.0.0-preview2-25401-01</NetStandardImplicitPackageVersion>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../ThinkingHome.Core.Plugins/ThinkingHome.Core.Plugins.csproj" />
+    <ProjectReference Include="../ThinkingHome.Plugins.Scripts/ThinkingHome.Plugins.Scripts.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="2.0.0-preview2-final" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="2.0.0-preview2-final" />
+    <PackageReference Include="MQTTnet" Version="2.1.5.1" />
+  </ItemGroup>
+</Project>
