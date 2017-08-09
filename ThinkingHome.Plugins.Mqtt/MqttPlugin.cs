@@ -8,6 +8,7 @@ using MQTTnet.Core.Client;
 using MQTTnet.Core.Packets;
 using MQTTnet.Core.Protocol;
 using ThinkingHome.Core.Plugins;
+using ThinkingHome.Plugins.Timer;
 
 namespace ThinkingHome.Plugins.Mqtt
 {
@@ -62,6 +63,12 @@ namespace ThinkingHome.Plugins.Mqtt
             reconnectEnabled = false;
             client.DisconnectAsync().Wait();
         }
+        
+        [TimerCallback(60000)]
+        public void ConnectionChecking(DateTime now)
+        {
+            ReConnect();
+        }
 
         private void ReConnect()
         {
@@ -94,7 +101,7 @@ namespace ThinkingHome.Plugins.Mqtt
             Logger.LogInformation("MQTT client is connected");
             
             var filters = Topics
-                .Select(t => new TopicFilter("#", MqttQualityOfServiceLevel.AtMostOnce))
+                .Select(topic => new TopicFilter(topic, MqttQualityOfServiceLevel.AtMostOnce))
                 .ToArray();
             
             await client.SubscribeAsync(filters);
