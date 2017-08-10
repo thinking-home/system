@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Linq;
+using System.Text;
+using Microsoft.AspNetCore.Server.Kestrel.Internal.System.Buffers;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.Extensions.Logging;
@@ -14,6 +16,7 @@ using ThinkingHome.Plugins.WebUi.Apps;
 using ThinkingHome.Plugins.Mail;
 using ThinkingHome.Plugins.Scheduler;
 using ThinkingHome.Plugins.Scheduler.Model;
+using Buffer = ThinkingHome.Plugins.Scripts.Buffer;
 
 namespace ThinkingHome.Plugins.Tmp
 {
@@ -114,7 +117,9 @@ namespace ThinkingHome.Plugins.Tmp
         [WebApiMethod("/api/tmp/wefwefwef")]
         public object TmpHandlerMethod(HttpRequestParams requestParams)
         {
-            Context.Require<ScriptsPlugin>().EmitScriptEvent("mimi", 1, 2, 3, "GUID-111");
+            var bytes = Encoding.UTF8.GetBytes("test");
+            Context.Require<ScriptsPlugin>().EmitScriptEvent("event-name", new Buffer(bytes));
+            
             return null;
         }
 
