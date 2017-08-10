@@ -22,13 +22,18 @@ namespace ThinkingHome.Plugins.Scheduler
         
         private List<SchedulerEvent> times;
         private List<SchedulerEventHandlerDelegate> handlers;
-        
+
+        public override void InitPlugin()
+        {
+            base.InitPlugin();
+            
+            handlers = RegisterHandlers();
+        }
+
         [DbModelBuilder]
         public void InitModel(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<SchedulerEvent>(cfg => cfg.ToTable("Scheduler_SchedulerEvent"));
-
-            handlers = RegisterHandlers();
         }
 
         private List<SchedulerEventHandlerDelegate> RegisterHandlers()
@@ -39,11 +44,10 @@ namespace ThinkingHome.Plugins.Scheduler
             {
                 var pluginType = plugin.GetType();
 
-                // api handlers
                 foreach (var mi in plugin.FindMethodsByAttribute<SchedulerEventHandlerAttribute, SchedulerEventHandlerDelegate>())
                 {
                     Logger.LogInformation($"register scheduler event handler: \"{mi.Method.Method.Name}\" ({pluginType.FullName})");
-                    handlers.Add(mi.Method);
+                    list.Add(mi.Method);
                 }
             }
 

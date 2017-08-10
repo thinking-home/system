@@ -2,5 +2,5 @@
 
 namespace ThinkingHome.Plugins.Scheduler
 {
-    public delegate object SchedulerEventHandlerDelegate(Guid schedulerEventId);
+    public delegate void SchedulerEventHandlerDelegate(Guid schedulerEventId);
 }
