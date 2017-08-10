@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Text;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.Extensions.Logging;
@@ -12,6 +13,7 @@ using ThinkingHome.Plugins.WebServer.Attributes;
 using ThinkingHome.Plugins.WebServer.Handlers;
 using ThinkingHome.Plugins.WebUi.Apps;
 using ThinkingHome.Plugins.Mail;
+using ThinkingHome.Plugins.Mqtt;
 using ThinkingHome.Plugins.Scheduler;
 using ThinkingHome.Plugins.Scheduler.Model;
 
@@ -41,6 +43,22 @@ namespace ThinkingHome.Plugins.Tmp
         public override void StopPlugin()
         {
             Logger.LogDebug($"stop tmp plugin {Guid.NewGuid()}");
+        }
+
+
+        [MqttMessageHandler]
+        public void HendleMqttMessage(string topic, byte[] payload)
+        {
+            var str = Encoding.UTF8.GetString(payload);
+            
+            if (topic == "test")
+            {
+                Logger.LogWarning($"TEST MESSAGE: {str}");
+            }
+            else
+            {
+                Logger.LogInformation($"{topic}: {str}");
+            }
         }
 
         [TimerCallback(30000)]

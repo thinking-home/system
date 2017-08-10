@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Microsoft.Extensions.Configuration;
@@ -8,7 +9,9 @@ using MQTTnet.Core.Client;
 using MQTTnet.Core.Packets;
 using MQTTnet.Core.Protocol;
 using ThinkingHome.Core.Plugins;
+using ThinkingHome.Plugins.Scripts;
 using ThinkingHome.Plugins.Timer;
+using Buffer = ThinkingHome.Plugins.Scripts.Buffer;
 
 namespace ThinkingHome.Plugins.Mqtt
 {
@@ -20,6 +23,8 @@ namespace ThinkingHome.Plugins.Mqtt
         private const int DEFAULT_PORT = 1883;
 
         private bool reconnectEnabled;
+        
+        private List<MqttMessageHandlerDelegate> handlers;
         
         public string Host => Configuration.GetValue("host", DEFAULT_HOST);
         public int Port => Configuration.GetValue("port", DEFAULT_PORT);
@@ -50,6 +55,26 @@ namespace ThinkingHome.Plugins.Mqtt
             client.Connected += client_Connected;
             client.Disconnected += client_Disconnected;
             client.ApplicationMessageReceived += client_ApplicationMessageReceived;
+
+            handlers = RegisterHandlers();
+        }
+        
+        private List<MqttMessageHandlerDelegate> RegisterHandlers()
+        {
+            var list = new List<MqttMessageHandlerDelegate>();
+
+            foreach (var plugin in Context.GetAllPlugins())
+            {
+                var pluginType = plugin.GetType();
+
+                foreach (var mi in plugin.FindMethodsByAttribute<MqttMessageHandlerAttribute, MqttMessageHandlerDelegate>())
+                {
+                    Logger.LogInformation($"register mqtt message handler: \"{mi.Method.Method.Name}\" ({pluginType.FullName})");
+                    list.Add(mi.Method);
+                }
+            }
+
+            return list;
         }
 
         public override void StartPlugin()
@@ -118,7 +143,13 @@ namespace ThinkingHome.Plugins.Mqtt
         {
             var msg = e.ApplicationMessage;
             var payload = Encoding.UTF8.GetString(msg.Payload);
-            Logger.LogWarning($"topic: {msg.Topic}, payload: {payload}, qos: {msg.QualityOfServiceLevel}, retain: {msg.Retain}");
+            
+            Logger.LogDebug($"topic: {msg.Topic}, payload: {payload}, qos: {msg.QualityOfServiceLevel}, retain: {msg.Retain}");
+            
+            // events
+            SafeInvoke(handlers, h => h(msg.Topic, msg.Payload), true);
+            
+            Context.Require<ScriptsPlugin>().EmitScriptEvent("mqtt:message:received", msg.Topic, new Buffer(msg.Payload));
         }
     }
 }
