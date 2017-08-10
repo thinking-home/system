@@ -15,14 +15,6 @@ namespace ThinkingHome.Plugins.Scripts
     public class ScriptsPlugin : PluginBase
     {
         private object host;
-        
-        private Engine GetEngine()
-        {
-            // create new engine for each script because engine isn't thread safe
-            var engine = new Engine();
-            engine.SetValue("host", host);
-            return engine;
-        }
 
         private readonly InternalDictionary<Delegate> methods = new InternalDictionary<Delegate>();
 
@@ -102,7 +94,7 @@ namespace ThinkingHome.Plugins.Scripts
 
         private Func<object[], object> CreateScriptDelegate(string name, string body)
         {
-            return new ScriptContext(name, body, GetEngine(), Logger).Execute;
+            return new ScriptContext(name, body, host, Logger).Execute;
         }
 
         private Func<object[], object> CreateScriptDelegateByName(string name)
