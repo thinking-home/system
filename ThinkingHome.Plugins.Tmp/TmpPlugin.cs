@@ -47,7 +47,7 @@ namespace ThinkingHome.Plugins.Tmp
 
 
         [MqttMessageHandler]
-        public void HendleMqttMessage(string topic, byte[] payload)
+        public void HandleMqttMessage(string topic, byte[] payload)
         {
             var str = Encoding.UTF8.GetString(payload);
             
