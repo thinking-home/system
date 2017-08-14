@@ -32,7 +32,7 @@ namespace ThinkingHome.Plugins.Mqtt
         public int Port => Configuration.GetValue("port", DEFAULT_PORT);
         public string Login => Configuration["login"];
         public string Password => Configuration["password"];
-        public string[] Topics => Configuration.GetValue("topics", new[] { "#" });
+        public string[] Topics => Configuration.GetSection("topics").Get<string[]>() ?? new[] { "#" };
 
         #endregion
 
@@ -152,6 +152,8 @@ namespace ThinkingHome.Plugins.Mqtt
         private async void client_Connected(object s, EventArgs e)
         {
             Logger.LogInformation("MQTT client is connected");
+            
+            Logger.LogInformation($"Subscribe: {string.Join(", ", Topics)}");
             
             var filters = Topics
                 .Select(topic => new TopicFilter(topic, MqttQualityOfServiceLevel.AtMostOnce))
