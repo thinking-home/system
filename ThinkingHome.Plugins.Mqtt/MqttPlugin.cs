@@ -32,7 +32,7 @@ namespace ThinkingHome.Plugins.Mqtt
         public int Port => Configuration.GetValue("port", DEFAULT_PORT);
         public string Login => Configuration["login"];
         public string Password => Configuration["password"];
-        public string[] Topics => Configuration.GetValue("path", new[] { "#" });
+        public string[] Topics => Configuration.GetValue("topics", new[] { "#" });
 
         #endregion
 
