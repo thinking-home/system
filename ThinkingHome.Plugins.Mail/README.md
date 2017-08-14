@@ -79,7 +79,7 @@ Context.Require<MailPlugin>()
 
 ## API сценариев
 
-### sendMail
+### `sendMail`
 
 Отправляет письмо с указанными темой и текстом на указанный адрес.
 
@@ -90,7 +90,7 @@ host.api.sendMail('test@example.com', 'My subject', 'My message body.');
 
 ```
 
-### sendMailWithAttachment
+### `sendMailWithAttachment`
 
 Отправляет письмо с прикрепленным файлом.
 
