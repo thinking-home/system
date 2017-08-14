@@ -19,7 +19,7 @@
 
         ...
 
-        "ThinkingHome.Plugins.Mail.MqttPlugin": {
+        "ThinkingHome.Plugins.Mqtt.MqttPlugin": {
             "host": "localhost",
             "port": 1883,
             "login": "",
@@ -107,7 +107,7 @@ public void HendleMqttMessage(string topic, byte[] payload)
 
 ## API сценариев
 
-### mqttPublishString
+### `mqttPublishString`
 
 Публикует MQTT сообщение в заданном канале. Данные для сообщения задаются строкой (будет преобразована в массив байтов, кодировка UTF8).
 
@@ -118,7 +118,7 @@ host.api.mqttPublishString('myhome/kitchen/temperature', 'value=31', false);
 
 ```
 
-### mqttPublishBuffer
+### `mqttPublishBuffer`
 
 Публикует MQTT сообщение в заданном канале. Данные для сообщения задаются объектом `Buffer`.
 
@@ -133,7 +133,7 @@ host.api.mqttPublishBuffer('myhome/kitchen/temperature', buffer, false);
 
 ## Сценарные события
 
-### mqtt:message:received
+### `mqtt:message:received`
 
 Сценарное событие `mqtt:message:received` генерируется при получени сообщения в одном из прослушиваемых каналов. В обработчик события передаются параметры:
 
