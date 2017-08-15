@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Linq;
 using System.Text;
-using Microsoft.AspNetCore.Server.Kestrel.Internal.System.Buffers;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.Extensions.Logging;
@@ -14,9 +13,9 @@ using ThinkingHome.Plugins.WebServer.Attributes;
 using ThinkingHome.Plugins.WebServer.Handlers;
 using ThinkingHome.Plugins.WebUi.Apps;
 using ThinkingHome.Plugins.Mail;
+using ThinkingHome.Plugins.Mqtt;
 using ThinkingHome.Plugins.Scheduler;
 using ThinkingHome.Plugins.Scheduler.Model;
-using Buffer = ThinkingHome.Plugins.Scripts.Buffer;
 
 namespace ThinkingHome.Plugins.Tmp
 {
@@ -44,6 +43,22 @@ namespace ThinkingHome.Plugins.Tmp
         public override void StopPlugin()
         {
             Logger.LogDebug($"stop tmp plugin {Guid.NewGuid()}");
+        }
+
+
+        [MqttMessageHandler]
+        public void HandleMqttMessage(string topic, byte[] payload)
+        {
+            var str = Encoding.UTF8.GetString(payload);
+            
+            if (topic == "test")
+            {
+                Logger.LogWarning($"TEST MESSAGE: {str}");
+            }
+            else
+            {
+                Logger.LogInformation($"{topic}: {str}");
+            }
         }
 
         [TimerCallback(30000)]
@@ -117,9 +132,7 @@ namespace ThinkingHome.Plugins.Tmp
         [WebApiMethod("/api/tmp/wefwefwef")]
         public object TmpHandlerMethod(HttpRequestParams requestParams)
         {
-            var bytes = Encoding.UTF8.GetBytes("test");
-            Context.Require<ScriptsPlugin>().EmitScriptEvent("event-name", new Buffer(bytes));
-            
+            Context.Require<ScriptsPlugin>().EmitScriptEvent("mimi", 1, 2, 3, "GUID-111");
             return null;
         }
 
