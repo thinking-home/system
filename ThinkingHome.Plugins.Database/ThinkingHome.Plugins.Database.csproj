@@ -1,23 +1,18 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <Import Project="../Package.xml" />
   <PropertyGroup>
-    <PackageId>ThinkingHome.Plugins.Database</PackageId>
-    <AssemblyTitle>ThinkingHome.Plugins.Database</AssemblyTitle>
-    <Description />
+    <Description>ThinkingHome plugin which provide database API (PostgreSQL) for other plugins.</Description>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <DebugType>portable</DebugType>
-    <AssemblyName>ThinkingHome.Plugins.Database</AssemblyName>
-    <NetStandardImplicitPackageVersion>2.0.0-preview2-25401-01</NetStandardImplicitPackageVersion>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="../ThinkingHome.Core.Plugins/ThinkingHome.Core.Plugins.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="2.0.0-preview2-final" />
-    <PackageReference Include="Microsoft.Extensions.Configuration" Version="2.0.0-preview2-final" />
-    <PackageReference Include="Microsoft.Extensions.Logging" Version="2.0.0-preview2-final" />
-    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="2.0.0-preview2-final" />
-    <PackageReference Include="ThinkingHome.Migrator" Version="3.0.0-alpha8" />
-    <PackageReference Include="ThinkingHome.Migrator.Providers.PostgreSQL" Version="3.0.0-alpha8" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="2.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="2.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="2.0.0" />
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="2.0.0" />
+    <PackageReference Include="ThinkingHome.Migrator" Version="3.0.0-alpha9" />
+    <PackageReference Include="ThinkingHome.Migrator.Providers.PostgreSQL" Version="3.0.0-alpha9" />
   </ItemGroup>
 </Project>

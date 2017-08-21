@@ -1,17 +1,12 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <Import Project="../Package.xml" />
   <PropertyGroup>
-    <PackageId>ThinkingHome.Core.Plugins</PackageId>
-    <AssemblyTitle>ThinkingHome.Core.Plugins</AssemblyTitle>
     <Description>This package contains base classes for other plugins.</Description>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <DebugType>portable</DebugType>
-    <AssemblyName>ThinkingHome.Core.Plugins</AssemblyName>
-    <NetStandardImplicitPackageVersion>2.0.0-preview2-25401-01</NetStandardImplicitPackageVersion>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.Extensions.Configuration" Version="2.0.0-preview2-final" />
-    <PackageReference Include="Microsoft.Extensions.Logging" Version="2.0.0-preview2-final" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="2.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="2.0.0" />
     <PackageReference Include="Newtonsoft.Json" Version="10.0.1" />
   </ItemGroup>
 </Project>

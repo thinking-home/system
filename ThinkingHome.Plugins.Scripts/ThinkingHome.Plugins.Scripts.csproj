@@ -1,13 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <Import Project="../Package.xml" />
   <PropertyGroup>
-    <PackageId>ThinkingHome.Plugins.Scripts</PackageId>
-    <AssemblyTitle>ThinkingHome.Plugins.Scripts</AssemblyTitle>
-    <Description />
+    <Description>ThinkingHome script manager.</Description>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <DebugType>portable</DebugType>
-    <AssemblyName>ThinkingHome.Plugins.Scripts</AssemblyName>
-    <NetStandardImplicitPackageVersion>2.0.0-preview2-25401-01</NetStandardImplicitPackageVersion>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="../ThinkingHome.Plugins.Database/ThinkingHome.Plugins.Database.csproj" />
@@ -15,8 +10,8 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Jint" Version="3.0.0-beta-001" />
-    <PackageReference Include="Microsoft.Extensions.Configuration" Version="2.0.0-preview2-final" />
-    <PackageReference Include="Microsoft.Extensions.Logging" Version="2.0.0-preview2-final" />
-    <PackageReference Include="ThinkingHome.Migrator.Framework" Version="3.0.0-alpha8" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="2.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="2.0.0" />
+    <PackageReference Include="ThinkingHome.Migrator.Framework" Version="3.0.0-alpha9" />
   </ItemGroup>
 </Project>
