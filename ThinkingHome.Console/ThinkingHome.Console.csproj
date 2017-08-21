@@ -27,10 +27,10 @@
     <ProjectReference Include="../ThinkingHome.Plugins.WebServer.UrlValidation/ThinkingHome.Plugins.WebServer.UrlValidation.csproj" />
     <ProjectReference Include="../ThinkingHome.Plugins.WebUi/ThinkingHome.Plugins.WebUi.csproj" />
     <ProjectReference Include="../ThinkingHome.Plugins.WebUi.Apps/ThinkingHome.Plugins.WebUi.Apps.csproj" />
-    <!--<ProjectReference Include="../ThinkingHome.Plugins.Tmp/ThinkingHome.Plugins.Tmp.csproj" />-->
-    <!--<ProjectReference Include="../ThinkingHome.Plugins.Scheduler/ThinkingHome.Plugins.Scheduler.csproj" />-->
-    <!--<ProjectReference Include="../ThinkingHome.Plugins.Scheduler.WebApi/ThinkingHome.Plugins.Scheduler.WebApi.csproj" />-->
-    <!--<ProjectReference Include="../ThinkingHome.Plugins.Scheduler.WebUi/ThinkingHome.Plugins.Scheduler.WebUi.csproj" />-->
+    <ProjectReference Include="../ThinkingHome.Plugins.Scheduler/ThinkingHome.Plugins.Scheduler.csproj" />
+    <ProjectReference Include="../ThinkingHome.Plugins.Scheduler.WebApi/ThinkingHome.Plugins.Scheduler.WebApi.csproj" />
+    <ProjectReference Include="../ThinkingHome.Plugins.Scheduler.WebUi/ThinkingHome.Plugins.Scheduler.WebUi.csproj" />
+    <ProjectReference Include="../ThinkingHome.Plugins.Tmp/ThinkingHome.Plugins.Tmp.csproj" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Serilog.Sinks.Console" Version="3.0.1" />

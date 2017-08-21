@@ -1,13 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <Import Project="../Package.xml" />
   <PropertyGroup>
-    <PackageId>ThinkingHome.Plugins.Scheduler.WebUi</PackageId>
-    <AssemblyTitle>ThinkingHome.Plugins.Scheduler.WebUi</AssemblyTitle>
-    <Description />
+    <Description>ThinkingHome plugin which provide scheduler web UI.</Description>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <DebugType>portable</DebugType>
-    <AssemblyName>ThinkingHome.Plugins.Scheduler.WebUi</AssemblyName>
-    <NetStandardImplicitPackageVersion>2.0.0-preview2-25401-01</NetStandardImplicitPackageVersion>
   </PropertyGroup>
   <ItemGroup>
     <None Remove="Resources\**\*" />
@@ -17,12 +12,12 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="../ThinkingHome.Core.Plugins/ThinkingHome.Core.Plugins.csproj" />
-    <ProjectReference Include="..\ThinkingHome.Plugins.Scheduler.WebApi\ThinkingHome.Plugins.Scheduler.WebApi.csproj" />
-    <ProjectReference Include="..\ThinkingHome.Plugins.WebUi.Apps\ThinkingHome.Plugins.WebUi.Apps.csproj" />
-    <ProjectReference Include="..\ThinkingHome.Plugins.WebUi\ThinkingHome.Plugins.WebUi.csproj" />
+    <ProjectReference Include="../ThinkingHome.Plugins.Scheduler.WebApi/ThinkingHome.Plugins.Scheduler.WebApi.csproj" />
+    <ProjectReference Include="../ThinkingHome.Plugins.WebUi.Apps/ThinkingHome.Plugins.WebUi.Apps.csproj" />
+    <ProjectReference Include="../ThinkingHome.Plugins.WebUi/ThinkingHome.Plugins.WebUi.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.Extensions.Configuration" Version="2.0.0-preview2-final" />
-    <PackageReference Include="Microsoft.Extensions.Logging" Version="2.0.0-preview2-final" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="2.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="2.0.0" />
   </ItemGroup>
 </Project>
