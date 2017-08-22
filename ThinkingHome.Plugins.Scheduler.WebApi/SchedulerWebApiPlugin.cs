@@ -56,7 +56,7 @@ namespace ThinkingHome.Plugins.Scheduler.WebApi
         {
             var id = request.GetGuid("id");
             var name = request.GetRequiredString("name");
-            var eventAlias = request.GetRequiredString("event");
+            var eventAlias = request.GetRequiredString("eventAlias");
             var enabled = request.GetRequiredBool("enabled");
             var hours = request.GetRequiredInt32("hours");
             var minutes = request.GetRequiredInt32("minutes");
