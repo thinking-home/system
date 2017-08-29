@@ -31,6 +31,7 @@
     <ProjectReference Include="../ThinkingHome.Plugins.Scheduler.WebApi/ThinkingHome.Plugins.Scheduler.WebApi.csproj" />
     <ProjectReference Include="../ThinkingHome.Plugins.Scheduler.WebUi/ThinkingHome.Plugins.Scheduler.WebUi.csproj" />
     <ProjectReference Include="../ThinkingHome.Plugins.Tmp/ThinkingHome.Plugins.Tmp.csproj" />
+    <ProjectReference Include="../ThinkingHome.Plugins.Cron/ThinkingHome.Plugins.Cron.csproj" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Serilog.Sinks.Console" Version="3.0.1" />
