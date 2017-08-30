@@ -69,10 +69,11 @@ WEB SERVER
   - `lib.ajax.getJSON(url, [data])`
   - `lib.ajax.postJSON(url, [data])`
   - обработка асинхронных исключений в метода start (нужно вернуть промис из него)
-- mail plugin: `sendMail` + + `host.api.sendMail`, `host.api.sendMailWithAttachment` 
+- mail plugin: `sendMail` + `host.api.sendMail`, `host.api.sendMailWithAttachment` 
 
 - Теперь по умолчанию приложение ожидает Ctrl+C для остановки. Чтобы останавливалось по нажатию ENTER, нужно передать при запуске параметр -enter.
 - общий файл с версией пакета
+- scheduler => cron, можно задавать маски + условия по номеру дня и месяца + нет будильника + добавлено событие для плагинов
     
   
 ## Правила
