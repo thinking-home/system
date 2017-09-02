@@ -142,7 +142,7 @@ namespace ThinkingHome.Plugins.Mqtt
                         }
                         catch (Exception ex)
                         {
-                            Logger.LogWarning(ex, "connection failed");
+                            Logger.LogWarning(ex.Message);
                         }
                     }
                 }

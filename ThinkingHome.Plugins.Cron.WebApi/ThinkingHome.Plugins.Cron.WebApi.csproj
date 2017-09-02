@@ -7,7 +7,7 @@
   <ItemGroup>
     <ProjectReference Include="../ThinkingHome.Core.Plugins/ThinkingHome.Core.Plugins.csproj" />
     <ProjectReference Include="../ThinkingHome.Plugins.Database/ThinkingHome.Plugins.Database.csproj" />
-    <ProjectReference Include="../ThinkingHome.Plugins.Scheduler/ThinkingHome.Plugins.Cron.csproj" />
+    <ProjectReference Include="../ThinkingHome.Plugins.Cron/ThinkingHome.Plugins.Cron.csproj" />
     <ProjectReference Include="../ThinkingHome.Plugins.WebServer/ThinkingHome.Plugins.WebServer.csproj" />
   </ItemGroup>
   <ItemGroup>
