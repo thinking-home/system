@@ -3,18 +3,8 @@ var lib = require('lib');
 var itemTemplate = '{{hours}}:{{pad minutes 2}} <a href="#" class="js-task-edit">{{name}}</a> {{#unless enabled}}disabled{{/unless}}';
 
 var layoutTemplate = '<h1>Cron tasks</h1>' +
-    '<p><a href="#" class="btn btn-secondary js-task-add">Create</a></p>' +
+    '<p><a href="#" class="btn btn-secondary js-task-create">Create</a></p>' +
     '<div class="js-task-list"></div>';
-
-//#region entities
-
-var CronTaskModel = lib.backbone.Model.extend({});
-
-var CronTaskCollection = lib.backbone.Collection.extend({
-    model: CronTaskModel
-});
-
-//#endregion
 
 //#region views
 
@@ -39,22 +29,21 @@ var LayoutView = lib.marionette.View.extend({
         list: '.js-task-list'
     },
     triggers: {
-        'click .js-task-add': 'event:create'
+        'click .js-task-create': 'task:create'
     }
 });
 
 //#endregion
 
-
 var Section = lib.common.AppSection.extend({
     start: function() {
         this.view = new LayoutView();
-        this.listenTo(this.view, 'task:create', this.bind('addTask'));
+        this.listenTo(this.view, 'task:create', this.bind('createTask'));
         
         this.application.setContentView(this.view);
 
         return lib.ajax
-            .loadModel('/api/scheduler/web-api/list', CronTaskCollection)
+            .loadModel('/api/cron/web-api/list', lib.backbone.Collection)
             .then(this.bind('displayList'));
     },
 
@@ -65,7 +54,7 @@ var Section = lib.common.AppSection.extend({
         this.view.showChildView('list', listView);
     },
 
-    addTask: function () {
+    createTask: function () {
         this.application.navigate('/static/cron/web-ui/editor.js');
     },
 
