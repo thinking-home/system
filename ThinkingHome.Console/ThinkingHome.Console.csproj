@@ -33,6 +33,7 @@
     <ProjectReference Include="../ThinkingHome.Plugins.Tmp/ThinkingHome.Plugins.Tmp.csproj" />
     <ProjectReference Include="../ThinkingHome.Plugins.Cron/ThinkingHome.Plugins.Cron.csproj" />
     <ProjectReference Include="../ThinkingHome.Plugins.Cron.WebApi/ThinkingHome.Plugins.Cron.WebApi.csproj" />
+    <ProjectReference Include="../ThinkingHome.Plugins.Cron.WebUi/ThinkingHome.Plugins.Cron.WebUi.csproj" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Serilog.Sinks.Console" Version="3.0.1" />
