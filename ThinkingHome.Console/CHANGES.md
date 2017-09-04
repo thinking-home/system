@@ -83,18 +83,7 @@ WEB SERVER
 
 ## README
 
-*название пакета* 
-
-[![NuGet Pre Release](https://img.shields.io/nuget/vpre/ThinkingHome.Plugins.XXX.svg)]()
-
-\# Название плагина
-
-- плагины
-  - описание + UI
-  - .NET API (methods + events)
-  - script API (methods + events)
-  - HTTP API и ресурсы
-  - параметры конфига
+[ПРИМЕР](https://gist.github.com/dima117/a59ec07b732bfe6a99d3c89fa87aeb71)
   
 ## URLS
 
