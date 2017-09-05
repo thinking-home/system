@@ -172,3 +172,34 @@ var result2 = host.scripts['покормить кота'](2);
 ```js
 host.emit('я дома', 35, 4, 'строка текста');
 ```
+
+### Работа с бинарными данными
+
+Иногда в сценариях нужно работать с бинарными данными. При этом, если передать в сценарий из managed кода массив байтов, то он будет скорвертирован в массив вещественных чисел.
+
+Для работы с бинарными данными используйте специальный класс-обертку `ThinkingHome.Plugins.Scripts.Buffer`. Байты хранятся в его внутреннем поле и тип данных не будет изменен при передаче в сценарии. 
+
+#### Использование
+
+```csharp
+var bytes = ...
+var buffer = new Buffer(bytes);
+
+Context.Require<ScriptsPlugin>()
+    .EmitScriptEvent("my-event", buffer");
+```
+
+Класс `Buffer` имеет методы для получения находящихся в нем данных в виде массива чисел и в виде строк UTF8 и Base64.
+
+```js
+var buffer = arguments[0]; 
+
+// Array<Number>
+var bytes = buffer.GetBytes();  
+host.log.warn('BYTES: {0}', bytes.join());
+
+// string
+host.log.warn('UTF8: {0}', buffer.ToUtf8String());
+host.log.warn('BASE64: {0}', buffer.ToBase64String());
+```
+

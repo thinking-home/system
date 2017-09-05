@@ -5,6 +5,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.Extensions.Logging;
 using ThinkingHome.Core.Plugins;
+using ThinkingHome.Plugins.Cron;
+using ThinkingHome.Plugins.Cron.Model;
 using ThinkingHome.Plugins.Database;
 using ThinkingHome.Plugins.Scripts;
 using ThinkingHome.Plugins.Scripts.Attributes;
@@ -14,8 +16,6 @@ using ThinkingHome.Plugins.WebServer.Handlers;
 using ThinkingHome.Plugins.WebUi.Apps;
 using ThinkingHome.Plugins.Mail;
 using ThinkingHome.Plugins.Mqtt;
-using ThinkingHome.Plugins.Scheduler;
-using ThinkingHome.Plugins.Scheduler.Model;
 
 namespace ThinkingHome.Plugins.Tmp
 {
@@ -110,21 +110,19 @@ namespace ThinkingHome.Plugins.Tmp
             {
                 var time = DateTime.Now.AddMinutes(1); 
                 
-                var e = new SchedulerEvent
+                var t = new CronTask
                 {
-                    Hours = time.Hour,
-                    Minutes = time.Minute,
                     Id = Guid.NewGuid(),
                     Enabled = true,
                     EventAlias = $"event:{time.ToShortTimeString()}",
                     Name = $"time:{time.ToShortTimeString()}"
                 };
 
-                db.Set<SchedulerEvent>().Add(e);
+                db.Set<CronTask>().Add(t);
                 db.SaveChanges();
             }
             
-            Context.Require<SchedulerPlugin>().ReloadTimes();
+            Context.Require<CronPlugin>().ReloadTasks();
 
             return 200;
         }

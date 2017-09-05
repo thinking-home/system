@@ -27,9 +27,6 @@
     <ProjectReference Include="../ThinkingHome.Plugins.WebServer.UrlValidation/ThinkingHome.Plugins.WebServer.UrlValidation.csproj" />
     <ProjectReference Include="../ThinkingHome.Plugins.WebUi/ThinkingHome.Plugins.WebUi.csproj" />
     <ProjectReference Include="../ThinkingHome.Plugins.WebUi.Apps/ThinkingHome.Plugins.WebUi.Apps.csproj" />
-    <ProjectReference Include="../ThinkingHome.Plugins.Scheduler/ThinkingHome.Plugins.Scheduler.csproj" />
-    <ProjectReference Include="../ThinkingHome.Plugins.Scheduler.WebApi/ThinkingHome.Plugins.Scheduler.WebApi.csproj" />
-    <ProjectReference Include="../ThinkingHome.Plugins.Scheduler.WebUi/ThinkingHome.Plugins.Scheduler.WebUi.csproj" />
     <ProjectReference Include="../ThinkingHome.Plugins.Tmp/ThinkingHome.Plugins.Tmp.csproj" />
     <ProjectReference Include="../ThinkingHome.Plugins.Cron/ThinkingHome.Plugins.Cron.csproj" />
     <ProjectReference Include="../ThinkingHome.Plugins.Cron.WebApi/ThinkingHome.Plugins.Cron.WebApi.csproj" />
