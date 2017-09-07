@@ -1,0 +1,14 @@
+.th-cron-task {
+    font-size: 1.5rem;
+    line-height: 1.5;
+    color: #999;
+    margin-bottom: 0.5rem;
+}
+
+.th-cron-value {
+    display: inline-block;
+    width: 32px;
+    margin-right: 4px;
+    padding-left: 4px;
+    text-align: left;
+}

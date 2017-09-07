@@ -9,6 +9,7 @@ namespace ThinkingHome.Plugins.Cron.WebUi
         "ThinkingHome.Plugins.Cron.WebUi.Resources.list.js", Icon = "clock-o")]
     [JavaScriptResource("/static/cron/web-ui/editor.js", "ThinkingHome.Plugins.Cron.WebUi.Resources.editor.js")]
     [HttpEmbeddedResource("/static/cron/web-ui/editor.tpl", "ThinkingHome.Plugins.Cron.WebUi.Resources.editor.tpl")]
+    [CssResource("/static/cron/web-ui/styles.css", "ThinkingHome.Plugins.Cron.WebUi.Resources.styles.css", AutoLoad = true)]
     
     public class CronWebUiPlugin : PluginBase
     {
