@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <Import Project="../Package.xml" />
   <PropertyGroup>
     <Description>ThinkingHome plugin which provide the web API for cron task management.</Description>
