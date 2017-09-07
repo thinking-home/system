@@ -25,7 +25,7 @@
 - [x] логирование через microsoft.extensions.logging (?) - привести в порядок
 - [x] пустая стартовая страница по умолчанию + настройки стартовой страницы
 - [x] скриптовые события
-- [х] починить двойное нажатие ENTER для выхода! https://youtrack.jetbrains.com/issue/RIDER-4677
+- [x] починить двойное нажатие ENTER для выхода! https://youtrack.jetbrains.com/issue/RIDER-4677
 - [x] NLog => Serilog
 - [x] починить запуск в фоновом режиме
 
@@ -42,6 +42,8 @@
 - [x] общие сценарные и плагинные события для планировщика
 
 - [x] дописать в README про буферы
+- [x] починить исключение из-за обрыва mqtt соединения при выходе из приложения
+
 - [ ] рефакторинг поиска методов: сделать версию, где тип делегата приходит параметром Type
 
 - [ ] ИЗБАВИТЬСЯ ОТ ДУБЛИРОВАНИЯ КОДА В js разделов
@@ -78,13 +80,16 @@
 - [ ] cron (~~core~~, api, ui)
 - [ ] локализация (после релиза .NET Core 2.0)
 
+## alpha4
+- [ ] noolite (core, api, ui)
+- [ ] telegram bot https://www.nuget.org/packages/Telegram.Bot/
+
 ### core
 
 - [ ] http listener (signalr)
 
 ### hardware
 
-- [ ] noolite (Core, API, UI)
 - [ ] видеонаблюдение
 - [ ] плагин для homebridge, загружающий устройства из TH и перенаправляющий запросы к нему
 
@@ -94,7 +99,6 @@
 
 ### messenger
 
-- [ ] telegram bot https://www.nuget.org/packages/Telegram.Bot/
 - [ ] slack
 - [ ] SMS
 

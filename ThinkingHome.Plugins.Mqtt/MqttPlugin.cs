@@ -70,7 +70,17 @@ namespace ThinkingHome.Plugins.Mqtt
         public override void StopPlugin()
         {
             reconnectEnabled = false;
-            client.DisconnectAsync().Wait();
+
+            if (client.IsConnected)
+            {
+                lock (client)
+                {
+                    if (client.IsConnected)
+                    {
+                        client.DisconnectAsync().Wait();
+                    }
+                }
+            }
         }
         
         [TimerCallback(60000)]
