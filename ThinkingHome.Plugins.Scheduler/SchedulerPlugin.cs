@@ -99,7 +99,7 @@ namespace ThinkingHome.Plugins.Scheduler
                         {
                             scriptPlugin.EmitScriptEvent(session, alarm.EventAlias);
 
-                            SafeInvoke(handlers, h => h(alarm.Id), true);
+                            this.SafeInvoke(handlers, h => h(alarm.Id), true);
                             
                             scriptPlugin.EmitScriptEvent(session, "scheduler:event:emited", alarm.Id);
                         }

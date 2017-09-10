@@ -177,7 +177,7 @@ namespace ThinkingHome.Plugins.Mqtt
             Logger.LogDebug($"topic: {msg.Topic}, payload: {payload}, qos: {msg.QualityOfServiceLevel}, retain: {msg.Retain}");
             
             // events
-            SafeInvoke(handlers, h => h(msg.Topic, msg.Payload), true);
+            this.SafeInvoke(handlers, h => h(msg.Topic, msg.Payload), true);
             
             Context.Require<ScriptsPlugin>().EmitScriptEvent("mqtt:message:received", msg.Topic, new Buffer(msg.Payload));
         }

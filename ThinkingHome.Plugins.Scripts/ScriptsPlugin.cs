@@ -85,7 +85,7 @@ namespace ThinkingHome.Plugins.Scripts
                 .ToList();
 
             // execute scripts async
-            scripts.ForEach(script => SafeInvoke(script, s => ExecuteScript(s, args), true));
+            scripts.ForEach(script => this.SafeInvoke(script, s => ExecuteScript(s, args), true));
         }
 
         #endregion

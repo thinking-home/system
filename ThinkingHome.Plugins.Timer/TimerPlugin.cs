@@ -36,7 +36,7 @@ namespace ThinkingHome.Plugins.Timer
                     callback.MetaData.Delay ?? random.Next(callback.MetaData.Interval),
                     callback.MetaData.Interval,
                     callback.Method, Logger);
-
+                
                 timers.Add(timer);
             }
         }
