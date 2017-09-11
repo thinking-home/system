@@ -1,34 +1,40 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 
 namespace ThinkingHome.Core.Plugins.Utils
 {
-    public class InternalDictionary<T> : Dictionary<string, T>
+    public class InternalDictionary<T>
         where T : class
     {
+        private ConcurrentDictionary<string, T> _dictionary;
+
         private readonly object lockObject = new object();
 
         public InternalDictionary()
-            : base(StringComparer.CurrentCultureIgnoreCase)
         {
+            _dictionary = new ConcurrentDictionary<string, T>(StringComparer.CurrentCultureIgnoreCase);
         }
 
         public void Register(string key, T obj)
         {
-            if (string.IsNullOrWhiteSpace(key) || obj == null)
-            {
-                return;
-            }
+            if (obj == null) throw new ArgumentNullException(nameof(obj));
+            if (string.IsNullOrWhiteSpace(key)) throw new ArgumentNullException(nameof(key));
 
-            lock (lockObject)
-            {
-                if (ContainsKey(key))
-                {
-                    throw new Exception($"duplicated key {key} ({obj})");
-                }
+            _dictionary.AddOrUpdate(key, obj, (k, v) => obj);
+        }
 
-                Add(key, obj);
+        public T this[string key]
+        {
+            get
+            {
+                return _dictionary[key];
             }
+        }
+
+        public bool ContainsKey(string key)
+        {
+            return _dictionary.ContainsKey(key);
         }
     }
 }
