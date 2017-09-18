@@ -108,3 +108,7 @@ WEB SERVER
 ### Ядро веб-приложения
 
 `/webapp/{filePath}`
+
+## Deployment
+
+http://www.diericx.net/post/building-windows-linux-and-osx-dotnet-core-binaries/

@@ -62,9 +62,13 @@ var Section = lib.common.AppSection.extend({
 
     saveTask: function (view) {
         var data = view.model.toJSON();
-
-        lib.ajax.postJSON('/api/cron/web-api/save', data)
-            .then(this.bind('redirectToList'), alert);    
+        
+        if (!data.name) {
+            alert('Name is required.');
+        } else {
+            lib.ajax.postJSON('/api/cron/web-api/save', data)
+                .then(this.bind('redirectToList'), alert);
+        } 
     },
 
     redirectToList: function () {

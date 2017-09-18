@@ -9,11 +9,43 @@
         </div>
         <div class="form-group">
             <label for="e4c3cb8a-cb69-4b42-8927-e92175e5d943">
+                Day
+            </label>
+            <ul class="list-inline">
+                <li class="list-inline-item">
+                    <select id="e4c3cb8a-cb69-4b42-8927-e92175e5d943" name="day" class="form-control">
+                        <option value="">Every day</option>
+                        {{#range 1 31 1}}
+                        <option value="{{this}}">{{this}}</option>
+                        {{/range}}
+                    </select>
+                </li>
+                <li class="list-inline-item">
+                    <select name="month" class="form-control">
+                        <option value="">Every month</option>
+                        <option value="1">Jan</option>
+                        <option value="2">Feb</option>
+                        <option value="3">Mar</option>
+                        <option value="4">Apr</option>
+                        <option value="5">May</option>
+                        <option value="6">Jun</option>
+                        <option value="7">Jul</option>
+                        <option value="8">Aug</option>
+                        <option value="9">Sep</option>
+                        <option value="10">Oct</option>
+                        <option value="11">Nov</option>
+                        <option value="12">Dec</option>
+                    </select>
+                </li>
+            </ul>
+        </div>
+        <div class="form-group">
+            <label for="06c5ae23-1b7d-4095-9b79-ff52ba3defdf">
                 Time
             </label>
             <ul class="list-inline">
                 <li class="list-inline-item">
-                    <select id="e4c3cb8a-cb69-4b42-8927-e92175e5d943" name="hours" class="form-control">
+                    <select id="06c5ae23-1b7d-4095-9b79-ff52ba3defdf" name="hour" class="form-control">
                         <option value="">All</option>
                         {{#range 0 23 1}}
                         <option value="{{this}}">{{pad this 2}}</option>
@@ -22,7 +54,7 @@
                 </li>
                 <li class="list-inline-item">:</li>
                 <li class="list-inline-item">
-                    <select name="minutes" class="form-control">
+                    <select name="minute" class="form-control">
                         <option value="">All</option>
                         {{#range 0 59 1}}
                         <option value="{{this}}">{{pad this 2}}</option>
