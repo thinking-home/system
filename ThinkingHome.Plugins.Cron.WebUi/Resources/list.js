@@ -1,14 +1,11 @@
 var lib = require('lib');
 
 var itemTemplate = 
-    '<div class="col-md-3">' +
     '<span class="th-cron-value">{{#if month}}{{month}}{{else}}*{{/if}}</span>:' +
     '<span class="th-cron-value">{{#if day}}{{day}}{{else}}*{{/if}}</span>:' +
     '<span class="th-cron-value">{{#if hour}}{{hour}}{{else}}*{{/if}}</span>:' +
     '<span class="th-cron-value">{{#if minute}}{{pad minute 2}}{{else}}*{{/if}}</span>' +
-    '</div><div class="col-md-9">' +
-    '<a href="#" class="js-task-edit">{{name}}</a> {{#unless enabled}}disabled{{/unless}}' +
-    '</div>';
+    '<a href="#" class="js-task-edit">{{name}}</a> {{#unless enabled}}disabled{{/unless}}';
 
 var layoutTemplate = '<h1>Cron tasks</h1>' +
     '<p><a href="#" class="btn btn-secondary js-task-create">Create</a></p>' +
@@ -18,7 +15,8 @@ var layoutTemplate = '<h1>Cron tasks</h1>' +
 
 var ItemView = lib.marionette.View.extend({
     template: lib.handlebars.compile(itemTemplate),
-    className: 'th-cron-task row',
+    className: 'th-list-item',
+    tagName: 'li',
     triggers: {
         'click .js-task-edit': 'task:edit'
     }
@@ -26,7 +24,8 @@ var ItemView = lib.marionette.View.extend({
 
 var ListView = lib.marionette.CollectionView.extend({
     childView: ItemView,
-    className: 'th-cron-list'
+    className: 'list-unstyled',
+    tagName: 'ul'
 });
 
 var LayoutView = lib.marionette.View.extend({

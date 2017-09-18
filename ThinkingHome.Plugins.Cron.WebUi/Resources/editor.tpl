@@ -1,4 +1,4 @@
-<h1>Task parameters</h1>
+<h1>Cron task</h1>
 <form class="row">
     <div class="col-md-5">
         <div class="form-group">
@@ -68,6 +68,11 @@
                 Event alias
             </label>
             <input id="908b0027-3b51-42df-b173-2b1dd554b53d" name="eventAlias" class="form-control"/>
+        </div>
+        <div class="checkbox">
+            <label>
+                <input name="enabled" type="checkbox"> Enabled
+            </label>
         </div>
         <p>
             <a href="#" class="btn btn-primary js-btn-save">Save</a>&nbsp;
