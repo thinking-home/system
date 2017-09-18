@@ -5,7 +5,7 @@ using ThinkingHome.Plugins.WebUi.Attributes;
 
 namespace ThinkingHome.Plugins.Cron.WebUi
 {
-    [AppSection(SectionType.System, "Cron", "/static/cron/web-ui/list.js",
+    [AppSection(SectionType.System, "Cron tasks", "/static/cron/web-ui/list.js",
         "ThinkingHome.Plugins.Cron.WebUi.Resources.list.js", Icon = "clock-o")]
     [JavaScriptResource("/static/cron/web-ui/editor.js", "ThinkingHome.Plugins.Cron.WebUi.Resources.editor.js")]
     [HttpEmbeddedResource("/static/cron/web-ui/editor.tpl", "ThinkingHome.Plugins.Cron.WebUi.Resources.editor.tpl")]
