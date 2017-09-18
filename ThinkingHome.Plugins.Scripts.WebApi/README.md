@@ -20,7 +20,7 @@
 
 В ответ на клиент возвращается строка, содержащая id сохраненного сценария.
 
-```json
+```js
 "21222eed-5a92-42ad-b7c9-23f548482024"
 ```
 
@@ -40,7 +40,7 @@ curl 'http://localhost:8080/api/scripts/web-api/save?name=say-hello&body=host.lo
 
 В ответ на клиент возвражается объект, содержащий id, название и текст заданного сценария.
 
-```json
+```js
 {
     "id":"21222eed-5a92-42ad-b7c9-23f548482024",
     "name":"say-hello",
@@ -64,7 +64,7 @@ curl 'http://localhost:8080/api/scripts/web-api/get?id=21222eed-5a92-42ad-b7c9-2
 
 В ответ на клиент возвражается `null`. Если сценарий с заданным id не удалось найти, будет возвращен код ошибки 500. 
 
-```json
+```js
 null
 ```
 
@@ -84,7 +84,7 @@ curl 'http://localhost:8080/api/scripts/web-api/delete?id=21222eed-5a92-42ad-b7c
 
 В ответ на клиент возвражается список сценариев, содержащий их id и названия.
 
-```json
+```js
 [
     {
         "id":"a634a269-d250-40bc-a9ca-0e76b19d84b5",
@@ -129,7 +129,7 @@ curl 'http://localhost:8080/api/scripts/web-api/execute?id=c91f45c6-2da1-4cc6-a2
 
 В ответ на клиент возвражается список, содержащий id *подписки на событие*, название события, а также id и название сценария.
 
-```json
+```js
 [
     {
         "id":"b308f0e7-7f0c-4599-ba89-65cff22ae043",
@@ -157,7 +157,7 @@ curl 'http://localhost:8080/api/scripts/web-api/execute?id=c91f45c6-2da1-4cc6-a2
 
 В ответ на клиент возвращается строка, содержащая id добавленной подписки.
 
-```json
+```js
 "fa170f1a-4665-40df-884b-307f0731fa86"
 ```
 
@@ -177,7 +177,7 @@ curl 'http://localhost:8080/api/scripts/web-api/subscription/add?scriptId=a634a2
 
 В ответ на клиент возвражается `null`. Если подписка с заданным id не найдена, будет возвращен код ошибки 500. 
 
-```json
+```js
 null
 ```
 
