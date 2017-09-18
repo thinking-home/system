@@ -126,6 +126,14 @@ define([
         return (Array(length + 1).join('0') + value).slice(-length);
     });
 
+    handlebars.default.registerHelper('isnull', function(variable, options) {
+        if (variable === null) {
+            return options.fn(this);
+        } else {
+            return options.inverse(this);
+        }
+    });
+
     //endregion
 
     return {

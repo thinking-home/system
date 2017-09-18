@@ -1,10 +1,10 @@
 var lib = require('lib');
 
 var itemTemplate = 
-    '<span class="th-cron-value">{{#if month}}{{month}}{{else}}*{{/if}}</span>:' +
-    '<span class="th-cron-value">{{#if day}}{{day}}{{else}}*{{/if}}</span>:' +
-    '<span class="th-cron-value">{{#if hour}}{{hour}}{{else}}*{{/if}}</span>:' +
-    '<span class="th-cron-value">{{#if minute}}{{pad minute 2}}{{else}}*{{/if}}</span>' +
+    '<span class="th-cron-value">{{#isnull month}}*{{else}}{{month}}{{/isnull}}</span>:' +
+    '<span class="th-cron-value">{{#isnull day}}*{{else}}{{day}}{{/isnull}}</span>:' +
+    '<span class="th-cron-value">{{#isnull hour}}*{{else}}{{hour}}{{/isnull}}</span>:' +
+    '<span class="th-cron-value">{{#isnull minute}}*{{else}}{{pad minute 2}}{{/isnull}}</span>' +
     '<a href="#" class="js-task-edit">{{name}}</a> {{#unless enabled}}disabled{{/unless}}';
 
 var layoutTemplate = '<h1>Cron tasks</h1>' +
