@@ -78,15 +78,15 @@
 
 ## alpha3
 - [x] mqtt 
-- [ ] cron (~~core~~, ~~api~~, ui)
-- [ ] noolite (core, api, ui)
+- [x] cron (~~core~~, ~~api~~, ~~ui~~)
 
 ## alpha4
-- [ ] локализация (после релиза .NET Core 2.0)
+- [ ] noolite (core, api, ui)
 - [ ] telegram bot https://www.nuget.org/packages/Telegram.Bot/
 
 ### core
 
+- [ ] локализация (после релиза .NET Core 2.0)
 - [ ] http listener (signalr)
 
 ### hardware
