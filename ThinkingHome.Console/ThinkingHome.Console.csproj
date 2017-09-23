@@ -19,6 +19,7 @@
     <ProjectReference Include="../ThinkingHome.Plugins.Database/ThinkingHome.Plugins.Database.csproj" />
     <ProjectReference Include="../ThinkingHome.Plugins.Mail/ThinkingHome.Plugins.Mail.csproj" />
     <ProjectReference Include="../ThinkingHome.Plugins.Mqtt/ThinkingHome.Plugins.Mqtt.csproj" />
+    <ProjectReference Include="../ThinkingHome.Plugins.NooLite/ThinkingHome.Plugins.NooLite.csproj" />
     <ProjectReference Include="../ThinkingHome.Plugins.Timer/ThinkingHome.Plugins.Timer.csproj" />
     <ProjectReference Include="../ThinkingHome.Plugins.Scripts/ThinkingHome.Plugins.Scripts.csproj" />
     <ProjectReference Include="../ThinkingHome.Plugins.Scripts.WebApi/ThinkingHome.Plugins.Scripts.WebApi.csproj" />
