@@ -19,22 +19,28 @@ namespace ThinkingHome.Plugins.NooLite
             Logger.LogInformation($"Use '{portName}' serial port");
             
             device = new MTRFXXAdapter(portName);
-            device.Connected += OnConnected;
-            device.Disconnected += OnDisconnected;
-            device.DataReceived += OnDataReceived;
+            device.Connect += OnConnect;
+            device.Disconnect += OnDisconnect;
+            device.ReceiveData += OnReceiveData;
+            device.Error += OnError;
         }
 
-        private void OnConnected(object obj)
+        private void OnError(object obj, Exception ex)
+        {
+            Logger.LogError(ex, "MTRF adapter error");
+        }
+
+        private void OnConnect(object obj)
         {
             Logger.LogInformation("MTRF adapter connected");
         }
 
-        private void OnDisconnected(object obj)
+        private void OnDisconnect(object obj)
         {
             Logger.LogInformation("MTRF adapter disconnected");
         }
 
-        private void OnDataReceived(object obj, ReceivedData receivedData)
+        private void OnReceiveData(object obj, ReceivedData receivedData)
         {
             Logger.LogInformation(receivedData.ToString());
         }
