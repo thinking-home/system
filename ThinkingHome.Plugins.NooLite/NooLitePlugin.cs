@@ -9,15 +9,15 @@ namespace ThinkingHome.Plugins.NooLite
     public class NooLitePlugin: PluginBase
     {
         private MTRFXXAdapter device;
-        
+
         public override void InitPlugin()
         {
             var portName = Configuration["portName"];
-            
+
             if (string.IsNullOrEmpty(portName)) throw new Exception("noolite portName is required");
-            
+
             Logger.LogInformation($"Use '{portName}' serial port");
-            
+
             device = new MTRFXXAdapter(portName);
             device.Connect += OnConnect;
             device.Disconnect += OnDisconnect;
@@ -54,7 +54,7 @@ namespace ThinkingHome.Plugins.NooLite
         {
             device.Dispose();
         }
-        
+
         [TimerCallback(20000)]
         public void Reconnect(DateTime now)
         {
