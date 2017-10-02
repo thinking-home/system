@@ -4,7 +4,7 @@ using ThinkingHome.NooLite;
 
 namespace ThinkingHome.Plugins.NooLite
 {
-    public class NooLiteAdapter
+    public class AdapterWrapper
     {
         private readonly ILogger logger;
 
@@ -12,7 +12,7 @@ namespace ThinkingHome.Plugins.NooLite
 
         private readonly bool fMode;
 
-        public NooLiteAdapter(bool fMode, MTRFXXAdapter device, ILogger logger)
+        public AdapterWrapper(bool fMode, MTRFXXAdapter device, ILogger logger)
         {
             this.fMode = fMode;
             this.device = device;
