@@ -43,7 +43,66 @@ var adapter = Context.Require<NooLitePlugin>()
 adapter.SetBrightness(13, 255);
 ```
 
-## API `AdapterWrapper`
+### `[NooLiteCommandHandler]`
+
+Вы можете отметить методы своего плагина атрибутом `ThinkingHome.Plugins.NooLite.NooLiteCommandHandlerAttribute`. Метод вашего плагина будет автоматически вызываться при получении адаптером nooLite команд от других устройств.
+
+Сигнатура метода, вызываемого при получении команды nooLite, должна соответствовать делегату `ThinkingHome.Plugins.NooLite.NooLiteCommandHandlerDelegate`:
+
+```csharp
+public delegate void NooLiteCommandHandlerDelegate(byte command, int channel, byte format, byte d1, byte d2, byte d3, byte d4);
+```
+
+*Параметры:*
+
+- `byte command` - код команды.
+- `int channel` - канал, в котором получена команда.
+- `byte format` - код формата данных.
+- `byte d1` - данные, передаваемые с командой - байт 1
+- `byte d2` - данные, передаваемые с командой - байт 2
+- `byte d3` - данные, передаваемые с командой - байт 3
+- `byte d4` - данные, передаваемые с командой - байт 4
+
+Коды команд и форматов данных описаны в [документации](https://www.noo.com.by/assets/files/PDF/MTRF-64-USB.pdf) по API nooLite.
+
+*Пример:*
+
+```csharp
+[NooLiteCommandHandler]
+public void MyNooLiteHandler(byte command, int channel, byte format, byte d1, byte d2, byte d3, byte d4)
+{
+    ...
+}
+```
+
+### `[NooLiteMicroclimateDataHandler]`
+
+Вы можете отметить методы своего плагина атрибутом `ThinkingHome.Plugins.NooLite.NooLiteMicroclimateDataHandlerAttribute`. Метод вашего плагина будет автоматически вызываться при получении адаптером nooLite данных о микроклимате (температуре/влажности).
+
+Сигнатура метода, вызываемого при получении команды nooLite, должна соответствовать делегату `ThinkingHome.Plugins.NooLite.NooLiteMicroclimateDataHandlerDelegate`:
+
+```csharp
+public delegate void NooLiteMicroclimateDataHandlerDelegate(int channel, decimal temperature, int? humidity, bool lowBattery);
+```
+
+*Параметры:*
+
+- `int channel` - канал, в котором получена команда.
+- `decimal temperature` - значение температуры в градусах, с точностью до 0.1°.
+- `int? humidity` - значение влажности в % (для датчиков PT112, не измеряющих влажность, это поле будет содержать значение `null`).
+- `bool lowBattery` - признак низкого уровня заряда батарейки датчика (`true` - низкий, `false` - нормальный).
+
+*Пример:*
+
+```csharp
+[NooLiteMicroclimateDataHandler]
+public void MyNooLiteHandler(int channel, decimal temperature, int? humidity, bool lowBattery)
+{
+    ...
+}
+```
+
+## API класса `AdapterWrapper`
 
 ### `void On(byte channel)`
 
