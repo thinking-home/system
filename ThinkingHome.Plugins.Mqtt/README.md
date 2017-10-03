@@ -1,4 +1,4 @@
-*ThinkingHome.Plugins.Mqtt* 
+*ThinkingHome.Plugins.Mqtt*
 
 [![NuGet Pre Release](https://img.shields.io/nuget/vpre/ThinkingHome.Plugins.Mqtt.svg)]()
 
@@ -11,7 +11,6 @@
 ## Конфигурация
 
 Вы можете настраивать параметры подключения к MQTT брокеру и список каналов, в которых нужно обрабатывать сообщения.
-
 
 ```js
 {
@@ -100,7 +99,7 @@ public delegate void MqttMessageHandlerDelegate(string topic, byte[] payload);
 public void HandleMqttMessage(string topic, byte[] payload)
 {
     var str = Encoding.UTF8.GetString(payload);
-    
+
     Logger.LogInformation($"{topic}: {str}");
 }
 ```
