@@ -27,7 +27,7 @@
 
 ### `AdapterWrapper Open(bool fMode)`
 
-Метод `Open` возвращает экземпляр класса `ThinkingHome.Plugins.NooLite.AdapterWrapper`, предоставляющего API для управления адаптером.
+Метод `Open` возвращает экземпляр класса `ThinkingHome.Plugins.NooLite.AdapterWrapper`, предоставляющего API для управления адаптером nooLite.
 
 *Параметры:*
 
@@ -205,4 +205,44 @@ adapter.SetLedColor(15, 255, 255, 0); // yellow
 
 ```csharp
 adapter.LoadPreset(13);
+```
+
+## API сценариев
+
+### `noolite`
+
+Возвращает объект, предоставляющий API для управления адаптером nooLite.
+
+- `arguments[0]` -  режим отправки команд (`boolean`):
+  - `false` - стандартный режим nooLite,
+  - `true` - режим nooLite-F (с шифрованием и обратной связью)
+
+API адаптера имеет набор команд/параметров, полностью аналогичный API для плагинов.
+
+#### Пример
+
+```js
+var adapter = host.api.noolite(true);
+
+// включить свет в 13 канале
+adapter.on(13);
+
+// выключить свет в 25 канале
+adapter.off(25);
+
+// установить яркость 99 в 3 канале
+adapter.setBrightness(3, 99);
+
+// включить свет в 10 канале на 5 минут
+adapter.temporarySwitchOn(10, 5);
+
+// изменить цвет светодиодной RGB ленты в 20 канале на другой
+adapter.changeLedColor(20);
+
+// установить зеленый цвет светодиодной RGB ленты в 20 канале
+adapter.setLedColor(20, 0, 255, 0); // r: 0, g: 255, b: 0
+
+// применить ранее запомненный световой сценарий в 50 канале
+adapter.loadPreset(50);
+
 ```
