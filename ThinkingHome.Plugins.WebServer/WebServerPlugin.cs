@@ -1,6 +1,9 @@
-﻿using System.Reflection;
+﻿using System;
+using System.Reflection;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -13,7 +16,11 @@ namespace ThinkingHome.Plugins.WebServer
 {
     public class WebServerPlugin : PluginBase
     {
+        private const string MESSAGE_QUEUE_ROUTE = "mq";
+
         private IWebHost host;
+
+        private IHubContext<MessageQueueHub> hubContext;
 
         public override void InitPlugin()
         {
@@ -24,13 +31,17 @@ namespace ThinkingHome.Plugins.WebServer
                 .UseKestrel()
                 .UseUrls($"http://+:{port}")
                 .Configure(app => app
+                    .UseSignalR(routes => routes.MapHub<MessageQueueHub>(MESSAGE_QUEUE_ROUTE))
                     .UseStatusCodePages()
                     .UseMiddleware<HomePluginsMiddleware>(handlers))
                 .ConfigureServices(services => services
-                    .AddMemoryCache())
+                    .AddMemoryCache()
+                    .AddSignalR())
                 .ConfigureLogging(builder =>
                     builder.AddProxy(Logger))
                 .Build();
+
+            hubContext = host.Services.GetService<IHubContext<MessageQueueHub>>();
         }
 
         private InternalDictionary<IHandler> RegisterHandlers()
@@ -70,6 +81,11 @@ namespace ThinkingHome.Plugins.WebServer
         public override void StopPlugin()
         {
             host.Dispose();
+        }
+
+        public Task Send(string channel, object data)
+        {
+            return this.hubContext.Send(channel, data);
         }
     }
 }
