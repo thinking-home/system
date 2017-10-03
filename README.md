@@ -10,6 +10,7 @@ ThinkingHome - кроссплатформенное приложение, поз
 - [ThinkingHome.Plugins.Database](./ThinkingHome.Plugins.Database) - API для хранения информации плагинов в БД
 - [ThinkingHome.Plugins.Mail](./ThinkingHome.Plugins.Mail) - отправка email
 - [ThinkingHome.Plugins.Mqtt](./ThinkingHome.Plugins.Mqtt) - отправка/получение сообщений MQTT
+- [ThinkingHome.Plugins.NooLite](./ThinkingHome.Plugins.NooLite) - управление освещением/электроприборами с помощью устройств [nooLite](https://www.noo.com.by/sistema-noolite.html)
 - [ThinkingHome.Plugins.Scripts](./ThinkingHome.Plugins.Scripts) - выполнение сценариев автоматизации
 - [ThinkingHome.Plugins.Scripts.WebApi](./ThinkingHome.Plugins.Scripts.WebApi) - web API для управления сценариями
 - [ThinkingHome.Plugins.Scripts.WebUi](./ThinkingHome.Plugins.Scripts.WebUi) - web-интерфейс для управления сценариями
@@ -25,11 +26,11 @@ ThinkingHome - кроссплатформенное приложение, поз
 
 ### 1. Установите Docker
 
-Прежде, чем вы попробуете запустить образ ThinkingHome для Docker, вы должны установить Docker. Прочитайте инструкции для [Windows](http://www.docker.com/products/docker#/windows), [MacOS](http://www.docker.com/products/docker#/mac) и [Linux](http://www.docker.com/products/docker#/linux), чтобы узнать подробнее про установку Docker. 
+Прежде, чем вы попробуете запустить образ ThinkingHome для Docker, вы должны установить Docker. Прочитайте инструкции для [Windows](http://www.docker.com/products/docker#/windows), [MacOS](http://www.docker.com/products/docker#/mac) и [Linux](http://www.docker.com/products/docker#/linux), чтобы узнать подробнее про установку Docker.
 
 ### 2. Запустите контейнер базы данных
 
-Многие плагины сохраняют своё состояние в базе данных. Для их корректной работы необходимо предоставить доступ к БД. ThinkingHome поддерживает работу с СУБД PostgreSQL. 
+Многие плагины сохраняют своё состояние в базе данных. Для их корректной работы необходимо предоставить доступ к БД. ThinkingHome поддерживает работу с СУБД PostgreSQL.
 
 С помошью следующей команды вы можете подключить образ PostgreSQL из [Docker Store](https://store.docker.com/images/postgres).
 
