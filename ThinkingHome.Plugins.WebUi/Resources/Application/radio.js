@@ -39,7 +39,7 @@ var Radio = lib.common.ApplicationBlock.extend({
     },
 
     sendMessage: function (channel, data) {
-        this.connection && this.connection.invoke(this.msgEventName, channel, data);
+        this.connection && this.connection.invoke("Send", channel, data);
     }
 });
 
