@@ -24,7 +24,7 @@ namespace ThinkingHome.Plugins.WebServer
             var guid = Guid.NewGuid();
             var timestamp = DateTime.Now;
 
-            return clients.All.InvokeAsync(channel, new { guid, timestamp, channel, data });
+            return clients.All.InvokeAsync("serverMessage", new { guid, timestamp, channel, data });
         }
     }
 }
