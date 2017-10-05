@@ -27,10 +27,14 @@ namespace ThinkingHome.Plugins.WebServer
             return InternalSend(Clients, channel, data);
         }
 
+        internal static event Action<string, object> Message;
+
         internal static Task InternalSend(IHubClients clients, string channel, object data)
         {
             var guid = Guid.NewGuid();
             var timestamp = DateTime.Now;
+
+            Message?.Invoke(channel, data);
 
             return clients.All.InvokeAsync(CLIENT_METHOD_NAME, new { guid, timestamp, channel, data });
         }

@@ -40,6 +40,13 @@ namespace ThinkingHome.Plugins.WebServer
                 .Build();
 
             hubContext = host.Services.GetService<IHubContext<MessageHub>>();
+
+            MessageHub.Message += OnMessage;
+        }
+
+        private void OnMessage(string channel, object data)
+        {
+            Logger.LogInformation($"{channel}: {data}");
         }
 
         private InternalDictionary<IHandler> RegisterHandlers()

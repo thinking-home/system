@@ -1,4 +1,4 @@
-*ThinkingHome.Plugins.WebServer* 
+*ThinkingHome.Plugins.WebServer*
 
 [![NuGet Pre Release](https://img.shields.io/nuget/vpre/ThinkingHome.Plugins.WebServer.svg)](https://www.nuget.org/packages/ThinkingHome.Plugins.WebServer)
 
@@ -83,7 +83,7 @@ public object AddCow(HttpRequestParams requestParams)
 
 Атрибут `ThinkingHome.Plugins.WebServer.Attributes.HttpJsonDynamicResourceAttribute` позволяет обращаться к методу плагина по HTTP как к файлу JSON.
 
-По сути атрибуты `[WebApiMethod]` и `[HttpJsonDynamicResource]` делают одно и то же - сериализуют результат метода в JSON и отправляют на клиент. Разница между ними в том, что первый для клиента выглядит как метод API (выполнение действий), а второй - как файл (получение контента). Сейчас между ними нет технических различий, но в будущем они могут появиться.  
+По сути атрибуты `[WebApiMethod]` и `[HttpJsonDynamicResource]` делают одно и то же - сериализуют результат метода в JSON и отправляют на клиент. Разница между ними в том, что первый для клиента выглядит как метод API (выполнение действий), а второй - как файл (получение контента). Сейчас между ними нет технических различий, но в будущем они могут появиться.
 
 #### Пример
 
@@ -91,8 +91,8 @@ public object AddCow(HttpRequestParams requestParams)
 [HttpCommand("/settings.json")]
 public object TmpHandlerMethod42(HttpRequestParams requestParams)
 {
-    return new { 
-        rootDir = GetRootDir(), 
+    return new {
+        rootDir = GetRootDir(),
         lang = GetCurrentLang()
     };
 }
@@ -134,7 +134,7 @@ public object TmpHandlerMethod42(HttpRequestParams requestParams)
 
 ## Собственные типы ресурсов
 
-Вы можете реализовать поддержку собственных типов статических и динамических ресурсов. 
+Вы можете реализовать поддержку собственных типов статических и динамических ресурсов.
 
 Например, вы можете описать тип статических ресурсов, получающий содержимое из файловой системы (или из любого другого источника). Также вы можете описать собственный тип динамических ресурсов для сериализации результатов работы методов плагинов в нужный формат (например, в XML).
 
@@ -186,3 +186,6 @@ public class HttpBinaryDynamicResourceAttribute : HttpDynamicResourceAttribute
     }
 }
 ```
+
+## Клиент-серверная шина сообщений
+
