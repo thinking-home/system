@@ -16,11 +16,9 @@ namespace ThinkingHome.Plugins.WebServer
 {
     public class WebServerPlugin : PluginBase
     {
-        private const string MESSAGE_QUEUE_ROUTE = "mq";
-
         private IWebHost host;
 
-        private IHubContext<MessageQueueHub> hubContext;
+        private IHubContext<MessageHub> hubContext;
 
         public override void InitPlugin()
         {
@@ -31,7 +29,7 @@ namespace ThinkingHome.Plugins.WebServer
                 .UseKestrel()
                 .UseUrls($"http://+:{port}")
                 .Configure(app => app
-                    .UseSignalR(routes => routes.MapHub<MessageQueueHub>(MESSAGE_QUEUE_ROUTE))
+                    .UseSignalR(routes => routes.MapHub<MessageHub>(MessageHub.HUB_ROUTE))
                     .UseStatusCodePages()
                     .UseMiddleware<HomePluginsMiddleware>(handlers))
                 .ConfigureServices(services => services
@@ -41,7 +39,7 @@ namespace ThinkingHome.Plugins.WebServer
                     builder.AddProxy(Logger))
                 .Build();
 
-            hubContext = host.Services.GetService<IHubContext<MessageQueueHub>>();
+            hubContext = host.Services.GetService<IHubContext<MessageHub>>();
         }
 
         private InternalDictionary<IHandler> RegisterHandlers()

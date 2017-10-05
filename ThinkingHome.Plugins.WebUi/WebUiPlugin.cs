@@ -6,6 +6,7 @@ using System.Text;
 using Microsoft.Extensions.Configuration;
 using ThinkingHome.Core.Plugins;
 using ThinkingHome.Core.Plugins.Utils;
+using ThinkingHome.Plugins.WebServer;
 using ThinkingHome.Plugins.WebServer.Attributes;
 using ThinkingHome.Plugins.WebServer.Handlers;
 using ThinkingHome.Plugins.WebUi.Attributes;
@@ -109,7 +110,16 @@ namespace ThinkingHome.Plugins.WebUi
         {
             return new
             {
-                app = "mi mi mi",
+                app = new
+                {
+                    radio = new
+                    {
+                        route = MessageHub.HUB_ROUTE,
+                        clientMethod = MessageHub.CLIENT_METHOD_NAME,
+                        serverMethod = MessageHub.SERVER_METHOD_NAME,
+                        reconnectionTimeout = MessageHub.RECONNECTION_TIMEOUT
+                    }
+                },
                 systemjs = new { map = aliases }
             };
         }

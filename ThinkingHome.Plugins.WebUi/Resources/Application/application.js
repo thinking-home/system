@@ -13,7 +13,7 @@ var homeApplication = lib.marionette.Application.extend({
         this.router = new router();
         this.router.on('navigate', this._loadPage, this);
 
-        this.radio = new radio();
+        this.radio = new radio(options.radio);
     },
 
     onStart: function() {

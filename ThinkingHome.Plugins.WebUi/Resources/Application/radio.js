@@ -1,12 +1,12 @@
 var lib = require('lib');
 
 var Radio = lib.common.ApplicationBlock.extend({
-    msgHubUrl: '/mq',
-    msgEventName: 'serverMessage',
-    reconnectionTimeout: 7000,
-
-    // initialize: function () {
-    // },
+    initialize: function () {
+        this.route = '/' + this.getOption('route');
+        this.clientMethod = this.getOption('clientMethod');
+        this.serverMethod = this.getOption('serverMethod');
+        this.reconnectionTimeout = this.getOption('reconnectionTimeout');
+    },
 
     start: function () {
         this.openConnection();
@@ -20,9 +20,9 @@ var Radio = lib.common.ApplicationBlock.extend({
     },
 
     openConnection: function () {
-        var connection = this.connection = new lib.signalrClient.HubConnection(this.msgHubUrl);
+        var connection = this.connection = new lib.signalrClient.HubConnection(this.route);
 
-        connection.on(this.msgEventName, this.bind('onMessage'));
+        connection.on(this.clientMethod, this.bind('onMessage'));
         connection.onClosed = this.bind('onDisconnect');
 
         connection.start().catch(this.bind('onDisconnect'));
@@ -35,11 +35,12 @@ var Radio = lib.common.ApplicationBlock.extend({
     },
 
     onMessage: function (message) {
+        console.log(message);
         this.trigger(message.channel, message);
     },
 
     sendMessage: function (channel, data) {
-        this.connection && this.connection.invoke("Send", channel, data);
+        this.connection && this.connection.invoke(this.serverMethod, channel, data);
     }
 });
 
