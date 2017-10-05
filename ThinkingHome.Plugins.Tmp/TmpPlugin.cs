@@ -75,7 +75,7 @@ namespace ThinkingHome.Plugins.Tmp
         [TimerCallback(5000)]
         public void MimimiMqTimer(DateTime now)
         {
-            Context.Require<WebServerPlugin>().Send("mi mi mi", DateTime.Now);
+            Context.Require<WebServerPlugin>().Send("mi-mi-mi", DateTime.Now);
         }
 
         [DbModelBuilder]

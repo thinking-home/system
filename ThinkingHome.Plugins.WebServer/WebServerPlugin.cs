@@ -83,7 +83,7 @@ namespace ThinkingHome.Plugins.WebServer
 
         public Task Send(string channel, object data)
         {
-            return this.hubContext.Send(channel, data);
+            return hubContext.Send(channel, data);
         }
     }
 }

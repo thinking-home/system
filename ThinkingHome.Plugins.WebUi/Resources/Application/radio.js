@@ -35,7 +35,6 @@ var Radio = lib.common.ApplicationBlock.extend({
     },
 
     onMessage: function (message) {
-        console.log(message);
         this.trigger(message.channel, message);
     },
 
