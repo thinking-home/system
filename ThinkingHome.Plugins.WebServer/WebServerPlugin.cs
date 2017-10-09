@@ -11,6 +11,7 @@ using ThinkingHome.Core.Plugins;
 using ThinkingHome.Core.Plugins.Utils;
 using ThinkingHome.Plugins.WebServer.Attributes.Base;
 using ThinkingHome.Plugins.WebServer.Handlers;
+using ThinkingHome.Plugins.WebServer.Messages;
 
 namespace ThinkingHome.Plugins.WebServer
 {
@@ -39,14 +40,10 @@ namespace ThinkingHome.Plugins.WebServer
                     builder.AddProxy(Logger))
                 .Build();
 
+            var msgHandlers = RegisterMessageHandlers();
             hubContext = host.Services.GetService<IHubContext<MessageHub>>();
 
-            MessageHub.Message += OnMessage;
-        }
-
-        private void OnMessage(string channel, object data)
-        {
-            Logger.LogInformation($"{channel}: {data}");
+            MessageHub.Message += (id, timestamp, channel, data) => msgHandlers.Execute(channel, a => a(id, timestamp, channel, data));
         }
 
         private InternalDictionary<IHandler> RegisterHandlers()
@@ -75,6 +72,24 @@ namespace ThinkingHome.Plugins.WebServer
             }
 
             return handlers;
+        }
+
+        private  HandlerSet<HubMessageHandlerDelegate> RegisterMessageHandlers()
+        {
+            var messageHandlers = new HandlerSet<HubMessageHandlerDelegate>();
+
+            foreach (var plugin in Context.GetAllPlugins())
+            {
+                var pluginType = plugin.GetType();
+
+                foreach (var mi in plugin.FindMethodsByAttribute<HubMessageHandlerAttribute, HubMessageHandlerDelegate>())
+                {
+                    Logger.LogInformation($"register hub message handler: \"{mi.MetaData.Channel}\" ({pluginType.FullName})");
+                    messageHandlers.Register(mi.MetaData.Channel, mi.Method);
+                }
+            }
+
+            return messageHandlers;
         }
 
         public override void StartPlugin()

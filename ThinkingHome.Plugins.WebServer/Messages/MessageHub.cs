@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.SignalR;
 
-namespace ThinkingHome.Plugins.WebServer
+namespace ThinkingHome.Plugins.WebServer.Messages
 {
     public static class MessageHubExtensions
     {
@@ -27,16 +27,16 @@ namespace ThinkingHome.Plugins.WebServer
             return InternalSend(Clients, channel, data);
         }
 
-        internal static event Action<string, object> Message;
+        internal static event HubMessageHandlerDelegate Message;
 
         internal static Task InternalSend(IHubClients clients, string channel, object data)
         {
-            var guid = Guid.NewGuid();
+            var messageId = Guid.NewGuid();
             var timestamp = DateTime.Now;
 
-            Message?.Invoke(channel, data);
+            Message?.Invoke(messageId, timestamp, channel, data);
 
-            return clients.All.InvokeAsync(CLIENT_METHOD_NAME, new { guid, timestamp, channel, data });
+            return clients.All.InvokeAsync(CLIENT_METHOD_NAME, new { guid = messageId, timestamp, channel, data });
         }
     }
 }
