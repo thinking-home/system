@@ -6,11 +6,12 @@ using System.Collections.ObjectModel;
 namespace ThinkingHome.Core.Plugins.Utils
 {
     /// <summary>
-    /// Thread safe dictionary with empty elements filter
+    /// Key-value object store
+    /// - thread safe
+    /// - empty elements filter
+    /// - case insensitive keys
     /// </summary>
-    /// <typeparam name="TValue"></typeparam>
-    /// <typeparam name="TData"></typeparam>
-    public abstract class BaseRegister<TValue, TData>
+    public abstract class BaseRegistry<TValue, TData>
     {
         private readonly ConcurrentDictionary<string, TData> data =
             new ConcurrentDictionary<string, TData>(StringComparer.CurrentCultureIgnoreCase);

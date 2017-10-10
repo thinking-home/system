@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace ThinkingHome.Core.Plugins.Utils
 {
-    public class ObjectRegister<T> : BaseRegister<T, T>
+    public class ObjectRegistry<T> : BaseRegistry<T, T>
     {
         protected override T Add(string key, T value) => value;
 

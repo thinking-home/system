@@ -16,7 +16,7 @@ namespace ThinkingHome.Plugins.Scripts
     {
         private object host;
 
-        private readonly ObjectRegister<Delegate> methods = new ObjectRegister<Delegate>();
+        private readonly ObjectRegistry<Delegate> methods = new ObjectRegistry<Delegate>();
 
         public override void InitPlugin()
         {

@@ -64,7 +64,7 @@ namespace ThinkingHome.Plugins.WebUi
     [JavaScriptResource("/vendor/js/signalr-client.js", "ThinkingHome.Plugins.WebUi.Resources.Vendor.js.signalr-client.min.js", Alias = "signalr-client")]
     public class WebUiPlugin : PluginBase
     {
-        private readonly ObjectRegister<string> aliases = new ObjectRegister<string>();
+        private readonly ObjectRegistry<string> aliases = new ObjectRegistry<string>();
         private readonly HashSet<string> alautoLoadedStyles = new HashSet<string>();
 
         public override void InitPlugin()

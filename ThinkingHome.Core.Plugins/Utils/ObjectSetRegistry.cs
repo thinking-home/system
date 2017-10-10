@@ -2,7 +2,7 @@
 
 namespace ThinkingHome.Core.Plugins.Utils
 {
-    public class ObjectSetRegister<T> : BaseRegister<T, IList<T>>
+    public class ObjectSetRegistry<T> : BaseRegistry<T, IList<T>>
     {
         protected override IList<T> Add(string key, T value)
         {

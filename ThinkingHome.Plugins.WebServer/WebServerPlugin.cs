@@ -47,9 +47,9 @@ namespace ThinkingHome.Plugins.WebServer
                 SafeInvoke(msgHandlers[channel], fn => fn(id, timestamp, channel, data));
         }
 
-        private ObjectRegister<IHandler> RegisterHandlers()
+        private ObjectRegistry<IHandler> RegisterHandlers()
         {
-            var handlers = new ObjectRegister<IHandler>();
+            var handlers = new ObjectRegistry<IHandler>();
 
             foreach (var plugin in Context.GetAllPlugins())
             {
@@ -75,9 +75,9 @@ namespace ThinkingHome.Plugins.WebServer
             return handlers;
         }
 
-        private ObjectSetRegister<HubMessageHandlerDelegate> RegisterMessageHandlers()
+        private ObjectSetRegistry<HubMessageHandlerDelegate> RegisterMessageHandlers()
         {
-            var messageHandlers = new ObjectSetRegister<HubMessageHandlerDelegate>();
+            var messageHandlers = new ObjectSetRegistry<HubMessageHandlerDelegate>();
 
             foreach (var plugin in Context.GetAllPlugins())
             {
