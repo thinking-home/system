@@ -26,7 +26,7 @@ namespace ThinkingHome.Plugins.Database
             optionsBuilder.UseNpgsql(cstring);
 
             inits = Context.GetAllPlugins()
-                .SelectMany(p => p.FindMethodsByAttribute<DbModelBuilderAttribute, DbModelBuilderDelegate>())
+                .SelectMany(p => p.FindMethods<DbModelBuilderAttribute, DbModelBuilderDelegate>())
                 .Select(obj => obj.Method)
                 .ToArray();
 

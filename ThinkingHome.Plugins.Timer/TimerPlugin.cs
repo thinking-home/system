@@ -25,7 +25,7 @@ namespace ThinkingHome.Plugins.Timer
         {
             var callbacks = Context.GetAllPlugins()
                 .SelectMany(plugin =>
-                    plugin.FindMethodsByAttribute<TimerCallbackAttribute, TimerCallbackDelegate>());
+                    plugin.FindMethods<TimerCallbackAttribute, TimerCallbackDelegate>());
 
             foreach (var callback in callbacks)
             {

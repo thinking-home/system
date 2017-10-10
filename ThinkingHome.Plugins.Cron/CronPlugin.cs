@@ -47,7 +47,7 @@ namespace ThinkingHome.Plugins.Cron
             {
                 var pluginType = plugin.GetType();
 
-                foreach (var mi in plugin.FindMethodsByAttribute<CronHandlerAttribute, CronHandlerDelegate>())
+                foreach (var mi in plugin.FindMethods<CronHandlerAttribute, CronHandlerDelegate>())
                 {
                     Logger.LogInformation($"register cron handler: \"{mi.Method.Method.Name}\" ({pluginType.FullName})");
                     list.Add(mi.Method);

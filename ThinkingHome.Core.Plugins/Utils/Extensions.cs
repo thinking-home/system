@@ -71,7 +71,15 @@ namespace ThinkingHome.Core.Plugins.Utils
 
         #region handlers
 
-        public static PluginMethodInfo<TAttr, TDelegate>[] FindMethodsByAttribute<TAttr, TDelegate>(this PluginBase plugin)
+        public static PluginMethodInfo<TAttr, TDelegate>[] FindMethods<TAttr, TDelegate>(
+            this IEnumerable<PluginBase> plugins) where TAttr: Attribute where TDelegate : class
+        {
+            return plugins
+                .SelectMany(p => p.FindMethods<TAttr, TDelegate>())
+                .ToArray();
+        }
+
+        public static PluginMethodInfo<TAttr, TDelegate>[] FindMethods<TAttr, TDelegate>(this PluginBase plugin)
             where TAttr: Attribute where TDelegate : class
         {
             IEnumerable<Tuple<MethodInfo, TAttr>> GetMethodAttributes(MethodInfo method)

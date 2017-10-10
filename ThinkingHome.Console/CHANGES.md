@@ -17,7 +17,7 @@
   - API для работы с конфигами: Microsoft.Extensions.Configuration (хелперы: Microsoft.Extensions.Configuration.Binder)
   - конфиг перенесен в свойство плагина
   - настройки плагинов в разделе "plugins:<полное название класса плагина>"
-  - метод FindMethodsByAttribute у базового класса плагинов для поиска методов, отмеченных атрибутом
+  - `FindMethods` метод расширения базового класса плагина для поиска методов, отмеченных атрибутом
   - NLog => Microsoft.Extensions.Logging + Serilog
   - MEF => Microsoft.Extensions.DependencyInjection, не нужна ссылка в каждой DLL
   -

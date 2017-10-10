@@ -25,7 +25,7 @@ namespace ThinkingHome.Plugins.Scripts
             {
                 var pluginTypeName = plugin.GetType().FullName;
 
-                foreach (var mi in plugin.FindMethodsByAttribute<ScriptCommandAttribute, Delegate>())
+                foreach (var mi in plugin.FindMethods<ScriptCommandAttribute, Delegate>())
                 {
                     Logger.LogInformation($"register script method: \"{mi.MetaData.Alias}\" ({pluginTypeName})");
                     methods.Register(mi.MetaData.Alias, mi.Method);

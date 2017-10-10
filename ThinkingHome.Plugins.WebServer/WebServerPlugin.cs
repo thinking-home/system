@@ -56,7 +56,7 @@ namespace ThinkingHome.Plugins.WebServer
                 var pluginType = plugin.GetType();
 
                 // api handlers
-                foreach (var mi in plugin.FindMethodsByAttribute<HttpDynamicResourceAttribute, HttpHandlerDelegate>())
+                foreach (var mi in plugin.FindMethods<HttpDynamicResourceAttribute, HttpHandlerDelegate>())
                 {
                     Logger.LogInformation($"register HTTP handler: \"{mi.MetaData.Url}\" ({pluginType.FullName})");
                     handlers.Register(mi.MetaData.Url, new DynamicResourceHandler(mi.Method, mi.MetaData));
@@ -83,7 +83,7 @@ namespace ThinkingHome.Plugins.WebServer
             {
                 var pluginType = plugin.GetType();
 
-                foreach (var mi in plugin.FindMethodsByAttribute<HubMessageHandlerAttribute, HubMessageHandlerDelegate>())
+                foreach (var mi in plugin.FindMethods<HubMessageHandlerAttribute, HubMessageHandlerDelegate>())
                 {
                     Logger.LogInformation($"register hub message handler: \"{mi.MetaData.Channel}\" ({pluginType.FullName})");
                     messageHandlers.Register(mi.MetaData.Channel, mi.Method);

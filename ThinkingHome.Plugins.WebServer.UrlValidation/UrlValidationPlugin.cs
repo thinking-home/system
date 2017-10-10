@@ -50,7 +50,7 @@ namespace ThinkingHome.Plugins.WebServer.UrlValidation
             var type = plugin.GetType().GetTypeInfo();
             var alias = GetPluginAlias(type);
 
-            foreach (var mi in plugin.FindMethodsByAttribute<HttpDynamicResourceAttribute, HttpHandlerDelegate>())
+            foreach (var mi in plugin.FindMethods<HttpDynamicResourceAttribute, HttpHandlerDelegate>())
             {
                 var resource = mi.MetaData;
 

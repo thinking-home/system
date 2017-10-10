@@ -124,7 +124,7 @@ namespace ThinkingHome.Plugins.Mqtt
             {
                 var pluginType = plugin.GetType();
 
-                foreach (var mi in plugin.FindMethodsByAttribute<MqttMessageHandlerAttribute, MqttMessageHandlerDelegate>())
+                foreach (var mi in plugin.FindMethods<MqttMessageHandlerAttribute, MqttMessageHandlerDelegate>())
                 {
                     Logger.LogInformation($"register mqtt message handler: \"{mi.Method.Method.Name}\" ({pluginType.FullName})");
                     list.Add(mi.Method);
