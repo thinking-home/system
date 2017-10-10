@@ -5,6 +5,7 @@ using System.Reflection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using ThinkingHome.Core.Plugins;
+using ThinkingHome.Core.Plugins.Utils;
 
 namespace ThinkingHome.Plugins.Timer
 {
@@ -29,9 +30,9 @@ namespace ThinkingHome.Plugins.Timer
             foreach (var callback in callbacks)
             {
                 var info = callback.Method.GetMethodInfo();
-                
+
                 Logger.LogInformation($"Register timer callback {info.Name} for {info.DeclaringType.FullName}");
-                
+
                 var timer = new InternalTimer(
                     callback.MetaData.Delay ?? random.Next(callback.MetaData.Interval),
                     callback.MetaData.Interval,

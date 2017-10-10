@@ -10,6 +10,7 @@ using MQTTnet.Core.Client;
 using MQTTnet.Core.Packets;
 using MQTTnet.Core.Protocol;
 using ThinkingHome.Core.Plugins;
+using ThinkingHome.Core.Plugins.Utils;
 using ThinkingHome.Plugins.Scripts;
 using ThinkingHome.Plugins.Scripts.Attributes;
 using ThinkingHome.Plugins.Timer;
@@ -25,9 +26,9 @@ namespace ThinkingHome.Plugins.Mqtt
         private const int DEFAULT_PORT = 1883;
 
         private bool reconnectEnabled;
-        
+
         private List<MqttMessageHandlerDelegate> handlers;
-        
+
         public string Host => Configuration.GetValue("host", DEFAULT_HOST);
         public int Port => Configuration.GetValue("port", DEFAULT_PORT);
         public string Login => Configuration["login"];
@@ -37,13 +38,13 @@ namespace ThinkingHome.Plugins.Mqtt
         #endregion
 
         private IMqttClient client;
-        
+
         public override void InitPlugin()
         {
             var clientId = Guid.NewGuid().ToString();
-            
+
             Logger.LogInformation($"init MQTT client: {Host}:{Port} (ID: {{{clientId}}})");
-            
+
             var options = new MqttClientOptions
             {
                 Server = Host,
@@ -60,7 +61,7 @@ namespace ThinkingHome.Plugins.Mqtt
 
             handlers = RegisterHandlers();
         }
-        
+
         public override void StartPlugin()
         {
             reconnectEnabled = true;
@@ -82,7 +83,7 @@ namespace ThinkingHome.Plugins.Mqtt
                 }
             }
         }
-        
+
         [TimerCallback(60000)]
         public void ConnectionChecking(DateTime now)
         {
@@ -114,7 +115,7 @@ namespace ThinkingHome.Plugins.Mqtt
         }
 
         #region private
-        
+
         private List<MqttMessageHandlerDelegate> RegisterHandlers()
         {
             var list = new List<MqttMessageHandlerDelegate>();
@@ -144,7 +145,7 @@ namespace ThinkingHome.Plugins.Mqtt
                         try
                         {
                             Logger.LogInformation("connect to MQTT broker");
-                            
+
                             var task = client.ConnectAsync();
                             task.Wait();
 
@@ -162,15 +163,15 @@ namespace ThinkingHome.Plugins.Mqtt
         private async void client_Connected(object s, EventArgs e)
         {
             Logger.LogInformation("MQTT client is connected");
-            
+
             Logger.LogInformation($"Subscribe: {string.Join(", ", Topics)}");
-            
+
             var filters = Topics
                 .Select(topic => new TopicFilter(topic, MqttQualityOfServiceLevel.AtMostOnce))
                 .ToArray();
-            
+
             await client.SubscribeAsync(filters);
-            
+
             Logger.LogInformation("MQTT client is subscribed");
         }
 
@@ -183,15 +184,15 @@ namespace ThinkingHome.Plugins.Mqtt
         {
             var msg = e.ApplicationMessage;
             var payload = Encoding.UTF8.GetString(msg.Payload);
-            
+
             Logger.LogDebug($"topic: {msg.Topic}, payload: {payload}, qos: {msg.QualityOfServiceLevel}, retain: {msg.Retain}");
-            
+
             // events
             SafeInvoke(handlers, h => h(msg.Topic, msg.Payload), true);
-            
+
             Context.Require<ScriptsPlugin>().EmitScriptEvent("mqtt:message:received", msg.Topic, new Buffer(msg.Payload));
         }
-        
+
         #endregion
     }
 }

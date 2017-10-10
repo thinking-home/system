@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Microsoft.Extensions.Logging;
 using ThinkingHome.Core.Plugins;
+using ThinkingHome.Core.Plugins.Utils;
 using ThinkingHome.NooLite;
 using ThinkingHome.Plugins.Scripts;
 using ThinkingHome.Plugins.Scripts.Attributes;

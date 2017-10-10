@@ -68,5 +68,44 @@ namespace ThinkingHome.Core.Plugins.Utils
         }
 
         #endregion
+
+        #region handlers
+
+        public static PluginMethodInfo<TAttr, TDelegate>[] FindMethodsByAttribute<TAttr, TDelegate>(this PluginBase plugin)
+            where TAttr: Attribute where TDelegate : class
+        {
+            IEnumerable<Tuple<MethodInfo, TAttr>> GetMethodAttributes(MethodInfo method)
+            {
+                return method
+                    .GetCustomAttributes<TAttr>()
+                    .Select(attr => new Tuple<MethodInfo, TAttr>(method, attr));
+            }
+
+            PluginMethodInfo<TAttr, TDelegate> GetPluginMethodInfo(Tuple<MethodInfo, TAttr> obj)
+            {
+                var delegateType = typeof(TDelegate);
+
+                if (delegateType == typeof(Delegate))
+                {
+                    delegateType = obj.Item1.GetDelegateType();
+                }
+
+                var mthodDelegate = obj.Item1.IsStatic
+                    ? obj.Item1.CreateDelegate(delegateType)
+                    : obj.Item1.CreateDelegate(delegateType, plugin);
+
+                return new PluginMethodInfo<TAttr, TDelegate>(obj.Item2, mthodDelegate as TDelegate);
+            }
+
+            return plugin
+                .GetType()
+                .GetTypeInfo()
+                .GetMethods()
+                .SelectMany(GetMethodAttributes)
+                .Select(GetPluginMethodInfo)
+                .ToArray();
+        }
+
+        #endregion
     }
 }
