@@ -16,7 +16,7 @@ namespace ThinkingHome.Plugins.Scripts
     {
         private object host;
 
-        private readonly InternalDictionary<Delegate> methods = new InternalDictionary<Delegate>();
+        private readonly ObjectRegister<Delegate> methods = new ObjectRegister<Delegate>();
 
         public override void InitPlugin()
         {
@@ -71,7 +71,7 @@ namespace ThinkingHome.Plugins.Scripts
             using (var session = Context.Require<DatabasePlugin>().OpenSession())
             {
                 EmitScriptEvent(session, eventAlias, args);
-            }    
+            }
         }
 
         public void EmitScriptEvent(DbContext session, string eventAlias, params object[] args)

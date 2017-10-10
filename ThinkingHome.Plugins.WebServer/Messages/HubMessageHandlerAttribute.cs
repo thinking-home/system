@@ -12,6 +12,4 @@ namespace ThinkingHome.Plugins.WebServer.Messages
             Channel = channel;
         }
     }
-
-    public delegate void HubMessageHandlerDelegate(Guid msgId, DateTime timestamp, string channel, object data);
 }

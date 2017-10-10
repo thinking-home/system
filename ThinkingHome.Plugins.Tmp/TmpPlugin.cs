@@ -17,6 +17,7 @@ using ThinkingHome.Plugins.WebUi.Apps;
 using ThinkingHome.Plugins.Mail;
 using ThinkingHome.Plugins.Mqtt;
 using ThinkingHome.Plugins.WebServer;
+using ThinkingHome.Plugins.WebServer.Messages;
 
 namespace ThinkingHome.Plugins.Tmp
 {
@@ -174,6 +175,12 @@ namespace ThinkingHome.Plugins.Tmp
             var bytes = System.Text.Encoding.UTF8.GetBytes(content);
 
             return new Scripts.Buffer(bytes);
+        }
+
+        [HubMessageHandler("mi-mi-mi")]
+        public void TestMessageHandler(Guid msgId, DateTime timestamp, string channel, object data)
+        {
+            Logger.LogInformation("{0}:{1}:{2}:{3}", msgId, timestamp, channel, data);
         }
     }
 }

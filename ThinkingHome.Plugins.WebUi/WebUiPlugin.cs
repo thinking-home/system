@@ -64,7 +64,7 @@ namespace ThinkingHome.Plugins.WebUi
     [JavaScriptResource("/vendor/js/signalr-client.js", "ThinkingHome.Plugins.WebUi.Resources.Vendor.js.signalr-client.min.js", Alias = "signalr-client")]
     public class WebUiPlugin : PluginBase
     {
-        private readonly InternalDictionary<string> aliases = new InternalDictionary<string>();
+        private readonly ObjectRegister<string> aliases = new ObjectRegister<string>();
         private readonly HashSet<string> alautoLoadedStyles = new HashSet<string>();
 
         public override void InitPlugin()
@@ -121,7 +121,7 @@ namespace ThinkingHome.Plugins.WebUi
                         reconnectionTimeout = MessageHub.RECONNECTION_TIMEOUT
                     }
                 },
-                systemjs = new { map = aliases }
+                systemjs = new { map = aliases.Data }
             };
         }
     }

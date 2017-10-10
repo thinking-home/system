@@ -43,12 +43,13 @@ namespace ThinkingHome.Plugins.WebServer
             var msgHandlers = RegisterMessageHandlers();
             hubContext = host.Services.GetService<IHubContext<MessageHub>>();
 
-            MessageHub.Message += (id, timestamp, channel, data) => msgHandlers.Execute(channel, a => a(id, timestamp, channel, data));
+            MessageHub.Message += (id, timestamp, channel, data) =>
+                SafeInvoke(msgHandlers[channel], fn => fn(id, timestamp, channel, data));
         }
 
-        private InternalDictionary<IHandler> RegisterHandlers()
+        private ObjectRegister<IHandler> RegisterHandlers()
         {
-            var handlers = new InternalDictionary<IHandler>();
+            var handlers = new ObjectRegister<IHandler>();
 
             foreach (var plugin in Context.GetAllPlugins())
             {
@@ -74,9 +75,9 @@ namespace ThinkingHome.Plugins.WebServer
             return handlers;
         }
 
-        private  HandlerSet<HubMessageHandlerDelegate> RegisterMessageHandlers()
+        private ObjectSetRegister<HubMessageHandlerDelegate> RegisterMessageHandlers()
         {
-            var messageHandlers = new HandlerSet<HubMessageHandlerDelegate>();
+            var messageHandlers = new ObjectSetRegister<HubMessageHandlerDelegate>();
 
             foreach (var plugin in Context.GetAllPlugins())
             {
