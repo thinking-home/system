@@ -93,7 +93,7 @@
 
 ## alpha4
 - [ ] noolite (~~core~~, api)
-- [ ] message queue (signalr)
+- [ ] message hub (signalr)
 - [ ] telegram bot https://www.nuget.org/packages/Telegram.Bot/
 
 ### core
