@@ -45,10 +45,5 @@ namespace ThinkingHome.Core.Infrastructure
         {
             return plugins[typeof(T)] as T;
         }
-
-        public void Using<T>(Action<T> action) where T : PluginBase
-        {
-            action(Require<T>());
-        }
     }
 }
