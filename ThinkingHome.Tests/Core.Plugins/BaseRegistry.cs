@@ -1,3 +1,4 @@
+using System.Collections.ObjectModel;
 using Moq;
 using Moq.Protected;
 using ThinkingHome.Core.Plugins.Utils;
@@ -98,6 +99,22 @@ namespace ThinkingHome.Tests.Core.Plugins
             registry.Object.Register("test-key", "test-value");
 
             Assert.Equal(registry.Object["TEST-KEY"], "test-value");
+        }
+
+        [Fact]
+        public void IndexerShouldReturnNull_WhenKeyNotExists()
+        {
+            var registry = new Mock<BaseRegistry<string, string>>();
+
+            Assert.Null(registry.Object["not-existing-key"]);
+        }
+
+        [Fact]
+        public void Data_IsDictionary()
+        {
+            var registry = new Mock<BaseRegistry<string, int>>();
+
+            Assert.IsType<ReadOnlyDictionary<string, int>>(registry.Object.Data);
         }
     }
 }

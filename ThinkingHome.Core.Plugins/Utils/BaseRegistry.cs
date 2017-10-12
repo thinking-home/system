@@ -10,6 +10,7 @@ namespace ThinkingHome.Core.Plugins.Utils
     /// - thread safe
     /// - empty elements filter
     /// - case insensitive keys
+    /// - default values uses for non-existing keys
     /// </summary>
     public abstract class BaseRegistry<TValue, TData>
     {
@@ -32,7 +33,7 @@ namespace ThinkingHome.Core.Plugins.Utils
 
         public bool ContainsKey(string key) => data.ContainsKey(key);
 
-        public TData this[string key] => data[key];
+        public TData this[string key] => ContainsKey(key) ? data[key] : default(TData);
 
         public ReadOnlyDictionary<string, TData> Data => new ReadOnlyDictionary<string, TData>(data);
     }
