@@ -16,21 +16,16 @@ namespace ThinkingHome.Plugins.Scripts
     {
         private object host;
 
-        private readonly ObjectRegistry<Delegate> methods = new ObjectRegistry<Delegate>();
+        private ObjectRegistry<Delegate> methods;
 
         public override void InitPlugin()
         {
             // регистрируем методы плагинов
-            foreach (var plugin in Context.GetAllPlugins())
-            {
-                var pluginTypeName = plugin.GetType().FullName;
+            methods = Context.GetAllPlugins()
+                .SelectMany(plugin => plugin.FindMethods<ScriptCommandAttribute, Delegate>())
+                .ToRegistry(mi => mi.MetaData.Alias, mi => mi.Method);
 
-                foreach (var mi in plugin.FindMethods<ScriptCommandAttribute, Delegate>())
-                {
-                    Logger.LogInformation($"register script method: \"{mi.MetaData.Alias}\" ({pluginTypeName})");
-                    methods.Register(mi.MetaData.Alias, mi.Method);
-                }
-            }
+            methods.ForEach((name, method) => Logger.LogInformation($"register script method \"{name}\""));
 
             // создаем объект host
             host = new

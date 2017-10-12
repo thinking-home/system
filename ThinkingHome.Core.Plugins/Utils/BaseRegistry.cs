@@ -36,5 +36,15 @@ namespace ThinkingHome.Core.Plugins.Utils
         public TData this[string key] => ContainsKey(key) ? data[key] : default(TData);
 
         public ReadOnlyDictionary<string, TData> Data => new ReadOnlyDictionary<string, TData>(data);
+
+        public void ForEach(Action<string, TData> action)
+        {
+            if (action == null) return;
+
+            foreach (var el in Data)
+            {
+                action(el.Key, el.Value);
+            }
+        }
     }
 }

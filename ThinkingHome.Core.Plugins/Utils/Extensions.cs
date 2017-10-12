@@ -69,7 +69,7 @@ namespace ThinkingHome.Core.Plugins.Utils
 
         #endregion
 
-        #region handlers
+        #region find methods
 
         public static PluginMethodInfo<TAttr, TDelegate>[] FindMethods<TAttr, TDelegate>(
             this IEnumerable<PluginBase> plugins) where TAttr: Attribute where TDelegate : class
@@ -112,6 +112,25 @@ namespace ThinkingHome.Core.Plugins.Utils
                 .SelectMany(GetMethodAttributes)
                 .Select(GetPluginMethodInfo)
                 .ToArray();
+        }
+
+        #endregion
+
+        #region to registry
+
+        public static ObjectRegistry<T> ToRegistry<T, T2>(
+            this IEnumerable<T2> collection, Func<T2, string> getKey, Func<T2, T> getValue)
+        {
+            var registry = new ObjectRegistry<T>();
+
+            foreach (var item in collection)
+            {
+                var key = getKey(item);
+                var value = getValue(item);
+                registry.Register(key, value);
+            }
+
+            return registry;
         }
 
         #endregion

@@ -20,12 +20,13 @@ var Radio = lib.common.ApplicationBlock.extend({
     },
 
     openConnection: function () {
+        var onDisconnect = this.bind('onDisconnect');
         var connection = this.connection = new lib.signalrClient.HubConnection(this.route);
 
         connection.on(this.clientMethod, this.bind('onMessage'));
-        connection.onClosed = this.bind('onDisconnect');
+        connection.onClosed = onDisconnect;
 
-        connection.start().catch(this.bind('onDisconnect'));
+        connection.start().catch(onDisconnect);
     },
 
     onDisconnect: function () {
