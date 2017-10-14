@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
@@ -51,26 +52,15 @@ namespace ThinkingHome.Plugins.WebServer
         {
             var handlers = new ObjectRegistry<IHandler>();
 
-            foreach (var plugin in Context.GetAllPlugins())
-            {
-                var pluginType = plugin.GetType();
+            // api handlers
+            Context.GetAllPlugins()
+                .FindMethods<HttpDynamicResourceAttribute, HttpHandlerDelegate>()
+                .ToRegistry(handlers, mi => mi.Meta.Url, mi => new DynamicResourceHandler(mi.Method, mi.Meta));
 
-                // api handlers
-                foreach (var mi in plugin.FindMethods<HttpDynamicResourceAttribute, HttpHandlerDelegate>())
-                {
-                    Logger.LogInformation($"register HTTP handler: \"{mi.MetaData.Url}\" ({pluginType.FullName})");
-                    handlers.Register(mi.MetaData.Url, new DynamicResourceHandler(mi.Method, mi.MetaData));
-                }
-
-                // resource handlers
-                var asm = pluginType.GetTypeInfo().Assembly;
-
-                foreach (var resource in pluginType.GetTypeInfo().GetCustomAttributes<HttpStaticResourceAttribute>())
-                {
-                    Logger.LogInformation($"register HTTP handler: \"{resource.Url}\" ({resource.GetType().FullName})");
-                    handlers.Register(resource.Url, new StaticResourceHandler(asm, resource));
-                }
-            }
+            // resource handlers
+            Context.GetAllPlugins()
+                .FindAttrs<HttpStaticResourceAttribute>()
+                .ToRegistry(handlers, res => res.Meta.Url, res => new StaticResourceHandler(res.Type.Assembly, res.Meta));
 
             return handlers;
         }
@@ -85,8 +75,8 @@ namespace ThinkingHome.Plugins.WebServer
 
                 foreach (var mi in plugin.FindMethods<HubMessageHandlerAttribute, HubMessageHandlerDelegate>())
                 {
-                    Logger.LogInformation($"register hub message handler: \"{mi.MetaData.Channel}\" ({pluginType.FullName})");
-                    messageHandlers.Register(mi.MetaData.Channel, mi.Method);
+                    Logger.LogInformation($"register hub message handler: \"{mi.Meta.Channel}\" ({pluginType.FullName})");
+                    messageHandlers.Register(mi.Meta.Channel, mi.Method);
                 }
             }
 

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -73,22 +74,13 @@ namespace ThinkingHome.Plugins.WebUi
             aliases.Register("apps", Configuration.GetValue("pages:apps", "/static/web-ui/dummy.js"));
             aliases.Register("settings", Configuration.GetValue("pages:settings", "/static/web-ui/dummy.js"));
 
-            foreach (var plugin in Context.GetAllPlugins())
+            Context.GetAllPlugins()
+                .FindAttrs<JavaScriptResourceAttribute>(a => !string.IsNullOrEmpty(a.Alias))
+                .ToRegistry(aliases, a => a.Meta.Alias, a => a.Meta.Url);
+
+            foreach (var cssinfo in Context.GetAllPlugins().FindAttrs<CssResourceAttribute>(a => a.AutoLoad))
             {
-                var type = plugin.GetType().GetTypeInfo();
-
-                foreach (var jsinfo in type.GetCustomAttributes<JavaScriptResourceAttribute>())
-                {
-                    if (!string.IsNullOrEmpty(jsinfo.Alias))
-                    {
-                        aliases.Register(jsinfo.Alias, jsinfo.Url);
-                    }
-                }
-
-                foreach (var cssinfo in type.GetCustomAttributes<CssResourceAttribute>().Where(a => a.AutoLoad))
-                {
-                    alautoLoadedStyles.Add(cssinfo.Url);
-                }
+                alautoLoadedStyles.Add(cssinfo.Meta.Url);
             }
         }
 

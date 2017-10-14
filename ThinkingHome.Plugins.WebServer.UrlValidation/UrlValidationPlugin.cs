@@ -52,7 +52,7 @@ namespace ThinkingHome.Plugins.WebServer.UrlValidation
 
             foreach (var mi in plugin.FindMethods<HttpDynamicResourceAttribute, HttpHandlerDelegate>())
             {
-                var resource = mi.MetaData;
+                var resource = mi.Meta;
 
                 var ext = Path.GetExtension(resource.Url);
 

@@ -33,9 +33,7 @@ namespace ThinkingHome.Core.Plugins.Utils
 
         public static int? ParseInt(this string stringValue)
         {
-            int result;
-
-            if (int.TryParse(stringValue, out result))
+            if (int.TryParse(stringValue, out var result))
             {
                 return result;
             }
@@ -45,9 +43,7 @@ namespace ThinkingHome.Core.Plugins.Utils
 
         public static Guid? ParseGuid(this string stringValue)
         {
-            Guid result;
-
-            if (Guid.TryParse(stringValue, out result))
+            if (Guid.TryParse(stringValue, out var result))
             {
                 return result;
             }
@@ -57,9 +53,7 @@ namespace ThinkingHome.Core.Plugins.Utils
 
         public static bool? ParseBool(this string stringValue)
         {
-            bool result;
-
-            if (bool.TryParse(stringValue, out result))
+            if (bool.TryParse(stringValue, out var result))
             {
                 return result;
             }
@@ -69,9 +63,34 @@ namespace ThinkingHome.Core.Plugins.Utils
 
         #endregion
 
+        #region find attrs
+
+        public static (TAttr Meta, TypeInfo Type)[] FindAttrs<TAttr>(this IEnumerable<PluginBase> plugins, Func<TAttr, bool> filter = null)
+            where TAttr : Attribute
+        {
+            return plugins
+                .SelectMany(p => p.FindAttrs<TAttr>())
+                .ToArray();
+        }
+
+        public static (TAttr Meta, TypeInfo Type)[] FindAttrs<TAttr>(this PluginBase plugin, Func<TAttr, bool> filter = null) where TAttr : Attribute
+        {
+            var fn = filter ?? (a => true);
+
+            var type = plugin.GetType().GetTypeInfo();
+
+            return type
+                .GetCustomAttributes<TAttr>()
+                .Where(fn)
+                .Select(a => (Meta: a, Type: type))
+                .ToArray();
+        }
+
+        #endregion
+
         #region find methods
 
-        public static PluginMethodInfo<TAttr, TDelegate>[] FindMethods<TAttr, TDelegate>(
+        public static (TAttr Meta, TDelegate Method)[] FindMethods<TAttr, TDelegate>(
             this IEnumerable<PluginBase> plugins) where TAttr: Attribute where TDelegate : class
         {
             return plugins
@@ -79,7 +98,7 @@ namespace ThinkingHome.Core.Plugins.Utils
                 .ToArray();
         }
 
-        public static PluginMethodInfo<TAttr, TDelegate>[] FindMethods<TAttr, TDelegate>(this PluginBase plugin)
+        public static (TAttr Meta, TDelegate Method)[] FindMethods<TAttr, TDelegate>(this PluginBase plugin)
             where TAttr: Attribute where TDelegate : class
         {
             IEnumerable<Tuple<MethodInfo, TAttr>> GetMethodAttributes(MethodInfo method)
@@ -89,7 +108,7 @@ namespace ThinkingHome.Core.Plugins.Utils
                     .Select(attr => new Tuple<MethodInfo, TAttr>(method, attr));
             }
 
-            PluginMethodInfo<TAttr, TDelegate> GetPluginMethodInfo(Tuple<MethodInfo, TAttr> obj)
+            (TAttr Meta, TDelegate Method) GetPluginMethodInfo(Tuple<MethodInfo, TAttr> obj)
             {
                 var delegateType = typeof(TDelegate);
 
@@ -102,7 +121,7 @@ namespace ThinkingHome.Core.Plugins.Utils
                     ? obj.Item1.CreateDelegate(delegateType)
                     : obj.Item1.CreateDelegate(delegateType, plugin);
 
-                return new PluginMethodInfo<TAttr, TDelegate>(obj.Item2, mthodDelegate as TDelegate);
+                return (obj.Item2, mthodDelegate as TDelegate);
             }
 
             return plugin
@@ -123,6 +142,12 @@ namespace ThinkingHome.Core.Plugins.Utils
         {
             var registry = new ObjectRegistry<T>();
 
+            return collection.ToRegistry(registry, getKey, getValue);
+        }
+
+        public static ObjectRegistry<T> ToRegistry<T, T2>(
+            this IEnumerable<T2> collection, ObjectRegistry<T> registry, Func<T2, string> getKey, Func<T2, T> getValue)
+        {
             foreach (var item in collection)
             {
                 var key = getKey(item);
