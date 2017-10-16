@@ -183,6 +183,15 @@ var Section = lib.common.AppSection.extend({
         // пример подписки на сообщения в канале 'test-channel'
         this.listenTo(this.application.radio, 'test-channel', function(msg) {
             console.log(msg);
+
+            /*  msg → {
+                  guid: "06b56bfc-1b70-4652-8919-6618fb3b191f",
+                  timestamp: "2017-10-16T20:21:28.845387+03:00",
+                  channel: "test-channel1",
+                  data: "message-content"
+                }
+            */
+
         });
 
         // пример отправки сообщения
