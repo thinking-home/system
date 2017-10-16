@@ -12,13 +12,13 @@
 - CORE
   - события - синхронные/асинхронные (определяет плагин) `SafeInvoke`
   - `SafeInvoke` может выполнить отдельный обработчик и коллекцию обработчиков
-  - подписка на события вручную
   - методы для поиска обработчиков событий и Registry для работы с группами обработчиков
   - изменилось API Context: `Context.Require`, `GetAllPlugins<T>`
   - API для работы с конфигами: Microsoft.Extensions.Configuration (хелперы: Microsoft.Extensions.Configuration.Binder)
   - конфиг перенесен в свойство плагина
   - настройки плагинов в разделе "plugins:<полное название класса плагина>"
   - `FindMethods` метод расширения базового класса плагина для поиска методов, отмеченных атрибутом
+  - `FindAttrs` метод расширения базового класса плагина для поиска атрибутов плагинов
   - NLog => Microsoft.Extensions.Logging + Serilog
   - MEF => Microsoft.Extensions.DependencyInjection, не нужна ссылка в каждой DLL
   -

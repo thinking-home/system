@@ -189,3 +189,47 @@ public class HttpBinaryDynamicResourceAttribute : HttpDynamicResourceAttribute
 
 ## Клиент-серверная шина сообщений
 
+Плагин *WebServerPlugin* также предоставляет средства для передачи сообщений между сервером и клиентом (например, браузером), причем инициировать отправку сообщения может как клиент, так и сервер.
+
+В начале работы плагин создает SignalR Hub по адресу [/hub](http://localhost:8080/hub). В него можно отправлять сообщения как с клиента, так и с сервера. Эти сообщения будут получены подписанными на них обработчиками на сервере и на всех клиентах, подключенных в текущий момент.
+
+При отправке сообщения нужно указать *название канала* - строковый идентификатор. Зная его, обработчики могут подписаться на получение сообщений в этом канале.
+
+### `Task Send(string channel, object data)`
+
+Отправляет сообщение в указанный канал.
+
+#### Пример
+
+```csharp
+var result = Context.Require<WebServerPlugin>()
+    .Send("channel:name", new { query = "", answer = 42 });
+
+```
+
+### `[HubMessageHandler]`
+
+Вы можете отметить методы своего плагина атрибутом `ThinkingHome.Plugins.WebServer.Messages.HubMessageHandlerAttribute`. Метод вашего плагина будет автоматически вызываться при получении сообщений в указанном канале.
+
+Сигнатура метода должна соответствовать делегату `ThinkingHome.Plugins.WebServer.Messages.HubMessageHandlerDelegate`:
+
+```csharp
+public delegate void HubMessageHandlerDelegate(Guid msgId, DateTime timestamp, string channel, object data);
+```
+
+*Параметры:*
+
+- `Guid msgId` - уникальный идентификатор сообщения.
+- `DateTime timestamp` - дата и время получения сообщения (серверные).
+- `string channel` - название канала, в который пришло сообщение.
+- `object data` - полученные данные.
+
+*Пример:*
+
+```csharp
+[HubMessageHandler("channel:name")]
+public void TestMessageHandler(Guid msgId, DateTime timestamp, string channel, object data)
+{
+    Logger.LogInformation("{0}:{1}:{2}:{3}", msgId, timestamp, channel, data);
+}
+```

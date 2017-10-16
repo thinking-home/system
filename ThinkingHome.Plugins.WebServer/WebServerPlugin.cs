@@ -62,6 +62,8 @@ namespace ThinkingHome.Plugins.WebServer
                 .FindAttrs<HttpStaticResourceAttribute>()
                 .ToRegistry(handlers, res => res.Meta.Url, res => new StaticResourceHandler(res.Type.Assembly, res.Meta));
 
+            handlers.ForEach((url, handler) => Logger.LogInformation($"register HTTP handler: \"{url}\""));
+
             return handlers;
         }
 
