@@ -5,10 +5,11 @@ using System.Reflection;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using ThinkingHome.Core.Plugins;
+using ThinkingHome.Core.Plugins.Utils;
 using ThinkingHome.Migrator.Providers.PostgreSQL;
 
 namespace ThinkingHome.Plugins.Database
-{    
+{
     public class DatabasePlugin : PluginBase
     {
         private readonly DbContextOptionsBuilder optionsBuilder = new DbContextOptionsBuilder<HomeDbContext>();
@@ -25,7 +26,7 @@ namespace ThinkingHome.Plugins.Database
             optionsBuilder.UseNpgsql(cstring);
 
             inits = Context.GetAllPlugins()
-                .SelectMany(p => p.FindMethodsByAttribute<DbModelBuilderAttribute, DbModelBuilderDelegate>())
+                .SelectMany(p => p.FindMethods<DbModelBuilderAttribute, DbModelBuilderDelegate>())
                 .Select(obj => obj.Method)
                 .ToArray();
 

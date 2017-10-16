@@ -16,6 +16,8 @@ using ThinkingHome.Plugins.WebServer.Handlers;
 using ThinkingHome.Plugins.WebUi.Apps;
 using ThinkingHome.Plugins.Mail;
 using ThinkingHome.Plugins.Mqtt;
+using ThinkingHome.Plugins.WebServer;
+using ThinkingHome.Plugins.WebServer.Messages;
 
 namespace ThinkingHome.Plugins.Tmp
 {
@@ -50,7 +52,7 @@ namespace ThinkingHome.Plugins.Tmp
         public void HandleMqttMessage(string topic, byte[] payload)
         {
             var str = Encoding.UTF8.GetString(payload);
-            
+
             if (topic == "test")
             {
                 Logger.LogWarning($"TEST MESSAGE: {str}");
@@ -69,6 +71,12 @@ namespace ThinkingHome.Plugins.Tmp
                 db.Set<SmallPig>().ToList()
                     .ForEach(pig => Logger.LogWarning($"{pig.Name}, size: {pig.Size} ({pig.Id})"));
             }
+        }
+
+        [TimerCallback(5000)]
+        public void MimimiMqTimer(DateTime now)
+        {
+            Context.Require<WebServerPlugin>().Send("mi-mi-mi", DateTime.Now);
         }
 
         [DbModelBuilder]
@@ -108,8 +116,8 @@ namespace ThinkingHome.Plugins.Tmp
         {
             using (var db = Context.Require<DatabasePlugin>().OpenSession())
             {
-                var time = DateTime.Now.AddMinutes(1); 
-                
+                var time = DateTime.Now.AddMinutes(1);
+
                 var t = new CronTask
                 {
                     Id = Guid.NewGuid(),
@@ -121,12 +129,12 @@ namespace ThinkingHome.Plugins.Tmp
                 db.Set<CronTask>().Add(t);
                 db.SaveChanges();
             }
-            
+
             Context.Require<CronPlugin>().ReloadTasks();
 
             return 200;
         }
-        
+
         [WebApiMethod("/api/tmp/wefwefwef")]
         public object TmpHandlerMethod(HttpRequestParams requestParams)
         {
@@ -167,6 +175,12 @@ namespace ThinkingHome.Plugins.Tmp
             var bytes = System.Text.Encoding.UTF8.GetBytes(content);
 
             return new Scripts.Buffer(bytes);
+        }
+
+        [HubMessageHandler("mi-mi-mi")]
+        public void TestMessageHandler(Guid msgId, DateTime timestamp, string channel, object data)
+        {
+            Logger.LogInformation("{0}:{1}:{2}:{3}", msgId, timestamp, channel, data);
         }
     }
 }

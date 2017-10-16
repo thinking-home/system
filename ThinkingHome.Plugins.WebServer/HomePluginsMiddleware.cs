@@ -14,11 +14,11 @@ namespace ThinkingHome.Plugins.WebServer
         private const int CACHE_EXPIRATION = 7200; // в секундах (7200 == 2 часа)
 
         private readonly RequestDelegate next;
-        private readonly InternalDictionary<IHandler> handlers;
+        private readonly ObjectRegistry<IHandler> handlers;
         private readonly ILogger logger;
         private readonly IMemoryCache cache;
 
-        public HomePluginsMiddleware(InternalDictionary<IHandler> handlers, RequestDelegate next, ILoggerFactory loggerFactory, IMemoryCache cache)
+        public HomePluginsMiddleware(ObjectRegistry<IHandler> handlers, RequestDelegate next, ILoggerFactory loggerFactory, IMemoryCache cache)
         {
             this.next = next;
             this.handlers = handlers;

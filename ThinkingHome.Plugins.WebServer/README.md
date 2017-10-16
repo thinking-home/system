@@ -1,4 +1,4 @@
-*ThinkingHome.Plugins.WebServer* 
+*ThinkingHome.Plugins.WebServer*
 
 [![NuGet Pre Release](https://img.shields.io/nuget/vpre/ThinkingHome.Plugins.WebServer.svg)](https://www.nuget.org/packages/ThinkingHome.Plugins.WebServer)
 
@@ -8,6 +8,8 @@
 
 - выполнять методы плагинов для обработки HTTP запросов
 - возвращать заданные ресурсы по URL
+
+Также предоставляет клиент-серверную шину сообщений - средство для передачи данных между сервером и клиентом (например, браузером).
 
 ## Конфигурация
 
@@ -83,7 +85,7 @@ public object AddCow(HttpRequestParams requestParams)
 
 Атрибут `ThinkingHome.Plugins.WebServer.Attributes.HttpJsonDynamicResourceAttribute` позволяет обращаться к методу плагина по HTTP как к файлу JSON.
 
-По сути атрибуты `[WebApiMethod]` и `[HttpJsonDynamicResource]` делают одно и то же - сериализуют результат метода в JSON и отправляют на клиент. Разница между ними в том, что первый для клиента выглядит как метод API (выполнение действий), а второй - как файл (получение контента). Сейчас между ними нет технических различий, но в будущем они могут появиться.  
+По сути атрибуты `[WebApiMethod]` и `[HttpJsonDynamicResource]` делают одно и то же - сериализуют результат метода в JSON и отправляют на клиент. Разница между ними в том, что первый для клиента выглядит как метод API (выполнение действий), а второй - как файл (получение контента). Сейчас между ними нет технических различий, но в будущем они могут появиться.
 
 #### Пример
 
@@ -91,8 +93,8 @@ public object AddCow(HttpRequestParams requestParams)
 [HttpCommand("/settings.json")]
 public object TmpHandlerMethod42(HttpRequestParams requestParams)
 {
-    return new { 
-        rootDir = GetRootDir(), 
+    return new {
+        rootDir = GetRootDir(),
         lang = GetCurrentLang()
     };
 }
@@ -134,7 +136,7 @@ public object TmpHandlerMethod42(HttpRequestParams requestParams)
 
 ## Собственные типы ресурсов
 
-Вы можете реализовать поддержку собственных типов статических и динамических ресурсов. 
+Вы можете реализовать поддержку собственных типов статических и динамических ресурсов.
 
 Например, вы можете описать тип статических ресурсов, получающий содержимое из файловой системы (или из любого другого источника). Также вы можете описать собственный тип динамических ресурсов для сериализации результатов работы методов плагинов в нужный формат (например, в XML).
 
@@ -184,5 +186,52 @@ public class HttpBinaryDynamicResourceAttribute : HttpDynamicResourceAttribute
     {
         return methodResult as byte[];
     }
+}
+```
+
+## Клиент-серверная шина сообщений
+
+Клиент-серверная шина сообщений (HUB) - средство для передачи данных между сервером и клиентом (например, браузером). Инициировать отправку сообщения может как клиент, так и сервер.
+
+В начале работы плагин создает SignalR Hub по адресу [/hub](http://localhost:8080/hub). В него можно отправлять сообщения как с клиента, так и с сервера. Эти сообщения будут получены подписанными на них обработчиками на сервере и на всех клиентах, подключенных в текущий момент.
+
+При отправке сообщения нужно указать *название канала* - строковый идентификатор. Зная его, обработчики могут подписаться на получение сообщений в этом канале.
+
+### `Task Send(string channel, object data)`
+
+Отправляет сообщение в указанный канал.
+
+#### Пример
+
+```csharp
+var result = Context.Require<WebServerPlugin>()
+    .Send("channel:name", new { query = "", answer = 42 });
+
+```
+
+### `[HubMessageHandler]`
+
+Вы можете отметить методы своего плагина атрибутом `ThinkingHome.Plugins.WebServer.Messages.HubMessageHandlerAttribute`. Метод вашего плагина будет автоматически вызываться при получении сообщений в указанном канале.
+
+Сигнатура метода должна соответствовать делегату `ThinkingHome.Plugins.WebServer.Messages.HubMessageHandlerDelegate`:
+
+```csharp
+public delegate void HubMessageHandlerDelegate(Guid msgId, DateTime timestamp, string channel, object data);
+```
+
+*Параметры:*
+
+- `Guid msgId` - уникальный идентификатор сообщения.
+- `DateTime timestamp` - дата и время получения сообщения (серверные).
+- `string channel` - название канала, в который пришло сообщение.
+- `object data` - полученные данные.
+
+*Пример:*
+
+```csharp
+[HubMessageHandler("channel:name")]
+public void TestMessageHandler(Guid msgId, DateTime timestamp, string channel, object data)
+{
+    Logger.LogInformation("{0}:{1}:{2}:{3}", msgId, timestamp, channel, data);
 }
 ```

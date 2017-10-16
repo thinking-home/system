@@ -1,13 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Linq;
 using System.Reflection;
 using System.Text;
 using Microsoft.Extensions.Configuration;
 using ThinkingHome.Core.Plugins;
 using ThinkingHome.Core.Plugins.Utils;
+using ThinkingHome.Plugins.WebServer;
 using ThinkingHome.Plugins.WebServer.Attributes;
 using ThinkingHome.Plugins.WebServer.Handlers;
+using ThinkingHome.Plugins.WebServer.Messages;
 using ThinkingHome.Plugins.WebUi.Attributes;
 
 namespace ThinkingHome.Plugins.WebUi
@@ -20,6 +23,7 @@ namespace ThinkingHome.Plugins.WebUi
     [JavaScriptResource("/static/web-ui/lib.js", "ThinkingHome.Plugins.WebUi.Resources.Application.lib.js", Alias = "lib")]
     [JavaScriptResource("/static/web-ui/application.js", "ThinkingHome.Plugins.WebUi.Resources.Application.application.js")]
     [JavaScriptResource("/static/web-ui/router.js", "ThinkingHome.Plugins.WebUi.Resources.Application.router.js")]
+    [JavaScriptResource("/static/web-ui/radio.js", "ThinkingHome.Plugins.WebUi.Resources.Application.radio.js")]
     [JavaScriptResource("/static/web-ui/errors.js", "ThinkingHome.Plugins.WebUi.Resources.Application.errors.js")]
     [JavaScriptResource("/static/web-ui/layout.js", "ThinkingHome.Plugins.WebUi.Resources.Application.layout.js")]
     [HttpEmbeddedResource("/static/web-ui/layout.tpl", "ThinkingHome.Plugins.WebUi.Resources.Application.layout.tpl")]
@@ -58,9 +62,10 @@ namespace ThinkingHome.Plugins.WebUi
     [JavaScriptResource("/vendor/js/marionette.js", "ThinkingHome.Plugins.WebUi.Resources.Vendor.js.marionette.min.js", Alias = "marionette")]
     [JavaScriptResource("/vendor/js/handlebars.js", "ThinkingHome.Plugins.WebUi.Resources.Vendor.js.handlebars.min.js", Alias = "handlebars")]
     [JavaScriptResource("/vendor/js/moment.js", "ThinkingHome.Plugins.WebUi.Resources.Vendor.js.moment.min.js", Alias = "moment")]
+    [JavaScriptResource("/vendor/js/signalr-client.js", "ThinkingHome.Plugins.WebUi.Resources.Vendor.js.signalr-client.min.js", Alias = "signalr-client")]
     public class WebUiPlugin : PluginBase
     {
-        private readonly InternalDictionary<string> aliases = new InternalDictionary<string>();
+        private readonly ObjectRegistry<string> aliases = new ObjectRegistry<string>();
         private readonly HashSet<string> alautoLoadedStyles = new HashSet<string>();
 
         public override void InitPlugin()
@@ -69,22 +74,13 @@ namespace ThinkingHome.Plugins.WebUi
             aliases.Register("apps", Configuration.GetValue("pages:apps", "/static/web-ui/dummy.js"));
             aliases.Register("settings", Configuration.GetValue("pages:settings", "/static/web-ui/dummy.js"));
 
-            foreach (var plugin in Context.GetAllPlugins())
+            Context.GetAllPlugins()
+                .FindAttrs<JavaScriptResourceAttribute>(a => !string.IsNullOrEmpty(a.Alias))
+                .ToRegistry(aliases, a => a.Meta.Alias, a => a.Meta.Url);
+            
+            foreach (var cssinfo in Context.GetAllPlugins().FindAttrs<CssResourceAttribute>(a => a.AutoLoad))
             {
-                var type = plugin.GetType().GetTypeInfo();
-
-                foreach (var jsinfo in type.GetCustomAttributes<JavaScriptResourceAttribute>())
-                {
-                    if (!string.IsNullOrEmpty(jsinfo.Alias))
-                    {
-                        aliases.Register(jsinfo.Alias, jsinfo.Url);
-                    }
-                }
-
-                foreach (var cssinfo in type.GetCustomAttributes<CssResourceAttribute>().Where(a => a.AutoLoad))
-                {
-                    alautoLoadedStyles.Add(cssinfo.Url);
-                }
+                alautoLoadedStyles.Add(cssinfo.Meta.Url);
             }
         }
 
@@ -107,8 +103,17 @@ namespace ThinkingHome.Plugins.WebUi
         {
             return new
             {
-                app = "mi mi mi",
-                systemjs = new { map = aliases }
+                app = new
+                {
+                    radio = new
+                    {
+                        route = MessageHub.HUB_ROUTE,
+                        clientMethod = MessageHub.CLIENT_METHOD_NAME,
+                        serverMethod = MessageHub.SERVER_METHOD_NAME,
+                        reconnectionTimeout = MessageHub.RECONNECTION_TIMEOUT
+                    }
+                },
+                systemjs = new { map = aliases.Data }
             };
         }
     }

@@ -5,8 +5,9 @@ define([
     'handlebars',
     'moment',
     'underscore',
-    'jquery'
-], function(marionette, backbone, syphon, handlebars, moment, _, $) {
+    'jquery',
+    'signalr-client'
+], function(marionette, backbone, syphon, handlebars, moment, _, $, signalrClient) {
 
     var applicationBlock = marionette.Object.extend({
         bind: function (fn) {
@@ -77,7 +78,7 @@ define([
     //endregion
 
     //region form
-    
+
     /**
      * @param {jQuery} select выпадающий список
      * @param {Collection} collection коллекция элементов
@@ -155,6 +156,7 @@ define([
         handlebars: handlebars,
         moment: moment,
         _: _,
-        $: $
+        $: $,
+        signalrClient: signalrClient
     };
 });

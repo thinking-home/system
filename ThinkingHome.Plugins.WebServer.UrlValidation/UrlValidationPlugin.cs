@@ -4,6 +4,7 @@ using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 using ThinkingHome.Core.Plugins;
+using ThinkingHome.Core.Plugins.Utils;
 using ThinkingHome.Plugins.WebServer.Attributes;
 using ThinkingHome.Plugins.WebServer.Attributes.Base;
 using ThinkingHome.Plugins.WebServer.Handlers;
@@ -49,9 +50,9 @@ namespace ThinkingHome.Plugins.WebServer.UrlValidation
             var type = plugin.GetType().GetTypeInfo();
             var alias = GetPluginAlias(type);
 
-            foreach (var mi in plugin.FindMethodsByAttribute<HttpDynamicResourceAttribute, HttpHandlerDelegate>())
+            foreach (var mi in plugin.FindMethods<HttpDynamicResourceAttribute, HttpHandlerDelegate>())
             {
-                var resource = mi.MetaData;
+                var resource = mi.Meta;
 
                 var ext = Path.GetExtension(resource.Url);
 

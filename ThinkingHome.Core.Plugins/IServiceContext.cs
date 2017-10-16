@@ -10,7 +10,5 @@ namespace ThinkingHome.Core.Plugins
         IReadOnlyCollection<T> GetAllPlugins<T>();
 
         T Require<T>() where T : PluginBase;
-
-        void Using<T>(Action<T> action) where T : PluginBase;
     }
 }

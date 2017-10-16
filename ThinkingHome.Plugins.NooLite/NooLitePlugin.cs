@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Microsoft.Extensions.Logging;
 using ThinkingHome.Core.Plugins;
+using ThinkingHome.Core.Plugins.Utils;
 using ThinkingHome.NooLite;
 using ThinkingHome.Plugins.Scripts;
 using ThinkingHome.Plugins.Scripts.Attributes;
@@ -48,7 +49,7 @@ namespace ThinkingHome.Plugins.NooLite
                 var pluginType = plugin.GetType();
 
                 foreach (var mi in plugin
-                    .FindMethodsByAttribute<CommandAttribute, CommandDelegate>())
+                    .FindMethods<CommandAttribute, CommandDelegate>())
                 {
                     Logger.LogInformation(
                         $"register noolite command handler: \"{mi.Method.Method.Name}\" ({pluginType.FullName})");
@@ -56,7 +57,7 @@ namespace ThinkingHome.Plugins.NooLite
                 }
 
                 foreach (var mi in plugin
-                    .FindMethodsByAttribute<MicroclimateAttribute, MicroclimateDelegate>())
+                    .FindMethods<MicroclimateAttribute, MicroclimateDelegate>())
                 {
                     Logger.LogInformation(
                         $"register noolite microclimate handler: \"{mi.Method.Method.Name}\" ({pluginType.FullName})");

@@ -4,6 +4,7 @@ using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using ThinkingHome.Core.Plugins;
+using ThinkingHome.Core.Plugins.Utils;
 using ThinkingHome.Plugins.Cron.Model;
 using ThinkingHome.Plugins.Database;
 using ThinkingHome.Plugins.Scripts;
@@ -14,21 +15,21 @@ namespace ThinkingHome.Plugins.Cron
     public class CronPlugin: PluginBase
     {
         private const int CHECK_INTERVAL = 20000; // ms
-        
+
         private const int ACTIVE_PERIOD = 5; // minutes
-        
+
         private readonly object lockObject = new object();
-        
+
         private DateTime lastEventTime = DateTime.MinValue;
-        
+
         private List<CronScheduleItem> schedule;
-        
+
         private List<CronHandlerDelegate> handlers;
 
         public override void InitPlugin()
         {
             base.InitPlugin();
-            
+
             handlers = RegisterHandlers();
         }
 
@@ -46,7 +47,7 @@ namespace ThinkingHome.Plugins.Cron
             {
                 var pluginType = plugin.GetType();
 
-                foreach (var mi in plugin.FindMethodsByAttribute<CronHandlerAttribute, CronHandlerDelegate>())
+                foreach (var mi in plugin.FindMethods<CronHandlerAttribute, CronHandlerDelegate>())
                 {
                     Logger.LogInformation($"register cron handler: \"{mi.Method.Method.Name}\" ({pluginType.FullName})");
                     list.Add(mi.Method);
@@ -66,16 +67,16 @@ namespace ThinkingHome.Plugins.Cron
                 LoadTasks();
             }
         }
-        
+
         [TimerCallback(CHECK_INTERVAL)]
         public void OnTimerElapsed(DateTime now)
         {
             lock (lockObject)
             {
                 LoadTasks();
-                
+
                 var from = now.AddMinutes(-ACTIVE_PERIOD);
-                var min = lastEventTime <= from ? from : lastEventTime; 
+                var min = lastEventTime <= from ? from : lastEventTime;
 
                 var active = schedule
                     .Where(t => t.IsActive(min, now))
@@ -92,14 +93,14 @@ namespace ThinkingHome.Plugins.Cron
                         foreach (var task in active)
                         {
                             Logger.LogInformation($"cron task started: {task.TaskId}");
-                            
+
                             if (!string.IsNullOrEmpty(task.EventAlias))
                             {
                                 scriptPlugin.EmitScriptEvent(session, task.EventAlias);
                             }
 
                             SafeInvoke(handlers, h => h(task.TaskId), true);
-                            
+
                             scriptPlugin.EmitScriptEvent(session, "cron:task:started", task.TaskId);
                         }
                     }
@@ -109,7 +110,7 @@ namespace ThinkingHome.Plugins.Cron
 
         #endregion
 
-        #region private 
+        #region private
 
         private void LoadTasks()
         {
@@ -121,13 +122,13 @@ namespace ThinkingHome.Plugins.Cron
                         .Where(t => t.Enabled)
                         .Select(CronScheduleItem.FromTask)
                         .ToList();
-                    
+
                     Logger.LogInformation($"{schedule.Count} cron tasks are loaded");
                 }
             }
         }
 
         #endregion
-        
+
     }
 }

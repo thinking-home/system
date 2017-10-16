@@ -16,21 +16,16 @@ namespace ThinkingHome.Plugins.Scripts
     {
         private object host;
 
-        private readonly InternalDictionary<Delegate> methods = new InternalDictionary<Delegate>();
+        private readonly ObjectRegistry<Delegate> methods = new ObjectRegistry<Delegate>();
 
         public override void InitPlugin()
         {
             // регистрируем методы плагинов
-            foreach (var plugin in Context.GetAllPlugins())
-            {
-                var pluginTypeName = plugin.GetType().FullName;
+            Context.GetAllPlugins()
+                .SelectMany(plugin => plugin.FindMethods<ScriptCommandAttribute, Delegate>())
+                .ToRegistry(methods, mi => mi.Meta.Alias, mi => mi.Method);
 
-                foreach (var mi in plugin.FindMethodsByAttribute<ScriptCommandAttribute, Delegate>())
-                {
-                    Logger.LogInformation($"register script method: \"{mi.MetaData.Alias}\" ({pluginTypeName})");
-                    methods.Register(mi.MetaData.Alias, mi.Method);
-                }
-            }
+            methods.ForEach((name, method) => Logger.LogInformation($"register script method \"{name}\""));
 
             // создаем объект host
             host = new
@@ -71,7 +66,7 @@ namespace ThinkingHome.Plugins.Scripts
             using (var session = Context.Require<DatabasePlugin>().OpenSession())
             {
                 EmitScriptEvent(session, eventAlias, args);
-            }    
+            }
         }
 
         public void EmitScriptEvent(DbContext session, string eventAlias, params object[] args)
