@@ -55,6 +55,7 @@
 - [x] проверить использование реестров объектов и написать тесты
 
 - [ ] написать тесты на BaseRegistry.ForEach, ToRegistry и Find*
+- [x] обновить клиентские библиотеки
 
 - [ ] ИЗБАВИТЬСЯ ОТ ДУБЛИРОВАНИЯ КОДА В js разделов
 - [ ] ПРОВЕРИТЬ доступ к методам и сценариям через поля
@@ -91,7 +92,7 @@
 
 ## alpha4
 - [ ] noolite (~~core~~, api)
-- [ ] message hub (signalr)
+- [ ] ~~message hub (signalr)~~
 - [ ] telegram bot https://www.nuget.org/packages/Telegram.Bot/
 
 ### core

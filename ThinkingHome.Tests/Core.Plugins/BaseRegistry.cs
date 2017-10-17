@@ -60,7 +60,7 @@ namespace ThinkingHome.Tests.Core.Plugins
 
             registry.Object.Register("test-key", "test-value");
 
-            Assert.Equal(registry.Object.ContainsKey("test-key"), true);
+            Assert.True(registry.Object.ContainsKey("test-key"));
         }
 
         [Fact]
@@ -70,7 +70,7 @@ namespace ThinkingHome.Tests.Core.Plugins
 
             registry.Object.Register("test-key", "test-value");
 
-            Assert.Equal(registry.Object.ContainsKey("TEST-KEY"), true);
+            Assert.True(registry.Object.ContainsKey("TEST-KEY"));
         }
 
         [Fact]
@@ -84,7 +84,7 @@ namespace ThinkingHome.Tests.Core.Plugins
 
             registry.Object.Register("test-key", "test-value");
 
-            Assert.Equal(registry.Object["test-key"], "test-value");
+            Assert.Equal("test-value", registry.Object["test-key"]);
         }
 
         [Fact]
@@ -98,7 +98,7 @@ namespace ThinkingHome.Tests.Core.Plugins
 
             registry.Object.Register("test-key", "test-value");
 
-            Assert.Equal(registry.Object["TEST-KEY"], "test-value");
+            Assert.Equal("test-value", registry.Object["TEST-KEY"]);
         }
 
         [Fact]
