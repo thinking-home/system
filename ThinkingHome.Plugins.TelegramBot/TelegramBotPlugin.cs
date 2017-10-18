@@ -3,9 +3,9 @@ using Telegram.Bot;
 using Telegram.Bot.Args;
 using ThinkingHome.Core.Plugins;
 
-namespace ThinkingHome.Plugins.TelegramClient
+namespace ThinkingHome.Plugins.TelegramBot
 {
-    public class TelegramClientPlugin : PluginBase
+    public class TelegramBotPlugin : PluginBase
     {
         private TelegramBotClient bot;
 
@@ -13,7 +13,7 @@ namespace ThinkingHome.Plugins.TelegramClient
         {
             var token = Configuration["token"];
 
-            bot = new Telegram.Bot.TelegramBotClient(token);
+            bot = new TelegramBotClient(token);
             bot.OnMessage += OnMessage;
 
             var me = bot.GetMeAsync().Result;
