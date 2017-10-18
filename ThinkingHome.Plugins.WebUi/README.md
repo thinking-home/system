@@ -6,7 +6,7 @@
 
 Реализует инфраструктуру веб-интерфейса системы.
 
-Технически, веб-интерфейс представляет собой модульное одностраничное приложение на основе [marionette.js](https://marionettejs.com). Загрузка модулей происходит по мере необходимости с помощью [systemjs](https://github.com/systemjs/systemjs). Также в интерфейсе доступны [Twitter Bootstrap](https://v4-alpha.getbootstrap.com) и [Font Awesome](http://fontawesome.io).
+Технически, веб-интерфейс представляет собой модульное одностраничное приложение на основе [marionette.js](https://marionettejs.com). Загрузка модулей происходит по мере необходимости с помощью [systemjs](https://github.com/systemjs/systemjs). Также в интерфейсе доступны [Twitter Bootstrap](https://getbootstrap.com) и [Font Awesome](http://fontawesome.io).
 
 В плагине WebUiPlugin реализованы:
 
