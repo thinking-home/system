@@ -1,10 +1,10 @@
-<nav class="navbar navbar-inverse bg-primary navbar-toggleable-sm fixed-top">
-    <button type="button" class="navbar-toggler navbar-toggler-right js-toggler">
+<nav class="navbar navbar-dark bg-primary navbar-expand-sm fixed-top">
+    <a class="navbar-brand js-nav-link" href="#welcome">
+        <i class="fa fa-home"></i> <span class="d-none d-sm-inline-block">My Home</span>
+    </a>
+    <button class="navbar-toggler js-toggler" type="button">
         <span class="navbar-toggler-icon"></span>
     </button>
-    <a class="navbar-brand mr-auto js-nav-link" href="#welcome">
-        <i class="fa fa-home"></i> <span class="hidden-sm-down">My Home</span>
-    </a>
 
     <div class="collapse navbar-collapse js-menu">
         <ul class="navbar-nav ml-auto">

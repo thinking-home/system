@@ -351,7 +351,7 @@ span.CodeMirror-selectedtext { background: none; }
 .CodeMirror-panel-fullscreen {
   position: fixed;
   left: 0; right: 0; bottom: 0;
-  height: 42px;
+  height: 44px;
   z-index: 9999;
 }
 

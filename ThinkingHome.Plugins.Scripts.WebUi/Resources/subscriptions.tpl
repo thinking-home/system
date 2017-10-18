@@ -1,7 +1,7 @@
 <h1>Event handlers</h1>
 <div class="row">
     <div class="col-md-3">
-        <form>
+        <form class="mb-3">
             <div class="form-group">
                 <label>Event alias</label>
                 <input class="form-control js-event-alias" />

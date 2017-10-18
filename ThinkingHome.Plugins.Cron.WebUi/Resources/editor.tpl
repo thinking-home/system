@@ -69,9 +69,10 @@
             </label>
             <input id="908b0027-3b51-42df-b173-2b1dd554b53d" name="eventAlias" class="form-control"/>
         </div>
-        <div class="checkbox">
-            <label>
-                <input name="enabled" type="checkbox"> Enabled
+        <div class="form-check">
+            <label class="form-check-label">
+                <input name="enabled" type="checkbox" class="form-check-input" />
+                Enabled
             </label>
         </div>
         <p>
