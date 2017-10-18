@@ -91,9 +91,9 @@
 - [x] cron (~~core~~, ~~api~~, ~~ui~~)
 
 ## alpha4
-- [ ] noolite (~~core~~, api)
-- [ ] ~~message hub (signalr)~~
-- [ ] telegram bot https://www.nuget.org/packages/Telegram.Bot/
+- [x] noolite
+- [x] message hub (signalr)
+- [ ] telegram bot
 
 ### core
 
@@ -115,13 +115,14 @@
 
 ### others
 
+- [ ] noolite web api (совместимо с API шлюза?)
 - [ ] графики
 - [ ] web-ui (dashboards),
 - [ ] microclimate (Core, UI)
 - [ ] weather
 - [ ] dynamic DNS [инструкция](https://habrahabr.ru/post/310534), [токены](https://pddimp.yandex.ru/api2/admin/get_token?domain_name=thinking-home.ru)
 - [ ] audio ?
-- [ ] http запросы
+- [ ] http запросы (curl)
 - [ ] twitter https://coretweet.github.io
 
 ====
