@@ -11,7 +11,7 @@ namespace ThinkingHome.Plugins.TelegramBot
 {
     public class TelegramBotPlugin : PluginBase
     {
-        private static readonly Regex CommandRegex = new Regex("^/([a-z-_]+)\\s", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+        private static readonly Regex CommandRegex = new Regex("^\\s*/([a-z0-9-_]+)", RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
         private ObjectSetRegistry<TelegramMessageHandlerDelegate> handlers;
 
@@ -34,7 +34,7 @@ namespace ThinkingHome.Plugins.TelegramBot
 
             // receive bot info
             var me = bot.GetMeAsync().Result;
-            Logger.LogInformation($"telegram bot inited: {me.FirstName} (@{me.Username})");
+            Logger.LogInformation($"telegram bot is inited: {me.FirstName} (@{me.Username})");
         }
 
         public override void StartPlugin()
@@ -75,9 +75,10 @@ namespace ThinkingHome.Plugins.TelegramBot
             SendMessageInternal(chatId, text);
         }
 
-        public void SendMessage(string userName, string text)
+        public void SendMessage(string channel, string text)
         {
-            SendMessageInternal(userName, text);
+            channel = "@" + channel?.TrimStart('@');
+            SendMessageInternal(channel, text);
         }
 
         private void SendMessageInternal(ChatId chatId, string text)
