@@ -23,7 +23,7 @@ namespace ThinkingHome.Plugins.Scripts
             // регистрируем методы плагинов
             Context.GetAllPlugins()
                 .SelectMany(plugin => plugin.FindMethods<ScriptCommandAttribute, Delegate>())
-                .ToRegistry(methods, mi => mi.Meta.Alias, mi => mi.Method);
+                .ToObjectRegistry(methods, mi => mi.Meta.Alias, mi => mi.Method);
 
             methods.ForEach((name, method) => Logger.LogInformation($"register script method \"{name}\""));
 

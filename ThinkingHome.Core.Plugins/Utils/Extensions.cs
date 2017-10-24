@@ -135,18 +135,43 @@ namespace ThinkingHome.Core.Plugins.Utils
 
         #endregion
 
-        #region to registry
+        #region to object registry
 
-        public static ObjectRegistry<T> ToRegistry<T, T2>(
+        public static ObjectRegistry<T> ToObjectRegistry<T, T2>(
             this IEnumerable<T2> collection, Func<T2, string> getKey, Func<T2, T> getValue)
         {
             var registry = new ObjectRegistry<T>();
 
-            return collection.ToRegistry(registry, getKey, getValue);
+            return collection.ToObjectRegistry(registry, getKey, getValue);
         }
 
-        public static ObjectRegistry<T> ToRegistry<T, T2>(
+        public static ObjectRegistry<T> ToObjectRegistry<T, T2>(
             this IEnumerable<T2> collection, ObjectRegistry<T> registry, Func<T2, string> getKey, Func<T2, T> getValue)
+        {
+            foreach (var item in collection)
+            {
+                var key = getKey(item);
+                var value = getValue(item);
+                registry.Register(key, value);
+            }
+
+            return registry;
+        }
+
+        #endregion
+
+        #region to object set registry
+
+        public static ObjectSetRegistry<T> ToObjectSetRegistry<T, T2>(
+            this IEnumerable<T2> collection, Func<T2, string> getKey, Func<T2, T> getValue)
+        {
+            var registry = new ObjectSetRegistry<T>();
+
+            return collection.ToObjectSetRegistry(registry, getKey, getValue);
+        }
+
+        public static ObjectSetRegistry<T> ToObjectSetRegistry<T, T2>(
+            this IEnumerable<T2> collection, ObjectSetRegistry<T> registry, Func<T2, string> getKey, Func<T2, T> getValue)
         {
             foreach (var item in collection)
             {
