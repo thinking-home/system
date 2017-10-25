@@ -23,6 +23,7 @@ namespace ThinkingHome.Plugins.TelegramBot
 
             bot = new TelegramBotClient(token);
             bot.OnMessage += OnMessage;
+            bot.OnReceiveError += OnReceiveError;
 
             // register handlers
             handlers = Context.GetAllPlugins()
@@ -30,15 +31,24 @@ namespace ThinkingHome.Plugins.TelegramBot
                 .ToObjectSetRegistry(mi => mi.Meta.Command.TrimStart('/'), mi => mi.Method);
 
             handlers.ForEach((command, handler) => Logger.LogInformation($"register telegram message handler: \"{command}\""));
+        }
 
-            // receive bot info
-            var me = bot.GetMeAsync().Result;
-            Logger.LogInformation($"telegram bot is inited: {me.FirstName} (@{me.Username})");
+        private void OnReceiveError(object sender, ReceiveErrorEventArgs e)
+        {
+            Logger.LogError(e.ApiRequestException, "telegram bot API request error");
         }
 
         public override void StartPlugin()
         {
             bot.StartReceiving();
+
+            // receive bot info
+            var me = bot.GetMeAsync();
+
+            if (me.IsCompleted)
+            {
+                Logger.LogInformation($"telegram bot is inited: {me.Result.FirstName} (@{me.Result.Username})");
+            }
         }
 
         public override void StopPlugin()
@@ -60,7 +70,7 @@ namespace ThinkingHome.Plugins.TelegramBot
 
         public static string ParseCommand(string message)
         {
-            var match = CommandRegex.Match(message);
+            var match = CommandRegex.Match(message ?? string.Empty);
 
             return match.Success ? match.Groups[1].Value : string.Empty;
         }

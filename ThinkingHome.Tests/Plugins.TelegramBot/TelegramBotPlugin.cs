@@ -51,5 +51,13 @@ namespace ThinkingHome.Tests.Plugins.TelegramBot
 
             Assert.Equal("qw_er-t12", command);
         }
+
+        [Fact]
+        public void EmptyCommandParsed_WhenNullPassed()
+        {
+            var command = ThinkingHome.Plugins.TelegramBot.TelegramBotPlugin.ParseCommand(null);
+
+            Assert.Equal("", command);
+        }
     }
 }

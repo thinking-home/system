@@ -108,7 +108,6 @@ namespace ThinkingHome.Plugins.Tmp
             var botPlugin = Context.Require<TelegramBotPlugin>();
             botPlugin.SendMessage(msg.Chat.Id, $"Ваше сообщение ({msg.Text}) получено");
             botPlugin.SendMessage(msg.Chat.Id, $"Ловите новенький GUID ({Guid.NewGuid():P})");
-            botPlugin.SendMessage("@smallpigs", $"Ловите новенький GUID ({Guid.NewGuid():P})");
         }
 
         [ScriptCommand("протестировать")]
