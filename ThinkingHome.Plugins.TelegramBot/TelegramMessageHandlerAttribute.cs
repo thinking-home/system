@@ -12,7 +12,7 @@ namespace ThinkingHome.Plugins.TelegramBot
 
         public TelegramMessageHandlerAttribute(string command)
         {
-            Command = command;
+            Command = (command ?? string.Empty).TrimStart('/');
         }
 
         public string Command { get; }
