@@ -65,7 +65,9 @@ namespace ThinkingHome.Plugins.TelegramBot
 
             Logger.LogInformation($"New telegram message: messageID: {msg.MessageId}; chatID: {msg.Chat.Id}");
 
-            SafeInvoke(handlers[command], fn => fn(msg), true);
+            SafeInvoke(handlers[command], fn => fn(command, msg), true);
+
+            SafeInvoke(handlers[TelegramMessageHandlerAttribute.ALL_COMMANDS], fn => fn(command, msg), true);
         }
 
         public static string ParseCommand(string message)

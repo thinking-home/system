@@ -103,11 +103,19 @@ namespace ThinkingHome.Plugins.Tmp
         }
 
         [TelegramMessageHandler("test")]
-        public void ReplyToTelegramMessage(Message msg)
+        public void ReplyToTelegramMessage(string command, Message msg)
         {
             var botPlugin = Context.Require<TelegramBotPlugin>();
             botPlugin.SendMessage(msg.Chat.Id, $"Ваше сообщение ({msg.Text}) получено");
             botPlugin.SendMessage(msg.Chat.Id, $"Ловите новенький GUID ({Guid.NewGuid():P})");
+        }
+
+        [TelegramMessageHandler]
+        public void ReplyToTelegramMessage2(string command, Message msg)
+        {
+            var botPlugin = Context.Require<TelegramBotPlugin>();
+            botPlugin.SendMessage(msg.Chat.Id, $"mi mi mi");
+            Logger.LogInformation($"NEW TELEGRAM MESSAGE: {msg.Text} (cmd: {command})");
         }
 
         [ScriptCommand("протестировать")]

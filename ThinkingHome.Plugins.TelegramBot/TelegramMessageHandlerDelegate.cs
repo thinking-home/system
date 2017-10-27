@@ -2,5 +2,5 @@
 
 namespace ThinkingHome.Plugins.TelegramBot
 {
-    public delegate void TelegramMessageHandlerDelegate(Message message);
+    public delegate void TelegramMessageHandlerDelegate(string command, Message message);
 }
