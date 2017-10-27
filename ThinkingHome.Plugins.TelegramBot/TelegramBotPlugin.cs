@@ -1,4 +1,7 @@
-﻿using System.Text.RegularExpressions;
+﻿using System;
+using System.IO;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Telegram.Bot;
 using Telegram.Bot.Args;
@@ -83,18 +86,40 @@ namespace ThinkingHome.Plugins.TelegramBot
 
         public void SendMessage(long chatId, string text)
         {
-            SendMessageInternal(chatId, text);
+            Try(t => t.SendTextMessageAsync(chatId, text));
         }
 
-        public void SendMessage(string channel, string text)
+        public void SendPhoto(long chatId, string filename, Stream content)
         {
-            channel = "@" + channel?.TrimStart('@');
-            SendMessageInternal(channel, text);
+            var file = new FileToSend(filename, content);
+
+            Try(t => t.SendPhotoAsync(chatId, file));
         }
 
-        private void SendMessageInternal(ChatId chatId, string text)
+        public void SendPhoto(long chatId, Uri url)
         {
-            var err = bot.SendTextMessageAsync(chatId, text).Exception;
+            var file = new FileToSend(url);
+
+            Try(t => t.SendPhotoAsync(chatId, file));
+        }
+
+        public void SendFile(long chatId, string filename, Stream content)
+        {
+            var file = new FileToSend(filename, content);
+
+            Try(t => t.SendDocumentAsync(chatId, file));
+        }
+
+        public void SendFile(long chatId, Uri url)
+        {
+            var file = new FileToSend(url);
+
+            Try(t => t.SendDocumentAsync(chatId, file));
+        }
+
+        private void Try(Func<TelegramBotClient, Task> fn)
+        {
+            var err = fn(bot).Exception;
 
             if (err != null)
             {
