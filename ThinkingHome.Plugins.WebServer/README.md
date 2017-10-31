@@ -219,14 +219,14 @@ var result = Context.Require<WebServerPlugin>()
 public delegate void HubMessageHandlerDelegate(Guid msgId, DateTime timestamp, string channel, object data);
 ```
 
-*Параметры:*
+#### Параметры
 
 - `Guid msgId` - уникальный идентификатор сообщения.
 - `DateTime timestamp` - дата и время получения сообщения (серверные).
 - `string channel` - название канала, в который пришло сообщение.
 - `object data` - полученные данные.
 
-*Пример:*
+#### Пример
 
 ```csharp
 [HubMessageHandler("channel:name")]

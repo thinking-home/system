@@ -35,7 +35,7 @@
 
 Публикует сообщение в указанном канале.
 
-*Параметры:*
+#### Параметры
 
 - `string topic` - название канала.
 - `byte[] payload` - передаваемые данные.
@@ -87,12 +87,12 @@ Context.Require<MqttPlugin>()
 public delegate void MqttMessageHandlerDelegate(string topic, byte[] payload);
 ```
 
-*Параметры:*
+#### Параметры
 
 - `string topic` - название канала, в который пришло сообщение.
 - `byte[] payload` - полученные данные.
 
-*Пример:*
+#### Пример
 
 ```csharp
 [MqttMessageHandler]
