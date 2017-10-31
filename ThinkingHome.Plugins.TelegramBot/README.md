@@ -50,14 +50,37 @@ Context.Require<TelegramBotPlugin>()
 
 ```
 
-### `void SendMessage(string channel, string text)`
+### `void SendPhoto(long chatId, string filename, Stream content)`
 
-Отправляет сообщение в указанный канал. Для отправки сообщений в канал бот должен иметь нужные права.
+Отправляет изображение в указанный чат.
 
 *Параметры:*
 
-- `string channel` - название канала (символ `@` в начале указывать не обязательно).
-- `string text` - такст сообщения.
+- `long chatId` - ID чата (можно узнать его, из полученного сообщения).
+- `string filename` - имя файла с изображением (который можно скачать).
+- `Stream content` - содержимое файла с изображением.
+
+#### Пример
+
+```csharp
+long chatId = ...
+
+using (var stream = System.IO.File.OpenRead("/Users/username/photo.jpg"))
+{
+    Context.Require<TelegramBotPlugin>()
+        .SendPhoto(chatId, "photo.jpg", stream);
+}
+
+```
+
+### `void SendPhoto(long chatId, Uri url)`
+
+Отправляет в указанный чат изображение, расположенное по заданному URL.
+
+*Параметры:*
+
+- `long chatId` - ID чата (можно узнать его, из полученного сообщения).
+- `Uri url` - URL изображения.
 
 #### Пример
 
@@ -65,6 +88,49 @@ Context.Require<TelegramBotPlugin>()
 long chatId = ...
 
 Context.Require<TelegramBotPlugin>()
-    .SendMessage("@MyChannel", $"Всем привет!");
+    .SendPhoto(chatId, new Uri("http://example.com/images/котики.jpg"));
 
 ```
+
+### `void SendFile(long chatId, string filename, Stream content)`
+
+Отправляет файл в указанный чат.
+
+*Параметры:*
+
+- `long chatId` - ID чата (можно узнать его, из полученного сообщения).
+- `string filename` - имя файла.
+- `Stream content` - содержимое файла.
+
+#### Пример
+
+```csharp
+long chatId = ...
+
+using (var stream = System.IO.File.OpenRead("/Users/username/user-manual.pdf"))
+{
+    Context.Require<TelegramBotPlugin>()
+        .SendFile(chatId, "user-manual.pdf", stream);
+}
+
+```
+
+### `void SendFile(long chatId, Uri url)`
+
+Отправляет в указанный чат файл, расположенный по заданному URL.
+
+*Параметры:*
+
+- `long chatId` - ID чата (можно узнать его, из полученного сообщения).
+- `Uri url` - URL файла.
+
+#### Пример
+
+```csharp
+long chatId = ...
+
+Context.Require<TelegramBotPlugin>()
+    .SendFile(chatId, new Uri("http://example.com/user-manual.pdf"));
+
+```
+
