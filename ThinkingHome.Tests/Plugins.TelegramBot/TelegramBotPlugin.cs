@@ -47,9 +47,9 @@ namespace ThinkingHome.Tests.Plugins.TelegramBot
         [Fact]
         public void CommandCanContainsProperSymbols()
         {
-            var command = ThinkingHome.Plugins.TelegramBot.TelegramBotPlugin.ParseCommand("/qw_er-t12");
+            var command = ThinkingHome.Plugins.TelegramBot.TelegramBotPlugin.ParseCommand("/qw_er-t12_абв_ёё");
 
-            Assert.Equal("qw_er-t12", command);
+            Assert.Equal("qw_er-t12_абв_ёё", command);
         }
 
         [Fact]

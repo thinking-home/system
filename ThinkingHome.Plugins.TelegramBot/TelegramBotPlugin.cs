@@ -13,7 +13,7 @@ namespace ThinkingHome.Plugins.TelegramBot
 {
     public class TelegramBotPlugin : PluginBase
     {
-        private static readonly Regex CommandRegex = new Regex("^\\s*/([a-z0-9-_]+)", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+        private static readonly Regex CommandRegex = new Regex("^\\s*/([a-zа-яё0-9-_]+)", RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
         private ObjectSetRegistry<TelegramMessageHandlerDelegate> handlers;
 
