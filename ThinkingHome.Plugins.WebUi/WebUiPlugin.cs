@@ -76,7 +76,7 @@ namespace ThinkingHome.Plugins.WebUi
 
             Context.GetAllPlugins()
                 .FindAttrs<JavaScriptResourceAttribute>(a => !string.IsNullOrEmpty(a.Alias))
-                .ToRegistry(aliases, a => a.Meta.Alias, a => a.Meta.Url);
+                .ToObjectRegistry(aliases, a => a.Meta.Alias, a => a.Meta.Url);
             
             foreach (var cssinfo in Context.GetAllPlugins().FindAttrs<CssResourceAttribute>(a => a.AutoLoad))
             {

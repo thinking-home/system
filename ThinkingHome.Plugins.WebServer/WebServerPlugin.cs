@@ -55,12 +55,12 @@ namespace ThinkingHome.Plugins.WebServer
             // api handlers
             Context.GetAllPlugins()
                 .FindMethods<HttpDynamicResourceAttribute, HttpHandlerDelegate>()
-                .ToRegistry(handlers, mi => mi.Meta.Url, mi => new DynamicResourceHandler(mi.Method, mi.Meta));
+                .ToObjectRegistry(handlers, mi => mi.Meta.Url, mi => new DynamicResourceHandler(mi.Method, mi.Meta));
 
             // resource handlers
             Context.GetAllPlugins()
                 .FindAttrs<HttpStaticResourceAttribute>()
-                .ToRegistry(handlers, res => res.Meta.Url, res => new StaticResourceHandler(res.Type.Assembly, res.Meta));
+                .ToObjectRegistry(handlers, res => res.Meta.Url, res => new StaticResourceHandler(res.Type.Assembly, res.Meta));
 
             handlers.ForEach((url, handler) => Logger.LogInformation($"register HTTP handler: \"{url}\""));
 
@@ -69,18 +69,11 @@ namespace ThinkingHome.Plugins.WebServer
 
         private ObjectSetRegistry<HubMessageHandlerDelegate> RegisterMessageHandlers()
         {
-            var messageHandlers = new ObjectSetRegistry<HubMessageHandlerDelegate>();
+            var messageHandlers = Context.GetAllPlugins()
+                .FindMethods<HubMessageHandlerAttribute, HubMessageHandlerDelegate>()
+                .ToObjectSetRegistry(mi => mi.Meta.Channel, mi => mi.Method);
 
-            foreach (var plugin in Context.GetAllPlugins())
-            {
-                var pluginType = plugin.GetType();
-
-                foreach (var mi in plugin.FindMethods<HubMessageHandlerAttribute, HubMessageHandlerDelegate>())
-                {
-                    Logger.LogInformation($"register hub message handler: \"{mi.Meta.Channel}\" ({pluginType.FullName})");
-                    messageHandlers.Register(mi.Meta.Channel, mi.Method);
-                }
-            }
+            messageHandlers.ForEach((channel, handler) => Logger.LogInformation($"register hub message handler: \"{channel}\""));
 
             return messageHandlers;
         }

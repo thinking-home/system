@@ -29,7 +29,7 @@
 
 Метод `Open` возвращает экземпляр класса `ThinkingHome.Plugins.NooLite.AdapterWrapper`, предоставляющего API для управления адаптером nooLite.
 
-*Параметры:*
+#### Параметры
 
 - `bool fMode` - режим отправки команд: `false` - стандартный режим nooLite, `true` - режим nooLite-F (с шифрованием и обратной связью)
 
@@ -53,7 +53,7 @@ adapter.SetBrightness(13, 255);
 public delegate void NooLiteCommandHandlerDelegate(byte command, int channel, byte format, byte d1, byte d2, byte d3, byte d4);
 ```
 
-*Параметры:*
+#### Параметры
 
 - `byte command` - код команды.
 - `int channel` - канал, в котором получена команда.
@@ -65,7 +65,7 @@ public delegate void NooLiteCommandHandlerDelegate(byte command, int channel, by
 
 Коды команд и форматов данных описаны в [документации](https://www.noo.com.by/assets/files/PDF/MTRF-64-USB.pdf) по API nooLite.
 
-*Пример:*
+#### Пример
 
 ```csharp
 [NooLiteCommandHandler]
@@ -85,14 +85,14 @@ public void MyNooLiteHandler(byte command, int channel, byte format, byte d1, by
 public delegate void NooLiteMicroclimateDataHandlerDelegate(int channel, decimal temperature, int? humidity, bool lowBattery);
 ```
 
-*Параметры:*
+#### Параметры
 
 - `int channel` - канал, в котором получена команда.
 - `decimal temperature` - значение температуры в градусах, с точностью до 0.1°.
 - `int? humidity` - значение влажности в % (для датчиков PT112, не измеряющих влажность, это поле будет содержать значение `null`).
 - `bool lowBattery` - признак низкого уровня заряда батарейки датчика (`true` - низкий, `false` - нормальный).
 
-*Пример:*
+#### Пример
 
 ```csharp
 [NooLiteMicroclimateDataHandler]
@@ -108,7 +108,7 @@ public void MyNooLiteHandler(int channel, decimal temperature, int? humidity, bo
 
 Включает нагрузку в заданном канале.
 
-*Параметры:*
+#### Параметры
 
 - `byte channel` - номер канала
 
@@ -122,7 +122,7 @@ adapter.On(13);
 
 Выключает нагрузку в заданном канале.
 
-*Параметры:*
+#### Параметры
 
 - `byte channel` - номер канала
 
@@ -136,7 +136,7 @@ adapter.Off(13);
 
 Устанавливает яркость в заданном канале.
 
-*Параметры:*
+#### Параметры
 
 - `byte channel` - номер канала
 - `byte brightness` - уровень яркости
@@ -151,7 +151,7 @@ adapter.SetBrightness(13, 120);
 
 Включает нагрузку в заданном канале на заданное время.
 
-*Параметры:*
+#### Параметры
 
 - `byte channel` - номер канала
 - `byte minutes` - длительность периода (в минутах)
@@ -166,7 +166,7 @@ adapter.TemporarySwitchOn(13, 5);
 
 Изменяет цвет светодиодной RGB ленты, подключенной через управляющий блок [SD-1-180](http://thinking-home.ru/product/32.aspx), на другой цвет из предопределенного набора цветов.
 
-*Параметры:*
+#### Параметры
 
 - `byte channel` - номер канала
 
@@ -180,7 +180,7 @@ adapter.ChangeLedColor(13);
 
 Устанавливает заданный цвет светодиодной RGB ленты.
 
-*Параметры:*
+#### Параметры
 
 - `byte channel` - номер канала
 - `byte r` - уровень красного цвета
@@ -197,7 +197,7 @@ adapter.SetLedColor(15, 255, 255, 0); // yellow
 
 Применяет ранее запомненный сценарий освещения в заданном канале.
 
-*Параметры:*
+#### Параметры
 
 - `byte channel` - номер канала
 

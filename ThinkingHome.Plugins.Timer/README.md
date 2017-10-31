@@ -1,4 +1,4 @@
-﻿*ThinkingHome.Plugins.Timer*  
+﻿*ThinkingHome.Plugins.Timer*
 
 [![NuGet Pre Release](https://img.shields.io/nuget/vpre/ThinkingHome.Plugins.Timer.svg)](https://www.nuget.org/packages/ThinkingHome.Plugins.Timer)
 
@@ -18,12 +18,12 @@
 public delegate void TimerCallbackDelegate(DateTime now);
 ```
 
-*Параметры:*
+#### Параметры
 
 - `int interval` - интервал в милисекундах между вызовами метода.
 - `int delay` - задержка в милисекундах перед первым вызовом метода (не обязательный). Если параметр `delay` не указан, будет использоваться случайное значение, не превышающее `interval` (для того, чтобы все таймеры не срабатывали одновременно при старте приложения).
 
-*Пример:*
+#### Пример
 
 ```csharp
 [TimerCallback(30000)]

@@ -21,11 +21,20 @@
     <ProjectReference Include="../ThinkingHome.Plugins.Mail/ThinkingHome.Plugins.Mail.csproj" />
     <ProjectReference Include="../ThinkingHome.Plugins.Mqtt/ThinkingHome.Plugins.Mqtt.csproj" />
     <ProjectReference Include="../ThinkingHome.Plugins.Cron/ThinkingHome.Plugins.Cron.csproj" />
+    <ProjectReference Include="..\ThinkingHome.Plugins.TelegramBot\ThinkingHome.Plugins.TelegramBot.csproj">
+      <Project>{960A9C44-3D0F-42F4-8F81-F89588EAC9E0}</Project>
+      <Name>ThinkingHome.Plugins.TelegramBot</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="2.0.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="2.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging" Version="2.0.0" />
     <PackageReference Include="ThinkingHome.Migrator.Framework" Version="3.0.0-alpha9" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="Telegram.Bot, Version=13.2.1.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\..\..\.nuget\packages\telegram.bot\13.2.1\lib\netstandard1.1\Telegram.Bot.dll</HintPath>
+    </Reference>
   </ItemGroup>
 </Project>
