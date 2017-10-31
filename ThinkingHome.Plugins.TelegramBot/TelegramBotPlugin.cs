@@ -48,7 +48,7 @@ namespace ThinkingHome.Plugins.TelegramBot
             // receive bot info
             var me = bot.GetMeAsync();
 
-            if (me.IsCompleted)
+            if (me.Exception == null)
             {
                 Logger.LogInformation($"telegram bot is inited: {me.Result.FirstName} (@{me.Result.Username})");
             }

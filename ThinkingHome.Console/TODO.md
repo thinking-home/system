@@ -96,7 +96,7 @@
 ## alpha4
 - [x] noolite
 - [x] message hub (signalr)
-- [ ] telegram bot
+- [x] telegram bot
 
 ### core
 
