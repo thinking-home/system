@@ -98,9 +98,10 @@
 - [x] message hub (signalr)
 - [x] telegram bot
 
-### core
-
-- [ ] локализация (после релиза .NET Core 2.0)
+## alpha5
+- [ ] вынести интерфейсы сценариев в отдеьлный плагин
+- [ ] i18n
+- [ ] web-ui (dashboards)
 
 ### hardware
 
@@ -120,9 +121,9 @@
 
 - [ ] noolite web api (совместимо с API шлюза?)
 - [ ] графики
-- [ ] web-ui (dashboards),
 - [ ] microclimate (Core, UI)
 - [ ] weather
+
 - [ ] dynamic DNS [инструкция](https://habrahabr.ru/post/310534), [токены](https://pddimp.yandex.ru/api2/admin/get_token?domain_name=thinking-home.ru)
 - [ ] audio ?
 - [ ] http запросы (curl)
