@@ -83,13 +83,15 @@ namespace ThinkingHome.Core.Infrastructure
 
         #region private
 
-        private IServiceProvider ConfigureServices(HomeConfiguration config)
+        private static IServiceProvider ConfigureServices(HomeConfiguration config)
         {
             var asms = config.GetDependencies().ToArray();
 
             var serviceCollection = new ServiceCollection();
 
+            serviceCollection.AddOptions();
             serviceCollection.AddSingleton<ILoggerFactory, LoggerFactory>();
+            serviceCollection.AddLocalization(opts => opts.ResourcesPath = "Lang");
             serviceCollection.AddSingleton<IServiceContext, ServiceContext>();
             serviceCollection.AddSingleton<IConfigurationSection>(config.Configuration.GetSection("plugins"));
 
@@ -101,7 +103,7 @@ namespace ThinkingHome.Core.Infrastructure
             return serviceCollection.BuildServiceProvider();
         }
 
-        private void AddAssemblyPlugins(ServiceCollection services, Assembly asm)
+        private static void AddAssemblyPlugins(ServiceCollection services, Assembly asm)
         {
             var baseType = typeof(PluginBase);
 
