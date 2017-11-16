@@ -5,6 +5,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Serilog;
+using ThinkingHome.Core.Infrastructure.Localization;
 using ThinkingHome.Core.Plugins;
 using ILogger = Microsoft.Extensions.Logging.ILogger;
 
@@ -91,9 +92,9 @@ namespace ThinkingHome.Core.Infrastructure
 
             serviceCollection.AddOptions();
             serviceCollection.AddSingleton<ILoggerFactory, LoggerFactory>();
-            serviceCollection.AddLocalization(opts => opts.ResourcesPath = "Lang");
             serviceCollection.AddSingleton<IServiceContext, ServiceContext>();
             serviceCollection.AddSingleton<IConfigurationSection>(config.Configuration.GetSection("plugins"));
+            serviceCollection.AddJsonLocalization(opts => opts.ResourcesPath = "Lang");
 
             foreach (var asm in asms)
             {
