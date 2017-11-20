@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Globalization;
 using System.Linq;
 using System.Reflection;
+using System.Threading;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -29,6 +31,8 @@ namespace ThinkingHome.Core.Infrastructure
 
             logger = loggerFactory.CreateLogger<HomeApplication>();
             context = services.GetRequiredService<IServiceContext>();
+
+            InitLanguage(config);
 
             try
             {
@@ -83,6 +87,19 @@ namespace ThinkingHome.Core.Infrastructure
         }
 
         #region private
+
+        private void InitLanguage(HomeConfiguration config)
+        {
+            var culture = config.GetCulture();
+
+            logger.LogInformation($"init culture: {culture}");
+
+            Thread.CurrentThread.CurrentCulture =
+                Thread.CurrentThread.CurrentUICulture =
+                    CultureInfo.DefaultThreadCurrentCulture =
+                        CultureInfo.DefaultThreadCurrentUICulture = culture;
+
+        }
 
         private static IServiceProvider ConfigureServices(HomeConfiguration config)
         {
