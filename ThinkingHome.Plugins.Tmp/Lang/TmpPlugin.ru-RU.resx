@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<root>
+    <data name="hello" xml:space="preserve">
+        <value>Привет!</value>
+    </data>
+    <data name="bye" xml:space="preserve">
+        <value>Пока!</value>
+    </data>
+</root>

@@ -111,7 +111,7 @@ namespace ThinkingHome.Core.Infrastructure
             serviceCollection.AddSingleton<ILoggerFactory, LoggerFactory>();
             serviceCollection.AddSingleton<IServiceContext, ServiceContext>();
             serviceCollection.AddSingleton<IConfigurationSection>(config.Configuration.GetSection("plugins"));
-            serviceCollection.AddJsonLocalization(opts => opts.ResourcesPath = "Lang");
+            serviceCollection.AddLocalization(opts => opts.ResourcesPath = "Lang");
 
             foreach (var asm in asms)
             {

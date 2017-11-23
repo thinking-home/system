@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Internal;
+using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
 using Telegram.Bot.Types;
 using ThinkingHome.Core.Plugins;
@@ -34,6 +36,18 @@ namespace ThinkingHome.Plugins.Tmp
         public override void InitPlugin()
         {
             Logger.LogInformation($"init tmp plugin {Guid.NewGuid()}");
+            Logger.LogInformation(StringLocalizer.GetString("hello"));
+
+            var sb = new StringBuilder("===================\nall strings:\n");
+
+            foreach (var str in StringLocalizer.GetAllStrings(true))
+            {
+                sb.AppendLine($"{str.Name}: {str.Value} ({str.SearchedLocation})");
+            }
+
+            Logger.LogInformation(sb.ToString());
+
+            Logger.LogInformation(StringLocalizer.GetString("bye"));
         }
 
         public override void StartPlugin()
