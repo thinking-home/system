@@ -10,6 +10,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using ThinkingHome.Core.Plugins;
 using ThinkingHome.Core.Plugins.Utils;
+using ThinkingHome.Plugins.WebServer.Attributes;
 using ThinkingHome.Plugins.WebServer.Attributes.Base;
 using ThinkingHome.Plugins.WebServer.Handlers;
 using ThinkingHome.Plugins.WebServer.Messages;
@@ -61,6 +62,14 @@ namespace ThinkingHome.Plugins.WebServer
             Context.GetAllPlugins()
                 .FindAttrs<HttpStaticResourceAttribute>()
                 .ToObjectRegistry(handlers, res => res.Meta.Url, res => new StaticResourceHandler(res.Type.Assembly, res.Meta));
+
+            // localization handlers
+            Context.GetAllPlugins()
+                .FindAttrs<HttpLocalizationResourceAttribute>()
+                .ToObjectRegistry(
+                    handlers,
+                    res => res.Meta.Url,
+                    res => new LocalizationHandler(res.Meta, res.Type.Assembly.GetName().Name, Context.LocalizerFactory));
 
             handlers.ForEach((url, handler) => Logger.LogInformation($"register HTTP handler: \"{url}\""));
 

@@ -12,9 +12,7 @@ namespace ThinkingHome.Plugins.WebServer.Handlers
         public DynamicResourceHandler(HttpHandlerDelegate method, HttpDynamicResourceAttribute resource)
             :base(resource)
         {
-            if (method == null) throw new ArgumentNullException(nameof(method));
-
-            this.method = method;
+            this.method = method ?? throw new ArgumentNullException(nameof(method));
         }
 
         public override async Task<byte[]> GetContent(HttpContext context)

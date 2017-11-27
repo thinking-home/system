@@ -2,7 +2,6 @@
 using System.Reflection;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
-using ThinkingHome.Plugins.WebServer.Attributes;
 using ThinkingHome.Plugins.WebServer.Attributes.Base;
 
 namespace ThinkingHome.Plugins.WebServer.Handlers
