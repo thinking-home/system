@@ -31,6 +31,9 @@ namespace ThinkingHome.Plugins.Tmp
     [AppSection(SectionType.User, "tmp user section 3", "/static/tmp/index3.js", "ThinkingHome.Plugins.Tmp.Resources.tmp.js")]
     [AppSection(SectionType.System, "Weather locations", "/static/tmp/inde6.js", "ThinkingHome.Plugins.Tmp.Resources.tmp.js")]
 
+
+    [HttpLocalizationResource("/static/tmp/lang.json", "Web")]
+
     public class TmpPlugin : PluginBase
     {
         public override void InitPlugin()
