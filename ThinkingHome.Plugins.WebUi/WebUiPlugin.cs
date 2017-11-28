@@ -28,6 +28,12 @@ namespace ThinkingHome.Plugins.WebUi
     [JavaScriptResource("/static/web-ui/layout.js", "ThinkingHome.Plugins.WebUi.Resources.Application.layout.js")]
     [HttpEmbeddedResource("/static/web-ui/layout.tpl", "ThinkingHome.Plugins.WebUi.Resources.Application.layout.tpl")]
 
+    // i18n
+    [HttpLocalizationResource("/lang/web-ui/application.json", "Application")]
+
+    // loaders
+    [JavaScriptResource("/static/web-ui/loaders/system-tpl.js", "ThinkingHome.Plugins.WebUi.Resources.Application.loaders.system-tpl.js", Alias = "template")]
+
     // dummy
     [JavaScriptResource("/static/web-ui/dummy.js", "ThinkingHome.Plugins.WebUi.Resources.Application.dummy.js")]
     [HttpEmbeddedResource("/static/web-ui/dummy.tpl", "ThinkingHome.Plugins.WebUi.Resources.Application.dummy.tpl")]
@@ -77,7 +83,7 @@ namespace ThinkingHome.Plugins.WebUi
             Context.GetAllPlugins()
                 .FindAttrs<JavaScriptResourceAttribute>(a => !string.IsNullOrEmpty(a.Alias))
                 .ToObjectRegistry(aliases, a => a.Meta.Alias, a => a.Meta.Url);
-            
+
             foreach (var cssinfo in Context.GetAllPlugins().FindAttrs<CssResourceAttribute>(a => a.AutoLoad))
             {
                 alautoLoadedStyles.Add(cssinfo.Meta.Url);
