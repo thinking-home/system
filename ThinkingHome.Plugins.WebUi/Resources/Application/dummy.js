@@ -1,8 +1,8 @@
 var lib = require('lib');
-var template = require('template!static/web-ui/dummy.tpl');
+var template = require('static/web-ui/dummy.tpl');
 
 var View = lib.marionette.View.extend({
-    template: template
+    template: lib.handlebars.compile(template)
 });
 
 var Section = lib.common.AppSection.extend({

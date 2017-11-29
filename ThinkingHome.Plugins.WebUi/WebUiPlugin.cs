@@ -32,7 +32,7 @@ namespace ThinkingHome.Plugins.WebUi
     [HttpLocalizationResource("/lang/web-ui/application.json", "Application")]
 
     // loaders
-    [JavaScriptResource("/static/web-ui/loaders/system-tpl.js", "ThinkingHome.Plugins.WebUi.Resources.Application.loaders.system-tpl.js", Alias = "template")]
+    [JavaScriptResource("/static/web-ui/loaders/system-lang.js", "ThinkingHome.Plugins.WebUi.Resources.Application.loaders.system-lang.js", Alias = "lang")]
 
     // dummy
     [JavaScriptResource("/static/web-ui/dummy.js", "ThinkingHome.Plugins.WebUi.Resources.Application.dummy.js")]

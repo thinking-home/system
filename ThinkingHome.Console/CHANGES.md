@@ -70,6 +70,10 @@ WEB SERVER
   - `lib.ajax.getJSON(url, [data])`
   - `lib.ajax.postJSON(url, [data])`
   - обработка асинхронных исключений в метода start (нужно вернуть промис из него)
+  - локализация: вместо статических классов свойство `StringLocalizer` у плагина
+  - `[HttpLocalizationResource("/static/tmp/lang.json", "ResxName")]`
+  - клиентская локализация: было `templateHelpers: { lang: lang }`, стало `templateContext: { lang: lang }`
+
 - mail plugin: `sendMail` + `host.api.sendMail`, `host.api.sendMailWithAttachment`
 - MQTT плагин:
   - можно подписаться на несколько топиков
