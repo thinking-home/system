@@ -46,7 +46,7 @@ namespace ThinkingHome.Core.Infrastructure
 
         public CultureInfo GetCulture()
         {
-            var cultureName = Configuration["culture"];
+            var cultureName = Configuration["culture"] ?? string.Empty;
             return CultureInfo.GetCultureInfo(cultureName);
         }
     }
