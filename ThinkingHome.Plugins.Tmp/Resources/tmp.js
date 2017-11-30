@@ -12,6 +12,8 @@ var Section = lib.common.AppSection.extend({
         var view = new View();
         this.application.setContentView(view);
 
+        console.log(lang.moment(1316116057189).fromNow());
+
         //return lib.ajax.getJSON('/qwdqwkfqwgqwgqwgqwgqwg');
     }
 });

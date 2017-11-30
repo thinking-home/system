@@ -29,11 +29,20 @@ define([
     });
 
     var stringLocalizer = function(data) {
-        this.data = data;
+        !data && (data = {});
+
+        this.culture = data.culture;
+        this.data = data.values;
     };
 
     stringLocalizer.prototype.get = function(key, defaultValue) {
         return (this.data && this.data[key]) || defaultValue || key;
+    };
+
+    stringLocalizer.prototype.moment = function() {
+        return moment
+            .apply(this, arguments)
+            .locale(String(this.culture));
     };
 
     //region ajax

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -25,9 +26,15 @@ namespace ThinkingHome.Plugins.WebServer.Handlers
         {
             return await Task.Run(() =>
             {
-                var result = stringLocalizer
+                var values = stringLocalizer
                     .GetAllStrings()
                     .ToDictionary(str => str.Name, str => str.Value);
+
+                var result = new
+                {
+                    culture = CultureInfo.CurrentUICulture.Name,
+                    values
+                };
 
                 var json = result.ToJson();
 
