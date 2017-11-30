@@ -1,4 +1,5 @@
 var lib = require('lib');
+var lang = require('lang!static/cron/lang.json');
 var template = require('/static/cron/web-ui/editor.tpl');
 
 var EditorModel = lib.backbone.Model.extend({
@@ -9,11 +10,12 @@ var EditorModel = lib.backbone.Model.extend({
 
 var View = lib.marionette.View.extend({
     template: lib.handlebars.compile(template),
+    templateContext: { lang: lang },
     onRender: function () {
 
         // get data from model
         var data = this.serializeData();
-        
+
         // set selected values
         lib.syphon.deserialize(this, data);
 
@@ -56,23 +58,23 @@ var Section = lib.common.AppSection.extend({
         this.listenTo(view, 'editor:save', this.bind('saveTask', view));
         this.listenTo(view, 'editor:cancel', this.bind('redirectToList'));
         this.listenTo(view, 'editor:delete', this.bind('deleteTask', view));
-        
+
         this.application.setContentView(view);
     },
 
     saveTask: function (view) {
         var data = view.model.toJSON();
-        
+
         if (!data.name) {
             alert('Name is required.');
         } else {
             lib.ajax.postJSON('/api/cron/web-api/save', data)
                 .then(this.bind('redirectToList'), alert);
-        } 
+        }
     },
 
     redirectToList: function () {
-        this.application.navigate('/static/cron/web-ui/list.js');    
+        this.application.navigate('/static/cron/web-ui/list.js');
     },
 
     deleteTask: function (view) {
@@ -81,7 +83,7 @@ var Section = lib.common.AppSection.extend({
         if (window.confirm('This task will be deleted. Continue?')) {
             lib.ajax.postJSON('/api/cron/web-api/delete', { id: id })
                 .then(this.bind('redirectToList'), alert);
-        }    
+        }
     }
 });
 
