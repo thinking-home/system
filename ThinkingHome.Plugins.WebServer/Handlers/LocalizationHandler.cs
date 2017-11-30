@@ -13,14 +13,12 @@ namespace ThinkingHome.Plugins.WebServer.Handlers
     {
         private readonly IStringLocalizer stringLocalizer;
 
-        public LocalizationHandler(HttpLocalizationResourceAttribute resource, string location, IStringLocalizerFactory localizerFactory)
+        public LocalizationHandler(HttpLocalizationResourceAttribute resource, IStringLocalizer stringLocalizer)
             :base(resource)
         {
             if (resource == null) throw new ArgumentNullException(nameof(resource));
-            if (string.IsNullOrEmpty(location)) throw new ArgumentException(nameof(location));
-            if (localizerFactory == null) throw new ArgumentNullException(nameof(localizerFactory));
 
-            stringLocalizer = localizerFactory.Create(resource.BaseName, location);
+            this.stringLocalizer = stringLocalizer ?? throw new ArgumentNullException(nameof(stringLocalizer));
         }
 
         public override async Task<byte[]> GetContent(HttpContext context)

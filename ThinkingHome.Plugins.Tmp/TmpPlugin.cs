@@ -32,7 +32,7 @@ namespace ThinkingHome.Plugins.Tmp
     [AppSection(SectionType.System, "Weather locations", "/static/tmp/inde6.js", "ThinkingHome.Plugins.Tmp.Resources.tmp.js")]
 
 
-    [HttpLocalizationResource("/static/tmp/lang.json", "Web")]
+    [HttpLocalizationResource("/static/tmp/lang.json")]
 
     public class TmpPlugin : PluginBase
     {

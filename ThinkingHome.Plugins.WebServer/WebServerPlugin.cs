@@ -69,7 +69,7 @@ namespace ThinkingHome.Plugins.WebServer
                 .ToObjectRegistry(
                     handlers,
                     res => res.Meta.Url,
-                    res => new LocalizationHandler(res.Meta, res.Type.Assembly.GetName().Name, Context.LocalizerFactory));
+                    res => new LocalizationHandler(res.Meta, res.Plugin.StringLocalizer));
 
             handlers.ForEach((url, handler) => Logger.LogInformation($"register HTTP handler: \"{url}\""));
 

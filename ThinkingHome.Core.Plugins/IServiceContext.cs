@@ -6,10 +6,6 @@ namespace ThinkingHome.Core.Plugins
 {
     public interface IServiceContext
     {
-        IConfigurationSection Configuration { get; }
-
-        IStringLocalizerFactory LocalizerFactory { get; }
-
         IReadOnlyCollection<PluginBase> GetAllPlugins();
 
         T Require<T>() where T : PluginBase;

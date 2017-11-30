@@ -3,15 +3,12 @@ using ThinkingHome.Plugins.WebServer.Attributes.Base;
 
 namespace ThinkingHome.Plugins.WebServer.Attributes
 {
-    [AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
+    [AttributeUsage(AttributeTargets.Class)]
     public class HttpLocalizationResourceAttribute : HttpResourceAttribute
     {
-        public readonly string BaseName;
-
-        public HttpLocalizationResourceAttribute(string url, string baseName)
+        public HttpLocalizationResourceAttribute(string url)
             : base(url, "application/json;charset=utf-8", false)
         {
-            BaseName = baseName;
         }
     }
 }

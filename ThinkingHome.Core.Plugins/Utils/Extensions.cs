@@ -65,7 +65,7 @@ namespace ThinkingHome.Core.Plugins.Utils
 
         #region find attrs
 
-        public static (TAttr Meta, TypeInfo Type)[] FindAttrs<TAttr>(this IEnumerable<PluginBase> plugins, Func<TAttr, bool> filter = null)
+        public static (TAttr Meta, TypeInfo Type, PluginBase Plugin)[] FindAttrs<TAttr>(this IEnumerable<PluginBase> plugins, Func<TAttr, bool> filter = null)
             where TAttr : Attribute
         {
             return plugins
@@ -73,7 +73,7 @@ namespace ThinkingHome.Core.Plugins.Utils
                 .ToArray();
         }
 
-        public static (TAttr Meta, TypeInfo Type)[] FindAttrs<TAttr>(this PluginBase plugin, Func<TAttr, bool> filter = null) where TAttr : Attribute
+        public static (TAttr Meta, TypeInfo Type, PluginBase Plugin)[] FindAttrs<TAttr>(this PluginBase plugin, Func<TAttr, bool> filter = null) where TAttr : Attribute
         {
             var fn = filter ?? (a => true);
 
@@ -82,7 +82,7 @@ namespace ThinkingHome.Core.Plugins.Utils
             return type
                 .GetCustomAttributes<TAttr>()
                 .Where(fn)
-                .Select(a => (Meta: a, Type: type))
+                .Select(a => (Meta: a, Type: type, Plugin: plugin))
                 .ToArray();
         }
 

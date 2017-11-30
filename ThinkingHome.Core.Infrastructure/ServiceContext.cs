@@ -11,9 +11,6 @@ namespace ThinkingHome.Core.Infrastructure
 {
     public class ServiceContext : IServiceContext
     {
-        public IConfigurationSection Configuration { get; }
-        public IStringLocalizerFactory LocalizerFactory { get; }
-
         private readonly Dictionary<Type, PluginBase> plugins;
 
         public ServiceContext(
@@ -22,8 +19,6 @@ namespace ThinkingHome.Core.Infrastructure
             ILoggerFactory loggerFactory,
             IStringLocalizerFactory localizerFactory)
         {
-            Configuration = configuration;
-            LocalizerFactory = localizerFactory;
             plugins = loadedPlugins.ToDictionary(p => p.GetType());
 
             foreach (var plugin in plugins.Values)

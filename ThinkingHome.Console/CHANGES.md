@@ -71,7 +71,7 @@ WEB SERVER
   - `lib.ajax.postJSON(url, [data])`
   - обработка асинхронных исключений в метода start (нужно вернуть промис из него)
   - локализация: вместо статических классов свойство `StringLocalizer` у плагина
-  - `[HttpLocalizationResource("/static/tmp/lang.json", "ResxName")]`
+  - `[HttpLocalizationResource("/static/tmp/lang.json")]` - на клиент приходят переводы текущего плагина в json
   - клиентская локализация: было `templateHelpers: { lang: lang }`, стало `templateContext: { lang: lang }`
   - локализация: название раздела web UI берется из ресурсов текущего плагина
 

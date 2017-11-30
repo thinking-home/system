@@ -7,4 +7,10 @@
     <data name="bye" xml:space="preserve">
         <value>Пока!</value>
     </data>
+    <data name="web-test" xml:space="preserve">
+        <value>Тестовая строка.</value>
+    </data>
+    <data name="web-test-2" xml:space="preserve">
+        <value>Тестовая строка - два.</value>
+    </data>
 </root>
