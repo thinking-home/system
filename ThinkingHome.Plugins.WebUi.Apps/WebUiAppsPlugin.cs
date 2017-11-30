@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Reflection;
+using Microsoft.Extensions.Localization;
 using ThinkingHome.Core.Plugins;
 using ThinkingHome.Plugins.WebServer.Attributes;
 using ThinkingHome.Plugins.WebServer.Handlers;
@@ -12,18 +14,28 @@ namespace ThinkingHome.Plugins.WebUi.Apps
     [JavaScriptResource("/static/web-ui/apps/system.js", "ThinkingHome.Plugins.WebUi.Apps.Resources.system.js")]
     public class WebUiAppsPlugin : PluginBase
     {
-        private readonly List<AppSectionAttribute> sections = new List<AppSectionAttribute>();
-
-        private IEnumerable<AppSectionAttribute> GetPluginSections(PluginBase p)
+        private class SectionInfo
         {
-            return p.GetType().GetTypeInfo().GetCustomAttributes<AppSectionAttribute>();
+            public AppSectionAttribute Section { get; set; }
+            public IStringLocalizer Localizer { get; set; }
+        }
+
+        private readonly List<SectionInfo> sections = new List<SectionInfo>();
+
+        private IEnumerable<SectionInfo> GetPluginSections(PluginBase p)
+        {
+            var localizer = p.StringLocalizer;
+
+            return p.GetType().GetTypeInfo()
+                .GetCustomAttributes<AppSectionAttribute>()
+                .Select(attr => new SectionInfo { Section = attr, Localizer = localizer});
         }
 
         public override void InitPlugin()
         {
             var list = Context.GetAllPlugins()
                 .SelectMany(GetPluginSections)
-                .OrderBy(s => s.SortOrder);
+                .OrderBy(s => s.Section.SortOrder);
 
             sections.AddRange(list);
         }
@@ -46,14 +58,22 @@ namespace ThinkingHome.Plugins.WebUi.Apps
         private object GetSectionList(SectionType type)
         {
             return sections
-                .Where(s => s.Type == type)
-                .Select(s => new
-                {
-                    title = s.Title,
-                    icon = s.Icon,
-                    url = s.GetClientUrl()
-                })
+                .Where(s => s.Section.Type == type)
+                .Select(CreateSectionModel)
                 .ToArray();
+        }
+
+        private object CreateSectionModel(SectionInfo info)
+        {
+            var section = info.Section;
+            var localizer = info.Localizer;
+
+            return new
+            {
+                title = localizer.GetString(section.Title).ToString(),
+                icon = section.Icon,
+                url = section.GetClientUrl()
+            };
         }
 
         #endregion

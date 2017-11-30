@@ -73,6 +73,7 @@ WEB SERVER
   - локализация: вместо статических классов свойство `StringLocalizer` у плагина
   - `[HttpLocalizationResource("/static/tmp/lang.json", "ResxName")]`
   - клиентская локализация: было `templateHelpers: { lang: lang }`, стало `templateContext: { lang: lang }`
+  - локализация: название раздела web UI берется из ресурсов текущего плагина
 
 - mail plugin: `sendMail` + `host.api.sendMail`, `host.api.sendMailWithAttachment`
 - MQTT плагин:
