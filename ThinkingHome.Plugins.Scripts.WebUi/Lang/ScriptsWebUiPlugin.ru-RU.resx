@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<root>
+    <data name="Scripts" xml:space="preserve">
+        <value>Сценарии</value>
+    </data>
+    <data name="Script events" xml:space="preserve">
+        <value>Сценарные события</value>
+    </data>
+    <data name="Script list" xml:space="preserve">
+        <value>Сценарии</value>
+    </data>
+    <data name="Create" xml:space="preserve">
+        <value>Создать</value>
+    </data>
+    <data name="The script has been executed." xml:space="preserve">
+        <value>Сценарий выполнен.</value>
+    </data>
+</root>

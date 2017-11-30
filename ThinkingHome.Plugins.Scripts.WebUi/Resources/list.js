@@ -1,8 +1,9 @@
 var lib = require('lib');
+var lang = require('lang!static/scripts/web-ui/lang.json');
 var itemTemplate = '<a href="#" class="fa fa-fw fa-play-circle js-script-execute"></a>&nbsp;' +
     '<a href="#" class="js-script-edit">{{name}}</a>';
-var layoutTemplate = '<h1>Script list</h1>' +
-    '<p><a href="#" class="btn btn-secondary js-script-add">Create</a></p>' +
+var layoutTemplate = '<h1>{{lang \'Script list\'}}</h1>' +
+    '<p><a href="#" class="btn btn-secondary js-script-add">{{lang \'Create\'}}</a></p>' +
     '<div class="js-script-list"></div>';
 
 //#region entities
@@ -36,6 +37,7 @@ var ListView = lib.marionette.CollectionView.extend({
 
 var LayoutView = lib.marionette.View.extend({
     template: lib.handlebars.compile(layoutTemplate),
+    templateContext: { lang: lang },
     regions: {
         list: '.js-script-list'
     },
@@ -79,7 +81,7 @@ var Section = lib.common.AppSection.extend({
         var scriptId = view.model.get('id');
         lib.ajax.getJSON('/api/scripts/web-api/execute', { id: scriptId })
             .then(
-                function() { alert('The script has been executed'); },
+                function() { alert(lang.get('The script has been executed.')); },
                 function(err) { alert(err.message); });
     }
 });

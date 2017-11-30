@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<root>
+    <data name="Scripts" xml:space="preserve">
+        <value>Scripts</value>
+    </data>
+    <data name="Script events" xml:space="preserve">
+        <value>Script events</value>
+    </data>
+    <data name="Script list" xml:space="preserve">
+        <value>Script list</value>
+    </data>
+    <data name="Create" xml:space="preserve">
+        <value>Create</value>
+    </data>
+    <data name="The script has been executed." xml:space="preserve">
+        <value>The script has been executed.</value>
+    </data>
+</root>
