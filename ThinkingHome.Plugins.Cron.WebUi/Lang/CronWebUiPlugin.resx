@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<root>
+    <data name="Cron tasks" xml:space="preserve">
+        <value>Cron tasks</value>
+    </data>
+    <data name="disabled" xml:space="preserve">
+        <value>disabled</value>
+    </data>
+    <data name="Create" xml:space="preserve">
+        <value>Create</value>
+    </data>
+</root>
