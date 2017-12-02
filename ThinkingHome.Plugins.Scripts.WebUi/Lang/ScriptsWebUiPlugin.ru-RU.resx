@@ -16,4 +16,26 @@
     <data name="The script has been executed." xml:space="preserve">
         <value>Сценарий выполнен.</value>
     </data>
+
+    <data name="Save" xml:space="preserve">
+        <value>Сохранить</value>
+    </data>
+    <data name="Cancel" xml:space="preserve">
+        <value>Отмена</value>
+    </data>
+    <data name="Delete" xml:space="preserve">
+        <value>Удалить</value>
+    </data>
+    <data name="Fullscreen editing" xml:space="preserve">
+        <value>В полноэкранный режим</value>
+    </data>
+    <data name="Exit fullscreen" xml:space="preserve">
+        <value>В стандартный режим</value>
+    </data>
+    <data name="Enter script name" xml:space="preserve">
+        <value>Введите название сценария</value>
+    </data>
+    <data name="The script will be deleted. Continue?" xml:space="preserve">
+        <value>Сценарий будет удален. Продолжить?</value>
+    </data>
 </root>

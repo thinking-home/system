@@ -16,4 +16,26 @@
     <data name="The script has been executed." xml:space="preserve">
         <value>The script has been executed.</value>
     </data>
+
+    <data name="Save" xml:space="preserve">
+        <value>Save</value>
+    </data>
+    <data name="Cancel" xml:space="preserve">
+        <value>Cancel</value>
+    </data>
+    <data name="Delete" xml:space="preserve">
+        <value>Delete</value>
+    </data>
+    <data name="Fullscreen editing" xml:space="preserve">
+        <value>Fullscreen editing</value>
+    </data>
+    <data name="Exit fullscreen" xml:space="preserve">
+        <value>Exit fullscreen</value>
+    </data>
+    <data name="Enter script name" xml:space="preserve">
+        <value>Enter script name</value>
+    </data>
+    <data name="The script will be deleted. Continue?" xml:space="preserve">
+        <value>The script will be deleted. Continue?</value>
+    </data>
 </root>
