@@ -35,8 +35,8 @@ define([
         this.data = data.values;
     };
 
-    stringLocalizer.prototype.get = function(key, defaultValue) {
-        return (this.data && this.data[key]) || defaultValue || key;
+    stringLocalizer.prototype.get = function(key) {
+        return (this.data && this.data[key]) || key;
     };
 
     stringLocalizer.prototype.moment = function() {

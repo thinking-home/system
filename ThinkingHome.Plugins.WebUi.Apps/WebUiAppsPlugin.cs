@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.Linq;
 using System.Reflection;
 using Microsoft.Extensions.Localization;
@@ -12,6 +11,10 @@ namespace ThinkingHome.Plugins.WebUi.Apps
 {
     [JavaScriptResource("/static/web-ui/apps/common.js", "ThinkingHome.Plugins.WebUi.Apps.Resources.common.js")]
     [JavaScriptResource("/static/web-ui/apps/system.js", "ThinkingHome.Plugins.WebUi.Apps.Resources.system.js")]
+
+    // i18n
+    [HttpLocalizationResource("/static/web-ui/apps/lang.json")]
+
     public class WebUiAppsPlugin : PluginBase
     {
         private class SectionInfo

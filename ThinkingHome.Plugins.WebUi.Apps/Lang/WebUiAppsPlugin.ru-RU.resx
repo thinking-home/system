@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<root>
+    <data name="System settings" xml:space="preserve">
+        <value>Настройки</value>
+    </data>
+    <data name="Applications" xml:space="preserve">
+        <value>Приложения</value>
+    </data>
+</root>

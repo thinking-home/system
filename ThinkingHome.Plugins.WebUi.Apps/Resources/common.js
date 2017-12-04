@@ -1,4 +1,5 @@
 var lib = require('lib');
+var lang = require('lang!static/web-ui/apps/lang.json');
 var layoutTemplate = '<h1 class="js-title"></h1><div class="js-list"></div>';
 var itemTemplate = '<i class="fa fa-fw fa-{{icon}}"></i>&nbsp;<a href="#" class="js-section-link">{{title}}</a>';
 
@@ -47,7 +48,7 @@ var LayoutView = lib.marionette.View.extend({
 //#endregion
 
 var Section = lib.common.AppSection.extend({
-    title: 'Applications',
+    title: lang.get('Applications'),
     url: '/api/web-ui/apps/user',
     start: function() {
         this.view = new LayoutView({
