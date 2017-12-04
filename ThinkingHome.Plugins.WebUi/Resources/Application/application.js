@@ -1,4 +1,5 @@
 var lib = require('lib');
+var lang = require('lang!static/web-ui/lang.json');
 var router = require('static/web-ui/router.js');
 var radio = require('static/web-ui/radio.js');
 var layout = require('static/web-ui/layout.js');
@@ -57,7 +58,7 @@ var homeApplication = lib.marionette.Application.extend({
             .catch(function(error) {
                 // show error page
                 self.setContentView(new errors.ErrorView({
-                    title: 'Can\'t load section',
+                    title: lang.get('Can\'t load section'),
                     message: error
                 }));
             });

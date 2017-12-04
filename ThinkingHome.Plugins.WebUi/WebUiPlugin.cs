@@ -28,6 +28,9 @@ namespace ThinkingHome.Plugins.WebUi
     [JavaScriptResource("/static/web-ui/layout.js", "ThinkingHome.Plugins.WebUi.Resources.Application.layout.js")]
     [HttpEmbeddedResource("/static/web-ui/layout.tpl", "ThinkingHome.Plugins.WebUi.Resources.Application.layout.tpl")]
 
+    // i18n
+    [HttpLocalizationResource("/static/web-ui/lang.json")]
+
     // loaders
     [JavaScriptResource("/static/web-ui/loaders/system-lang.js", "ThinkingHome.Plugins.WebUi.Resources.Application.loaders.system-lang.js", Alias = "lang")]
 

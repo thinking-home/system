@@ -1,8 +1,7 @@
-<h1>Dummy page</h1>
+<h1>{{lang 'Hello!'}}</h1>
 
 <p>
-    This is a dummy page. You can see this page because it is specified in the WebUiPlugin plugin settings.
-    Change it's path in the <code>appsettings.json</code> file to another more useful path.
+    {{lang 'DUMMY_PAGE_DESCRIPTION'}}
 </p>
 
 <pre><code>
