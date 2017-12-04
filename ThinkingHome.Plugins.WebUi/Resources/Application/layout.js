@@ -1,10 +1,13 @@
 var lib = require('lib');
+var lang = require('lang!static/web-ui/lang.json');
 var layoutTemplate = require('static/web-ui/layout.tpl');
 
 var LayoutView = lib.marionette.View.extend({
     el: 'body',
 
     template: lib.handlebars.compile(layoutTemplate),
+
+    templateContext: { lang: lang },
 
     regions: {
         content: '.js-content'

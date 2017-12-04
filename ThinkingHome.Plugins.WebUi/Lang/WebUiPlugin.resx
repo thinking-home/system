@@ -14,4 +14,14 @@
             Change it's path in the appsettings.json file to another more useful path.
         </value>
     </data>
+
+    <data name="My Home" xml:space="preserve">
+        <value>My Home</value>
+    </data>
+    <data name="Apps" xml:space="preserve">
+        <value>Apps</value>
+    </data>
+    <data name="Settings" xml:space="preserve">
+        <value>Settings</value>
+    </data>
 </root>
