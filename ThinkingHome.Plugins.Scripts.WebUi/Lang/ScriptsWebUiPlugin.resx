@@ -38,4 +38,20 @@
     <data name="The script will be deleted. Continue?" xml:space="preserve">
         <value>The script will be deleted. Continue?</value>
     </data>
+    <data name="Subscription will be deleted. Continue?" xml:space="preserve">
+        <value>Subscription will be deleted. Continue?</value>
+    </data>
+
+    <data name="Event alias" xml:space="preserve">
+        <value>Event alias</value>
+    </data>
+    <data name="Event" xml:space="preserve">
+        <value>Event</value>
+    </data>
+    <data name="Script" xml:space="preserve">
+        <value>Script</value>
+    </data>
+    <data name="Add subscription" xml:space="preserve">
+        <value>Add subscription</value>
+    </data>
 </root>

@@ -38,4 +38,19 @@
     <data name="The script will be deleted. Continue?" xml:space="preserve">
         <value>Сценарий будет удален. Продолжить?</value>
     </data>
+    <data name="Subscription will be deleted. Continue?" xml:space="preserve">
+        <value>Обработчик события будет удален. Продолжить?</value>
+    </data>
+    <data name="Event alias" xml:space="preserve">
+        <value>Название события</value>
+    </data>
+    <data name="Event" xml:space="preserve">
+        <value>Событие</value>
+    </data>
+    <data name="Script" xml:space="preserve">
+        <value>Сценарий</value>
+    </data>
+    <data name="Add subscription" xml:space="preserve">
+        <value>Добавить подписку</value>
+    </data>
 </root>
