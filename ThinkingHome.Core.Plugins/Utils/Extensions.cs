@@ -17,18 +17,6 @@ namespace ThinkingHome.Core.Plugins.Utils
             return obj == null ? defaultValue : JsonConvert.SerializeObject(obj);
         }
 
-        /// <summary>
-        /// Получить тип делегата для заданного метода
-        /// </summary>
-        public static Type GetDelegateType(this MethodInfo mi)
-        {
-            var types2 = mi.GetParameters()
-                .Select(p => p.ParameterType)
-                .Concat(new[] { mi.ReturnType });
-
-            return Expression.GetDelegateType(types2.ToArray());
-        }
-
         #region parse
 
         public static int? ParseInt(this string stringValue)
@@ -108,13 +96,22 @@ namespace ThinkingHome.Core.Plugins.Utils
                     .Select(attr => new Tuple<MethodInfo, TAttr>(method, attr));
             }
 
+            Type GetDelegateType(MethodInfo mi)
+            {
+                var types2 = mi.GetParameters()
+                    .Select(p => p.ParameterType)
+                    .Concat(new[] { mi.ReturnType });
+
+                return Expression.GetDelegateType(types2.ToArray());
+            }
+
             (TAttr Meta, TDelegate Method) GetPluginMethodInfo(Tuple<MethodInfo, TAttr> obj)
             {
                 var delegateType = typeof(TDelegate);
 
                 if (delegateType == typeof(Delegate))
                 {
-                    delegateType = obj.Item1.GetDelegateType();
+                    delegateType = GetDelegateType(obj.Item1);
                 }
 
                 var mthodDelegate = obj.Item1.IsStatic
