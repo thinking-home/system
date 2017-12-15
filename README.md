@@ -48,7 +48,7 @@ $ docker run --name postgres -e POSTGRES_PASSWORD=123 -p 5432:5432 -d postgres
 ### 3. Запустите контейнер ThinkingHome
 
 ```
-$ docker run --name thinking-home --link postgres:postgres -p 8080:8080 -t dima117a/thinking-home:4.0.0-alpha3
+$ docker run --name thinking-home --link postgres:postgres -p 8080:8080 -t dima117a/thinking-home:4.0.0-alpha4
 ```
 
 После запуска в консоль начнет выодиться лог приложения, а в браузере по адресу http://localhost:8080 будет доступен веб-интерфейс.
