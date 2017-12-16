@@ -39,7 +39,7 @@ namespace ThinkingHome.Core.Infrastructure
                 .GetChildren()
                 .Select(asm =>
                 {
-                    var name = new AssemblyName(asm.Key);
+                    var name = new AssemblyName(asm.Value);
                     return Assembly.Load(name);
                 });
         }

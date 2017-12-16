@@ -23,8 +23,7 @@ ThinkingHome - кроссплатформенное приложение, поз
 - [ThinkingHome.Plugins.WebUi](./ThinkingHome.Plugins.WebUi) - инфраструктура веб-интерфейса
 - [ThinkingHome.Plugins.WebUi.Apps](./ThinkingHome.Plugins.WebUi.Apps) - организация подразделов веб-интерфейса
 
-
-- **[Как написать свой плагин](ThinkingHome.Core.Plugins)**
+**[Как написать свой плагин](ThinkingHome.Core.Plugins)**
 
 ## Установка с помощью Docker
 
