@@ -209,7 +209,7 @@ var Section = lib.common.AppSection.extend({
 ### Локализация интерфейса
 
 Если нужно использовать языковые ресурсы плагина в веб-интерфейсе, отметьте плагин атрибутом
-`ThinkingHome.Plugins.WebServer.Attributes.HttpLocalizationResource`. Этот атрибут принимает единственный параметр - URL,
+`ThinkingHome.Plugins.WebServer.Attributes.HttpLocalizationResourceAttribute`. Этот атрибут принимает единственный параметр - URL,
 по которому языковые ресурсы плагина будут доступны на клиенте.
 
 ```csharp
@@ -221,7 +221,7 @@ public class MyPlugin: PluginBase
 }
 ```
 
-Если после этого открыть в браузере адрес `/static/my-plugin/lang.json`, то откроется json файл с текстами плагина на текущем выбранном языке.
+Если после этого открыть в браузере указанный URL, то откроется json файл с текстами плагина на текущем выбранном языке.
 
 ```js
 {
