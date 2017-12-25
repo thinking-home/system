@@ -252,9 +252,44 @@ foreach (LocalizedString str in StringLocalizer.GetAllStrings())
 
 ## Настройки
 
-Настройки хранятся в файле appsettings.json. Разделы: 
+Все настройки системы хранятся в конфигурационном файле `appsettings.json`, который находится в корневой папке приложения.
 
-- язык - строка,
-- логирование - логгер serilog, сборки, настройки плагинов.
+```js
+{
+    "culture": "ru-RU", 
+    "assemblies": [ ... ],
+    "Serilog": { ... },
+    "plugins": { 
+        "Namespace1.Plugin1": { ... },
+        "Namespace2.Plugin2": { ... }
+     }
+}
+```
 
+- Поле `culture` (строка) задает [используемый язык](http://www.csharp-examples.net/culture-names).
+- Поле `assemblies` (массив строк) задает список сборок, в которых нужно искать доступные плагины при старте приложения. 
+- Раздел `Serilog` (объект) задает настройки логирования. Описание параметров смотрите в [документации](https://github.com/serilog/serilog-settings-configuration) библиотеки Serilog.
+- Раздел `plugins` (объект) содержит настройки плагинов.
 
+[Пример](../ThinkingHome.Console/appsettings.json)
+
+### Настройки плагинов
+
+Выше было сказано, что настройки плагинов хранятся в разделе `plugins`. Каждый ключ раздела - это название класса плагина, включая пространство имен.
+Значение для каждого ключа - это параметры плагина. Названия параметров смотрите в описании плагинов.
+
+В каждом плагине доступно поле `Configuration`, определенное в базовом классе `PluginBase`. Его значение реализует интерфейс
+`IConfigurationSection` из пакета [Microsoft.Extensions.Configuration](https://www.nuget.org/packages/Microsoft.Extensions.Configuration).  
+Через него плагин может получить значения своих настроек.
+
+```csharp
+public class MyPlugin: PluginBase
+{
+    public override void InitPlugin()
+    {
+        string myParameter = Configuration["parameterName"];
+        
+        // ...
+    }
+}
+```
