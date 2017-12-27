@@ -254,6 +254,12 @@ var str1 = lang.get('hello');           // Привет!
 var str2 = lang.get('Enter your name'); // Enter your name
 ```
 
+Вы можете использовать API библиотеки [moment.js](https://momentjs.com) для работы с датами и временем на нужном языке.
+ 
+```js
+var str = lang.moment(1316116057189).fromNow(); // str === '6 лет назад'
+```
+
 Чтобы использовать переводы в шаблонах, укажите для представления параметр `templateContext`. После этого вы можете
 использовать cпециальный хелпер `lang` для шаблонов *handlebars*.
 
