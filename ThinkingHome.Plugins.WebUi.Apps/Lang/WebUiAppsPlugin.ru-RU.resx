@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 
 <root>
-    <data name="System settings" xml:space="preserve">
+    <data name="Settings" xml:space="preserve">
         <value>Настройки</value>
     </data>
     <data name="Applications" xml:space="preserve">

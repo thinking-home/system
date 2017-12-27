@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 
 <root>
-    <data name="System settings" xml:space="preserve">
-        <value>System settings</value>
+    <data name="Settings" xml:space="preserve">
+        <value>Settings</value>
     </data>
     <data name="Applications" xml:space="preserve">
         <value>Applications</value>
