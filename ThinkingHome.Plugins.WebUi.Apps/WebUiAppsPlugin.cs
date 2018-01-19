@@ -49,7 +49,7 @@ namespace ThinkingHome.Plugins.WebUi.Apps
         [WebApiMethod("/api/web-ui/apps/user")]
         public object LoadUserSections(HttpRequestParams request)
         {
-            return GetSectionList(SectionType.User);
+            return GetSectionList(SectionType.Common);
         }
 
         [WebApiMethod("/api/web-ui/apps/system")]
