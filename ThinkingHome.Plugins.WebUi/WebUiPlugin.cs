@@ -26,7 +26,7 @@ namespace ThinkingHome.Plugins.WebUi
     [JavaScriptResource("/static/web-ui/radio.js", "ThinkingHome.Plugins.WebUi.Resources.Application.radio.js")]
     [JavaScriptResource("/static/web-ui/errors.js", "ThinkingHome.Plugins.WebUi.Resources.Application.errors.js")]
     [JavaScriptResource("/static/web-ui/layout.js", "ThinkingHome.Plugins.WebUi.Resources.Application.layout.js")]
-    [HttpEmbeddedResource("/static/web-ui/layout.tpl", "ThinkingHome.Plugins.WebUi.Resources.Application.layout.tpl")]
+    [TemplateResource("/static/web-ui/layout.tpl", "ThinkingHome.Plugins.WebUi.Resources.Application.layout.tpl")]
 
     // i18n
     [HttpLocalizationResource("/static/web-ui/lang.json")]
@@ -36,7 +36,7 @@ namespace ThinkingHome.Plugins.WebUi
 
     // dummy
     [JavaScriptResource("/static/web-ui/dummy.js", "ThinkingHome.Plugins.WebUi.Resources.Application.dummy.js")]
-    [HttpEmbeddedResource("/static/web-ui/dummy.tpl", "ThinkingHome.Plugins.WebUi.Resources.Application.dummy.tpl")]
+    [TemplateResource("/static/web-ui/dummy.tpl", "ThinkingHome.Plugins.WebUi.Resources.Application.dummy.tpl")]
 
     // css
     [CssResource("/static/web-ui/index.css", "ThinkingHome.Plugins.WebUi.Resources.Application.index.css", AutoLoad = true)]
@@ -73,6 +73,7 @@ namespace ThinkingHome.Plugins.WebUi
     {
         private readonly ObjectRegistry<string> aliases = new ObjectRegistry<string>();
         private readonly HashSet<string> alautoLoadedStyles = new HashSet<string>();
+        private readonly Dictionary<string, string> allTemplates = new Dictionary<string, string>();
 
         public override void InitPlugin()
         {
@@ -84,9 +85,20 @@ namespace ThinkingHome.Plugins.WebUi
                 .FindAttrs<JavaScriptResourceAttribute>(a => !string.IsNullOrEmpty(a.Alias))
                 .ToObjectRegistry(aliases, a => a.Meta.Alias, a => a.Meta.Url);
 
+            // find all css fiels
             foreach (var cssinfo in Context.GetAllPlugins().FindAttrs<CssResourceAttribute>(a => a.AutoLoad))
             {
                 alautoLoadedStyles.Add(cssinfo.Meta.Url);
+            }
+
+            // find all  templates
+            foreach (var tmplInfo in Context.GetAllPlugins().FindAttrs<TemplateResourceAttribute>())
+            {
+                var asm = tmplInfo.Type.Assembly;
+                var bytes = tmplInfo.Meta.GetContent(asm);
+                var text = Encoding.UTF8.GetString(bytes);
+
+                allTemplates.Add(tmplInfo.Meta.Url, text);
             }
         }
 
@@ -101,6 +113,12 @@ namespace ThinkingHome.Plugins.WebUi
             }
 
             return sb;
+        }
+
+        [HttpJsonDynamicResource("/dynamic/web-ui/templates.json", IsCached = true)]
+        public object LoadTemplates(HttpRequestParams request)
+        {
+            return allTemplates;
         }
 
 
