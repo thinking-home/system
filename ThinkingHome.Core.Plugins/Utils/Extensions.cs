@@ -57,7 +57,7 @@ namespace ThinkingHome.Core.Plugins.Utils
             where TAttr : Attribute
         {
             return plugins
-                .SelectMany(p => p.FindAttrs<TAttr>())
+                .SelectMany(p => p.FindAttrs<TAttr>(filter))
                 .ToArray();
         }
 

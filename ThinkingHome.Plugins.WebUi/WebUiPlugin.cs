@@ -90,7 +90,7 @@ namespace ThinkingHome.Plugins.WebUi
             }
         }
 
-        [HttpTextDynamicResource("/dynamic/web-ui/imports.css", "text/css")]
+        [HttpTextDynamicResource("/dynamic/web-ui/imports.css", "text/css", IsCached = true)]
         public object LoadCssImports(HttpRequestParams request)
         {
             var sb = new StringBuilder();
