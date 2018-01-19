@@ -11,7 +11,7 @@ namespace ThinkingHome.Plugins.Scripts.WebUi
     [TemplateResource("/static/scripts/web-ui/editor.tpl", "ThinkingHome.Plugins.Scripts.WebUi.Resources.editor.tpl")]
 
     [AppSection(SectionType.System, "Script events", "/static/scripts/web-ui/subscriptions.js", "ThinkingHome.Plugins.Scripts.WebUi.Resources.subscriptions.js", SortOrder = 22)]
-    [HttpEmbeddedResource("/static/scripts/web-ui/subscriptions.tpl", "ThinkingHome.Plugins.Scripts.WebUi.Resources.subscriptions.tpl")]
+    [TemplateResource("/static/scripts/web-ui/subscriptions.tpl", "ThinkingHome.Plugins.Scripts.WebUi.Resources.subscriptions.tpl")]
 
     [HttpLocalizationResource("/static/scripts/web-ui/lang.json")]
 

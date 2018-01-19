@@ -33,6 +33,7 @@ namespace ThinkingHome.Plugins.WebUi
 
     // loaders
     [JavaScriptResource("/static/web-ui/loaders/system-lang.js", "ThinkingHome.Plugins.WebUi.Resources.Application.loaders.system-lang.js", Alias = "lang")]
+    [JavaScriptResource("/static/web-ui/loaders/system-tmpl.js", "ThinkingHome.Plugins.WebUi.Resources.Application.loaders.system-tmpl.js", Alias = "tmpl")]
 
     // dummy
     [JavaScriptResource("/static/web-ui/dummy.js", "ThinkingHome.Plugins.WebUi.Resources.Application.dummy.js")]
@@ -122,7 +123,7 @@ namespace ThinkingHome.Plugins.WebUi
         }
 
 
-        [HttpJsonDynamicResource("/dynamic/web-ui/config.json")]
+        [HttpJsonDynamicResource("/dynamic/web-ui/config.json", IsCached = true)]
         public object LoadParams(HttpRequestParams request)
         {
             return new
