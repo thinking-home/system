@@ -205,3 +205,69 @@ var Section = lib.common.AppSection.extend({
 ```
 
 Отправляемые сообщения будут получены подписанными обработчиками на сервере и на всех клиентах, подключенных в текущий момент.
+
+### Локализация интерфейса
+
+#### На стороне сервера
+
+Если нужно использовать языковые ресурсы плагина в веб-интерфейсе, отметьте плагин атрибутом
+`ThinkingHome.Plugins.WebServer.Attributes.HttpLocalizationResourceAttribute`. Этот атрибут принимает единственный параметр - URL,
+по которому языковые ресурсы плагина будут доступны на клиенте.
+
+```csharp
+using ThinkingHome.Plugins.WebServer.Attributes;
+
+[HttpLocalizationResource("/static/my-plugin/lang.json")]
+public class MyPlugin: PluginBase
+{
+}
+```
+
+Если после этого открыть в браузере указанный URL, то откроется json файл с текстами плагина на текущем выбранном языке.
+
+```js
+{
+    "culture": "ru-RU",
+    "values": {
+        "hello": "Привет!",
+        "bye": "Пока!"
+    }
+}
+```
+
+#### На стороне клиента
+
+В клиентском коде вы можете запросить ресурсы с сервера через функцию `require`. Для удобной работы с переводами
+мы написали специальный загрузчик для [модульной системы](https://github.com/systemjs/systemjs).
+Чтобы использовать его, укажите префикс `'lang!'` в адресе файла.  
+
+```js
+var lang = require('lang!static/my-plugin/lang.json');
+```
+
+Результатом функции `require` будет специальный объект `lib.common.StringLocalizer`. Он содержит запрошенные переводы и предоставляет API для работы с ними.
+
+Чтобы получить перевод по ключу используйте метод `get`. Если для заданного ключа нет перевода, то функция вернет переданный ей ключ.
+
+```js
+var str1 = lang.get('hello');           // Привет!
+var str2 = lang.get('Enter your name'); // Enter your name
+```
+
+Вы можете использовать API библиотеки [moment.js](https://momentjs.com) для работы с датами и временем на нужном языке.
+ 
+```js
+var str = lang.moment(1316116057189).fromNow(); // str === '6 лет назад'
+```
+
+Чтобы использовать переводы в шаблонах, укажите для представления параметр `templateContext`. После этого вы можете
+использовать cпециальный хелпер `lang` для шаблонов *handlebars*.
+
+```js
+var myTemplate = lib.handlebars.compile('<h1>{{lang "hello"}}</h1>');
+
+var View = lib.marionette.View.extend({
+    template: myTemplate,
+    templateContext: { lang: lang }
+});
+```

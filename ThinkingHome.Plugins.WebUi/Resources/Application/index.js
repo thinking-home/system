@@ -1,5 +1,6 @@
 // configure loaders
 SystemJS.config({
+    pluginFirst: true,
     meta: {
         '*.json': { loader: '/vendor/js/system-json.js' },
         '*.tpl': { loader: '/vendor/js/system-text.js' }

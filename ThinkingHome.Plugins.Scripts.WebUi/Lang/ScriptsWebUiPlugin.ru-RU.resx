@@ -1,0 +1,56 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<root>
+    <data name="Scripts" xml:space="preserve">
+        <value>Сценарии</value>
+    </data>
+    <data name="Script events" xml:space="preserve">
+        <value>Сценарные события</value>
+    </data>
+    <data name="Script list" xml:space="preserve">
+        <value>Сценарии</value>
+    </data>
+    <data name="Create" xml:space="preserve">
+        <value>Создать</value>
+    </data>
+    <data name="The script has been executed." xml:space="preserve">
+        <value>Сценарий выполнен.</value>
+    </data>
+
+    <data name="Save" xml:space="preserve">
+        <value>Сохранить</value>
+    </data>
+    <data name="Cancel" xml:space="preserve">
+        <value>Отмена</value>
+    </data>
+    <data name="Delete" xml:space="preserve">
+        <value>Удалить</value>
+    </data>
+    <data name="Fullscreen editing" xml:space="preserve">
+        <value>В полноэкранный режим</value>
+    </data>
+    <data name="Exit fullscreen" xml:space="preserve">
+        <value>В стандартный режим</value>
+    </data>
+    <data name="Enter script name" xml:space="preserve">
+        <value>Введите название сценария</value>
+    </data>
+    <data name="The script will be deleted. Continue?" xml:space="preserve">
+        <value>Сценарий будет удален. Продолжить?</value>
+    </data>
+    <data name="Subscription will be deleted. Continue?" xml:space="preserve">
+        <value>Обработчик события будет удален. Продолжить?</value>
+    </data>
+    <data name="Event alias" xml:space="preserve">
+        <value>Название события</value>
+    </data>
+    <data name="Event" xml:space="preserve">
+        <value>Событие</value>
+    </data>
+    <data name="Script" xml:space="preserve">
+        <value>Сценарий</value>
+    </data>
+    <data name="Add subscription" xml:space="preserve">
+        <value>Добавить подписку</value>
+    </data>
+</root>

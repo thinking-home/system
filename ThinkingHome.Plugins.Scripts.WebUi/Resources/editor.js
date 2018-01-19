@@ -3,6 +3,7 @@ require('codemirror-fullscreen');
 
 var lib = require('lib');
 var codemirror = require('codemirror');
+var lang = require('lang!static/scripts/web-ui/lang.json');
 var template = require('/static/scripts/web-ui/editor.tpl');
 
 var EditorModel = lib.backbone.Model.extend({
@@ -13,6 +14,7 @@ var EditorModel = lib.backbone.Model.extend({
 
 var View = lib.marionette.View.extend({
     template: lib.handlebars.compile(template),
+    templateContext: { lang: lang },
     onAttach: function() {
         var container = this.$('.js-script-body').get(0);
         var script = this.model.toJSON();
@@ -75,7 +77,7 @@ var Section = lib.common.AppSection.extend({
     },
 
     add: function () {
-        var name = window.prompt('Enter script name', '');
+        var name = window.prompt(lang.get('Enter script name'), '');
         var model = new EditorModel({ name: name || 'noname' });
         this.createEditor(model);
     },
@@ -105,7 +107,7 @@ var Section = lib.common.AppSection.extend({
     deleteScript: function(view) {
         var id = view.model.get('id');
 
-        if (window.confirm('The script will be deleted. Continue?')) {
+        if (window.confirm(lang.get('The script will be deleted. Continue?'))) {
             lib.ajax.postJSON('/api/scripts/web-api/delete', { id: id })
                 .then(this.bind('redirectToList'), alert);
         }

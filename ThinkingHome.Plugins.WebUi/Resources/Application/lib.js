@@ -28,6 +28,23 @@ define([
         start: function () { }
     });
 
+    var stringLocalizer = function(data) {
+        !data && (data = {});
+
+        this.culture = data.culture;
+        this.data = data.values;
+    };
+
+    stringLocalizer.prototype.get = function(key) {
+        return (this.data && this.data[key]) || key;
+    };
+
+    stringLocalizer.prototype.moment = function() {
+        return moment
+            .apply(this, arguments)
+            .locale(String(this.culture));
+    };
+
     //region ajax
 
 
@@ -124,7 +141,7 @@ define([
         value = value + '';
         length = length || 0;
 
-        return (Array(length + 1).join('0') + value).slice(-length);
+        return (new Array(length + 1).join('0') + value).slice(-length);
     });
 
     handlebars.default.registerHelper('isnull', function(variable, options) {
@@ -135,12 +152,17 @@ define([
         }
     });
 
+    handlebars.default.registerHelper('lang', function (key) {
+        return this.lang instanceof stringLocalizer ? this.lang.get(key) : key;
+    });
+
     //endregion
 
     return {
         common: {
             ApplicationBlock: applicationBlock,
-            AppSection: appSection
+            AppSection: appSection,
+            StringLocalizer: stringLocalizer
         },
         form: {
             setOptions: setOptions

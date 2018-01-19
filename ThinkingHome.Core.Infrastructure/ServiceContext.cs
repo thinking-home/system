@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using ThinkingHome.Core.Plugins;
 using System.Linq;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
 
 namespace ThinkingHome.Core.Infrastructure
@@ -15,7 +16,8 @@ namespace ThinkingHome.Core.Infrastructure
         public ServiceContext(
             IEnumerable<PluginBase> loadedPlugins,
             IConfigurationSection configuration,
-            ILoggerFactory loggerFactory)
+            ILoggerFactory loggerFactory,
+            IStringLocalizerFactory localizerFactory)
         {
             plugins = loadedPlugins.ToDictionary(p => p.GetType());
 
@@ -26,19 +28,13 @@ namespace ThinkingHome.Core.Infrastructure
                 plugin.Context = this;
                 plugin.Logger = loggerFactory.CreateLogger(type);
                 plugin.Configuration = configuration.GetSection(type.FullName);
+                plugin.StringLocalizer = localizerFactory.Create(type);
             }
         }
 
         public IReadOnlyCollection<PluginBase> GetAllPlugins()
         {
             return new ReadOnlyCollection<PluginBase>(plugins.Values.ToList());
-        }
-
-        public IReadOnlyCollection<T> GetAllPlugins<T>()
-        {
-            var filtered = plugins.Values.Where(obj => obj is T).Cast<T>();
-
-            return new ReadOnlyCollection<T>(filtered.ToList());
         }
 
         public T Require<T>() where T : PluginBase

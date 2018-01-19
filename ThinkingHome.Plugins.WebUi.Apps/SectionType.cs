@@ -2,7 +2,7 @@
 {
     public enum SectionType
     {
-        User,
+        Common,
         System
     }
 }

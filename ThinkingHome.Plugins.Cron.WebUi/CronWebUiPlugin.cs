@@ -10,7 +10,7 @@ namespace ThinkingHome.Plugins.Cron.WebUi
     [JavaScriptResource("/static/cron/web-ui/editor.js", "ThinkingHome.Plugins.Cron.WebUi.Resources.editor.js")]
     [HttpEmbeddedResource("/static/cron/web-ui/editor.tpl", "ThinkingHome.Plugins.Cron.WebUi.Resources.editor.tpl")]
     [CssResource("/static/cron/web-ui/styles.css", "ThinkingHome.Plugins.Cron.WebUi.Resources.styles.css", AutoLoad = true)]
-    
+    [HttpLocalizationResource("/static/cron/lang.json")]
     public class CronWebUiPlugin : PluginBase
     {
     }

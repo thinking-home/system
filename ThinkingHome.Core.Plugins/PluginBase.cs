@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
-using ThinkingHome.Core.Plugins.Utils;
 
 namespace ThinkingHome.Core.Plugins
 {
@@ -17,6 +15,8 @@ namespace ThinkingHome.Core.Plugins
         public ILogger Logger { get; set; }
 
         public IConfigurationSection Configuration { get; set; }
+
+        public IStringLocalizer StringLocalizer { get; set; }
 
         #endregion
 

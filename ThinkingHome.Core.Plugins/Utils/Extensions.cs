@@ -17,18 +17,6 @@ namespace ThinkingHome.Core.Plugins.Utils
             return obj == null ? defaultValue : JsonConvert.SerializeObject(obj);
         }
 
-        /// <summary>
-        /// Получить тип делегата для заданного метода
-        /// </summary>
-        public static Type GetDelegateType(this MethodInfo mi)
-        {
-            var types2 = mi.GetParameters()
-                .Select(p => p.ParameterType)
-                .Concat(new[] { mi.ReturnType });
-
-            return Expression.GetDelegateType(types2.ToArray());
-        }
-
         #region parse
 
         public static int? ParseInt(this string stringValue)
@@ -65,7 +53,7 @@ namespace ThinkingHome.Core.Plugins.Utils
 
         #region find attrs
 
-        public static (TAttr Meta, TypeInfo Type)[] FindAttrs<TAttr>(this IEnumerable<PluginBase> plugins, Func<TAttr, bool> filter = null)
+        public static (TAttr Meta, TypeInfo Type, PluginBase Plugin)[] FindAttrs<TAttr>(this IEnumerable<PluginBase> plugins, Func<TAttr, bool> filter = null)
             where TAttr : Attribute
         {
             return plugins
@@ -73,7 +61,7 @@ namespace ThinkingHome.Core.Plugins.Utils
                 .ToArray();
         }
 
-        public static (TAttr Meta, TypeInfo Type)[] FindAttrs<TAttr>(this PluginBase plugin, Func<TAttr, bool> filter = null) where TAttr : Attribute
+        public static (TAttr Meta, TypeInfo Type, PluginBase Plugin)[] FindAttrs<TAttr>(this PluginBase plugin, Func<TAttr, bool> filter = null) where TAttr : Attribute
         {
             var fn = filter ?? (a => true);
 
@@ -82,7 +70,7 @@ namespace ThinkingHome.Core.Plugins.Utils
             return type
                 .GetCustomAttributes<TAttr>()
                 .Where(fn)
-                .Select(a => (Meta: a, Type: type))
+                .Select(a => (Meta: a, Type: type, Plugin: plugin))
                 .ToArray();
         }
 
@@ -108,13 +96,22 @@ namespace ThinkingHome.Core.Plugins.Utils
                     .Select(attr => new Tuple<MethodInfo, TAttr>(method, attr));
             }
 
+            Type GetDelegateType(MethodInfo mi)
+            {
+                var types2 = mi.GetParameters()
+                    .Select(p => p.ParameterType)
+                    .Concat(new[] { mi.ReturnType });
+
+                return Expression.GetDelegateType(types2.ToArray());
+            }
+
             (TAttr Meta, TDelegate Method) GetPluginMethodInfo(Tuple<MethodInfo, TAttr> obj)
             {
                 var delegateType = typeof(TDelegate);
 
                 if (delegateType == typeof(Delegate))
                 {
-                    delegateType = obj.Item1.GetDelegateType();
+                    delegateType = GetDelegateType(obj.Item1);
                 }
 
                 var mthodDelegate = obj.Item1.IsStatic

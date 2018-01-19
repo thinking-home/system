@@ -2,6 +2,8 @@
 
 ThinkingHome - кроссплатформенное приложение, позволяющее организовать на компьютере управляющий центр умного дома.
 
+В этом репозитории находится версия для .NET Core. Также существует [версия для .NET Framework](https://github.com/dima117/thinking-home).
+
 ## Плагины
 
 - [ThinkingHome.Plugins.Cron](./ThinkingHome.Plugins.Cron) - запуск действий по расписанию
@@ -21,7 +23,7 @@ ThinkingHome - кроссплатформенное приложение, поз
 - [ThinkingHome.Plugins.WebUi](./ThinkingHome.Plugins.WebUi) - инфраструктура веб-интерфейса
 - [ThinkingHome.Plugins.WebUi.Apps](./ThinkingHome.Plugins.WebUi.Apps) - организация подразделов веб-интерфейса
 
-[Версия для .NET Framework](https://github.com/dima117/thinking-home)
+**[Как написать свой плагин](ThinkingHome.Core.Plugins)**
 
 ## Установка с помощью Docker
 

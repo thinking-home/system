@@ -1,10 +1,12 @@
 var lib = require('lib');
+var lang = require('lang!static/scripts/web-ui/lang.json');
 var layoutTemplate = require('static/scripts/web-ui/subscriptions.tpl');
 var itemTemplate = '<td>{{eventAlias}}</td><td>{{scriptName}}</td>' +
-    '<td><a href="#" class="js-delete-link">delete</a></td>';
+    '<td><a href="#" class="js-delete-link">{{lang \'Delete\'}}</a></td>';
 
 var SubscriptionView = lib.marionette.View.extend({
     template: lib.handlebars.compile(itemTemplate),
+    templateContext: { lang: lang },
     tagName: 'tr',
     triggers: {
         'click .js-delete-link': 'subscription:delete'
@@ -18,6 +20,7 @@ var SubscriptionListView = lib.marionette.CollectionView.extend({
 
 var LayoutView = lib.marionette.View.extend({
     template: lib.handlebars.compile(layoutTemplate),
+    templateContext: { lang: lang },
     ui: {
         eventAlias: '.js-event-alias',
         scriptList: '.js-script-list'
@@ -28,8 +31,8 @@ var LayoutView = lib.marionette.View.extend({
             replaceElement: true
         }
     },
-    triggers: { 
-        'click .js-btn-add-subscription': 'subscription:add' 
+    triggers: {
+        'click .js-btn-add-subscription': 'subscription:add'
     },
     onRender: function() {
 
@@ -82,7 +85,7 @@ var Section = lib.common.AppSection.extend({
     },
 
     deleteSubscription: function(id) {
-        confirm('Subscription will be deleted. Continue?') && lib.ajax
+        confirm(lang.get('Subscription will be deleted. Continue?')) && lib.ajax
             .postJSON('/api/scripts/web-api/subscription/delete', { subscriptionId: id })
             .then(this.bind('updateList'))
             .catch(alert);

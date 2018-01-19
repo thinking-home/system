@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -38,9 +39,15 @@ namespace ThinkingHome.Core.Infrastructure
                 .GetChildren()
                 .Select(asm =>
                 {
-                    var name = new AssemblyName(asm.Key);
+                    var name = new AssemblyName(asm.Value);
                     return Assembly.Load(name);
                 });
+        }
+
+        public CultureInfo GetCulture()
+        {
+            var cultureName = Configuration["culture"] ?? string.Empty;
+            return CultureInfo.GetCultureInfo(cultureName);
         }
     }
 }

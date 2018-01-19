@@ -46,12 +46,12 @@ namespace ThinkingHome.Plugins.TelegramBot
             bot.StartReceiving();
 
             // receive bot info
-            var me = bot.GetMeAsync();
-
-            if (me.Exception == null)
+            bot.GetMeAsync().ContinueWith(me =>
             {
+                if (me.Exception != null) return;
+
                 Logger.LogInformation($"telegram bot is inited: {me.Result.FirstName} (@{me.Result.Username})");
-            }
+            });
         }
 
         public override void StopPlugin()
@@ -119,11 +119,12 @@ namespace ThinkingHome.Plugins.TelegramBot
 
         private void Try(Func<TelegramBotClient, Task> fn)
         {
-            var err = fn(bot).Exception;
+            var task = fn(bot);
+            task.Wait();
 
-            if (err != null)
+            if (task.Exception != null)
             {
-                Logger.LogError(err, "telegram bot error");
+                Logger.LogError(task.Exception, "telegram bot error");
             }
         }
 

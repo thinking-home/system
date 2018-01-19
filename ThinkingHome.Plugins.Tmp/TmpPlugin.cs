@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Internal;
+using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
 using Telegram.Bot.Types;
 using ThinkingHome.Core.Plugins;
@@ -24,16 +25,31 @@ using ThinkingHome.Plugins.WebServer.Messages;
 
 namespace ThinkingHome.Plugins.Tmp
 {
-    [AppSection(SectionType.User, "tmp user section 1", "/static/tmp/index1.js", "ThinkingHome.Plugins.Tmp.Resources.tmp.js", SortOrder = 4)]
-    [AppSection(SectionType.User, "tmp user section 2", "/static/tmp/index2.js", "ThinkingHome.Plugins.Tmp.Resources.tmp.js", SortOrder = 2)]
-    [AppSection(SectionType.User, "tmp user section 3", "/static/tmp/index3.js", "ThinkingHome.Plugins.Tmp.Resources.tmp.js")]
+    [AppSection(SectionType.Common, "tmp user section 1", "/static/tmp/index1.js", "ThinkingHome.Plugins.Tmp.Resources.tmp.js", SortOrder = 4)]
+    [AppSection(SectionType.Common, "tmp user section 2", "/static/tmp/index2.js", "ThinkingHome.Plugins.Tmp.Resources.tmp.js", SortOrder = 2)]
+    [AppSection(SectionType.Common, "tmp user section 3", "/static/tmp/index3.js", "ThinkingHome.Plugins.Tmp.Resources.tmp.js")]
     [AppSection(SectionType.System, "Weather locations", "/static/tmp/inde6.js", "ThinkingHome.Plugins.Tmp.Resources.tmp.js")]
+
+
+    [HttpLocalizationResource("/static/tmp/lang.json")]
 
     public class TmpPlugin : PluginBase
     {
         public override void InitPlugin()
         {
             Logger.LogInformation($"init tmp plugin {Guid.NewGuid()}");
+            Logger.LogInformation(StringLocalizer.GetString("hello"));
+
+            var sb = new StringBuilder("===================\nall strings:\n");
+
+            foreach (var str in StringLocalizer.GetAllStrings(true))
+            {
+                sb.AppendLine($"{str.Name}: {str.Value} ({str.SearchedLocation})");
+            }
+
+            Logger.LogInformation(sb.ToString());
+
+            Logger.LogInformation(StringLocalizer.GetString("bye"));
         }
 
         public override void StartPlugin()
