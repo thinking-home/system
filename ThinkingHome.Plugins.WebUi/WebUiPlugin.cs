@@ -73,14 +73,15 @@ namespace ThinkingHome.Plugins.WebUi
     public class WebUiPlugin : PluginBase
     {
         private readonly ObjectRegistry<string> aliases = new ObjectRegistry<string>();
+        private readonly ObjectRegistry<string> templates = new ObjectRegistry<string>();
         private readonly HashSet<string> alautoLoadedStyles = new HashSet<string>();
-        private readonly Dictionary<string, string> allTemplates = new Dictionary<string, string>();
 
         public override void InitPlugin()
         {
             aliases.Register("welcome", Configuration.GetValue("pages:welcome", "/static/web-ui/dummy.js"));
             aliases.Register("apps", Configuration.GetValue("pages:apps", "/static/web-ui/dummy.js"));
             aliases.Register("settings", Configuration.GetValue("pages:settings", "/static/web-ui/dummy.js"));
+            aliases.Register("templates", "/dynamic/web-ui/templates.js");
 
             Context.GetAllPlugins()
                 .FindAttrs<JavaScriptResourceAttribute>(a => !string.IsNullOrEmpty(a.Alias))
@@ -99,7 +100,7 @@ namespace ThinkingHome.Plugins.WebUi
                 var bytes = tmplInfo.Meta.GetContent(asm);
                 var text = Encoding.UTF8.GetString(bytes);
 
-                allTemplates.Add(tmplInfo.Meta.Url, text);
+                templates.Register(tmplInfo.Meta.Url, text);
             }
         }
 
@@ -116,10 +117,22 @@ namespace ThinkingHome.Plugins.WebUi
             return sb;
         }
 
-        [HttpJsonDynamicResource("/dynamic/web-ui/templates.json", IsCached = true)]
+        [HttpTextDynamicResource("/dynamic/web-ui/templates.js", "application/javascript", IsCached = true)]
         public object LoadTemplates(HttpRequestParams request)
         {
-            return allTemplates;
+            var sb = new StringBuilder();
+
+            foreach (var template in templates.Data)
+            {
+                var name = template.Key.ToJson();
+                var body = template.Value.ToJson();
+
+                sb.AppendLine($"System.registerDynamic({name}, [], true, function ($__require, exports, module) {{");
+                sb.AppendLine($"    module.exports = {body};");
+                sb.AppendLine("});");
+            }
+
+            return sb;
         }
 
 
@@ -138,7 +151,11 @@ namespace ThinkingHome.Plugins.WebUi
                         reconnectionTimeout = MessageHub.RECONNECTION_TIMEOUT
                     }
                 },
-                systemjs = new { map = aliases.Data }
+                systemjs = new
+                {
+                    map = aliases.Data,
+                    bundles =  new { templates = templates.Keys }
+                }
             };
         }
     }
