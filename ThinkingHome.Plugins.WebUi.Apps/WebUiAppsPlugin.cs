@@ -12,6 +12,10 @@ namespace ThinkingHome.Plugins.WebUi.Apps
     [JavaScriptResource("/static/web-ui/apps/common.js", "ThinkingHome.Plugins.WebUi.Apps.Resources.common.js")]
     [JavaScriptResource("/static/web-ui/apps/system.js", "ThinkingHome.Plugins.WebUi.Apps.Resources.system.js")]
 
+    // templates
+    [TemplateResource("/static/web-ui/apps/list.tpl", "ThinkingHome.Plugins.WebUi.Apps.Resources.list.tpl")]
+    [TemplateResource("/static/web-ui/apps/list-item.tpl", "ThinkingHome.Plugins.WebUi.Apps.Resources.list-item.tpl")]
+
     // i18n
     [HttpLocalizationResource("/static/web-ui/apps/lang.json")]
 
