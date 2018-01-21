@@ -154,7 +154,7 @@ namespace ThinkingHome.Plugins.WebUi
                 systemjs = new
                 {
                     map = aliases.Data,
-                    bundles =  new { templates = templates.Keys }
+                    bundles =  new { templates = templates.Data.Keys }
                 }
             };
         }
