@@ -1,21 +1,13 @@
 var lib = require('lib');
 var lang = require('lang!static/cron/lang.json');
 
-var itemTemplate =
-    '<span class="th-cron-value">{{#isnull month}}*{{else}}{{month}}{{/isnull}}</span>:' +
-    '<span class="th-cron-value">{{#isnull day}}*{{else}}{{day}}{{/isnull}}</span>:' +
-    '<span class="th-cron-value">{{#isnull hour}}*{{else}}{{hour}}{{/isnull}}</span>:' +
-    '<span class="th-cron-value">{{#isnull minute}}*{{else}}{{pad minute 2}}{{/isnull}}</span>' +
-    '<a href="#" class="js-task-edit">{{name}}</a> {{#unless enabled}}{{lang \'disabled\'}}{{/unless}}';
-
-var layoutTemplate = '<h1>{{lang \'Cron tasks\'}}</h1>' +
-    '<p><a href="#" class="btn btn-secondary js-task-create">{{lang \'Create\'}}</a></p>' +
-    '<div class="js-task-list"></div>';
+var layoutTemplate = require('hbs!static/cron/web-ui/list.tpl');
+var itemTemplate = require('hbs!static/cron/web-ui/list-item.tpl');
 
 //#region views
 
 var ItemView = lib.marionette.View.extend({
-    template: lib.handlebars.compile(itemTemplate),
+    template: itemTemplate,
     templateContext: { lang: lang },
     className: 'th-list-item',
     tagName: 'li',
@@ -31,7 +23,7 @@ var ListView = lib.marionette.CollectionView.extend({
 });
 
 var LayoutView = lib.marionette.View.extend({
-    template: lib.handlebars.compile(layoutTemplate),
+    template: layoutTemplate,
     templateContext: { lang: lang },
     regions: {
         list: '.js-task-list'
