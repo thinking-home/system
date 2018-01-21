@@ -1,7 +1,4 @@
-﻿using System;
-using System.Linq;
-using System.Reflection;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.SignalR;
@@ -33,9 +30,11 @@ namespace ThinkingHome.Plugins.WebServer
                 .UseUrls($"http://+:{port}")
                 .Configure(app => app
                     .UseSignalR(routes => routes.MapHub<MessageHub>(MessageHub.HUB_ROUTE))
+                    .UseResponseCompression()
                     .UseStatusCodePages()
                     .UseMiddleware<HomePluginsMiddleware>(handlers))
                 .ConfigureServices(services => services
+                    .AddResponseCompression()
                     .AddMemoryCache()
                     .AddSignalR())
                 .ConfigureLogging(builder =>
