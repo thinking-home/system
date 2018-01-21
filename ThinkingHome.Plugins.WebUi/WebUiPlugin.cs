@@ -33,7 +33,6 @@ namespace ThinkingHome.Plugins.WebUi
 
     // loaders
     [JavaScriptResource("/static/web-ui/loaders/system-lang.js", "ThinkingHome.Plugins.WebUi.Resources.Application.loaders.system-lang.js", Alias = "lang")]
-    [JavaScriptResource("/static/web-ui/loaders/system-hbs.js", "ThinkingHome.Plugins.WebUi.Resources.Application.loaders.system-hbs.js", Alias = "hbs")]
 
     // dummy
     [JavaScriptResource("/static/web-ui/dummy.js", "ThinkingHome.Plugins.WebUi.Resources.Application.dummy.js")]

@@ -76,7 +76,7 @@ WEB SERVER
   - клиентская локализация: было `templateHelpers: { lang: lang }`, стало `templateContext: { lang: lang }`
   - локализация: название раздела web UI берется из ресурсов текущего плагина
   - бандлы для шаблонов: `[TemplateResource]`
-  - загрузчик для шаблонов handlebars: можно добавить к названию модуля префикс `'hbs!'` и не вызывать `lib.handlebars.compile`
+  - ~~загрузчик для шаблонов handlebars~~ если сделать загрузчик, он не использует бандл с шаблонами
 
 - mail plugin: `sendMail` + `host.api.sendMail`, `host.api.sendMailWithAttachment`
 - MQTT плагин:

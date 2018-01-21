@@ -1,13 +1,13 @@
 var lib = require('lib');
 var lang = require('lang!static/cron/lang.json');
 
-var layoutTemplate = require('hbs!static/cron/web-ui/list.tpl');
-var itemTemplate = require('hbs!static/cron/web-ui/list-item.tpl');
+var layoutTemplate = require('static/cron/web-ui/list.tpl');
+var itemTemplate = require('static/cron/web-ui/list-item.tpl');
 
 //#region views
 
 var ItemView = lib.marionette.View.extend({
-    template: itemTemplate,
+    template: lib.handlebars.compile(itemTemplate),
     templateContext: { lang: lang },
     className: 'th-list-item',
     tagName: 'li',
@@ -23,7 +23,7 @@ var ListView = lib.marionette.CollectionView.extend({
 });
 
 var LayoutView = lib.marionette.View.extend({
-    template: layoutTemplate,
+    template: lib.handlebars.compile(layoutTemplate),
     templateContext: { lang: lang },
     regions: {
         list: '.js-task-list'

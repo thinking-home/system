@@ -1,8 +1,7 @@
 var lib = require('lib');
 var lang = require('lang!static/scripts/web-ui/lang.json');
 var layoutTemplate = require('static/scripts/web-ui/subscriptions.tpl');
-var itemTemplate = '<td>{{eventAlias}}</td><td>{{scriptName}}</td>' +
-    '<td><a href="#" class="js-delete-link">{{lang \'Delete\'}}</a></td>';
+var itemTemplate = require('static/scripts/web-ui/subscriptions-item.tpl');
 
 var SubscriptionView = lib.marionette.View.extend({
     template: lib.handlebars.compile(itemTemplate),

@@ -1,6 +1,6 @@
 var lib = require('lib');
 var lang = require('lang!static/cron/lang.json');
-var template = require('hbs!static/cron/web-ui/editor.tpl');
+var template = require('static/cron/web-ui/editor.tpl');
 
 var EditorModel = lib.backbone.Model.extend({
     defaults: {
@@ -9,7 +9,7 @@ var EditorModel = lib.backbone.Model.extend({
 });
 
 var View = lib.marionette.View.extend({
-    template: template,
+    template: lib.handlebars.compile(template),
     templateContext: { lang: lang },
     onRender: function () {
 
