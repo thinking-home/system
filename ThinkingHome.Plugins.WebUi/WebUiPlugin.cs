@@ -24,19 +24,19 @@ namespace ThinkingHome.Plugins.WebUi
     [JavaScriptResource("/static/web-ui/application.js", "ThinkingHome.Plugins.WebUi.Resources.Application.application.js")]
     [JavaScriptResource("/static/web-ui/router.js", "ThinkingHome.Plugins.WebUi.Resources.Application.router.js")]
     [JavaScriptResource("/static/web-ui/radio.js", "ThinkingHome.Plugins.WebUi.Resources.Application.radio.js")]
-    [JavaScriptResource("/static/web-ui/errors.js", "ThinkingHome.Plugins.WebUi.Resources.Application.errors.js")]
     [JavaScriptResource("/static/web-ui/layout.js", "ThinkingHome.Plugins.WebUi.Resources.Application.layout.js")]
+    [JavaScriptResource("/static/web-ui/errors.js", "ThinkingHome.Plugins.WebUi.Resources.Application.errors.js")]
+    [JavaScriptResource("/static/web-ui/dummy.js", "ThinkingHome.Plugins.WebUi.Resources.Application.dummy.js")]
+
     [TemplateResource("/static/web-ui/layout.tpl", "ThinkingHome.Plugins.WebUi.Resources.Application.layout.tpl")]
+    [TemplateResource("/static/web-ui/error.tpl", "ThinkingHome.Plugins.WebUi.Resources.Application.error.tpl")]
+    [TemplateResource("/static/web-ui/dummy.tpl", "ThinkingHome.Plugins.WebUi.Resources.Application.dummy.tpl")]
 
     // i18n
     [HttpLocalizationResource("/static/web-ui/lang.json")]
 
     // loaders
     [JavaScriptResource("/static/web-ui/loaders/system-lang.js", "ThinkingHome.Plugins.WebUi.Resources.Application.loaders.system-lang.js", Alias = "lang")]
-
-    // dummy
-    [JavaScriptResource("/static/web-ui/dummy.js", "ThinkingHome.Plugins.WebUi.Resources.Application.dummy.js")]
-    [TemplateResource("/static/web-ui/dummy.tpl", "ThinkingHome.Plugins.WebUi.Resources.Application.dummy.tpl")]
 
     // css
     [CssResource("/static/web-ui/index.css", "ThinkingHome.Plugins.WebUi.Resources.Application.index.css", AutoLoad = true)]

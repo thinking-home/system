@@ -22,6 +22,7 @@ using ThinkingHome.Plugins.Mqtt;
 using ThinkingHome.Plugins.TelegramBot;
 using ThinkingHome.Plugins.WebServer;
 using ThinkingHome.Plugins.WebServer.Messages;
+using ThinkingHome.Plugins.WebUi.Attributes;
 
 namespace ThinkingHome.Plugins.Tmp
 {
@@ -30,6 +31,7 @@ namespace ThinkingHome.Plugins.Tmp
     [AppSection(SectionType.Common, "tmp user section 3", "/static/tmp/index3.js", "ThinkingHome.Plugins.Tmp.Resources.tmp.js")]
     [AppSection(SectionType.System, "Weather locations", "/static/tmp/inde6.js", "ThinkingHome.Plugins.Tmp.Resources.tmp.js")]
 
+    [TemplateResource("/static/tmp/tmp.tpl", "ThinkingHome.Plugins.Tmp.Resources.tmp.tpl")]
 
     [HttpLocalizationResource("/static/tmp/lang.json")]
 

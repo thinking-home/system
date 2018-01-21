@@ -1,6 +1,5 @@
 var lib = require('lib');
-var errorTemplate = '<h1><i class="fa fa-times-circle fa-fw text-danger"></i> {{title}}</h1>' +
-    '<p class="lead">{{message}}</p>';
+var errorTemplate = require('static/web-ui/error.tpl');
 
 var ErrorView = lib.marionette.View.extend({
     className: 'th-error',
