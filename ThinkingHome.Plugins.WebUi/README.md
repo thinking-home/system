@@ -67,6 +67,23 @@ public class MyPlugin : PluginBase
 }
 ```
 
+### `[TemplateResource]`
+
+Атрибут `ThinkingHome.Plugins.WebUi.Attributes.TemplateResource` задает URL для текстового файла в ресурсах плагина, 
+по которому этот файл будет доступен на клиенте. Кроме того, содержимое файлов, отмеченных атрибутом `[TemplateResource]`, 
+попадает в бандл с шаблонами, доступный по специальному адресу `/dynamic/web-ui/templates.js`.
+
+```csharp
+[TemplateResource("/webui/my-page.tpl", "ThinkingHome.Plugins.Tmp.Resources.tmp.tpl")]
+public class MyPlugin : PluginBase
+{
+
+}
+```
+
+Если шаблон, который входит в бандл, запросить через [модульную систему](#Модульная-система), 
+то вместо отдельного файла будет загружен весь бандл с шаблонами и из него будет взят нужный фрагмент.
+
 ## Клиентская инфраструктура
 
 ### Модульная система
