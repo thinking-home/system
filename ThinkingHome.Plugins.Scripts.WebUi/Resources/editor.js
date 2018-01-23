@@ -4,7 +4,7 @@ require('codemirror-fullscreen');
 var lib = require('lib');
 var codemirror = require('codemirror');
 var lang = require('lang!static/scripts/web-ui/lang.json');
-var template = require('/static/scripts/web-ui/editor.tpl');
+var template = require('static/scripts/web-ui/editor.tpl');
 
 var EditorModel = lib.backbone.Model.extend({
     defaults: {

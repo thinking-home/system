@@ -1,6 +1,6 @@
 var lib = require('lib');
 var lang = require('lang!static/cron/lang.json');
-var template = require('/static/cron/web-ui/editor.tpl');
+var template = require('static/cron/web-ui/editor.tpl');
 
 var EditorModel = lib.backbone.Model.extend({
     defaults: {

@@ -24,19 +24,20 @@ namespace ThinkingHome.Plugins.WebUi
     [JavaScriptResource("/static/web-ui/application.js", "ThinkingHome.Plugins.WebUi.Resources.Application.application.js")]
     [JavaScriptResource("/static/web-ui/router.js", "ThinkingHome.Plugins.WebUi.Resources.Application.router.js")]
     [JavaScriptResource("/static/web-ui/radio.js", "ThinkingHome.Plugins.WebUi.Resources.Application.radio.js")]
-    [JavaScriptResource("/static/web-ui/errors.js", "ThinkingHome.Plugins.WebUi.Resources.Application.errors.js")]
     [JavaScriptResource("/static/web-ui/layout.js", "ThinkingHome.Plugins.WebUi.Resources.Application.layout.js")]
-    [HttpEmbeddedResource("/static/web-ui/layout.tpl", "ThinkingHome.Plugins.WebUi.Resources.Application.layout.tpl")]
+    [JavaScriptResource("/static/web-ui/errors.js", "ThinkingHome.Plugins.WebUi.Resources.Application.errors.js")]
+    [JavaScriptResource("/static/web-ui/dummy.js", "ThinkingHome.Plugins.WebUi.Resources.Application.dummy.js")]
+
+    // templates
+    [TemplateResource("/static/web-ui/layout.tpl", "ThinkingHome.Plugins.WebUi.Resources.Application.layout.tpl")]
+    [TemplateResource("/static/web-ui/error.tpl", "ThinkingHome.Plugins.WebUi.Resources.Application.error.tpl")]
+    [TemplateResource("/static/web-ui/dummy.tpl", "ThinkingHome.Plugins.WebUi.Resources.Application.dummy.tpl")]
 
     // i18n
     [HttpLocalizationResource("/static/web-ui/lang.json")]
 
     // loaders
     [JavaScriptResource("/static/web-ui/loaders/system-lang.js", "ThinkingHome.Plugins.WebUi.Resources.Application.loaders.system-lang.js", Alias = "lang")]
-
-    // dummy
-    [JavaScriptResource("/static/web-ui/dummy.js", "ThinkingHome.Plugins.WebUi.Resources.Application.dummy.js")]
-    [HttpEmbeddedResource("/static/web-ui/dummy.tpl", "ThinkingHome.Plugins.WebUi.Resources.Application.dummy.tpl")]
 
     // css
     [CssResource("/static/web-ui/index.css", "ThinkingHome.Plugins.WebUi.Resources.Application.index.css", AutoLoad = true)]
@@ -72,6 +73,7 @@ namespace ThinkingHome.Plugins.WebUi
     public class WebUiPlugin : PluginBase
     {
         private readonly ObjectRegistry<string> aliases = new ObjectRegistry<string>();
+        private readonly ObjectRegistry<string> templates = new ObjectRegistry<string>();
         private readonly HashSet<string> alautoLoadedStyles = new HashSet<string>();
 
         public override void InitPlugin()
@@ -79,18 +81,30 @@ namespace ThinkingHome.Plugins.WebUi
             aliases.Register("welcome", Configuration.GetValue("pages:welcome", "/static/web-ui/dummy.js"));
             aliases.Register("apps", Configuration.GetValue("pages:apps", "/static/web-ui/dummy.js"));
             aliases.Register("settings", Configuration.GetValue("pages:settings", "/static/web-ui/dummy.js"));
+            aliases.Register("templates", "/dynamic/web-ui/templates.js");
 
             Context.GetAllPlugins()
                 .FindAttrs<JavaScriptResourceAttribute>(a => !string.IsNullOrEmpty(a.Alias))
                 .ToObjectRegistry(aliases, a => a.Meta.Alias, a => a.Meta.Url);
 
+            // find all css fiels
             foreach (var cssinfo in Context.GetAllPlugins().FindAttrs<CssResourceAttribute>(a => a.AutoLoad))
             {
                 alautoLoadedStyles.Add(cssinfo.Meta.Url);
             }
+
+            // find all  templates
+            foreach (var tmplInfo in Context.GetAllPlugins().FindAttrs<TemplateResourceAttribute>())
+            {
+                var asm = tmplInfo.Type.Assembly;
+                var bytes = tmplInfo.Meta.GetContent(asm);
+                var text = Encoding.UTF8.GetString(bytes);
+
+                templates.Register(tmplInfo.Meta.Url, text);
+            }
         }
 
-        [HttpTextDynamicResource("/dynamic/web-ui/imports.css", "text/css")]
+        [HttpTextDynamicResource("/dynamic/web-ui/imports.css", "text/css", IsCached = true)]
         public object LoadCssImports(HttpRequestParams request)
         {
             var sb = new StringBuilder();
@@ -103,8 +117,26 @@ namespace ThinkingHome.Plugins.WebUi
             return sb;
         }
 
+        [HttpTextDynamicResource("/dynamic/web-ui/templates.js", "application/javascript", IsCached = true)]
+        public object LoadTemplates(HttpRequestParams request)
+        {
+            var sb = new StringBuilder();
 
-        [HttpJsonDynamicResource("/dynamic/web-ui/config.json")]
+            foreach (var template in templates.Data)
+            {
+                var name = template.Key.ToJson();
+                var body = template.Value.ToJson();
+
+                sb.AppendLine($"System.registerDynamic({name}, [], true, function ($__require, exports, module) {{");
+                sb.AppendLine($"    module.exports = {body};");
+                sb.AppendLine("});");
+            }
+
+            return sb;
+        }
+
+
+        [HttpJsonDynamicResource("/dynamic/web-ui/config.json", IsCached = true)]
         public object LoadParams(HttpRequestParams request)
         {
             return new
@@ -119,7 +151,11 @@ namespace ThinkingHome.Plugins.WebUi
                         reconnectionTimeout = MessageHub.RECONNECTION_TIMEOUT
                     }
                 },
-                systemjs = new { map = aliases.Data }
+                systemjs = new
+                {
+                    map = aliases.Data,
+                    bundles =  new { templates = templates.Data.Keys }
+                }
             };
         }
     }

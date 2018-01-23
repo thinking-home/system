@@ -1,7 +1,7 @@
 var lib = require('lib');
 var lang = require('lang!static/web-ui/apps/lang.json');
-var layoutTemplate = '<h1 class="js-title"></h1><div class="js-list"></div>';
-var itemTemplate = '<i class="fa fa-fw fa-{{icon}}"></i>&nbsp;<a href="#" class="js-section-link">{{title}}</a>';
+var layoutTemplate = require('static/web-ui/apps/list.tpl');
+var itemTemplate = require('static/web-ui/apps/list-item.tpl');
 
 //#region entities
 

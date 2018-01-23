@@ -15,6 +15,6 @@ namespace ThinkingHome.Plugins.WebServer.Attributes.Base
 
         public string ContentType { get; }
 
-        public bool IsCached { get; }
+        public bool IsCached { get; set; }
     }
 }

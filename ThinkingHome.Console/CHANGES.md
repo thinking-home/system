@@ -51,6 +51,7 @@ WEB SERVER
   - изменены параметры http api сценариев
   - сценарные плагины (core, http api) в отдельных пакетах
   - Buffer - представление бинарных данных в сценариях
+  - Сжатие ответа с помощью gzip
 - WEB UI
   - marionette v3
   - bootstrap beta
@@ -74,6 +75,8 @@ WEB SERVER
   - `[HttpLocalizationResource("/static/tmp/lang.json")]` - на клиент приходят переводы текущего плагина в json
   - клиентская локализация: было `templateHelpers: { lang: lang }`, стало `templateContext: { lang: lang }`
   - локализация: название раздела web UI берется из ресурсов текущего плагина
+  - бандлы для шаблонов: `[TemplateResource]`
+  - ~~загрузчик для шаблонов handlebars~~ если сделать загрузчик, он не использует бандл с шаблонами
 
 - mail plugin: `sendMail` + `host.api.sendMail`, `host.api.sendMailWithAttachment`
 - MQTT плагин:

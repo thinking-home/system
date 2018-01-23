@@ -1,10 +1,8 @@
 var lib = require('lib');
 var lang = require('lang!static/scripts/web-ui/lang.json');
-var itemTemplate = '<a href="#" class="fa fa-fw fa-play-circle js-script-execute"></a>&nbsp;' +
-    '<a href="#" class="js-script-edit">{{name}}</a>';
-var layoutTemplate = '<h1>{{lang \'Script list\'}}</h1>' +
-    '<p><a href="#" class="btn btn-secondary js-script-add">{{lang \'Create\'}}</a></p>' +
-    '<div class="js-script-list"></div>';
+
+var layoutTemplate = require('static/scripts/web-ui/list.tpl');
+var itemTemplate = require('static/scripts/web-ui/list-item.tpl');
 
 //#region entities
 
