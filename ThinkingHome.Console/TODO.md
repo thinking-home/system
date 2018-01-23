@@ -102,12 +102,16 @@
 
 ## alpha5
 - [x] i18n (~~core~~, ~~web~~, ~~strings~~)
-- [ ] бандлы для шаблонов
+- [x] бандлы для шаблонов
 - [ ] web-ui (dashboards)
+
+## alpha6
+- [ ] видеонаблюдение
+- [ ] графики
+- [ ] http запросы (curl)
 
 ### hardware
 
-- [ ] видеонаблюдение
 - [ ] плагин для homebridge, загружающий устройства из TH и перенаправляющий запросы к нему
 
 ### protocols
@@ -122,13 +126,11 @@
 ### others
 
 - [ ] noolite web api (совместимо с API шлюза?)
-- [ ] графики
 - [ ] microclimate (Core, UI)
 - [ ] weather
 
 - [ ] dynamic DNS [инструкция](https://habrahabr.ru/post/310534), [токены](https://pddimp.yandex.ru/api2/admin/get_token?domain_name=thinking-home.ru)
 - [ ] audio ?
-- [ ] http запросы (curl)
 - [ ] twitter https://coretweet.github.io
 
 ====
