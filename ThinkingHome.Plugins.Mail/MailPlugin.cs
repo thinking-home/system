@@ -28,7 +28,6 @@ namespace ThinkingHome.Plugins.Mail
 
         private void SendMailInternal(MimeMessage message)
         {
-
             using (var client = new SmtpClient())
             {
                 if (DisableCertificateValidation)
@@ -51,7 +50,6 @@ namespace ThinkingHome.Plugins.Mail
 
         private MimeMessage CreateMessage(string email, string subject)
         {
-
             var message = new MimeMessage();
 
             message.From.Add(new MailboxAddress(FromName, FromMail));
@@ -66,29 +64,29 @@ namespace ThinkingHome.Plugins.Mail
         [ScriptCommand("sendMail")]
         public void SendMail(string email, string subject, string body)
         {
-			var message = CreateMessage(email, subject);
+            var message = CreateMessage(email, subject);
 
-			message.Body = new TextPart("plain") { Text = body };
+            message.Body = new TextPart("plain") {Text = body};
 
-			SendMailInternal(message);
+            SendMailInternal(message);
         }
 
-		[ScriptCommand("sendMailWithAttachment")]
-		public void SendMail(string email, string subject, string body, string fileName, Buffer fileContent)
-		{
+        [ScriptCommand("sendMailWithAttachment")]
+        public void SendMail(string email, string subject, string body, string fileName, Buffer fileContent)
+        {
             SendMail(email, subject, body, fileName, fileContent.GetBytes());
-		}
+        }
 
-		public void SendMail(string email, string subject, string body, string fileName, byte[] fileContent)
-		{
-			var message = CreateMessage(email, subject);
+        public void SendMail(string email, string subject, string body, string fileName, byte[] fileContent)
+        {
+            var message = CreateMessage(email, subject);
 
-			var builder = new BodyBuilder { TextBody = body };
-			builder.Attachments.Add(fileName, fileContent);
+            var builder = new BodyBuilder {TextBody = body};
+            builder.Attachments.Add(fileName, fileContent);
 
-			message.Body = builder.ToMessageBody();
+            message.Body = builder.ToMessageBody();
 
-			SendMailInternal(message);
-		}
-	}
+            SendMailInternal(message);
+        }
+    }
 }

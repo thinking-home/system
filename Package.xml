@@ -1,15 +1,15 @@
 <Project>
     <PropertyGroup>
-		<VersionPrefix>4.0.0</VersionPrefix>
+        <VersionPrefix>4.0.0</VersionPrefix>
         <VersionSuffix>alpha4</VersionSuffix>
 
-		<Authors>Dmitry Andriyanov &lt;dima117a@gmail.com&gt;</Authors>
+        <Authors>Dmitry Andriyanov &lt;dima117a@gmail.com&gt;</Authors>
         <NeutralLanguage>en-US</NeutralLanguage>
         <Copyright>Thinking-Home.RU © 2017</Copyright>
 
-		<PackageTags>thinking-home;core</PackageTags>
-		<PackageProjectUrl>https://github.com/thinking-home/system</PackageProjectUrl>
-		<PackageLicenseUrl>https://github.com/thinking-home/system/blob/master/LICENSE</PackageLicenseUrl>
+        <PackageTags>thinking-home;core</PackageTags>
+        <PackageProjectUrl>https://github.com/thinking-home/system</PackageProjectUrl>
+        <PackageLicenseUrl>https://github.com/thinking-home/system/blob/master/LICENSE</PackageLicenseUrl>
         <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
         <RepositoryUrl>https://github.com/thinking-home/system.git</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
