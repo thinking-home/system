@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using ThinkingHome.Core.Plugins;
+using ThinkingHome.Core.Plugins.Utils;
 using ThinkingHome.Plugins.Database;
 using ThinkingHome.Plugins.UniUi.Model;
 using ThinkingHome.Plugins.WebServer.Attributes;
@@ -71,6 +72,28 @@ namespace ThinkingHome.Plugins.UniUi.Settings.WebApi
                 var dashboard = session.Set<Dashboard>().Single(s => s.Id == id);
 
                 session.Set<Dashboard>().Remove(dashboard);
+                session.SaveChanges();
+            }
+
+            return null;
+        }
+
+        [WebApiMethod("/api/uniui/settings/web-api/dashboard/sort")]
+        public object SortDashboardList(HttpRequestParams request)
+        {
+            var json = request.GetRequiredString("json");
+            var ids = JSON.Parse<Guid[]>(json);
+
+            using (var session = Context.Require<DatabasePlugin>().OpenSession())
+            {
+                var dashboards = session.Set<Dashboard>().ToList();
+
+                dashboards.ForEach(dashboard =>
+                {
+                    var index = Array.FindIndex(ids, id => id == dashboard.Id);
+                    dashboard.SortOrder = index == -1 ? int.MaxValue : index;
+                });
+
                 session.SaveChanges();
             }
 
