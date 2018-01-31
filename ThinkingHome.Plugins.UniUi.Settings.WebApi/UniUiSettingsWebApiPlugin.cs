@@ -9,21 +9,21 @@ using ThinkingHome.Plugins.WebServer.Handlers;
 
 namespace ThinkingHome.Plugins.UniUi.Settings.WebApi
 {
-    public class UniUiSettingsPlugin : PluginBase
+    public class UniUiSettingsWebApiPlugin : PluginBase
     {
-        private object ToDashboardApiModel(Dashboard dashboard)
-        {
-            return new
-            {
-                id = dashboard.Id,
-                title = dashboard.Title,
-                sortOrder = dashboard.SortOrder
-            };
-        }
-
         [WebApiMethod("/api/uniui/settings/web-api/dashboard/list")]
         public object GetDashboardList(HttpRequestParams request)
         {
+            object ToDashboardApiModel(Dashboard dashboard)
+            {
+                return new
+                {
+                    id = dashboard.Id,
+                    title = dashboard.Title,
+                    sortOrder = dashboard.SortOrder
+                };
+            }
+
             using (var session = Context.Require<DatabasePlugin>().OpenSession())
             {
                 var list = session.Set<Dashboard>()
@@ -36,7 +36,7 @@ namespace ThinkingHome.Plugins.UniUi.Settings.WebApi
         }
 
         [WebApiMethod("/api/uniui/settings/web-api/dashboard/save")]
-        public object CreateDashboard(HttpRequestParams request)
+        public object SaveDashboard(HttpRequestParams request)
         {
             var id = request.GetGuid("id");
             var title = request.GetRequiredString("title");
