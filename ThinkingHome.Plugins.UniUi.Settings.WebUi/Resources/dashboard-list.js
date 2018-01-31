@@ -37,9 +37,13 @@ var LayoutView = lib.marionette.View.extend({
 var Section = lib.common.AppSection.extend({
     start: function() {
         this.view = new LayoutView();
-
+        this.listenTo(this.view, 'dashboard:create', this.bind('createDashboard'));
         this.application.setContentView(this.view);
 
+        return this.loadDashboardList();
+    },
+
+    loadDashboardList: function() {
         return lib.ajax
             .loadModel('/api/uniui/settings/web-api/dashboard/list', lib.backbone.Collection)
             .then(this.bind('displayList'));
@@ -49,6 +53,17 @@ var Section = lib.common.AppSection.extend({
         var listView = new ListView({ collection: items });
 
         this.view.showChildView('list', listView);
+    },
+
+    createDashboard: function () {
+        var title = window.prompt('Enter dashboard title');
+
+        if (title) {
+            lib.ajax
+                .postJSON('/api/uniui/settings/web-api/dashboard/save', { title: title })
+                .then(this.bind('loadDashboardList'))
+                .catch(alert);
+        }
     }
 });
 
