@@ -69,11 +69,13 @@
             </label>
             <input id="908b0027-3b51-42df-b173-2b1dd554b53d" name="eventAlias" class="form-control"/>
         </div>
-        <div class="form-check">
-            <label class="form-check-label">
-                <input name="enabled" type="checkbox" class="form-check-input" />
-                {{lang 'Enabled'}}
-            </label>
+        <div class="form-group">
+            <div class="form-check">
+                <label class="form-check-label">
+                    <input name="enabled" type="checkbox" class="form-check-input" />
+                    {{lang 'Enabled'}}
+                </label>
+            </div>
         </div>
         <p>
             <a href="#" class="btn btn-primary js-btn-save">{{lang 'Save'}}</a>&nbsp;
