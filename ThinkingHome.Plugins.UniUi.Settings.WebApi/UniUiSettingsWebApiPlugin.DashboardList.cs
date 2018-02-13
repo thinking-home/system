@@ -9,7 +9,7 @@ using ThinkingHome.Plugins.WebServer.Handlers;
 
 namespace ThinkingHome.Plugins.UniUi.Settings.WebApi
 {
-    public class UniUiSettingsWebApiPlugin : PluginBase
+    public partial class UniUiSettingsWebApiPlugin : PluginBase
     {
         [WebApiMethod("/api/uniui/settings/web-api/dashboard/list")]
         public object GetDashboardList(HttpRequestParams request)

@@ -52,6 +52,8 @@ var Section = lib.common.AppSection.extend({
     displayList: function (items) {
         var listView = new ListView({ collection: items });
 
+        this.listenTo(listView, 'childview:dashboard:open', this.bind('openDashboard'));
+
         this.view.showChildView('list', listView);
     },
 
@@ -64,6 +66,11 @@ var Section = lib.common.AppSection.extend({
                 .then(this.bind('loadDashboardList'))
                 .catch(alert);
         }
+    },
+
+    openDashboard: function (view) {
+        var dashboardId = view.model.get('id');
+        this.application.navigate('/static/uniui/settings/web-ui/dashboard.js', dashboardId);
     }
 });
 

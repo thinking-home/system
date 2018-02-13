@@ -27,11 +27,11 @@ var LayoutView = lib.marionette.View.extend({
 //#endregion
 
 var Section = lib.common.AppSection.extend({
-    start: function() {
+    start: function(dashboardId) {
         this.view = new LayoutView();
         this.application.setContentView(this.view);
 
-        return this.loadPanelList();
+        return this.loadPanelList(dashboardId);
     },
 
     loadPanelList: function() {
