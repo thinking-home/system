@@ -3,12 +3,49 @@ var lib = require('lib');
 var layoutTemplate = require('static/uniui/settings/web-ui/dashboard.tpl');
 var itemTemplate = require('static/uniui/settings/web-ui/dashboard-item.tpl');
 
+//# region models
+
+var PanelModel = lib.backbone.Model.extend();
+
+var PanelCollection = lib.backbone.Collection.extend({
+    model: PanelModel
+});
+
+var DashboardlModel = lib.backbone.Model.extend({
+    initialize: function () {
+        var panels = this.get('panels');
+        if (panels) {
+            this.set('panels', new PanelCollection(panels));
+        }
+    },
+    parse: function (response) {
+
+        if (response.panels)
+
+        if (lib._.has(response, "panels")) {
+            this.panels = new PanelCollection(
+                response.panels,
+                {parse: true});
+
+            delete response.panels;
+        }
+        return response;
+    },
+    toJSON: function () {
+        var json = lib._.clone(this.attributes);
+        json.panels = this.panels.toJSON();
+        return json;
+    }
+});
+
+//#endregion
+
 //#region views
 
 var ItemView = lib.marionette.View.extend({
     template: lib.handlebars.compile(itemTemplate),
     //templateContext: { lang: lang },
-    triggers: { }
+    triggers: {}
 });
 
 var ListView = lib.marionette.CollectionView.extend({
@@ -21,31 +58,29 @@ var LayoutView = lib.marionette.View.extend({
     regions: {
         list: '.js-list'
     },
-    triggers: { }
+    triggers: {}
 });
 
 //#endregion
 
 var Section = lib.common.AppSection.extend({
-    start: function(dashboardId) {
+    start: function (dashboardId) {
         this.view = new LayoutView();
         this.application.setContentView(this.view);
 
         return this.loadPanelList(dashboardId);
     },
 
-    loadPanelList: function() {
-        return Promise.resolve(new lib.backbone.Collection([
-            { title: 'moo 1' },
-            { title: 'moo 2' },
-            { title: 'moo 3' },
-            { title: 'moo 4' },
-            { title: 'moo 5' }
-        ])).then(this.bind('displayList'));;
+    loadPanelList: function (dashboardId) {
+        return lib.ajax
+            .loadModel('/api/uniui/settings/web-api/panel/list', {id: dashboardId}, DashboardlModel)
+            .then(this.bind('displayList'));
     },
 
-    displayList: function (items) {
-        var listView = new ListView({ collection: items });
+    displayList: function (model) {
+        var listView = new ListView({
+            collection: model.get('panels')
+        });
 
         this.view.showChildView('list', listView);
     }
