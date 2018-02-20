@@ -1,4 +1,4 @@
 ﻿namespace ThinkingHome.Plugins.UniUi
 {
-    public delegate void DefineWidgetsDelegate(IWidgetDefinitionSet registerWidget);
+    public delegate void DefineWidgetsDelegate(IWidgetDefinitionSet definitions);
 }
