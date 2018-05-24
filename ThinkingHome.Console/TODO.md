@@ -127,7 +127,7 @@
 
 - [ ] noolite web api (совместимо с API шлюза?)
 - [ ] microclimate (Core, UI)
-- [ ] weather
+- [ ] weather https://tech.yandex.ru/weather/doc/dg/concepts/pricing-docpage/
 
 - [ ] dynamic DNS [инструкция](https://habrahabr.ru/post/310534), [токены](https://pddimp.yandex.ru/api2/admin/get_token?domain_name=thinking-home.ru)
 - [ ] audio ?
