@@ -20,6 +20,7 @@ using ThinkingHome.Plugins.WebUi.Apps;
 using ThinkingHome.Plugins.Mail;
 using ThinkingHome.Plugins.Mqtt;
 using ThinkingHome.Plugins.TelegramBot;
+using ThinkingHome.Plugins.UniUi;
 using ThinkingHome.Plugins.WebServer;
 using ThinkingHome.Plugins.WebServer.Messages;
 using ThinkingHome.Plugins.WebUi.Attributes;
@@ -68,6 +69,13 @@ namespace ThinkingHome.Plugins.Tmp
             Logger.LogDebug($"stop tmp plugin {Guid.NewGuid()}");
         }
 
+        [DefineWidgets]
+        public void DefineWidgetsDelegate(IWidgetDefinitionSet definitions)
+        {
+            definitions.Add<SearchFormWidgetDefinition>("search-form-1");
+            definitions.Add<SearchFormWidgetDefinition>("search-form-2");
+            definitions.Add<SearchFormWidgetDefinition>("search-form-3");
+        }
 
         [MqttMessageHandler]
         public void HandleMqttMessage(string topic, byte[] payload)
