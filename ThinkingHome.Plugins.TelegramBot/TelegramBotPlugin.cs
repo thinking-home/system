@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Telegram.Bot;
 using Telegram.Bot.Args;
-using Telegram.Bot.Types;
+using Telegram.Bot.Types.InputFiles;
 using ThinkingHome.Core.Plugins;
 using ThinkingHome.Core.Plugins.Utils;
 
@@ -91,32 +91,20 @@ namespace ThinkingHome.Plugins.TelegramBot
 
         public void SendPhoto(long chatId, string filename, Stream content)
         {
-            var file = new FileToSend(filename, content);
+            var file = new InputOnlineFile(content, filename);
 
             Try(t => t.SendPhotoAsync(chatId, file));
         }
-
-        public void SendPhoto(long chatId, Uri url)
-        {
-            var file = new FileToSend(url);
-
-            Try(t => t.SendPhotoAsync(chatId, file));
-        }
+    
 
         public void SendFile(long chatId, string filename, Stream content)
         {
-            var file = new FileToSend(filename, content);
+            var file = new InputOnlineFile(content, filename);
 
             Try(t => t.SendDocumentAsync(chatId, file));
         }
 
-        public void SendFile(long chatId, Uri url)
-        {
-            var file = new FileToSend(url);
-
-            Try(t => t.SendDocumentAsync(chatId, file));
-        }
-
+        
         private void Try(Func<TelegramBotClient, Task> fn)
         {
             var task = fn(bot);

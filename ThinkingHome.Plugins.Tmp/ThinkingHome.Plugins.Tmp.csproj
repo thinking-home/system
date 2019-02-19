@@ -28,6 +28,6 @@
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="2.2.0" />
     <PackageReference Include="Microsoft.Extensions.Logging" Version="2.2.0" />
     <PackageReference Include="ThinkingHome.Migrator.Framework" Version="3.0.0" />
-    <PackageReference Include="Telegram.Bot" Version="13.2.1" />
+    <PackageReference Include="Telegram.Bot" Version="14.10.0" />
   </ItemGroup>
 </Project>

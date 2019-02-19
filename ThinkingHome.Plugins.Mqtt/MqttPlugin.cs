@@ -5,10 +5,8 @@ using System.Text;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using MQTTnet;
-using MQTTnet.Core;
-using MQTTnet.Core.Client;
-using MQTTnet.Core.Packets;
-using MQTTnet.Core.Protocol;
+using MQTTnet.Client;
+using MQTTnet.Protocol;
 using ThinkingHome.Core.Plugins;
 using ThinkingHome.Core.Plugins.Utils;
 using ThinkingHome.Plugins.Scripts;
@@ -26,6 +24,8 @@ namespace ThinkingHome.Plugins.Mqtt
         private const int DEFAULT_PORT = 1883;
 
         private bool reconnectEnabled;
+        static readonly MqttFactory Factory = new MqttFactory();
+        private IMqttClientOptions options;
 
         private List<MqttMessageHandlerDelegate> handlers;
 
@@ -34,6 +34,7 @@ namespace ThinkingHome.Plugins.Mqtt
         public string Login => Configuration["login"];
         public string Password => Configuration["password"];
         public string[] Topics => Configuration.GetSection("topics").Get<string[]>() ?? new[] { "#" };
+
 
         #endregion
 
@@ -45,16 +46,15 @@ namespace ThinkingHome.Plugins.Mqtt
 
             Logger.LogInformation($"init MQTT client: {Host}:{Port} (ID: {{{clientId}}})");
 
-            var options = new MqttClientOptions
-            {
-                Server = Host,
-                Port = Port,
-                UserName = Login,
-                Password = Password,
-                ClientId = clientId
-            };
 
-            client = new MqttClientFactory().CreateMqttClient(options);
+            options = new MqttClientOptionsBuilder()
+                .WithTcpServer(Host, Port)
+                .WithClientId(clientId)
+                .WithCredentials(Login, Password)
+                .Build();
+
+
+            client = Factory.CreateMqttClient();
             client.Connected += client_Connected;
             client.Disconnected += client_Disconnected;
             client.ApplicationMessageReceived += client_ApplicationMessageReceived;
@@ -104,7 +104,7 @@ namespace ThinkingHome.Plugins.Mqtt
 
         public void Publish(string topic, byte[] payload, bool retain = false)
         {
-            var msg = new MqttApplicationMessage(topic, payload, MqttQualityOfServiceLevel.AtLeastOnce, retain);
+            var msg = new MqttApplicationMessage() { Payload = payload, Topic = topic, QualityOfServiceLevel = MqttQualityOfServiceLevel.AtLeastOnce, Retain = retain };
 
             var ex = client.PublishAsync(msg).Exception;
 
@@ -146,7 +146,7 @@ namespace ThinkingHome.Plugins.Mqtt
                         {
                             Logger.LogInformation("connect to MQTT broker");
 
-                            var task = client.ConnectAsync();
+                            var task = client.ConnectAsync(options);
                             task.Wait();
 
                             if (task.Exception != null) throw task.Exception;
