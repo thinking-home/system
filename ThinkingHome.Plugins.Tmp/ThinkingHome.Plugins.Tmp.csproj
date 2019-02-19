@@ -11,14 +11,6 @@
     <EmbeddedResource Include="Resources\**\*" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Remove="Lang\TmpPlugin.resx" />
-    <EmbeddedResource Remove="Lang\TmpPlugin.ru-RU.resx" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Lang\TmpPlugin.resx" />
-    <None Include="Lang\TmpPlugin.ru-RU.resx" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="../ThinkingHome.Core.Plugins/ThinkingHome.Core.Plugins.csproj" />
     <ProjectReference Include="../ThinkingHome.Plugins.Database/ThinkingHome.Plugins.Database.csproj" />
     <ProjectReference Include="../ThinkingHome.Plugins.Scripts/ThinkingHome.Plugins.Scripts.csproj" />
@@ -32,10 +24,10 @@
     <ProjectReference Include="../ThinkingHome.Plugins.TelegramBot\ThinkingHome.Plugins.TelegramBot.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="2.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Configuration" Version="2.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Logging" Version="2.0.0" />
-    <PackageReference Include="ThinkingHome.Migrator.Framework" Version="3.0.0-alpha9" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="2.2.2" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="2.2.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="2.2.0" />
+    <PackageReference Include="ThinkingHome.Migrator.Framework" Version="3.0.0" />
     <PackageReference Include="Telegram.Bot" Version="13.2.1" />
   </ItemGroup>
 </Project>

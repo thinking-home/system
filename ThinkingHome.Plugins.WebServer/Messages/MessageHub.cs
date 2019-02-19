@@ -29,14 +29,24 @@ namespace ThinkingHome.Plugins.WebServer.Messages
 
         internal static event HubMessageHandlerDelegate Message;
 
-        internal static Task InternalSend(IHubClients clients, string channel, object data)
+        internal static Task InternalSend(IHubCallerClients clients, string channel, object data)
         {
             var messageId = Guid.NewGuid();
             var timestamp = DateTime.Now;
 
             Message?.Invoke(messageId, timestamp, channel, data);
 
-            return clients.All.InvokeAsync(CLIENT_METHOD_NAME, new { guid = messageId, timestamp, channel, data });
+            return clients.All.SendAsync(CLIENT_METHOD_NAME, new { guid = messageId, timestamp, channel, data });
+        }
+
+        public static Task InternalSend(IHubClients clients, string channel, object data)
+        {
+            var messageId = Guid.NewGuid();
+            var timestamp = DateTime.Now;
+
+            Message?.Invoke(messageId, timestamp, channel, data);
+
+            return clients.All.SendAsync(CLIENT_METHOD_NAME, new { guid = messageId, timestamp, channel, data });
         }
     }
 }

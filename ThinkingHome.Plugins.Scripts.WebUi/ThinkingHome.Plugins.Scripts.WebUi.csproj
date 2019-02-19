@@ -11,14 +11,6 @@
     <EmbeddedResource Include="Resources\**\*" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Remove="Lang\ScriptsWebUiPlugin.resx" />
-    <EmbeddedResource Remove="Lang\ScriptsWebUiPlugin.ru-RU.resx" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Lang\ScriptsWebUiPlugin.resx" />
-    <None Include="Lang\ScriptsWebUiPlugin.ru-RU.resx" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="../ThinkingHome.Plugins.Scripts/ThinkingHome.Plugins.Scripts.csproj" />
     <ProjectReference Include="../ThinkingHome.Plugins.Scripts.WebApi/ThinkingHome.Plugins.Scripts.WebApi.csproj" />
     <ProjectReference Include="../ThinkingHome.Plugins.WebServer/ThinkingHome.Plugins.WebServer.csproj" />
@@ -27,7 +19,7 @@
     <ProjectReference Include="../ThinkingHome.Core.Plugins/ThinkingHome.Core.Plugins.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.Extensions.Configuration" Version="2.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Logging" Version="2.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="2.2.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="2.2.0" />
   </ItemGroup>
 </Project>
