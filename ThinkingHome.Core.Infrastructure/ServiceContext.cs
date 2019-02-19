@@ -37,6 +37,12 @@ namespace ThinkingHome.Core.Infrastructure
             return new ReadOnlyCollection<PluginBase>(plugins.Values.ToList());
         }
 
+
+        public IReadOnlyCollection<PluginBase> GetCorePlugins()
+        {
+            return new ReadOnlyCollection<PluginBase>(plugins.Where(p => p.Key.FullName.StartsWith("ThinkingHome.Plugins.Web")).Select(p => p.Value).ToList());
+        }
+
         public T Require<T>() where T : PluginBase
         {
             return plugins[typeof(T)] as T;

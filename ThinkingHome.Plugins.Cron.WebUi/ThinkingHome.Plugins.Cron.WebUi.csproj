@@ -11,6 +11,14 @@
     <EmbeddedResource Include="Resources\**\*" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Remove="Lang\CronWebUiPlugin.resx" />
+    <EmbeddedResource Remove="Lang\CronWebUiPlugin.ru-RU.resx" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Lang\CronWebUiPlugin.resx" />
+    <None Include="Lang\CronWebUiPlugin.ru-RU.resx" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="../ThinkingHome.Core.Plugins/ThinkingHome.Core.Plugins.csproj" />
     <ProjectReference Include="../ThinkingHome.Plugins.Cron.WebApi/ThinkingHome.Plugins.Cron.WebApi.csproj" />
     <ProjectReference Include="../ThinkingHome.Plugins.WebUi.Apps/ThinkingHome.Plugins.WebUi.Apps.csproj" />

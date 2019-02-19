@@ -19,4 +19,12 @@
   <ItemGroup>
     <EmbeddedResource Include="Resources\**\*" />
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Remove="Lang\WebUiAppsPlugin.resx" />
+    <EmbeddedResource Remove="Lang\WebUiAppsPlugin.ru-RU.resx" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Lang\WebUiAppsPlugin.resx" />
+    <None Include="Lang\WebUiAppsPlugin.ru-RU.resx" />
+  </ItemGroup>
 </Project>

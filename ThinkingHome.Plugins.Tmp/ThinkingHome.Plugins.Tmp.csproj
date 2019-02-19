@@ -11,6 +11,14 @@
     <EmbeddedResource Include="Resources\**\*" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Remove="Lang\TmpPlugin.resx" />
+    <EmbeddedResource Remove="Lang\TmpPlugin.ru-RU.resx" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Lang\TmpPlugin.resx" />
+    <None Include="Lang\TmpPlugin.ru-RU.resx" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="../ThinkingHome.Core.Plugins/ThinkingHome.Core.Plugins.csproj" />
     <ProjectReference Include="../ThinkingHome.Plugins.Database/ThinkingHome.Plugins.Database.csproj" />
     <ProjectReference Include="../ThinkingHome.Plugins.Scripts/ThinkingHome.Plugins.Scripts.csproj" />

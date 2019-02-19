@@ -11,6 +11,14 @@
     <EmbeddedResource Include="Resources\**\*" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Remove="Lang\WebUiPlugin.resx" />
+    <EmbeddedResource Remove="Lang\WebUiPlugin.ru-RU.resx" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Lang\WebUiPlugin.resx" />
+    <None Include="Lang\WebUiPlugin.ru-RU.resx" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="../ThinkingHome.Core.Plugins/ThinkingHome.Core.Plugins.csproj" />
     <ProjectReference Include="../ThinkingHome.Plugins.WebServer/ThinkingHome.Plugins.WebServer.csproj" />
   </ItemGroup>

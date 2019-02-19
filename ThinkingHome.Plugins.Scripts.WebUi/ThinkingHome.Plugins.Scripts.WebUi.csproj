@@ -11,6 +11,14 @@
     <EmbeddedResource Include="Resources\**\*" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Remove="Lang\ScriptsWebUiPlugin.resx" />
+    <EmbeddedResource Remove="Lang\ScriptsWebUiPlugin.ru-RU.resx" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Lang\ScriptsWebUiPlugin.resx" />
+    <None Include="Lang\ScriptsWebUiPlugin.ru-RU.resx" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="../ThinkingHome.Plugins.Scripts/ThinkingHome.Plugins.Scripts.csproj" />
     <ProjectReference Include="../ThinkingHome.Plugins.Scripts.WebApi/ThinkingHome.Plugins.Scripts.WebApi.csproj" />
     <ProjectReference Include="../ThinkingHome.Plugins.WebServer/ThinkingHome.Plugins.WebServer.csproj" />

@@ -7,6 +7,7 @@ namespace ThinkingHome.Core.Plugins
     public interface IServiceContext
     {
         IReadOnlyCollection<PluginBase> GetAllPlugins();
+        IReadOnlyCollection<PluginBase> GetCorePlugins();
 
         T Require<T>() where T : PluginBase;
     }
