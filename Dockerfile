@@ -1,5 +1,5 @@
 # базовый образ для нашего приложения
-FROM microsoft/dotnet:2.0.0-runtime
+FROM microsoft/dotnet:2.2-runtime
 
 # рабочая директория внутри контейнера для запуска команды CMD
 WORKDIR /system
