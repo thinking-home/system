@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using Microsoft.EntityFrameworkCore;
 using ThinkingHome.Core.Plugins;
 using ThinkingHome.Plugins.Database;
 using ThinkingHome.Plugins.Scripts.Model;
@@ -15,14 +17,18 @@ namespace ThinkingHome.Plugins.Scripts.WebApi
         [WebApiMethod("/api/scripts/web-api/list")]
         public object GetScriptList(HttpRequestParams request)
         {
-            using (var session = Context.Require<DatabasePlugin>().OpenSession())
+            var database = Context.Require<DatabasePlugin>();
+
+            if (!database.IsInitialized) return null;
+
+            using (var session = database.OpenSession())
             {
                 var list = session.Set<UserScript>()
-                    .Select(x => new { id = x.Id, name = x.Name })
-                    .ToArray();
+                    .Select(x => new { id = x.Id, name = x.Name }).ToArray(); 
 
                 return list;
             }
+
         }
 
         [WebApiMethod("/api/scripts/web-api/get")]
@@ -30,7 +36,11 @@ namespace ThinkingHome.Plugins.Scripts.WebApi
         {
             var id = request.GetRequiredGuid("id");
 
-            using (var session = Context.Require<DatabasePlugin>().OpenSession())
+            var database = Context.Require<DatabasePlugin>();
+
+            if (!database.IsInitialized) return null;
+
+            using (var session = database.OpenSession())
             {
                 var script = session.Set<UserScript>()
                     .Select(x => new { id = x.Id, name = x.Name, body = x.Body })
@@ -38,6 +48,7 @@ namespace ThinkingHome.Plugins.Scripts.WebApi
 
                 return script;
             }
+
         }
 
         [WebApiMethod("/api/scripts/web-api/save")]
@@ -47,26 +58,33 @@ namespace ThinkingHome.Plugins.Scripts.WebApi
             var name = request.GetRequiredString("name");
             var body = request.GetRequiredString("body");
 
-            using (var session = Context.Require<DatabasePlugin>().OpenSession())
+            var database = Context.Require<DatabasePlugin>();
+
+            if (database.IsInitialized)
             {
-                UserScript script;
-
-                if (id.HasValue)
+                using (var session = database.OpenSession())
                 {
-                    script = session.Set<UserScript>().Single(s => s.Id == id.Value);
-                }
-                else
-                {
-                    script = new UserScript { Id = Guid.NewGuid() };
-                    session.Set<UserScript>().Add(script);
-                }
+                    UserScript script;
 
-                script.Name = name;
-                script.Body = body;
-                session.SaveChanges();
+                    if (id.HasValue)
+                    {
+                        script = session.Set<UserScript>().Single(s => s.Id == id.Value);
+                    }
+                    else
+                    {
+                        script = new UserScript { Id = Guid.NewGuid() };
+                        session.Set<UserScript>().Add(script);
+                    }
 
-                return script.Id;
+                    script.Name = name;
+                    script.Body = body;
+                    session.SaveChanges();
+
+                    return script.Id;
+                }
             }
+
+            return null;
         }
 
         [WebApiMethod("/api/scripts/web-api/delete")]
@@ -74,7 +92,11 @@ namespace ThinkingHome.Plugins.Scripts.WebApi
         {
             var id = request.GetRequiredGuid("id");
 
-            using (var session = Context.Require<DatabasePlugin>().OpenSession())
+            var database = Context.Require<DatabasePlugin>();
+
+            if (!database.IsInitialized) return null;
+
+            using (var session = database.OpenSession())
             {
                 var script = session.Set<UserScript>().Single(s => s.Id == id);
 
@@ -90,12 +112,18 @@ namespace ThinkingHome.Plugins.Scripts.WebApi
         {
             var id = request.GetRequiredGuid("id");
 
-            using (var session = Context.Require<DatabasePlugin>().OpenSession())
+            var database = Context.Require<DatabasePlugin>();
+
+            if (!database.IsInitialized) return null;
+
+            using (var session = database.OpenSession())
             {
                 var script = session.Set<UserScript>().Single(s => s.Id == id);
 
                 return Context.Require<ScriptsPlugin>().ExecuteScript(script);
             }
+
+            
         }
 
         #endregion
@@ -105,7 +133,11 @@ namespace ThinkingHome.Plugins.Scripts.WebApi
         [WebApiMethod("/api/scripts/web-api/subscription/list")]
         public object GetSubscriptionList(HttpRequestParams request)
         {
-            using (var session = Context.Require<DatabasePlugin>().OpenSession())
+            var database = Context.Require<DatabasePlugin>();
+
+            if (!database.IsInitialized) return null;
+
+            using (var session = database.OpenSession())
             {
                 var list = session.Set<ScriptEventHandler>()
                     .Select(x => new
@@ -119,6 +151,9 @@ namespace ThinkingHome.Plugins.Scripts.WebApi
 
                 return list;
             }
+
+
+
         }
 
         [WebApiMethod("/api/scripts/web-api/subscription/add")]
@@ -127,7 +162,11 @@ namespace ThinkingHome.Plugins.Scripts.WebApi
             var scriptId = request.GetRequiredGuid("scriptId");
             var eventAlias = request.GetRequiredString("eventAlias");
 
-            using (var session = Context.Require<DatabasePlugin>().OpenSession())
+            var database = Context.Require<DatabasePlugin>();
+
+            if (!database.IsInitialized) return null;
+
+            using (var session = database.OpenSession())
             {
                 var guid = Guid.NewGuid();
 
@@ -159,6 +198,7 @@ namespace ThinkingHome.Plugins.Scripts.WebApi
 
             return null;
         }
+
 
         #endregion
     }

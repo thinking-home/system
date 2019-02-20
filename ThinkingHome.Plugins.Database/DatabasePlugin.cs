@@ -30,6 +30,8 @@ namespace ThinkingHome.Plugins.Database
                 .ToArray();
 
             ApplyMigrations();
+
+            IsInitialized = true;
         }
 
         private void ApplyMigrations()

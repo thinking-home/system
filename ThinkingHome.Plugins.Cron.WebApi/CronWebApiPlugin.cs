@@ -28,18 +28,25 @@ namespace ThinkingHome.Plugins.Cron.WebApi
         [WebApiMethod("/api/cron/web-api/list")]
         public object GetTaskList(HttpRequestParams request)
         {
-            using (var session = Context.Require<DatabasePlugin>().OpenSession())
-            {
-                var list = session.Set<CronTask>()
-                    .OrderBy(e => e.Month)
-                    .ThenBy(e => e.Day)
-                    .ThenBy(e => e.Hour)
-                    .ThenBy(e => e.Minute)
-                    .Select(ToApiModel)
-                    .ToArray();
+            var database = Context.Require<DatabasePlugin>();
 
-                return list;
+            if (database.IsInitialized)
+            {
+                using (var session = database.OpenSession())
+                {
+                    var list = session.Set<CronTask>()
+                        .OrderBy(e => e.Month)
+                        .ThenBy(e => e.Day)
+                        .ThenBy(e => e.Hour)
+                        .ThenBy(e => e.Minute)
+                        .Select(ToApiModel)
+                        .ToArray();
+
+                    return list;
+                }
             }
+
+            return new CronTask();
         }
 
         [WebApiMethod("/api/cron/web-api/get")]

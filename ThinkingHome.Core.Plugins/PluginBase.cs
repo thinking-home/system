@@ -10,6 +10,8 @@ namespace ThinkingHome.Core.Plugins
     {
         #region properties
 
+        public bool IsInitialized { get; protected set; }
+
         public IServiceContext Context { get; set; }
 
         public ILogger Logger { get; set; }

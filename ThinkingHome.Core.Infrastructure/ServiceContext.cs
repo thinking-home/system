@@ -40,7 +40,10 @@ namespace ThinkingHome.Core.Infrastructure
 
         public IReadOnlyCollection<PluginBase> GetCorePlugins()
         {
-            return new ReadOnlyCollection<PluginBase>(plugins.Where(p => p.Key.FullName.StartsWith("ThinkingHome.Plugins.Web")).Select(p => p.Value).ToList());
+            //return new ReadOnlyCollection<PluginBase>(plugins.Where(p => p.Key.FullName.StartsWith("ThinkingHome.Plugins.Web")).Select(p => p.Value).ToList());
+
+            return new ReadOnlyCollection<PluginBase>(plugins.Where(p => p.Key.FullName != "ThinkingHome.Plugins.NooLite" && ! p.Key.FullName.StartsWith("ThinkingHome.Plugins.Database")).Select(p => p.Value).ToList());
+            
         }
 
         public T Require<T>() where T : PluginBase
