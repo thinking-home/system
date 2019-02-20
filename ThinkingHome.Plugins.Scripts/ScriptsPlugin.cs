@@ -63,7 +63,14 @@ namespace ThinkingHome.Plugins.Scripts
 
         public void EmitScriptEvent(string eventAlias, params object[] args)
         {
-            using (var session = Context.Require<DatabasePlugin>().OpenSession())
+            var database = Context.Require<DatabasePlugin>();
+
+            if (!database.IsInitialized)
+            {
+                return;
+            }
+
+            using (var session = database.OpenSession())
             {
                 EmitScriptEvent(session, eventAlias, args);
             }
