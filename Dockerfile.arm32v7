@@ -2,9 +2,8 @@ FROM microsoft/dotnet:2.2-sdk-stretch-arm32v7 AS build
 
 # copy csproj and restore as distinct layers
 WORKDIR /system
-COPY /ThinkingHome.Console/bin/publish .
+COPY . .
 RUN dotnet restore
-
 RUN dotnet build
 
 FROM build AS publish
