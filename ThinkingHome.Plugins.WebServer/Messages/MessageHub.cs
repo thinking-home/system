@@ -18,7 +18,7 @@ namespace ThinkingHome.Plugins.WebServer.Messages
 
         public const string SERVER_METHOD_NAME = nameof(Send);
 
-        public const string HUB_ROUTE = "hub";
+        public const string HUB_ROUTE = "/hub";
 
         public const int RECONNECTION_TIMEOUT = 7000;
 

@@ -39,6 +39,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	ProjectSection(SolutionItems) = preProject
 		build.sh = build.sh
 		Dockerfile = Dockerfile
+		Dockerfile.arm32v7 = Dockerfile.arm32v7
 		Package.xml = Package.xml
 		README.md = README.md
 	EndProjectSection
