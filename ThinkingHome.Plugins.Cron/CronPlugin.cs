@@ -29,6 +29,7 @@ namespace ThinkingHome.Plugins.Cron
         public override void InitPlugin()
         {
             base.InitPlugin();
+            schedule = new List<CronScheduleItem>();
 
             handlers = RegisterHandlers();
         }
@@ -116,7 +117,10 @@ namespace ThinkingHome.Plugins.Cron
         {
             if (schedule == null)
             {
-                using (var session = Context.Require<DatabasePlugin>().OpenSession())
+                var database = Context.Require<DatabasePlugin>();
+                if (!database.IsInitialized) { return; }
+
+                using (var session = database.OpenSession())
                 {
                     schedule = session.Set<CronTask>()
                         .Where(t => t.Enabled)

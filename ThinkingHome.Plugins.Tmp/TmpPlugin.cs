@@ -19,6 +19,7 @@ using ThinkingHome.Plugins.WebServer.Handlers;
 using ThinkingHome.Plugins.WebUi.Apps;
 using ThinkingHome.Plugins.Mail;
 using ThinkingHome.Plugins.Mqtt;
+using ThinkingHome.Plugins.NooLite;
 using ThinkingHome.Plugins.TelegramBot;
 using ThinkingHome.Plugins.WebServer;
 using ThinkingHome.Plugins.WebServer.Messages;
@@ -68,6 +69,18 @@ namespace ThinkingHome.Plugins.Tmp
             Logger.LogDebug($"stop tmp plugin {Guid.NewGuid()}");
         }
 
+        [NooLiteMicroclimateDataHandler]
+        public void MicroclimateDataHandler(int channel, decimal temperature, int? humidity,
+            bool lowBattery)
+        {
+            Logger.LogInformation($"{temperature}");
+        }
+
+        [NooLiteCommandHandler]
+        public void NooLiteCommandHandler(byte command, int channel, byte format, byte d1, byte d2, byte d3, byte d4)
+        {
+            Logger.LogInformation($"{command} {channel}");
+        }
 
         [MqttMessageHandler]
         public void HandleMqttMessage(string topic, byte[] payload)
@@ -87,7 +100,11 @@ namespace ThinkingHome.Plugins.Tmp
         [TimerCallback(30000)]
         public void MimimiTimer(DateTime now)
         {
-            using (var db = Context.Require<DatabasePlugin>().OpenSession())
+            var database = Context.Require<DatabasePlugin>();
+
+            if (!database.IsInitialized) return;
+            
+            using (var db = database.OpenSession())
             {
                 db.Set<SmallPig>().ToList()
                     .ForEach(pig => Logger.LogWarning($"{pig.Name}, size: {pig.Size} ({pig.Id})"));

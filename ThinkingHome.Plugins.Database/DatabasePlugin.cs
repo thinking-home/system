@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using ThinkingHome.Core.Plugins;
 using ThinkingHome.Core.Plugins.Utils;
 using ThinkingHome.Migrator.Providers.PostgreSQL;
@@ -29,9 +30,16 @@ namespace ThinkingHome.Plugins.Database
                 .Select(obj => obj.Method)
                 .ToArray();
 
-            ApplyMigrations();
+            try
+            {
+                ApplyMigrations();
+                IsInitialized = true;
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(0, ex, "error on initialization of database");
+            }
 
-            IsInitialized = true;
         }
 
         private void ApplyMigrations()
