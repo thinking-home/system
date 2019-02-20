@@ -36,14 +36,14 @@ namespace ThinkingHome.Core.Infrastructure
             try
             {
                 // init plugins
-                foreach (var plugin in context.GetAllPlugins())
+                foreach (var plugin in context.GetCorePlugins())
                 {
                     logger.LogInformation($"init plugin: {plugin.GetType().FullName}");
                     plugin.InitPlugin();
                 }
 
                 // start plugins
-                foreach (var plugin in context.GetAllPlugins())
+                foreach (var plugin in context.GetCorePlugins())
                 {
                     logger.LogInformation($"start plugin {plugin.GetType().FullName}");
                     plugin.StartPlugin();

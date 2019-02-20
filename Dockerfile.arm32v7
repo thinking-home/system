@@ -1,0 +1,23 @@
+FROM microsoft/dotnet:2.2-sdk-stretch-arm32v7 AS build
+
+# copy csproj and restore as distinct layers
+WORKDIR /system
+COPY /ThinkingHome.Console/bin/publish .
+RUN dotnet restore
+
+RUN dotnet build
+
+FROM build AS publish
+WORKDIR /system
+RUN dotnet publish -c Release -r linux-arm -o bin/publish /p:LinkDuringPublish=true
+
+FROM microsoft/dotnet:2.2-runtime-deps-stretch-slim-arm32v7 AS runtime
+
+#full
+#FROM microsoft/dotnet:2.1-runtime-stretch-slim-arm32v7 AS runtime
+
+LABEL Author="Vadim Kosin <vkosin@outlook.com>"
+WORKDIR /system
+COPY --from=publish /system/ThinkingHome.Console/bin/publish .
+
+CMD ["./ThinkingHome.Console"]
