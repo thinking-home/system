@@ -27,7 +27,7 @@ namespace ThinkingHome.Plugins.WebServer.Attributes
                 }
                 else
                 {
-                    var message = string.Format("resource {0} is not found", ResourcePath);
+                    var message = $"resource {ResourcePath} is not found";
                     throw new MissingManifestResourceException(message);
                 }
             }
