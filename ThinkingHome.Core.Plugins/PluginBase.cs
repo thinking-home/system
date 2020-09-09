@@ -39,22 +39,22 @@ namespace ThinkingHome.Core.Plugins
 
         #endregion
 
-        public void SafeInvoke<T>(IEnumerable<T> handlers, Action<T> action, bool async = false)
+        public void SafeInvoke<T>(IEnumerable<T> handlers, Action<T> action)
         {
             if (handlers == null) return;
 
             foreach (var handler in handlers)
             {
-                SafeInvoke(handler, action, async);
+                SafeInvoke(handler, action);
             }
         }
 
-        public void SafeInvoke<T>(T handler, Action<T> action, bool async = false)
+        public void SafeInvoke<T>(T handler, Action<T> action)
         {
             if (handler == null) return;
 
             var context = new EventContext<T>(handler, action, Logger);
-            context.Invoke(async);
+            context.Invoke();
         }
     }
 }
