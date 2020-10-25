@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using Jint;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using ThinkingHome.Core.Plugins;
@@ -80,7 +79,7 @@ namespace ThinkingHome.Plugins.Scripts
                 .ToList();
 
             // execute scripts async
-            scripts.ForEach(script => SafeInvoke(script, s => ExecuteScript(s, args), true));
+            SafeInvokeAsync(scripts, s => ExecuteScript(s, args));
         }
 
         #endregion

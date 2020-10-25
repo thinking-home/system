@@ -16,8 +16,9 @@
   <ItemGroup>
     <ProjectReference Include="..\ThinkingHome.Core.Infrastructure\ThinkingHome.Core.Infrastructure.csproj" />
     <ProjectReference Include="..\ThinkingHome.Core.Plugins\ThinkingHome.Core.Plugins.csproj" />
-<!--    <ProjectReference Include="..\ThinkingHome.Plugins.Database\ThinkingHome.Plugins.Database.csproj" />-->
-<!--    <ProjectReference Include="..\ThinkingHome.Plugins.Mail\ThinkingHome.Plugins.Mail.csproj" />-->
+    <ProjectReference Include="..\ThinkingHome.Plugins.Database\ThinkingHome.Plugins.Database.csproj" />
+    <ProjectReference Include="..\ThinkingHome.Plugins.Mail\ThinkingHome.Plugins.Mail.csproj" />
+    <ProjectReference Include="..\ThinkingHome.Plugins.Tmp\ThinkingHome.Plugins.Tmp.csproj" />
 <!--    <ProjectReference Include="..\ThinkingHome.Plugins.Mqtt\ThinkingHome.Plugins.Mqtt.csproj" />-->
 <!--    <ProjectReference Include="..\ThinkingHome.Plugins.NooLite\ThinkingHome.Plugins.NooLite.csproj" />-->
 <!--    <ProjectReference Include="..\ThinkingHome.Plugins.Timer\ThinkingHome.Plugins.Timer.csproj" />-->
@@ -28,7 +29,6 @@
 <!--    <ProjectReference Include="..\ThinkingHome.Plugins.WebServer.UrlValidation\ThinkingHome.Plugins.WebServer.UrlValidation.csproj" />-->
 <!--    <ProjectReference Include="..\ThinkingHome.Plugins.WebUi\ThinkingHome.Plugins.WebUi.csproj" />-->
 <!--    <ProjectReference Include="..\ThinkingHome.Plugins.WebUi.Apps\ThinkingHome.Plugins.WebUi.Apps.csproj" />-->
-<!--    <ProjectReference Include="..\ThinkingHome.Plugins.Tmp\ThinkingHome.Plugins.Tmp.csproj" />-->
 <!--    <ProjectReference Include="..\ThinkingHome.Plugins.Cron\ThinkingHome.Plugins.Cron.csproj" />-->
 <!--    <ProjectReference Include="..\ThinkingHome.Plugins.Cron.WebApi\ThinkingHome.Plugins.Cron.WebApi.csproj" />-->
 <!--    <ProjectReference Include="..\ThinkingHome.Plugins.Cron.WebUi\ThinkingHome.Plugins.Cron.WebUi.csproj" />-->

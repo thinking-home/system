@@ -8,32 +8,21 @@ using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
 using Telegram.Bot.Types;
 using ThinkingHome.Core.Plugins;
-using ThinkingHome.Plugins.Cron;
-using ThinkingHome.Plugins.Cron.Model;
 using ThinkingHome.Plugins.Database;
+using ThinkingHome.Plugins.Mail;
 using ThinkingHome.Plugins.Scripts;
 using ThinkingHome.Plugins.Scripts.Attributes;
-using ThinkingHome.Plugins.Timer;
-using ThinkingHome.Plugins.WebServer.Attributes;
-using ThinkingHome.Plugins.WebServer.Handlers;
-using ThinkingHome.Plugins.WebUi.Apps;
-using ThinkingHome.Plugins.Mail;
-using ThinkingHome.Plugins.Mqtt;
-using ThinkingHome.Plugins.TelegramBot;
-using ThinkingHome.Plugins.WebServer;
-using ThinkingHome.Plugins.WebServer.Messages;
-using ThinkingHome.Plugins.WebUi.Attributes;
 
 namespace ThinkingHome.Plugins.Tmp
 {
-    [AppSection(SectionType.Common, "tmp user section 1", "/static/tmp/index1.js", "ThinkingHome.Plugins.Tmp.Resources.tmp.js", SortOrder = 4)]
-    [AppSection(SectionType.Common, "tmp user section 2", "/static/tmp/index2.js", "ThinkingHome.Plugins.Tmp.Resources.tmp.js", SortOrder = 2)]
-    [AppSection(SectionType.Common, "tmp user section 3", "/static/tmp/index3.js", "ThinkingHome.Plugins.Tmp.Resources.tmp.js")]
-    [AppSection(SectionType.System, "Weather locations", "/static/tmp/inde6.js", "ThinkingHome.Plugins.Tmp.Resources.tmp.js")]
-
-    [TemplateResource("/static/tmp/tmp.tpl", "ThinkingHome.Plugins.Tmp.Resources.tmp.tpl")]
-
-    [HttpLocalizationResource("/static/tmp/lang.json")]
+    // [AppSection(SectionType.Common, "tmp user section 1", "/static/tmp/index1.js", "ThinkingHome.Plugins.Tmp.Resources.tmp.js", SortOrder = 4)]
+    // [AppSection(SectionType.Common, "tmp user section 2", "/static/tmp/index2.js", "ThinkingHome.Plugins.Tmp.Resources.tmp.js", SortOrder = 2)]
+    // [AppSection(SectionType.Common, "tmp user section 3", "/static/tmp/index3.js", "ThinkingHome.Plugins.Tmp.Resources.tmp.js")]
+    // [AppSection(SectionType.System, "Weather locations", "/static/tmp/inde6.js", "ThinkingHome.Plugins.Tmp.Resources.tmp.js")]
+    //
+    // [TemplateResource("/static/tmp/tmp.tpl", "ThinkingHome.Plugins.Tmp.Resources.tmp.tpl")]
+    //
+    // [HttpLocalizationResource("/static/tmp/lang.json")]
 
     public class TmpPlugin : PluginBase
     {
@@ -61,6 +50,9 @@ namespace ThinkingHome.Plugins.Tmp
             Logger.LogInformation($"script result: {result}");
 
             Logger.LogWarning($"start tmp plugin {Guid.NewGuid()}");
+
+            // Context.Require<ScriptsPlugin>().ExecuteScript("host.api.мукнуть('хрюката', 12)");
+            // Context.Require<MailPlugin>().SendMail("dima117a@gmail.com", "Привет от коровы!", "Привет!\nЭто маленькая корова. У меня всё хорошо.");
         }
 
         public override void StopPlugin()
@@ -69,36 +61,36 @@ namespace ThinkingHome.Plugins.Tmp
         }
 
 
-        [MqttMessageHandler]
-        public void HandleMqttMessage(string topic, byte[] payload)
-        {
-            var str = Encoding.UTF8.GetString(payload);
-
-            if (topic == "test")
-            {
-                Logger.LogWarning($"TEST MESSAGE: {str}");
-            }
-            else
-            {
-                Logger.LogInformation($"{topic}: {str}");
-            }
-        }
-
-        [TimerCallback(30000)]
-        public void MimimiTimer(DateTime now)
-        {
-            using (var db = Context.Require<DatabasePlugin>().OpenSession())
-            {
-                db.Set<SmallPig>().ToList()
-                    .ForEach(pig => Logger.LogWarning($"{pig.Name}, size: {pig.Size} ({pig.Id})"));
-            }
-        }
-
-        [TimerCallback(5000)]
-        public void MimimiMqTimer(DateTime now)
-        {
-            Context.Require<WebServerPlugin>().Send("mi-mi-mi", DateTime.Now);
-        }
+        // [MqttMessageHandler]
+        // public void HandleMqttMessage(string topic, byte[] payload)
+        // {
+        //     var str = Encoding.UTF8.GetString(payload);
+        //
+        //     if (topic == "test")
+        //     {
+        //         Logger.LogWarning($"TEST MESSAGE: {str}");
+        //     }
+        //     else
+        //     {
+        //         Logger.LogInformation($"{topic}: {str}");
+        //     }
+        // }
+        //
+        // [TimerCallback(30000)]
+        // public void MimimiTimer(DateTime now)
+        // {
+        //     using (var db = Context.Require<DatabasePlugin>().OpenSession())
+        //     {
+        //         db.Set<SmallPig>().ToList()
+        //             .ForEach(pig => Logger.LogWarning($"{pig.Name}, size: {pig.Size} ({pig.Id})"));
+        //     }
+        // }
+        //
+        // [TimerCallback(5000)]
+        // public void MimimiMqTimer(DateTime now)
+        // {
+        //     Context.Require<WebServerPlugin>().Send("mi-mi-mi", DateTime.Now);
+        // }
 
         [DbModelBuilder]
         public void InitModel(ModelBuilder modelBuilder)
@@ -121,30 +113,30 @@ namespace ThinkingHome.Plugins.Tmp
             return 2459 + count;
         }
 
-        [TelegramMessageHandler("test")]
-        public void ReplyToTelegramMessage(string command, Message msg)
-        {
-            var botPlugin = Context.Require<TelegramBotPlugin>();
-            botPlugin.SendMessage(msg.Chat.Id, $"Ваше сообщение ({msg.Text}) получено");
-            botPlugin.SendMessage(msg.Chat.Id, $"Ловите новенький GUID ({Guid.NewGuid():P})");
-
-            botPlugin.SendFile(msg.Chat.Id, new Uri("https://www.noo.com.by/assets/files/PDF/PK314.pdf"));
-            botPlugin.SendFile(msg.Chat.Id, "mimimi.txt", new MemoryStream(Encoding.UTF8.GetBytes("хри-хри")));
-            botPlugin.SendPhoto(msg.Chat.Id, new Uri("http://историк.рф/wp-content/uploads/2017/03/2804.jpg"));
-        }
-
-        [TelegramMessageHandler]
-        public void ReplyToTelegramMessage2(string command, Message msg)
-        {
-            var botPlugin = Context.Require<TelegramBotPlugin>();
-            botPlugin.SendMessage(msg.Chat.Id, $"mi mi mi");
-            Logger.LogInformation($"NEW TELEGRAM MESSAGE: {msg.Text} (cmd: {command})");
-        }
+        // [TelegramMessageHandler("test")]
+        // public void ReplyToTelegramMessage(string command, Message msg)
+        // {
+        //     var botPlugin = Context.Require<TelegramBotPlugin>();
+        //     botPlugin.SendMessage(msg.Chat.Id, $"Ваше сообщение ({msg.Text}) получено");
+        //     botPlugin.SendMessage(msg.Chat.Id, $"Ловите новенький GUID ({Guid.NewGuid():P})");
+        //
+        //     botPlugin.SendFile(msg.Chat.Id, new Uri("https://www.noo.com.by/assets/files/PDF/PK314.pdf"));
+        //     botPlugin.SendFile(msg.Chat.Id, "mimimi.txt", new MemoryStream(Encoding.UTF8.GetBytes("хри-хри")));
+        //     botPlugin.SendPhoto(msg.Chat.Id, new Uri("http://историк.рф/wp-content/uploads/2017/03/2804.jpg"));
+        // }
+        //
+        // [TelegramMessageHandler]
+        // public void ReplyToTelegramMessage2(string command, Message msg)
+        // {
+        //     var botPlugin = Context.Require<TelegramBotPlugin>();
+        //     botPlugin.SendMessage(msg.Chat.Id, $"mi mi mi");
+        //     Logger.LogInformation($"NEW TELEGRAM MESSAGE: {msg.Text} (cmd: {command})");
+        // }
 
         [ScriptCommand("протестировать")]
         public void VariableParamsCount(int count, params object[] strings)
         {
-            var msg = strings.Join("|");
+            var msg = string.Join("|", strings);
 
             for (var i = 0; i < count; i++)
             {
@@ -152,62 +144,62 @@ namespace ThinkingHome.Plugins.Tmp
             }
         }
 
-        [WebApiMethod("/api/tmp/add-schedule")]
-        public object AddTimer(HttpRequestParams requestParams)
-        {
-            using (var db = Context.Require<DatabasePlugin>().OpenSession())
-            {
-                var time = DateTime.Now.AddMinutes(1);
-
-                var t = new CronTask
-                {
-                    Id = Guid.NewGuid(),
-                    Enabled = true,
-                    EventAlias = $"event:{time.ToShortTimeString()}",
-                    Name = $"time:{time.ToShortTimeString()}"
-                };
-
-                db.Set<CronTask>().Add(t);
-                db.SaveChanges();
-            }
-
-            Context.Require<CronPlugin>().ReloadTasks();
-
-            return 200;
-        }
-
-        [WebApiMethod("/api/tmp/wefwefwef")]
-        public object TmpHandlerMethod(HttpRequestParams requestParams)
-        {
-            Context.Require<ScriptsPlugin>().EmitScriptEvent("mimi", 1, 2, 3, "GUID-111");
-            return null;
-        }
-
-        [WebApiMethod("/api/tmp/index42")]
-        public object TmpHandlerMethod42(HttpRequestParams requestParams)
-        {
-            return new { answer = 42, name = requestParams.GetString("name") };
-        }
-
-        [WebApiMethod("/api/tmp/pigs")]
-        public object TmpHandlerMethod43(HttpRequestParams requestParams)
-        {
-            using (var db = Context.Require<DatabasePlugin>().OpenSession())
-            {
-                return db.Set<SmallPig>()
-                    .Select(pig => new { id = pig.Id, name = pig.Name, size = pig.Size })
-                    .ToList();
-            }
-        }
-
-        [WebApiMethod("/api/tmp/send")]
-        public object SendEmail(HttpRequestParams requestParams)
-        {
-            Context.Require<MailPlugin>()
-                   .SendMail("dima117a@gmail.com", "test2", Guid.NewGuid().ToString());
-
-            return null;
-        }
+        // [WebApiMethod("/api/tmp/add-schedule")]
+        // public object AddTimer(HttpRequestParams requestParams)
+        // {
+        //     using (var db = Context.Require<DatabasePlugin>().OpenSession())
+        //     {
+        //         var time = DateTime.Now.AddMinutes(1);
+        //
+        //         var t = new CronTask
+        //         {
+        //             Id = Guid.NewGuid(),
+        //             Enabled = true,
+        //             EventAlias = $"event:{time.ToShortTimeString()}",
+        //             Name = $"time:{time.ToShortTimeString()}"
+        //         };
+        //
+        //         db.Set<CronTask>().Add(t);
+        //         db.SaveChanges();
+        //     }
+        //
+        //     Context.Require<CronPlugin>().ReloadTasks();
+        //
+        //     return 200;
+        // }
+        //
+        // [WebApiMethod("/api/tmp/wefwefwef")]
+        // public object TmpHandlerMethod(HttpRequestParams requestParams)
+        // {
+        //     Context.Require<ScriptsPlugin>().EmitScriptEvent("mimi", 1, 2, 3, "GUID-111");
+        //     return null;
+        // }
+        //
+        // [WebApiMethod("/api/tmp/index42")]
+        // public object TmpHandlerMethod42(HttpRequestParams requestParams)
+        // {
+        //     return new { answer = 42, name = requestParams.GetString("name") };
+        // }
+        //
+        // [WebApiMethod("/api/tmp/pigs")]
+        // public object TmpHandlerMethod43(HttpRequestParams requestParams)
+        // {
+        //     using (var db = Context.Require<DatabasePlugin>().OpenSession())
+        //     {
+        //         return db.Set<SmallPig>()
+        //             .Select(pig => new { id = pig.Id, name = pig.Name, size = pig.Size })
+        //             .ToList();
+        //     }
+        // }
+        //
+        // [WebApiMethod("/api/tmp/send")]
+        // public object SendEmail(HttpRequestParams requestParams)
+        // {
+        //     Context.Require<MailPlugin>()
+        //            .SendMail("dima117a@gmail.com", "test2", Guid.NewGuid().ToString());
+        //
+        //     return null;
+        // }
 
         [ScriptCommand("generateBuffer")]
         public Scripts.Buffer GetTestBuffer()
@@ -218,10 +210,10 @@ namespace ThinkingHome.Plugins.Tmp
             return new Scripts.Buffer(bytes);
         }
 
-        [HubMessageHandler("mi-mi-mi")]
-        public void TestMessageHandler(Guid msgId, DateTime timestamp, string channel, object data)
-        {
-            Logger.LogInformation("{0}:{1}:{2}:{3}", msgId, timestamp, channel, data);
-        }
+        // [HubMessageHandler("mi-mi-mi")]
+        // public void TestMessageHandler(Guid msgId, DateTime timestamp, string channel, object data)
+        // {
+        //     Logger.LogInformation("{0}:{1}:{2}:{3}", msgId, timestamp, channel, data);
+        // }
     }
 }
