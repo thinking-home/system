@@ -17,7 +17,7 @@
 <!--    <ProjectReference Include="../ThinkingHome.Plugins.WebServer/ThinkingHome.Plugins.WebServer.csproj" />-->
 <!--    <ProjectReference Include="../ThinkingHome.Plugins.WebUi.Apps/ThinkingHome.Plugins.WebUi.Apps.csproj" />-->
 <!--    <ProjectReference Include="../ThinkingHome.Plugins.WebUi/ThinkingHome.Plugins.WebUi.csproj" />-->
-<!--    <ProjectReference Include="../ThinkingHome.Plugins.Timer/ThinkingHome.Plugins.Timer.csproj" />-->
+    <ProjectReference Include="../ThinkingHome.Plugins.Timer/ThinkingHome.Plugins.Timer.csproj" />
     <ProjectReference Include="../ThinkingHome.Plugins.Mail/ThinkingHome.Plugins.Mail.csproj" />
 <!--    <ProjectReference Include="../ThinkingHome.Plugins.Mqtt/ThinkingHome.Plugins.Mqtt.csproj" />-->
 <!--    <ProjectReference Include="../ThinkingHome.Plugins.Cron/ThinkingHome.Plugins.Cron.csproj" />-->

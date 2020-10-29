@@ -29,7 +29,11 @@ namespace ThinkingHome.Plugins.WebServer
                 .UseKestrel()
                 .UseUrls($"http://+:{port}")
                 .Configure(app => app
-                    .UseSignalR(routes => routes.MapHub<MessageHub>(MessageHub.HUB_ROUTE))
+                    .UseRouting()
+                    .UseEndpoints(routes =>
+                    {
+                        routes.MapHub<MessageHub>(MessageHub.HUB_ROUTE);
+                    })
                     .UseResponseCompression()
                     .UseStatusCodePages()
                     .UseMiddleware<HomePluginsMiddleware>(handlers))

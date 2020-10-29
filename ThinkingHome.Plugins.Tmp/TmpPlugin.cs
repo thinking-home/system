@@ -12,6 +12,7 @@ using ThinkingHome.Plugins.Database;
 using ThinkingHome.Plugins.Mail;
 using ThinkingHome.Plugins.Scripts;
 using ThinkingHome.Plugins.Scripts.Attributes;
+using ThinkingHome.Plugins.Timer;
 
 namespace ThinkingHome.Plugins.Tmp
 {
@@ -75,17 +76,17 @@ namespace ThinkingHome.Plugins.Tmp
         //         Logger.LogInformation($"{topic}: {str}");
         //     }
         // }
-        //
-        // [TimerCallback(30000)]
-        // public void MimimiTimer(DateTime now)
-        // {
-        //     using (var db = Context.Require<DatabasePlugin>().OpenSession())
-        //     {
-        //         db.Set<SmallPig>().ToList()
-        //             .ForEach(pig => Logger.LogWarning($"{pig.Name}, size: {pig.Size} ({pig.Id})"));
-        //     }
-        // }
-        //
+
+        [TimerCallback(10000)]
+        public void MimimiTimer(DateTime now)
+        {
+            using (var db = Context.Require<DatabasePlugin>().OpenSession())
+            {
+                db.Set<SmallPig>().ToList()
+                    .ForEach(pig => Logger.LogWarning($"{pig.Name}, size: {pig.Size} ({pig.Id})"));
+            }
+        }
+
         // [TimerCallback(5000)]
         // public void MimimiMqTimer(DateTime now)
         // {
