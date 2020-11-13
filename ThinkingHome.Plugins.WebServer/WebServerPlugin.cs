@@ -58,7 +58,7 @@ namespace ThinkingHome.Plugins.WebServer
                 .ToObjectRegistry(
                     handlers,
                     mi => mi.Meta.Url,
-                    mi => new DynamicResourceHandler(mi.Method));
+                    mi => new DynamicResourceHandler(mi.Method, mi.Meta.IsCached));
 
             // resource handlers
             Context.GetAllPlugins()

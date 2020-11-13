@@ -8,8 +8,11 @@ namespace ThinkingHome.Plugins.WebServer.Attributes
     [AttributeUsage(AttributeTargets.Method, AllowMultiple = true)]
     public class HttpDynamicResourceAttribute : HttpResourceAttribute
     {
-        public HttpDynamicResourceAttribute(string url) : base(url)
+        public bool IsCached { get; }
+
+        public HttpDynamicResourceAttribute(string url, bool isCached = false) : base(url)
         {
+            IsCached = isCached;
         }
     }
 }
