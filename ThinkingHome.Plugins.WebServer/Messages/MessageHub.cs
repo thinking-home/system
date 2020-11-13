@@ -36,7 +36,7 @@ namespace ThinkingHome.Plugins.WebServer.Messages
 
             Message?.Invoke(messageId, timestamp, channel, data);
 
-            return clients.SendAsync(CLIENT_METHOD_NAME, new { guid = messageId, timestamp, channel, data });
+            return clients.SendAsync(CLIENT_METHOD_NAME, new {guid = messageId, timestamp, channel, data});
         }
     }
 }

@@ -1,26 +1,38 @@
 ﻿using System;
 using System.Reflection;
+using System.Resources;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
-using ThinkingHome.Plugins.WebServer.Attributes.Base;
 
 namespace ThinkingHome.Plugins.WebServer.Handlers
 {
-    public class StaticResourceHandler : BaseHandler<HttpStaticResourceAttribute>
+    public class StaticResourceHandler : BaseHandler
     {
         private readonly Assembly assembly;
+        private readonly string contentType;
+        private readonly string resourcePath;
 
-        public StaticResourceHandler(Assembly assembly, HttpStaticResourceAttribute resource)
-            :base(resource)
+        public StaticResourceHandler(string resourcePath, string contentType, Assembly assembly) : base(true)
         {
-            if (assembly == null) throw new ArgumentNullException(nameof(assembly));
+            if (string.IsNullOrWhiteSpace(contentType)) throw new ArgumentNullException(nameof(contentType));
+            if (string.IsNullOrWhiteSpace(resourcePath)) throw new ArgumentNullException(nameof(resourcePath));
 
-            this.assembly = assembly;
+            this.contentType = contentType;
+            this.resourcePath = resourcePath;
+            this.assembly = assembly ?? throw new ArgumentNullException(nameof(assembly));
         }
 
-        public override async Task<byte[]> GetContent(HttpContext context)
+        public override async Task<HttpHandlerResult> GetContent(HttpContext context)
         {
-            return await Task.Run(() => Resource.GetContent(assembly));
+            await using var stream = assembly.GetManifestResourceStream(resourcePath);
+
+            if (stream != null) {
+                var result = new byte[stream.Length];
+                await stream.ReadAsync(result, 0, result.Length);
+                return HttpHandlerResult.Binary(result, contentType);
+            }
+
+            throw new MissingManifestResourceException($"resource {resourcePath} is not found");
         }
     }
 }

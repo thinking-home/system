@@ -6,7 +6,6 @@ using System.Text.RegularExpressions;
 using ThinkingHome.Core.Plugins;
 using ThinkingHome.Core.Plugins.Utils;
 using ThinkingHome.Plugins.WebServer.Attributes;
-using ThinkingHome.Plugins.WebServer.Attributes.Base;
 using ThinkingHome.Plugins.WebServer.Handlers;
 
 namespace ThinkingHome.Plugins.WebServer.UrlValidation
@@ -19,8 +18,7 @@ namespace ThinkingHome.Plugins.WebServer.UrlValidation
 
         public override void InitPlugin()
         {
-            foreach (var plugin in Context.GetAllPlugins())
-            {
+            foreach (var plugin in Context.GetAllPlugins()) {
                 ValidateStaticResources(plugin);
                 ValidateDynamicResources(plugin);
             }
@@ -37,8 +35,7 @@ namespace ThinkingHome.Plugins.WebServer.UrlValidation
 
             var name = pluginType.Assembly.GetName().Name;
 
-            if (name.StartsWith(PREFIX))
-            {
+            if (name.StartsWith(PREFIX)) {
                 name = name.Substring(PREFIX.Length);
             }
 
@@ -50,40 +47,25 @@ namespace ThinkingHome.Plugins.WebServer.UrlValidation
             var type = plugin.GetType().GetTypeInfo();
             var alias = GetPluginAlias(type);
 
-            foreach (var mi in plugin.FindMethods<HttpDynamicResourceAttribute, HttpHandlerDelegate>())
-            {
+            foreach (var mi in plugin.FindMethods<HttpDynamicResourceAttribute, HttpHandlerDelegate>()) {
                 var resource = mi.Meta;
 
                 var ext = Path.GetExtension(resource.Url);
+                var prefixApi = $"/api/{alias}/";
+                var dynamicApi = $"/dynamic/{alias}/";
 
-                if (resource is WebApiMethodAttribute)
-                {
-                    // api
-                    if (!string.IsNullOrEmpty(ext))
-                    {
+                if (resource.Url.StartsWith(prefixApi)) {
+                    if (!string.IsNullOrEmpty(ext)) {
                         AddError(type, $"not empty api extension: {resource.Url} (must be empty)");
                     }
-
-                    var prefix = $"/api/{alias}/";
-
-                    if (!resource.Url.StartsWith(prefix))
-                    {
-                        AddError(type, $"invalid url prefix: {resource.Url} (required: {prefix})");
+                }
+                else if (resource.Url.StartsWith(dynamicApi)) {
+                    if (string.IsNullOrEmpty(ext)) {
+                        AddError(type, $"empty url extension: {resource.Url} (extension is required)");
                     }
                 }
-                else
-                {
-                    if (string.IsNullOrEmpty(ext))
-                    {
-                        AddError(type, $"empty url extension: {resource.Url}");
-                    }
-
-                    var prefix = $"/dynamic/{alias}/";
-
-                    if (!resource.Url.StartsWith(prefix))
-                    {
-                        AddError(type, $"invalid url prefix: {resource.Url} (required: {prefix})");
-                    }
+                else {
+                    AddError(type, $"invalid url prefix: {resource.Url} (required: {prefixApi} or {dynamicApi})");
                 }
             }
         }
@@ -94,34 +76,31 @@ namespace ThinkingHome.Plugins.WebServer.UrlValidation
             var alias = GetPluginAlias(type);
             var prefix = $"/static/{alias}/";
 
-            foreach (var resource in type.GetCustomAttributes<HttpStaticResourceAttribute>())
-            {
+            foreach (var resource in type.GetCustomAttributes<HttpEmbeddedResourceAttribute>()) {
                 if (resource.Url == "/" || resource.Url == "/favicon.ico") continue;
 
                 var ext = Path.GetExtension(resource.Url);
 
-                if (string.IsNullOrEmpty(ext))
-                {
+                if (string.IsNullOrEmpty(ext)) {
                     AddError(type, $"empty url extension: {resource.Url}");
                 }
 
                 var isVendor = resource.Url.StartsWith("/vendor/");
 
-                if (!isVendor && !resource.Url.StartsWith(prefix))
-                {
+                if (!isVendor && !resource.Url.StartsWith(prefix)) {
                     AddError(type, $"invalid url prefix: {resource.Url} (required: {prefix})");
                 }
             }
         }
 
-        [HttpTextDynamicResource("/dynamic/web-server/url-validation/errors.txt")]
-        public object GetUrlErrors(HttpRequestParams requestParams)
+        [HttpDynamicResource("/dynamic/web-server/url-validation/errors.txt")]
+        public HttpHandlerResult GetUrlErrors(HttpRequestParams requestParams)
         {
             var sb = new StringBuilder();
 
             errors.ForEach(msg => sb.AppendLine(msg));
 
-            return sb;
+            return HttpHandlerResult.Text(sb.ToString());
         }
     }
 }

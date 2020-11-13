@@ -8,7 +8,6 @@ using Microsoft.Extensions.Logging;
 using ThinkingHome.Core.Plugins;
 using ThinkingHome.Core.Plugins.Utils;
 using ThinkingHome.Plugins.WebServer.Attributes;
-using ThinkingHome.Plugins.WebServer.Attributes.Base;
 using ThinkingHome.Plugins.WebServer.Handlers;
 using ThinkingHome.Plugins.WebServer.Messages;
 
@@ -30,10 +29,7 @@ namespace ThinkingHome.Plugins.WebServer
                 .UseUrls($"http://+:{port}")
                 .Configure(app => app
                     .UseRouting()
-                    .UseEndpoints(routes =>
-                    {
-                        routes.MapHub<MessageHub>(MessageHub.HUB_ROUTE);
-                    })
+                    .UseEndpoints(e => { e.MapHub<MessageHub>(MessageHub.HUB_ROUTE); })
                     .UseResponseCompression()
                     .UseStatusCodePages()
                     .UseMiddleware<HomePluginsMiddleware>(handlers))
@@ -52,19 +48,25 @@ namespace ThinkingHome.Plugins.WebServer
                 SafeInvoke(msgHandlers[channel], fn => fn(id, timestamp, channel, data));
         }
 
-        private ObjectRegistry<IHandler> RegisterHandlers()
+        private ObjectRegistry<BaseHandler> RegisterHandlers()
         {
-            var handlers = new ObjectRegistry<IHandler>();
+            var handlers = new ObjectRegistry<BaseHandler>();
 
             // api handlers
             Context.GetAllPlugins()
                 .FindMethods<HttpDynamicResourceAttribute, HttpHandlerDelegate>()
-                .ToObjectRegistry(handlers, mi => mi.Meta.Url, mi => new DynamicResourceHandler(mi.Method, mi.Meta));
+                .ToObjectRegistry(
+                    handlers,
+                    mi => mi.Meta.Url,
+                    mi => new DynamicResourceHandler(mi.Method));
 
             // resource handlers
             Context.GetAllPlugins()
-                .FindAttrs<HttpStaticResourceAttribute>()
-                .ToObjectRegistry(handlers, res => res.Meta.Url, res => new StaticResourceHandler(res.Type.Assembly, res.Meta));
+                .FindAttrs<HttpEmbeddedResourceAttribute>()
+                .ToObjectRegistry(
+                    handlers,
+                    res => res.Meta.Url,
+                    res => new StaticResourceHandler(res.Meta.ResourcePath, res.Meta.ContentType, res.Type.Assembly));
 
             // localization handlers
             Context.GetAllPlugins()
@@ -72,7 +74,7 @@ namespace ThinkingHome.Plugins.WebServer
                 .ToObjectRegistry(
                     handlers,
                     res => res.Meta.Url,
-                    res => new LocalizationHandler(res.Meta, res.Plugin.StringLocalizer));
+                    res => new LocalizationHandler(res.Plugin.StringLocalizer));
 
             handlers.ForEach((url, handler) => Logger.LogInformation($"register HTTP handler: \"{url}\""));
 

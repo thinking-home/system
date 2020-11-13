@@ -18,7 +18,6 @@ namespace ThinkingHome.Plugins.WebServer
 
         public void Dispose()
         {
-
         }
     }
 

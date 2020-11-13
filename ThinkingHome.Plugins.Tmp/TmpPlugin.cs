@@ -13,6 +13,9 @@ using ThinkingHome.Plugins.Mail;
 using ThinkingHome.Plugins.Scripts;
 using ThinkingHome.Plugins.Scripts.Attributes;
 using ThinkingHome.Plugins.Timer;
+using ThinkingHome.Plugins.WebServer;
+using ThinkingHome.Plugins.WebServer.Attributes;
+using ThinkingHome.Plugins.WebServer.Handlers;
 
 namespace ThinkingHome.Plugins.Tmp
 {
@@ -22,8 +25,7 @@ namespace ThinkingHome.Plugins.Tmp
     // [AppSection(SectionType.System, "Weather locations", "/static/tmp/inde6.js", "ThinkingHome.Plugins.Tmp.Resources.tmp.js")]
     //
     // [TemplateResource("/static/tmp/tmp.tpl", "ThinkingHome.Plugins.Tmp.Resources.tmp.tpl")]
-    //
-    // [HttpLocalizationResource("/static/tmp/lang.json")]
+    [HttpLocalizationResource("/static/tmp/lang.json")]
 
     public class TmpPlugin : PluginBase
     {
@@ -168,31 +170,37 @@ namespace ThinkingHome.Plugins.Tmp
         //
         //     return 200;
         // }
-        //
-        // [WebApiMethod("/api/tmp/wefwefwef")]
-        // public object TmpHandlerMethod(HttpRequestParams requestParams)
-        // {
-        //     Context.Require<ScriptsPlugin>().EmitScriptEvent("mimi", 1, 2, 3, "GUID-111");
-        //     return null;
-        // }
-        //
-        // [WebApiMethod("/api/tmp/index42")]
-        // public object TmpHandlerMethod42(HttpRequestParams requestParams)
-        // {
-        //     return new { answer = 42, name = requestParams.GetString("name") };
-        // }
-        //
-        // [WebApiMethod("/api/tmp/pigs")]
-        // public object TmpHandlerMethod43(HttpRequestParams requestParams)
-        // {
-        //     using (var db = Context.Require<DatabasePlugin>().OpenSession())
-        //     {
-        //         return db.Set<SmallPig>()
-        //             .Select(pig => new { id = pig.Id, name = pig.Name, size = pig.Size })
-        //             .ToList();
-        //     }
-        // }
-        //
+
+        [HttpDynamicResource("/api/tmp/wefwefwef")]
+        public HttpHandlerResult TmpHandlerMethod(HttpRequestParams requestParams)
+        {
+            Context.Require<ScriptsPlugin>().EmitScriptEvent("mimi", 1, 2, 3, "GUID-111");
+            return null;
+        }
+
+        [HttpDynamicResource("/api/tmp/index42.js")]
+        public HttpHandlerResult TmpHandlerMethod42(HttpRequestParams requestParams)
+        {
+            return HttpHandlerResult.Json(new
+            {
+                answer = 42,
+                name = requestParams.GetString("name")
+            });
+        }
+
+        [HttpDynamicResource("/api/tmp/pigs")]
+        public HttpHandlerResult TmpHandlerMethod43(HttpRequestParams requestParams)
+        {
+            using (var db = Context.Require<DatabasePlugin>().OpenSession())
+            {
+                var list = db.Set<SmallPig>()
+                    .Select(pig => new { id = pig.Id, name = pig.Name, size = pig.Size })
+                    .ToList();
+
+                return HttpHandlerResult.Json(list);
+            }
+        }
+
         // [WebApiMethod("/api/tmp/send")]
         // public object SendEmail(HttpRequestParams requestParams)
         // {

@@ -2,5 +2,5 @@
 
 namespace ThinkingHome.Plugins.WebServer
 {
-    public delegate object HttpHandlerDelegate(HttpRequestParams requestParams);
+    public delegate HttpHandlerResult HttpHandlerDelegate(HttpRequestParams requestParams);
 }

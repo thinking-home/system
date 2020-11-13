@@ -35,13 +35,11 @@ namespace ThinkingHome.Plugins.WebServer.Handlers
             string urlValue = urlData?[name];
             string formValue = formData?[name];
 
-            if (string.IsNullOrWhiteSpace(urlValue))
-            {
+            if (string.IsNullOrWhiteSpace(urlValue)) {
                 return formValue;
             }
 
-            if (string.IsNullOrWhiteSpace(formValue))
-            {
+            if (string.IsNullOrWhiteSpace(formValue)) {
                 return urlValue;
             }
 
