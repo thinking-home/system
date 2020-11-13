@@ -5,8 +5,8 @@ namespace ThinkingHome.Plugins.WebServer.Handlers
 {
     public class HttpHandlerResult
     {
-        public string ContentType { get; private set; }
-        public byte[] Content { get; private set; }
+        public string ContentType { get; init; }
+        public byte[] Content { get; init; }
 
         public static HttpHandlerResult Json(object obj)
         {
