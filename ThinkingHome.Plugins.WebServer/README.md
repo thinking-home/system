@@ -62,7 +62,7 @@ public delegate HttpHandlerResult HttpHandlerDelegate(HttpRequestParams requestP
 
 Метод должен возвращать экземпляр класса `HttpHandlerResult`, на основе которого будет сформирован ответ для клиента. Вы можете использовать статические методы класса `HttpHandlerResult`, чтобы вренуть результ нужного типа: `Text`, `Json`, `Binary`. Если вернуть из метода значение `null`, то на клиент уйдет ответ с пустым содержимым.
 
-### Пример
+#### Пример
 
 ```csharp
 [HttpDynamicResource("/api/cow/add")]
@@ -80,7 +80,7 @@ public HttpHandlerResult AddCow(HttpRequestParams requestParams)
 
 Динамические ресурсы по умолчанию не кэшируются. Чтобы включить кэширование результатов метода, передайте `true` в качестве второго аргумента для атрибута `[HttpDynamicResource]`.
 
-### Пример
+#### Пример
 
 ```csharp
 [HttpDynamicResource("/dynamic/cached/resource", true)]
@@ -89,6 +89,22 @@ public HttpHandlerResult GetMyCachedResource(HttpRequestParams requestParams)
     // ...
 }
 ```
+
+### `[HttpLocalizationResource]`
+
+Ресурсы локализации позволяют по заданному url отдать на клиент тексты для плагина на текущем языке. Чтобы добавить ресурс локализации пометьте класс плагина атрибутом `ThinkingHome.Plugins.WebServer.Attributes.HttpLocalizationResourceAttribute` и укажите в параметрах его конструктора нужный url. 
+
+#### Пример
+
+```csharp
+[HttpLocalizationResource("/static/my-plugin/lang.json")]
+public class MyPlugin : PluginBase
+{
+
+}
+```
+
+Ресурсы локализации кэшируются на клиенте и сервере.
 
 ## Клиент-серверная шина сообщений
 
