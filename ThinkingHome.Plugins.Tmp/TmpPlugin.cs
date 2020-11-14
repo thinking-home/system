@@ -8,6 +8,7 @@ using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
 using Telegram.Bot.Types;
 using ThinkingHome.Core.Plugins;
+using ThinkingHome.Plugins.Cron;
 using ThinkingHome.Plugins.Database;
 using ThinkingHome.Plugins.Mail;
 using ThinkingHome.Plugins.Scripts;
@@ -224,5 +225,11 @@ namespace ThinkingHome.Plugins.Tmp
         // {
         //     Logger.LogInformation("{0}:{1}:{2}:{3}", msgId, timestamp, channel, data);
         // }
+
+        [CronHandler]
+        public void TestCronHandler(Guid cronTaskId)
+        {
+            Logger.LogWarning("CRON!!!!!!!!!!!! {0}", cronTaskId);
+        }
     }
 }

@@ -2,7 +2,7 @@
   <Import Project="../Package.xml" />
   <PropertyGroup>
     <Description>ThinkingHome plugin which run tasks by schedule.</Description>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFramework>net5.0</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="../ThinkingHome.Plugins.Database/ThinkingHome.Plugins.Database.csproj" />
@@ -11,9 +11,9 @@
     <ProjectReference Include="../ThinkingHome.Plugins.Scripts/ThinkingHome.Plugins.Scripts.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="ncrontab" Version="3.3.0" />
-    <PackageReference Include="Microsoft.Extensions.Configuration" Version="2.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Logging" Version="2.0.0" />
-    <PackageReference Include="ThinkingHome.Migrator.Framework" Version="3.0.0-alpha9" />
+    <PackageReference Include="ncrontab" Version="3.3.1" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="5.0.0-rc.2.20475.5" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="5.0.0-rc.2.20475.5" />
+    <PackageReference Include="ThinkingHome.Migrator.Framework" Version="3.2.0" />
   </ItemGroup>
 </Project>
