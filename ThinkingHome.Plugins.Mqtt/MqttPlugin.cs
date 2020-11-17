@@ -2,13 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using MQTTnet;
-using MQTTnet.Core;
-using MQTTnet.Core.Client;
-using MQTTnet.Core.Packets;
-using MQTTnet.Core.Protocol;
+using MQTTnet.Client;
+using MQTTnet.Client.Connecting;
+using MQTTnet.Client.Disconnecting;
+using MQTTnet.Client.Options;
 using ThinkingHome.Core.Plugins;
 using ThinkingHome.Core.Plugins.Utils;
 using ThinkingHome.Plugins.Scripts;
@@ -38,6 +39,7 @@ namespace ThinkingHome.Plugins.Mqtt
         #endregion
 
         private IMqttClient client;
+        private IMqttClientOptions options;
 
         public override void InitPlugin()
         {
@@ -45,19 +47,16 @@ namespace ThinkingHome.Plugins.Mqtt
 
             Logger.LogInformation($"init MQTT client: {Host}:{Port} (ID: {{{clientId}}})");
 
-            var options = new MqttClientOptions
-            {
-                Server = Host,
-                Port = Port,
-                UserName = Login,
-                Password = Password,
-                ClientId = clientId
-            };
+            options = new MqttClientOptionsBuilder()
+                .WithClientId(clientId)
+                .WithTcpServer(Host, Port)
+                .WithCredentials(Login, Password)
+                .Build();
 
-            client = new MqttClientFactory().CreateMqttClient(options);
-            client.Connected += client_Connected;
-            client.Disconnected += client_Disconnected;
-            client.ApplicationMessageReceived += client_ApplicationMessageReceived;
+            client = new MqttFactory().CreateMqttClient();
+            client.UseConnectedHandler(client_Connected);
+            client.UseDisconnectedHandler(client_Disconnected);
+            client.UseApplicationMessageReceivedHandler(client_ApplicationMessageReceived);
 
             handlers = RegisterHandlers();
         }
@@ -104,7 +103,12 @@ namespace ThinkingHome.Plugins.Mqtt
 
         public void Publish(string topic, byte[] payload, bool retain = false)
         {
-            var msg = new MqttApplicationMessage(topic, payload, MqttQualityOfServiceLevel.AtLeastOnce, retain);
+            var msg = new MqttApplicationMessageBuilder()
+                .WithTopic(topic)
+                .WithPayload(payload)
+                .WithAtLeastOnceQoS()
+                .WithRetainFlag(retain)
+                .Build();
 
             var ex = client.PublishAsync(msg).Exception;
 
@@ -146,7 +150,7 @@ namespace ThinkingHome.Plugins.Mqtt
                         {
                             Logger.LogInformation("connect to MQTT broker");
 
-                            var task = client.ConnectAsync();
+                            var task = client.ConnectAsync(options);
                             task.Wait();
 
                             if (task.Exception != null) throw task.Exception;
@@ -160,14 +164,14 @@ namespace ThinkingHome.Plugins.Mqtt
             }
         }
 
-        private async void client_Connected(object s, EventArgs e)
+        private async void client_Connected(MqttClientConnectedEventArgs e)
         {
             Logger.LogInformation("MQTT client is connected");
 
             Logger.LogInformation($"Subscribe: {string.Join(", ", Topics)}");
 
             var filters = Topics
-                .Select(topic => new TopicFilter(topic, MqttQualityOfServiceLevel.AtMostOnce))
+                .Select(topic => new MqttTopicFilterBuilder().WithTopic(topic).WithAtMostOnceQoS().Build())
                 .ToArray();
 
             await client.SubscribeAsync(filters);
@@ -175,12 +179,12 @@ namespace ThinkingHome.Plugins.Mqtt
             Logger.LogInformation("MQTT client is subscribed");
         }
 
-        private void client_Disconnected(object s, EventArgs e)
+        private void client_Disconnected(MqttClientDisconnectedEventArgs e)
         {
             Logger.LogInformation("MQTT connection closed");
         }
 
-        private void client_ApplicationMessageReceived(object sender, MqttApplicationMessageReceivedEventArgs e)
+        private async Task client_ApplicationMessageReceived(MqttApplicationMessageReceivedEventArgs e)
         {
             var msg = e.ApplicationMessage;
             var payload = Encoding.UTF8.GetString(msg.Payload);
@@ -188,7 +192,7 @@ namespace ThinkingHome.Plugins.Mqtt
             Logger.LogDebug($"topic: {msg.Topic}, payload: {payload}, qos: {msg.QualityOfServiceLevel}, retain: {msg.Retain}");
 
             // events
-            SafeInvoke(handlers, h => h(msg.Topic, msg.Payload), true);
+            await SafeInvokeAsync(handlers, h => h(msg.Topic, msg.Payload));
 
             Context.Require<ScriptsPlugin>().EmitScriptEvent("mqtt:message:received", msg.Topic, new Buffer(msg.Payload));
         }

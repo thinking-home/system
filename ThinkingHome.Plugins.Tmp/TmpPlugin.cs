@@ -11,6 +11,7 @@ using ThinkingHome.Core.Plugins;
 using ThinkingHome.Plugins.Cron;
 using ThinkingHome.Plugins.Database;
 using ThinkingHome.Plugins.Mail;
+using ThinkingHome.Plugins.Mqtt;
 using ThinkingHome.Plugins.Scripts;
 using ThinkingHome.Plugins.Scripts.Attributes;
 using ThinkingHome.Plugins.Timer;
@@ -64,21 +65,32 @@ namespace ThinkingHome.Plugins.Tmp
             Logger.LogDebug($"stop tmp plugin {Guid.NewGuid()}");
         }
 
+        [HttpDynamicResource("/api/tmp/mqtt-send")]
+        public HttpHandlerResult TmpSendMqttMessage(HttpRequestParams requestParams)
+        {
+            var topic = requestParams.GetString("topic") ?? "test";
+            var msg = requestParams.GetString("msg") ?? "mumu";
 
-        // [MqttMessageHandler]
-        // public void HandleMqttMessage(string topic, byte[] payload)
-        // {
-        //     var str = Encoding.UTF8.GetString(payload);
-        //
-        //     if (topic == "test")
-        //     {
-        //         Logger.LogWarning($"TEST MESSAGE: {str}");
-        //     }
-        //     else
-        //     {
-        //         Logger.LogInformation($"{topic}: {str}");
-        //     }
-        // }
+            Context.Require<MqttPlugin>().Publish(topic, msg);
+
+            return null;
+        }
+
+
+        [MqttMessageHandler]
+        public void HandleMqttMessage(string topic, byte[] payload)
+        {
+            var str = Encoding.UTF8.GetString(payload);
+
+            if (topic == "test")
+            {
+                Logger.LogWarning($"TEST MESSAGE: {str}");
+            }
+            else
+            {
+                Logger.LogInformation($"{topic}: {str}");
+            }
+        }
 
         [TimerCallback(10000)]
         public void MimimiTimer(DateTime now)
