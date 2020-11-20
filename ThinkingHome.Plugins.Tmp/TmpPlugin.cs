@@ -14,6 +14,7 @@ using ThinkingHome.Plugins.Mail;
 using ThinkingHome.Plugins.Mqtt;
 using ThinkingHome.Plugins.Scripts;
 using ThinkingHome.Plugins.Scripts.Attributes;
+using ThinkingHome.Plugins.TelegramBot;
 using ThinkingHome.Plugins.Timer;
 using ThinkingHome.Plugins.WebServer;
 using ThinkingHome.Plugins.WebServer.Attributes;
@@ -129,25 +130,25 @@ namespace ThinkingHome.Plugins.Tmp
             return 2459 + count;
         }
 
-        // [TelegramMessageHandler("test")]
-        // public void ReplyToTelegramMessage(string command, Message msg)
-        // {
-        //     var botPlugin = Context.Require<TelegramBotPlugin>();
-        //     botPlugin.SendMessage(msg.Chat.Id, $"Ваше сообщение ({msg.Text}) получено");
-        //     botPlugin.SendMessage(msg.Chat.Id, $"Ловите новенький GUID ({Guid.NewGuid():P})");
-        //
-        //     botPlugin.SendFile(msg.Chat.Id, new Uri("https://www.noo.com.by/assets/files/PDF/PK314.pdf"));
-        //     botPlugin.SendFile(msg.Chat.Id, "mimimi.txt", new MemoryStream(Encoding.UTF8.GetBytes("хри-хри")));
-        //     botPlugin.SendPhoto(msg.Chat.Id, new Uri("http://историк.рф/wp-content/uploads/2017/03/2804.jpg"));
-        // }
-        //
-        // [TelegramMessageHandler]
-        // public void ReplyToTelegramMessage2(string command, Message msg)
-        // {
-        //     var botPlugin = Context.Require<TelegramBotPlugin>();
-        //     botPlugin.SendMessage(msg.Chat.Id, $"mi mi mi");
-        //     Logger.LogInformation($"NEW TELEGRAM MESSAGE: {msg.Text} (cmd: {command})");
-        // }
+        [TelegramMessageHandler("test")]
+        public void ReplyToTelegramMessage(string command, Message msg)
+        {
+            var botPlugin = Context.Require<TelegramBotPlugin>();
+            botPlugin.SendMessage(msg.Chat.Id, $"Ваше сообщение ({msg.Text}) получено");
+            botPlugin.SendMessage(msg.Chat.Id, $"Ловите новенький GUID ({Guid.NewGuid():P})");
+
+            botPlugin.SendFile(msg.Chat.Id, new Uri("https://www.noo.com.by/assets/files/PDF/PK314.pdf"));
+            botPlugin.SendFile(msg.Chat.Id, "mimimi.txt", new MemoryStream(Encoding.UTF8.GetBytes("хри-хри")));
+            botPlugin.SendPhoto(msg.Chat.Id, new Uri("http://историк.рф/wp-content/uploads/2017/03/2804.jpg"));
+        }
+
+        [TelegramMessageHandler]
+        public void ReplyToTelegramMessage2(string command, Message msg)
+        {
+            var botPlugin = Context.Require<TelegramBotPlugin>();
+            botPlugin.SendMessage(msg.Chat.Id, $"mi mi mi");
+            Logger.LogInformation($"NEW TELEGRAM MESSAGE: {msg.Text} (cmd: {command})");
+        }
 
         [ScriptCommand("протестировать")]
         public void VariableParamsCount(int count, params object[] strings)
@@ -183,6 +184,13 @@ namespace ThinkingHome.Plugins.Tmp
         //
         //     return 200;
         // }
+
+        [HttpDynamicResource("/api/tmp/hello-pig")]
+        public HttpHandlerResult HelloPigHttpMethod(HttpRequestParams requestParams)
+        {
+            Context.Require<TelegramBotPlugin>().SendMessage(353206782, "ДОБРЫЙ ВЕЧЕР");
+            return null;
+        }
 
         [HttpDynamicResource("/api/tmp/wefwefwef")]
         public HttpHandlerResult TmpHandlerMethod(HttpRequestParams requestParams)

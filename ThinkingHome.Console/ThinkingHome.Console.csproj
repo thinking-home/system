@@ -20,7 +20,7 @@
         <ProjectReference Include="..\ThinkingHome.Plugins.Mail\ThinkingHome.Plugins.Mail.csproj"/>
         <ProjectReference Include="..\ThinkingHome.Plugins.Tmp\ThinkingHome.Plugins.Tmp.csproj"/>
         <ProjectReference Include="..\ThinkingHome.Plugins.Mqtt\ThinkingHome.Plugins.Mqtt.csproj" />
-        <!--    <ProjectReference Include="..\ThinkingHome.Plugins.NooLite\ThinkingHome.Plugins.NooLite.csproj" />-->
+        <ProjectReference Include="..\ThinkingHome.Plugins.NooLite\ThinkingHome.Plugins.NooLite.csproj" />
         <ProjectReference Include="..\ThinkingHome.Plugins.Timer\ThinkingHome.Plugins.Timer.csproj"/>
         <ProjectReference Include="..\ThinkingHome.Plugins.Scripts\ThinkingHome.Plugins.Scripts.csproj"/>
         <ProjectReference Include="..\ThinkingHome.Plugins.Scripts.WebApi\ThinkingHome.Plugins.Scripts.WebApi.csproj" />
@@ -32,7 +32,7 @@
         <ProjectReference Include="..\ThinkingHome.Plugins.Cron\ThinkingHome.Plugins.Cron.csproj" />
         <ProjectReference Include="..\ThinkingHome.Plugins.Cron.WebApi\ThinkingHome.Plugins.Cron.WebApi.csproj" />
         <!--    <ProjectReference Include="..\ThinkingHome.Plugins.Cron.WebUi\ThinkingHome.Plugins.Cron.WebUi.csproj" />-->
-        <!--    <ProjectReference Include="..\ThinkingHome.Plugins.TelegramBot\ThinkingHome.Plugins.TelegramBot.csproj" />-->
+        <ProjectReference Include="..\ThinkingHome.Plugins.TelegramBot\ThinkingHome.Plugins.TelegramBot.csproj" />
     </ItemGroup>
     <ItemGroup>
         <PackageReference Include="Serilog.Sinks.Console" Version="3.1.1"/>

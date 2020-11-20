@@ -87,8 +87,8 @@ namespace ThinkingHome.Plugins.NooLite
 
         private void OnReceiveData(object obj, ReceivedData cmd)
         {
-            SafeInvoke(cmdHandlers, h => h((byte)cmd.Command, cmd.Channel, cmd.DataFormat,
-                cmd.Data1, cmd.Data2, cmd.Data3, cmd.Data4), true);
+            SafeInvokeAsync(cmdHandlers, h => h((byte)cmd.Command, cmd.Channel, cmd.DataFormat,
+                cmd.Data1, cmd.Data2, cmd.Data3, cmd.Data4));
 
             Context.Require<ScriptsPlugin>()
                 .EmitScriptEvent("noolite:data:received", (byte)cmd.Command, cmd.Channel,
@@ -97,7 +97,7 @@ namespace ThinkingHome.Plugins.NooLite
 
         private void OnReceiveMicroclimateData(object obj, MicroclimateData data)
         {
-            SafeInvoke(microclimateHandlers, h => h(data.Channel, data.Temperature, data.Humidity, data.LowBattery), true);
+            SafeInvokeAsync(microclimateHandlers, h => h(data.Channel, data.Temperature, data.Humidity, data.LowBattery));
 
             Context.Require<ScriptsPlugin>()
                 .EmitScriptEvent("noolite:microclimate-data:received", data.Channel, data.Temperature, data.Humidity, data.LowBattery);

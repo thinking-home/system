@@ -21,7 +21,7 @@
     <ProjectReference Include="../ThinkingHome.Plugins.Mail/ThinkingHome.Plugins.Mail.csproj" />
     <ProjectReference Include="../ThinkingHome.Plugins.Mqtt/ThinkingHome.Plugins.Mqtt.csproj" />
     <ProjectReference Include="../ThinkingHome.Plugins.Cron/ThinkingHome.Plugins.Cron.csproj" />
-<!--    <ProjectReference Include="../ThinkingHome.Plugins.TelegramBot\ThinkingHome.Plugins.TelegramBot.csproj" />-->
+    <ProjectReference Include="../ThinkingHome.Plugins.TelegramBot\ThinkingHome.Plugins.TelegramBot.csproj" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="5.0.0" />
