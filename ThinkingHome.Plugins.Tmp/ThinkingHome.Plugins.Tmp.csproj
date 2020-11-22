@@ -2,7 +2,7 @@
   <Import Project="../Package.xml" />
   <PropertyGroup>
     <Description>Tmp plugin.</Description>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFramework>net5.0</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
     <None Remove="Resources\**\*" />
@@ -15,8 +15,6 @@
     <ProjectReference Include="../ThinkingHome.Plugins.Database/ThinkingHome.Plugins.Database.csproj" />
     <ProjectReference Include="../ThinkingHome.Plugins.Scripts/ThinkingHome.Plugins.Scripts.csproj" />
     <ProjectReference Include="../ThinkingHome.Plugins.WebServer/ThinkingHome.Plugins.WebServer.csproj" />
-    <ProjectReference Include="../ThinkingHome.Plugins.WebUi.Apps/ThinkingHome.Plugins.WebUi.Apps.csproj" />
-    <ProjectReference Include="../ThinkingHome.Plugins.WebUi/ThinkingHome.Plugins.WebUi.csproj" />
     <ProjectReference Include="../ThinkingHome.Plugins.Timer/ThinkingHome.Plugins.Timer.csproj" />
     <ProjectReference Include="../ThinkingHome.Plugins.Mail/ThinkingHome.Plugins.Mail.csproj" />
     <ProjectReference Include="../ThinkingHome.Plugins.Mqtt/ThinkingHome.Plugins.Mqtt.csproj" />
@@ -24,10 +22,10 @@
     <ProjectReference Include="../ThinkingHome.Plugins.TelegramBot\ThinkingHome.Plugins.TelegramBot.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="2.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Configuration" Version="2.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Logging" Version="2.0.0" />
-    <PackageReference Include="ThinkingHome.Migrator.Framework" Version="3.0.0-alpha9" />
-    <PackageReference Include="Telegram.Bot" Version="13.2.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="5.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="5.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="5.0.0" />
+    <PackageReference Include="ThinkingHome.Migrator.Framework" Version="3.3.0" />
+    <PackageReference Include="Telegram.Bot" Version="15.7.1" />
   </ItemGroup>
 </Project>

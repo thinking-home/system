@@ -17,18 +17,6 @@ namespace ThinkingHome.Core.Plugins
             this.logger = logger;
         }
 
-        public void Invoke(bool async)
-        {
-            if (async)
-            {
-                InvokeAsync();
-            }
-            else
-            {
-                Invoke();
-            }
-        }
-
         public void Invoke()
         {
             try
@@ -41,9 +29,9 @@ namespace ThinkingHome.Core.Plugins
             }
         }
 
-        public void InvokeAsync()
+        public Task InvokeAsync()
         {
-            Task.Factory.StartNew(Invoke);
+            return Task.Factory.StartNew(Invoke);
         }
     }
 }

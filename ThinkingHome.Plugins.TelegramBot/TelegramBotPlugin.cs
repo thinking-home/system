@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Telegram.Bot;
 using Telegram.Bot.Args;
-using Telegram.Bot.Types;
+using Telegram.Bot.Types.InputFiles;
 using ThinkingHome.Core.Plugins;
 using ThinkingHome.Core.Plugins.Utils;
 
@@ -66,11 +66,12 @@ namespace ThinkingHome.Plugins.TelegramBot
             var msg = e.Message;
             var command = ParseCommand(msg.Text);
 
-            Logger.LogInformation($"New telegram message: messageID: {msg.MessageId}; chatID: {msg.Chat.Id}");
 
-            SafeInvoke(handlers[command], fn => fn(command, msg), true);
+            Logger.LogInformation($"New telegram message: messageID: {msg.MessageId}; chatID: {msg.Chat.Id} ({msg.Chat.Username})");
 
-            SafeInvoke(handlers[TelegramMessageHandlerAttribute.ALL_COMMANDS], fn => fn(command, msg), true);
+            SafeInvokeAsync(handlers[command], fn => fn(command, msg));
+
+            SafeInvokeAsync(handlers[TelegramMessageHandlerAttribute.ALL_COMMANDS], fn => fn(command, msg));
         }
 
         public static string ParseCommand(string message)
@@ -91,28 +92,28 @@ namespace ThinkingHome.Plugins.TelegramBot
 
         public void SendPhoto(long chatId, string filename, Stream content)
         {
-            var file = new FileToSend(filename, content);
+            var file = new InputOnlineFile(content, filename);
 
             Try(t => t.SendPhotoAsync(chatId, file));
         }
 
         public void SendPhoto(long chatId, Uri url)
         {
-            var file = new FileToSend(url);
+            var file = new InputOnlineFile(url);
 
             Try(t => t.SendPhotoAsync(chatId, file));
         }
 
         public void SendFile(long chatId, string filename, Stream content)
         {
-            var file = new FileToSend(filename, content);
+            var file = new InputOnlineFile(content, filename);
 
             Try(t => t.SendDocumentAsync(chatId, file));
         }
 
         public void SendFile(long chatId, Uri url)
         {
-            var file = new FileToSend(url);
+            var file = new InputOnlineFile(url);
 
             Try(t => t.SendDocumentAsync(chatId, file));
         }

@@ -1,11 +1,11 @@
 <Project>
     <PropertyGroup>
 		<VersionPrefix>4.0.0</VersionPrefix>
-        <VersionSuffix>alpha4</VersionSuffix>
+        <VersionSuffix>alpha5</VersionSuffix>
 
 		<Authors>Dmitry Andriyanov &lt;dima117a@gmail.com&gt;</Authors>
         <NeutralLanguage>en-US</NeutralLanguage>
-        <Copyright>Thinking-Home.RU © 2017</Copyright>
+        <Copyright>Thinking-Home.RU © 2020</Copyright>
 
 		<PackageTags>thinking-home;core</PackageTags>
 		<PackageProjectUrl>https://github.com/thinking-home/system</PackageProjectUrl>

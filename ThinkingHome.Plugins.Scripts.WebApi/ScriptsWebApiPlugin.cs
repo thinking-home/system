@@ -12,8 +12,8 @@ namespace ThinkingHome.Plugins.Scripts.WebApi
     {
         #region scripts
 
-        [WebApiMethod("/api/scripts/web-api/list")]
-        public object GetScriptList(HttpRequestParams request)
+        [HttpDynamicResource("/api/scripts/web-api/list")]
+        public HttpHandlerResult GetScriptList(HttpRequestParams request)
         {
             using (var session = Context.Require<DatabasePlugin>().OpenSession())
             {
@@ -21,12 +21,12 @@ namespace ThinkingHome.Plugins.Scripts.WebApi
                     .Select(x => new { id = x.Id, name = x.Name })
                     .ToArray();
 
-                return list;
+                return HttpHandlerResult.Json(list);
             }
         }
 
-        [WebApiMethod("/api/scripts/web-api/get")]
-        public object LoadScript(HttpRequestParams request)
+        [HttpDynamicResource("/api/scripts/web-api/get")]
+        public HttpHandlerResult LoadScript(HttpRequestParams request)
         {
             var id = request.GetRequiredGuid("id");
 
@@ -36,12 +36,12 @@ namespace ThinkingHome.Plugins.Scripts.WebApi
                     .Select(x => new { id = x.Id, name = x.Name, body = x.Body })
                     .Single(x => x.id == id);
 
-                return script;
+                return HttpHandlerResult.Json(script);
             }
         }
 
-        [WebApiMethod("/api/scripts/web-api/save")]
-        public object SaveScript(HttpRequestParams request)
+        [HttpDynamicResource("/api/scripts/web-api/save")]
+        public HttpHandlerResult SaveScript(HttpRequestParams request)
         {
             var id = request.GetGuid("id");
             var name = request.GetRequiredString("name");
@@ -65,12 +65,12 @@ namespace ThinkingHome.Plugins.Scripts.WebApi
                 script.Body = body;
                 session.SaveChanges();
 
-                return script.Id;
+                return HttpHandlerResult.Json(new { scriptId = script.Id });
             }
         }
 
-        [WebApiMethod("/api/scripts/web-api/delete")]
-        public object DeleteScript(HttpRequestParams request)
+        [HttpDynamicResource("/api/scripts/web-api/delete")]
+        public HttpHandlerResult DeleteScript(HttpRequestParams request)
         {
             var id = request.GetRequiredGuid("id");
 
@@ -85,8 +85,8 @@ namespace ThinkingHome.Plugins.Scripts.WebApi
             return null;
         }
 
-        [WebApiMethod("/api/scripts/web-api/execute")]
-        public object RunScript(HttpRequestParams request)
+        [HttpDynamicResource("/api/scripts/web-api/execute")]
+        public HttpHandlerResult RunScript(HttpRequestParams request)
         {
             var id = request.GetRequiredGuid("id");
 
@@ -94,7 +94,9 @@ namespace ThinkingHome.Plugins.Scripts.WebApi
             {
                 var script = session.Set<UserScript>().Single(s => s.Id == id);
 
-                return Context.Require<ScriptsPlugin>().ExecuteScript(script);
+                object result = Context.Require<ScriptsPlugin>().ExecuteScript(script);
+
+                return HttpHandlerResult.Json(result);
             }
         }
 
@@ -102,8 +104,8 @@ namespace ThinkingHome.Plugins.Scripts.WebApi
 
         #region script event
 
-        [WebApiMethod("/api/scripts/web-api/subscription/list")]
-        public object GetSubscriptionList(HttpRequestParams request)
+        [HttpDynamicResource("/api/scripts/web-api/subscription/list")]
+        public HttpHandlerResult GetSubscriptionList(HttpRequestParams request)
         {
             using (var session = Context.Require<DatabasePlugin>().OpenSession())
             {
@@ -117,23 +119,23 @@ namespace ThinkingHome.Plugins.Scripts.WebApi
                     })
                     .ToList();
 
-                return list;
+                return HttpHandlerResult.Json(list);
             }
         }
 
-        [WebApiMethod("/api/scripts/web-api/subscription/add")]
-        public object AddSubscription(HttpRequestParams request)
+        [HttpDynamicResource("/api/scripts/web-api/subscription/add")]
+        public HttpHandlerResult AddSubscription(HttpRequestParams request)
         {
             var scriptId = request.GetRequiredGuid("scriptId");
             var eventAlias = request.GetRequiredString("eventAlias");
 
             using (var session = Context.Require<DatabasePlugin>().OpenSession())
             {
-                var guid = Guid.NewGuid();
+                var subscriptionId = Guid.NewGuid();
 
                 var subscription = new ScriptEventHandler
                 {
-                    Id = guid,
+                    Id = subscriptionId,
                     EventAlias = eventAlias,
                     UserScriptId = scriptId
                 };
@@ -141,12 +143,12 @@ namespace ThinkingHome.Plugins.Scripts.WebApi
                 session.Set<ScriptEventHandler>().Add(subscription);
                 session.SaveChanges();
 
-                return guid;
+                return HttpHandlerResult.Json(new { subscriptionId }) ;
             }
         }
 
-        [WebApiMethod("/api/scripts/web-api/subscription/delete")]
-        public object DeleteSubscription(HttpRequestParams request)
+        [HttpDynamicResource("/api/scripts/web-api/subscription/delete")]
+        public HttpHandlerResult DeleteSubscription(HttpRequestParams request)
         {
             var subscriptionId = request.GetRequiredGuid("subscriptionId");
 

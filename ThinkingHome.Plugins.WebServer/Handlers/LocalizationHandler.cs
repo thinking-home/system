@@ -1,44 +1,35 @@
 ﻿using System;
 using System.Globalization;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Localization;
-using ThinkingHome.Core.Plugins.Utils;
-using ThinkingHome.Plugins.WebServer.Attributes;
 
 namespace ThinkingHome.Plugins.WebServer.Handlers
 {
-    public class LocalizationHandler : BaseHandler<HttpLocalizationResourceAttribute>
+    // todo: вынести в отдельный плагин и упрятать в dynamic resource
+    public class LocalizationHandler : BaseHandler
     {
         private readonly IStringLocalizer stringLocalizer;
 
-        public LocalizationHandler(HttpLocalizationResourceAttribute resource, IStringLocalizer stringLocalizer)
-            :base(resource)
+        public LocalizationHandler(IStringLocalizer stringLocalizer) : base(true)
         {
-            if (resource == null) throw new ArgumentNullException(nameof(resource));
-
             this.stringLocalizer = stringLocalizer ?? throw new ArgumentNullException(nameof(stringLocalizer));
         }
 
-        public override async Task<byte[]> GetContent(HttpContext context)
+        public override async Task<HttpHandlerResult> GetContent(HttpContext context)
         {
-            return await Task.Run(() =>
-            {
+            return await Task.Run(() => {
                 var values = stringLocalizer
                     .GetAllStrings()
                     .ToDictionary(str => str.Name, str => str.Value);
 
-                var result = new
-                {
+                var result = new {
                     culture = CultureInfo.CurrentUICulture.Name,
                     values
                 };
 
-                var json = result.ToJson();
-
-                return Encoding.UTF8.GetBytes(json);
+                return HttpHandlerResult.Json(result);
             });
         }
     }

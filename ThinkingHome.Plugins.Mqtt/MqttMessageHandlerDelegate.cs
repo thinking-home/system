@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace ThinkingHome.Plugins.Mqtt
+﻿namespace ThinkingHome.Plugins.Mqtt
 {
     public delegate void MqttMessageHandlerDelegate(string topic, byte[] payload);
 }

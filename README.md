@@ -8,20 +8,16 @@ ThinkingHome - кроссплатформенное приложение, поз
 
 - [ThinkingHome.Plugins.Cron](./ThinkingHome.Plugins.Cron) - запуск действий по расписанию
 - [ThinkingHome.Plugins.Cron.WebApi](./ThinkingHome.Plugins.Cron.WebApi) - web API для [cron](./ThinkingHome.Plugins.Cron)
-- [ThinkingHome.Plugins.Cron.WebUi](./ThinkingHome.Plugins.Cron.WebUi) - web-интерфейс для редактирования расписания [cron](./ThinkingHome.Plugins.Cron)
 - [ThinkingHome.Plugins.Database](./ThinkingHome.Plugins.Database) - API для хранения информации плагинов в БД
 - [ThinkingHome.Plugins.Mail](./ThinkingHome.Plugins.Mail) - отправка email
 - [ThinkingHome.Plugins.Mqtt](./ThinkingHome.Plugins.Mqtt) - отправка/получение сообщений MQTT
 - [ThinkingHome.Plugins.NooLite](./ThinkingHome.Plugins.NooLite) - управление освещением/электроприборами с помощью устройств [nooLite](https://www.noo.com.by/sistema-noolite.html)
 - [ThinkingHome.Plugins.Scripts](./ThinkingHome.Plugins.Scripts) - выполнение сценариев автоматизации
 - [ThinkingHome.Plugins.Scripts.WebApi](./ThinkingHome.Plugins.Scripts.WebApi) - web API для управления сценариями
-- [ThinkingHome.Plugins.Scripts.WebUi](./ThinkingHome.Plugins.Scripts.WebUi) - web-интерфейс для управления сценариями
 - [ThinkingHome.Plugins.TelegramBot](./ThinkingHome.Plugins.TelegramBot) - Telegram бот
 - [ThinkingHome.Plugins.Timer](./ThinkingHome.Plugins.Timer) - выполнение действий по таймеру
 - [ThinkingHome.Plugins.WebServer](./ThinkingHome.Plugins.WebServer) - инфраструктура для обращения к методам плагинов по HTTP
 - [ThinkingHome.Plugins.WebServer.UrlValidation](./ThinkingHome.Plugins.WebServer.UrlValidation) - валидация URL методов плагинов на соответствие правилам
-- [ThinkingHome.Plugins.WebUi](./ThinkingHome.Plugins.WebUi) - инфраструктура веб-интерфейса
-- [ThinkingHome.Plugins.WebUi.Apps](./ThinkingHome.Plugins.WebUi.Apps) - организация подразделов веб-интерфейса
 
 **[Как написать свой плагин](ThinkingHome.Core.Plugins)**
 

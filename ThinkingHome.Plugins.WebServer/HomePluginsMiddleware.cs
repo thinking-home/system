@@ -14,11 +14,11 @@ namespace ThinkingHome.Plugins.WebServer
         private const int CACHE_EXPIRATION = 7200; // в секундах (7200 == 2 часа)
 
         private readonly RequestDelegate next;
-        private readonly ObjectRegistry<IHandler> handlers;
+        private readonly ObjectRegistry<BaseHandler> handlers;
         private readonly ILogger logger;
         private readonly IMemoryCache cache;
 
-        public HomePluginsMiddleware(ObjectRegistry<IHandler> handlers, RequestDelegate next, ILoggerFactory loggerFactory, IMemoryCache cache)
+        public HomePluginsMiddleware(ObjectRegistry<BaseHandler> handlers, RequestDelegate next, ILoggerFactory loggerFactory, IMemoryCache cache)
         {
             this.next = next;
             this.handlers = handlers;
@@ -30,45 +30,42 @@ namespace ThinkingHome.Plugins.WebServer
         {
             var path = context.Request.Path.Value;
 
-            if (handlers.ContainsKey(path))
-            {
+            if (handlers.ContainsKey(path)) {
                 logger.LogInformation($"invoke http handler: {path};");
 
-                try
-                {
+                try {
                     var handler = handlers[path];
 
-                    byte[] data;
+                    HttpHandlerResult data;
 
-                    if (handler.IsCached)
-                    {
-                        data = await cache.GetOrCreateAsync(handler.CacheKey, e =>
-                        {
+                    if (handler.IsCached) {
+                        var cacheKey = $"B746CB6C-D767-4AD8-B3F5-CD7FADEAD51A:{path}";
+
+                        data = await cache.GetOrCreateAsync(cacheKey, e => {
                             e.SetAbsoluteExpiration(TimeSpan.FromSeconds(CACHE_EXPIRATION));
                             return handler.GetContent(context);
                         });
 
                         context.Response.Headers["Cache-Control"] = $"private, max-age={CACHE_EXPIRATION}";
                     }
-                    else
-                    {
+                    else {
                         data = await handler.GetContent(context);
                         context.Response.Headers["Cache-Control"] = "no-cache, no-store";
                     }
 
-                    context.Response.ContentType = handler.ContentType;
-                    context.Response.ContentLength = data.Length;
+                    if (data != null) {
+                        context.Response.ContentType = data.ContentType;
+                        context.Response.ContentLength = data.Content.Length;
 
-                    await context.Response.Body.WriteAsync(data, 0, data.Length);
+                        await context.Response.Body.WriteAsync(data.Content, 0, data.Content.Length);
+                    }
                 }
-                catch (Exception ex)
-                {
+                catch (Exception ex) {
                     logger.LogInformation(0, ex, $"http handler error: {path}");
                     context.Response.StatusCode = 500;
                 }
             }
-            else
-            {
+            else {
                 await next.Invoke(context);
             }
         }

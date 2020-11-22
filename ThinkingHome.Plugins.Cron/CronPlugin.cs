@@ -99,7 +99,7 @@ namespace ThinkingHome.Plugins.Cron
                                 scriptPlugin.EmitScriptEvent(session, task.EventAlias);
                             }
 
-                            SafeInvoke(handlers, h => h(task.TaskId), true);
+                            SafeInvokeAsync(handlers, h => h(task.TaskId));
 
                             scriptPlugin.EmitScriptEvent(session, "cron:task:started", task.TaskId);
                         }
