@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.SignalR;
@@ -75,6 +76,10 @@ namespace ThinkingHome.Plugins.WebServer
                     handlers,
                     res => res.Meta.Url,
                     res => new LocalizationHandler(res.Plugin.StringLocalizer));
+
+            foreach (var plugin in Context.GetAllPlugins().FilterPlugins<IWillUseWebServer>()) {
+                plugin.RegisterHttpHandlers(new WebServerConfigBuilder(handlers, plugin.GetType().Assembly));
+            }
 
             handlers.ForEach((url, handler) => Logger.LogInformation($"register HTTP handler: \"{url}\""));
 

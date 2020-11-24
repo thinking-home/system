@@ -76,6 +76,11 @@ namespace ThinkingHome.Core.Plugins.Utils
 
         #endregion
 
+        public static IEnumerable<T> FilterPlugins<T>(this IEnumerable<PluginBase> plugins) where T : class
+        {
+            return plugins.Select(p => p as T).Where(p => p != null);
+        }
+
         #region find methods
 
         public static (TAttr Meta, TDelegate Method)[] FindMethods<TAttr, TDelegate>(
