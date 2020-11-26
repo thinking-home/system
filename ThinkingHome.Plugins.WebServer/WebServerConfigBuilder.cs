@@ -26,5 +26,11 @@ namespace ThinkingHome.Plugins.WebServer
             registry.Register(url, new StaticResourceHandler(resourcePath, contentType, assembly));
             return this;
         }
+
+        public WebServerConfigBuilder RegisterHandler(string url, BaseHandler handler)
+        {
+            registry.Register(url, handler);
+            return this;
+        }
     }
 }
