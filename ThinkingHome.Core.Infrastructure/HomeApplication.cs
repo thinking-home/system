@@ -36,14 +36,14 @@ namespace ThinkingHome.Core.Infrastructure
             try
             {
                 // init plugins
-                foreach (var plugin in context.GetAllPlugins())
+                foreach (var plugin in context.GetAllPlugins().OrderBy(p => p.DependencyIndex))
                 {
                     logger.LogInformation($"init plugin: {plugin.GetType().FullName}");
                     plugin.InitPlugin();
                 }
 
                 // start plugins
-                foreach (var plugin in context.GetAllPlugins())
+                foreach (var plugin in context.GetAllPlugins().OrderBy(p => p.DependencyIndex))
                 {
                     logger.LogInformation($"start plugin {plugin.GetType().FullName}");
                     plugin.StartPlugin();
@@ -69,7 +69,7 @@ namespace ThinkingHome.Core.Infrastructure
 
         public void StopServices()
         {
-            foreach (var plugin in context.GetAllPlugins())
+            foreach (var plugin in context.GetAllPlugins().OrderByDescending(p => p.DependencyIndex))
             {
                 try
                 {

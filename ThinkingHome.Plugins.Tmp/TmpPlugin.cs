@@ -53,6 +53,8 @@ namespace ThinkingHome.Plugins.Tmp
             Logger.LogInformation($"init tmp plugin {Guid.NewGuid()}");
             Logger.LogInformation(StringLocalizer.GetString("hello"));
 
+            telegramBot.SendMessage(353206782, "MOOO!!!!!");
+
             var sb = new StringBuilder("===================\nall strings:\n");
 
             foreach (var str in StringLocalizer.GetAllStrings(true))
