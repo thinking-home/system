@@ -36,10 +36,5 @@ namespace ThinkingHome.Core.Infrastructure
         {
             return new ReadOnlyCollection<PluginBase>(plugins.Values.ToList());
         }
-
-        public T Require<T>() where T : PluginBase
-        {
-            return plugins[typeof(T)] as T;
-        }
     }
 }

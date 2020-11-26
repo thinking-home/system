@@ -126,7 +126,8 @@ namespace ThinkingHome.Core.Infrastructure
 
             foreach (var pluginType in asm.GetExportedTypes().Where(type => baseType.GetTypeInfo().IsAssignableFrom(type)))
             {
-                services.AddSingleton(baseType, pluginType);
+                services.AddSingleton(pluginType);
+                services.AddSingleton(baseType, x => x.GetRequiredService(pluginType));
             }
         }
 

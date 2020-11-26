@@ -14,6 +14,10 @@ namespace ThinkingHome.Plugins.Cron
 {
     public class CronPlugin: PluginBase
     {
+        private readonly DatabasePlugin database;
+
+        private readonly ScriptsPlugin scripts;
+
         private const int CHECK_INTERVAL = 20000; // ms
 
         private const int ACTIVE_PERIOD = 5; // minutes
@@ -25,6 +29,12 @@ namespace ThinkingHome.Plugins.Cron
         private List<CronScheduleItem> schedule;
 
         private List<CronHandlerDelegate> handlers;
+
+        public CronPlugin(DatabasePlugin database, ScriptsPlugin scripts)
+        {
+            this.database = database;
+            this.scripts = scripts;
+        }
 
         public override void InitPlugin()
         {
@@ -86,9 +96,7 @@ namespace ThinkingHome.Plugins.Cron
                 {
                     lastEventTime = now;
 
-                    var scriptPlugin = Context.Require<ScriptsPlugin>();
-
-                    using (var session = Context.Require<DatabasePlugin>().OpenSession())
+                    using (var session = database.OpenSession())
                     {
                         foreach (var task in active)
                         {
@@ -96,12 +104,12 @@ namespace ThinkingHome.Plugins.Cron
 
                             if (!string.IsNullOrEmpty(task.EventAlias))
                             {
-                                scriptPlugin.EmitScriptEvent(session, task.EventAlias);
+                                scripts.EmitScriptEvent(session, task.EventAlias);
                             }
 
                             SafeInvokeAsync(handlers, h => h(task.TaskId));
 
-                            scriptPlugin.EmitScriptEvent(session, "cron:task:started", task.TaskId);
+                            scripts.EmitScriptEvent(session, "cron:task:started", task.TaskId);
                         }
                     }
                 }
@@ -116,7 +124,7 @@ namespace ThinkingHome.Plugins.Cron
         {
             if (schedule == null)
             {
-                using (var session = Context.Require<DatabasePlugin>().OpenSession())
+                using (var session = database.OpenSession())
                 {
                     schedule = session.Set<CronTask>()
                         .Where(t => t.Enabled)

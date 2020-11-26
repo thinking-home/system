@@ -13,9 +13,16 @@ namespace ThinkingHome.Plugins.Scripts
 {
     public class ScriptsPlugin : PluginBase
     {
+        private readonly DatabasePlugin database;
+        
         private object host;
 
         private readonly ObjectRegistry<Delegate> methods = new ObjectRegistry<Delegate>();
+
+        public ScriptsPlugin(DatabasePlugin database)
+        {
+            this.database = database;
+        }
 
         public override void InitPlugin()
         {
@@ -62,7 +69,7 @@ namespace ThinkingHome.Plugins.Scripts
 
         public void EmitScriptEvent(string eventAlias, params object[] args)
         {
-            using (var session = Context.Require<DatabasePlugin>().OpenSession())
+            using (var session = database.OpenSession())
             {
                 EmitScriptEvent(session, eventAlias, args);
             }
@@ -95,7 +102,7 @@ namespace ThinkingHome.Plugins.Scripts
         {
             try
             {
-                using (var session = Context.Require<DatabasePlugin>().OpenSession())
+                using (var session = database.OpenSession())
                 {
                     var script = session.Set<UserScript>().Single(s => s.Name == name);
                     return CreateScriptDelegate(script.Name, script.Body);
