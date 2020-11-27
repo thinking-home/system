@@ -32,9 +32,13 @@ namespace ThinkingHome.Core.Infrastructure
             }
         }
 
-        public IReadOnlyCollection<PluginBase> GetAllPlugins()
+        public IReadOnlyCollection<PluginBase> GetAllPlugins(bool inverseOrder = false)
         {
-            return new ReadOnlyCollection<PluginBase>(plugins.Values.ToList());
+            var list = inverseOrder
+                ? plugins.Values.OrderByDescending(p => p.DependencyIndex)
+                : plugins.Values.OrderBy(p => p.DependencyIndex);
+
+            return new ReadOnlyCollection<PluginBase>(list.ToList());
         }
     }
 }

@@ -36,14 +36,14 @@ namespace ThinkingHome.Core.Infrastructure
             try
             {
                 // init plugins
-                foreach (var plugin in context.GetAllPlugins().OrderBy(p => p.DependencyIndex))
+                foreach (var plugin in context.GetAllPlugins())
                 {
                     logger.LogInformation($"init plugin: {plugin.GetType().FullName}");
                     plugin.InitPlugin();
                 }
 
                 // start plugins
-                foreach (var plugin in context.GetAllPlugins().OrderBy(p => p.DependencyIndex))
+                foreach (var plugin in context.GetAllPlugins())
                 {
                     logger.LogInformation($"start plugin {plugin.GetType().FullName}");
                     plugin.StartPlugin();
@@ -56,7 +56,7 @@ namespace ThinkingHome.Core.Infrastructure
                 logger.LogError(0, ex, "error on plugins initialization");
                 foreach (var loaderException in ex.LoaderExceptions)
                 {
-                    logger.LogError(0, loaderException, loaderException.Message);
+                    logger.LogError(0, loaderException, loaderException?.Message);
                 }
                 throw;
             }
@@ -69,7 +69,7 @@ namespace ThinkingHome.Core.Infrastructure
 
         public void StopServices()
         {
-            foreach (var plugin in context.GetAllPlugins().OrderByDescending(p => p.DependencyIndex))
+            foreach (var plugin in context.GetAllPlugins(true))
             {
                 try
                 {
