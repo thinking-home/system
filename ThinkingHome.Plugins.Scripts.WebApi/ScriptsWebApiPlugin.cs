@@ -10,12 +10,21 @@ namespace ThinkingHome.Plugins.Scripts.WebApi
 {
     public class ScriptsWebApiPlugin : PluginBase
     {
+        private readonly DatabasePlugin database;
+        private readonly ScriptsPlugin scripts;
+
+        public ScriptsWebApiPlugin(DatabasePlugin database, ScriptsPlugin scripts)
+        {
+            this.database = database;
+            this.scripts = scripts;
+        }
+
         #region scripts
 
         [HttpDynamicResource("/api/scripts/web-api/list")]
         public HttpHandlerResult GetScriptList(HttpRequestParams request)
         {
-            using (var session = Context.Require<DatabasePlugin>().OpenSession())
+            using (var session = database.OpenSession())
             {
                 var list = session.Set<UserScript>()
                     .Select(x => new { id = x.Id, name = x.Name })
@@ -30,7 +39,7 @@ namespace ThinkingHome.Plugins.Scripts.WebApi
         {
             var id = request.GetRequiredGuid("id");
 
-            using (var session = Context.Require<DatabasePlugin>().OpenSession())
+            using (var session = database.OpenSession())
             {
                 var script = session.Set<UserScript>()
                     .Select(x => new { id = x.Id, name = x.Name, body = x.Body })
@@ -47,7 +56,7 @@ namespace ThinkingHome.Plugins.Scripts.WebApi
             var name = request.GetRequiredString("name");
             var body = request.GetRequiredString("body");
 
-            using (var session = Context.Require<DatabasePlugin>().OpenSession())
+            using (var session = database.OpenSession())
             {
                 UserScript script;
 
@@ -74,7 +83,7 @@ namespace ThinkingHome.Plugins.Scripts.WebApi
         {
             var id = request.GetRequiredGuid("id");
 
-            using (var session = Context.Require<DatabasePlugin>().OpenSession())
+            using (var session = database.OpenSession())
             {
                 var script = session.Set<UserScript>().Single(s => s.Id == id);
 
@@ -90,11 +99,11 @@ namespace ThinkingHome.Plugins.Scripts.WebApi
         {
             var id = request.GetRequiredGuid("id");
 
-            using (var session = Context.Require<DatabasePlugin>().OpenSession())
+            using (var session = database.OpenSession())
             {
                 var script = session.Set<UserScript>().Single(s => s.Id == id);
 
-                object result = Context.Require<ScriptsPlugin>().ExecuteScript(script);
+                object result = scripts.ExecuteScript(script);
 
                 return HttpHandlerResult.Json(result);
             }
@@ -107,7 +116,7 @@ namespace ThinkingHome.Plugins.Scripts.WebApi
         [HttpDynamicResource("/api/scripts/web-api/subscription/list")]
         public HttpHandlerResult GetSubscriptionList(HttpRequestParams request)
         {
-            using (var session = Context.Require<DatabasePlugin>().OpenSession())
+            using (var session = database.OpenSession())
             {
                 var list = session.Set<ScriptEventHandler>()
                     .Select(x => new
@@ -129,7 +138,7 @@ namespace ThinkingHome.Plugins.Scripts.WebApi
             var scriptId = request.GetRequiredGuid("scriptId");
             var eventAlias = request.GetRequiredString("eventAlias");
 
-            using (var session = Context.Require<DatabasePlugin>().OpenSession())
+            using (var session = database.OpenSession())
             {
                 var subscriptionId = Guid.NewGuid();
 
@@ -152,7 +161,7 @@ namespace ThinkingHome.Plugins.Scripts.WebApi
         {
             var subscriptionId = request.GetRequiredGuid("subscriptionId");
 
-            using (var session = Context.Require<DatabasePlugin>().OpenSession())
+            using (var session = database.OpenSession())
             {
                 var subscription = session.Set<ScriptEventHandler>().Single(s => s.Id == subscriptionId);
                 session.Set<ScriptEventHandler>().Remove(subscription);

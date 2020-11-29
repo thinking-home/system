@@ -35,6 +35,13 @@ namespace ThinkingHome.Core.Infrastructure
 
             try
             {
+                // notify plugins
+                foreach (var plugin in context.GetAllPlugins(PluginsOrder.Inverse))
+                {
+                    logger.LogInformation($"notify plugins: {plugin.GetType().FullName}");
+                    plugin.NotifyPlugins();
+                }
+
                 // init plugins
                 foreach (var plugin in context.GetAllPlugins())
                 {
@@ -56,7 +63,7 @@ namespace ThinkingHome.Core.Infrastructure
                 logger.LogError(0, ex, "error on plugins initialization");
                 foreach (var loaderException in ex.LoaderExceptions)
                 {
-                    logger.LogError(0, loaderException, loaderException.Message);
+                    logger.LogError(0, loaderException, loaderException?.Message);
                 }
                 throw;
             }
@@ -69,7 +76,7 @@ namespace ThinkingHome.Core.Infrastructure
 
         public void StopServices()
         {
-            foreach (var plugin in context.GetAllPlugins())
+            foreach (var plugin in context.GetAllPlugins(PluginsOrder.Inverse))
             {
                 try
                 {
@@ -126,7 +133,8 @@ namespace ThinkingHome.Core.Infrastructure
 
             foreach (var pluginType in asm.GetExportedTypes().Where(type => baseType.GetTypeInfo().IsAssignableFrom(type)))
             {
-                services.AddSingleton(baseType, pluginType);
+                services.AddSingleton(pluginType);
+                services.AddSingleton(baseType, x => x.GetRequiredService(pluginType));
             }
         }
 

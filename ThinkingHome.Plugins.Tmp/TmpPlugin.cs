@@ -32,10 +32,28 @@ namespace ThinkingHome.Plugins.Tmp
 
     public class TmpPlugin : PluginBase
     {
+        private readonly DatabasePlugin database;
+        private readonly ScriptsPlugin scripts;
+        private readonly CronPlugin cron;
+        private readonly MqttPlugin mqtt;
+        private readonly TelegramBotPlugin telegramBot;
+
+        public TmpPlugin(DatabasePlugin database, ScriptsPlugin scripts, CronPlugin cron,
+            MqttPlugin mqtt, TelegramBotPlugin telegramBot)
+        {
+            this.database = database;
+            this.scripts = scripts;
+            this.cron = cron;
+            this.mqtt = mqtt;
+            this.telegramBot = telegramBot;
+        }
+
         public override void InitPlugin()
         {
             Logger.LogInformation($"init tmp plugin {Guid.NewGuid()}");
             Logger.LogInformation(StringLocalizer.GetString("hello"));
+
+            telegramBot.SendMessage(353206782, "MOOO!!!!!");
 
             var sb = new StringBuilder("===================\nall strings:\n");
 
@@ -51,7 +69,7 @@ namespace ThinkingHome.Plugins.Tmp
 
         public override void StartPlugin()
         {
-            var result = Context.Require<ScriptsPlugin>().ExecuteScript("return host.api.мукнуть('это полезно!')");
+            var result = scripts.ExecuteScript("return host.api.мукнуть('это полезно!')");
 
             Logger.LogInformation($"script result: {result}");
 
@@ -72,7 +90,7 @@ namespace ThinkingHome.Plugins.Tmp
             var topic = requestParams.GetString("topic") ?? "test";
             var msg = requestParams.GetString("msg") ?? "mumu";
 
-            Context.Require<MqttPlugin>().Publish(topic, msg);
+            mqtt.Publish(topic, msg);
 
             return null;
         }
@@ -96,7 +114,7 @@ namespace ThinkingHome.Plugins.Tmp
         [TimerCallback(10000)]
         public void MimimiTimer(DateTime now)
         {
-            using (var db = Context.Require<DatabasePlugin>().OpenSession())
+            using (var db = database.OpenSession())
             {
                 db.Set<SmallPig>().ToList()
                     .ForEach(pig => Logger.LogWarning($"{pig.Name}, size: {pig.Size} ({pig.Id})"));
@@ -133,20 +151,18 @@ namespace ThinkingHome.Plugins.Tmp
         [TelegramMessageHandler("test")]
         public void ReplyToTelegramMessage(string command, Message msg)
         {
-            var botPlugin = Context.Require<TelegramBotPlugin>();
-            botPlugin.SendMessage(msg.Chat.Id, $"Ваше сообщение ({msg.Text}) получено");
-            botPlugin.SendMessage(msg.Chat.Id, $"Ловите новенький GUID ({Guid.NewGuid():P})");
+            telegramBot.SendMessage(msg.Chat.Id, $"Ваше сообщение ({msg.Text}) получено");
+            telegramBot.SendMessage(msg.Chat.Id, $"Ловите новенький GUID ({Guid.NewGuid():P})");
 
-            botPlugin.SendFile(msg.Chat.Id, new Uri("https://www.noo.com.by/assets/files/PDF/PK314.pdf"));
-            botPlugin.SendFile(msg.Chat.Id, "mimimi.txt", new MemoryStream(Encoding.UTF8.GetBytes("хри-хри")));
-            botPlugin.SendPhoto(msg.Chat.Id, new Uri("http://историк.рф/wp-content/uploads/2017/03/2804.jpg"));
+            telegramBot.SendFile(msg.Chat.Id, new Uri("https://www.noo.com.by/assets/files/PDF/PK314.pdf"));
+            telegramBot.SendFile(msg.Chat.Id, "mimimi.txt", new MemoryStream(Encoding.UTF8.GetBytes("хри-хри")));
+            telegramBot.SendPhoto(msg.Chat.Id, new Uri("http://историк.рф/wp-content/uploads/2017/03/2804.jpg"));
         }
 
         [TelegramMessageHandler]
         public void ReplyToTelegramMessage2(string command, Message msg)
         {
-            var botPlugin = Context.Require<TelegramBotPlugin>();
-            botPlugin.SendMessage(msg.Chat.Id, $"mi mi mi");
+            telegramBot.SendMessage(msg.Chat.Id, $"mi mi mi");
             Logger.LogInformation($"NEW TELEGRAM MESSAGE: {msg.Text} (cmd: {command})");
         }
 
@@ -188,14 +204,14 @@ namespace ThinkingHome.Plugins.Tmp
         [HttpDynamicResource("/api/tmp/hello-pig")]
         public HttpHandlerResult HelloPigHttpMethod(HttpRequestParams requestParams)
         {
-            Context.Require<TelegramBotPlugin>().SendMessage(353206782, "ДОБРЫЙ ВЕЧЕР");
+            telegramBot.SendMessage(353206782, "ДОБРЫЙ ВЕЧЕР");
             return null;
         }
 
         [HttpDynamicResource("/api/tmp/wefwefwef")]
         public HttpHandlerResult TmpHandlerMethod(HttpRequestParams requestParams)
         {
-            Context.Require<ScriptsPlugin>().EmitScriptEvent("mimi", 1, 2, 3, "GUID-111");
+            scripts.EmitScriptEvent("mimi", 1, 2, 3, "GUID-111");
             return null;
         }
 
@@ -212,7 +228,7 @@ namespace ThinkingHome.Plugins.Tmp
         [HttpDynamicResource("/api/tmp/pigs")]
         public HttpHandlerResult TmpHandlerMethod43(HttpRequestParams requestParams)
         {
-            using (var db = Context.Require<DatabasePlugin>().OpenSession())
+            using (var db = database.OpenSession())
             {
                 var list = db.Set<SmallPig>()
                     .Select(pig => new { id = pig.Id, name = pig.Name, size = pig.Size })

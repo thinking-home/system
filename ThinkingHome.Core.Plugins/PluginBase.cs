@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Localization;
@@ -10,6 +11,15 @@ namespace ThinkingHome.Core.Plugins
 {
     public abstract class PluginBase
     {
+        private static int latestDepsIndex;
+
+        public readonly int DependencyIndex;
+
+        protected PluginBase()
+        {
+            DependencyIndex = Interlocked.Increment(ref latestDepsIndex);
+        }
+
         #region properties
 
         public IServiceContext Context { get; set; }
@@ -23,6 +33,11 @@ namespace ThinkingHome.Core.Plugins
         #endregion
 
         #region life cycle
+
+        public virtual void NotifyPlugins()
+        {
+
+        }
 
         public virtual void InitPlugin()
         {

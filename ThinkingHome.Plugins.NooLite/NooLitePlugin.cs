@@ -17,12 +17,18 @@ namespace ThinkingHome.Plugins.NooLite
 
     public class NooLitePlugin : PluginBase
     {
+        private readonly ScriptsPlugin scripts;
         private MTRFXXAdapter device;
         private AdapterWrapper wrapper;
         private AdapterWrapper wrapperF;
 
-        private List<CommandDelegate> cmdHandlers = new List<CommandDelegate>();
-        private List<MicroclimateDelegate> microclimateHandlers = new List<MicroclimateDelegate>();
+        private readonly List<CommandDelegate> cmdHandlers = new List<CommandDelegate>();
+        private readonly List<MicroclimateDelegate> microclimateHandlers = new List<MicroclimateDelegate>();
+
+        public NooLitePlugin(ScriptsPlugin scripts)
+        {
+            this.scripts = scripts;
+        }
 
         public override void InitPlugin()
         {
@@ -90,17 +96,16 @@ namespace ThinkingHome.Plugins.NooLite
             SafeInvokeAsync(cmdHandlers, h => h((byte)cmd.Command, cmd.Channel, cmd.DataFormat,
                 cmd.Data1, cmd.Data2, cmd.Data3, cmd.Data4));
 
-            Context.Require<ScriptsPlugin>()
-                .EmitScriptEvent("noolite:data:received", (byte)cmd.Command, cmd.Channel,
-                    cmd.DataFormat, cmd.Data1, cmd.Data2, cmd.Data3, cmd.Data4);
+            scripts.EmitScriptEvent(
+                "noolite:data:received", (byte)cmd.Command, cmd.Channel,
+                cmd.DataFormat, cmd.Data1, cmd.Data2, cmd.Data3, cmd.Data4);
         }
 
         private void OnReceiveMicroclimateData(object obj, MicroclimateData data)
         {
             SafeInvokeAsync(microclimateHandlers, h => h(data.Channel, data.Temperature, data.Humidity, data.LowBattery));
 
-            Context.Require<ScriptsPlugin>()
-                .EmitScriptEvent("noolite:microclimate-data:received", data.Channel, data.Temperature, data.Humidity, data.LowBattery);
+            scripts.EmitScriptEvent("noolite:microclimate-data:received", data.Channel, data.Temperature, data.Humidity, data.LowBattery);
         }
 
         #endregion

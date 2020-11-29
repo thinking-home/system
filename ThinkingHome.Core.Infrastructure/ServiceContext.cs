@@ -32,14 +32,13 @@ namespace ThinkingHome.Core.Infrastructure
             }
         }
 
-        public IReadOnlyCollection<PluginBase> GetAllPlugins()
+        public IReadOnlyCollection<PluginBase> GetAllPlugins(PluginsOrder order = PluginsOrder.Direct)
         {
-            return new ReadOnlyCollection<PluginBase>(plugins.Values.ToList());
-        }
+            var sortedValues = order == PluginsOrder.Direct
+                ? plugins.Values.OrderBy(p => p.DependencyIndex)
+                : plugins.Values.OrderByDescending(p => p.DependencyIndex);
 
-        public T Require<T>() where T : PluginBase
-        {
-            return plugins[typeof(T)] as T;
+            return new ReadOnlyCollection<PluginBase>(sortedValues.ToList());
         }
     }
 }

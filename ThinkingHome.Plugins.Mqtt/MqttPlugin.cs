@@ -21,6 +21,8 @@ namespace ThinkingHome.Plugins.Mqtt
 {
     public class MqttPlugin : PluginBase
     {
+        private readonly ScriptsPlugin scripts;
+
         #region settings
 
         private const string DEFAULT_HOST = "localhost";
@@ -40,6 +42,11 @@ namespace ThinkingHome.Plugins.Mqtt
 
         private IMqttClient client;
         private IMqttClientOptions options;
+
+        public MqttPlugin(ScriptsPlugin scripts)
+        {
+            this.scripts = scripts;
+        }
 
         public override void InitPlugin()
         {
@@ -194,7 +201,7 @@ namespace ThinkingHome.Plugins.Mqtt
             // events
             await SafeInvokeAsync(handlers, h => h(msg.Topic, msg.Payload));
 
-            Context.Require<ScriptsPlugin>().EmitScriptEvent("mqtt:message:received", msg.Topic, new Buffer(msg.Payload));
+            scripts.EmitScriptEvent("mqtt:message:received", msg.Topic, new Buffer(msg.Payload));
         }
 
         #endregion

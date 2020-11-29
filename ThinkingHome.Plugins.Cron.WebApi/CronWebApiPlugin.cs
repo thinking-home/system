@@ -10,6 +10,16 @@ namespace ThinkingHome.Plugins.Cron.WebApi
 {
     public class CronWebApiPlugin : PluginBase
     {
+        private readonly DatabasePlugin database;
+
+        private readonly CronPlugin cron;
+
+        public CronWebApiPlugin(DatabasePlugin database, CronPlugin cron)
+        {
+            this.database = database;
+            this.cron = cron;
+        }
+
         private object ToApiModel(CronTask task)
         {
             return new
@@ -28,7 +38,7 @@ namespace ThinkingHome.Plugins.Cron.WebApi
         [HttpDynamicResource("/api/cron/web-api/list")]
         public HttpHandlerResult GetTaskList(HttpRequestParams request)
         {
-            using (var session = Context.Require<DatabasePlugin>().OpenSession())
+            using (var session = database.OpenSession())
             {
                 var list = session.Set<CronTask>()
                     .OrderBy(e => e.Month)
@@ -47,7 +57,7 @@ namespace ThinkingHome.Plugins.Cron.WebApi
         {
             var id = request.GetRequiredGuid("id");
 
-            using (var session = Context.Require<DatabasePlugin>().OpenSession())
+            using (var session = database.OpenSession())
             {
                 var task = session.Set<CronTask>().Single(x => x.Id == id);
 
@@ -67,7 +77,7 @@ namespace ThinkingHome.Plugins.Cron.WebApi
             var minute = request.GetInt32("minute");
             var enabled = request.GetRequiredBool("enabled");
 
-            using (var session = Context.Require<DatabasePlugin>().OpenSession())
+            using (var session = database.OpenSession())
             {
                 CronTask task;
 
@@ -91,7 +101,7 @@ namespace ThinkingHome.Plugins.Cron.WebApi
                 session.SaveChanges();
 
                 // reset cron event cache
-                Context.Require<CronPlugin>().ReloadTasks();
+                cron.ReloadTasks();
 
                 return HttpHandlerResult.Json(new { taskId = task.Id });
             }
@@ -102,7 +112,7 @@ namespace ThinkingHome.Plugins.Cron.WebApi
         {
             var id = request.GetRequiredGuid("id");
 
-            using (var session = Context.Require<DatabasePlugin>().OpenSession())
+            using (var session = database.OpenSession())
             {
                 var task = session.Set<CronTask>().Single(s => s.Id == id);
 
@@ -110,7 +120,7 @@ namespace ThinkingHome.Plugins.Cron.WebApi
                 session.SaveChanges();
 
                 // reset cron event cache
-                Context.Require<CronPlugin>().ReloadTasks();
+                cron.ReloadTasks();
             }
 
             return null;
