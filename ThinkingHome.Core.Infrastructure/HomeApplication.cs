@@ -35,6 +35,13 @@ namespace ThinkingHome.Core.Infrastructure
 
             try
             {
+                // notify plugins
+                foreach (var plugin in context.GetAllPlugins(PluginsOrder.Inverse))
+                {
+                    logger.LogInformation($"notify plugins: {plugin.GetType().FullName}");
+                    plugin.NotifyPlugins();
+                }
+
                 // init plugins
                 foreach (var plugin in context.GetAllPlugins())
                 {
@@ -69,7 +76,7 @@ namespace ThinkingHome.Core.Infrastructure
 
         public void StopServices()
         {
-            foreach (var plugin in context.GetAllPlugins(true))
+            foreach (var plugin in context.GetAllPlugins(PluginsOrder.Inverse))
             {
                 try
                 {

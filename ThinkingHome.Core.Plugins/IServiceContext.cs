@@ -6,6 +6,6 @@ namespace ThinkingHome.Core.Plugins
 {
     public interface IServiceContext
     {
-        IReadOnlyCollection<PluginBase> GetAllPlugins(bool inverseOrder = false);
+        IReadOnlyCollection<PluginBase> GetAllPlugins(PluginsOrder order = PluginsOrder.Direct);
     }
 }
