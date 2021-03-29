@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Reflection;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.SignalR;
@@ -50,6 +51,13 @@ namespace ThinkingHome.Plugins.WebServer
 
         private ObjectRegistry<BaseHandler> RegisterHandlers()
         {
+            Assembly getEmbeddedResourceAssembly((HttpEmbeddedResourceAttribute Meta, TypeInfo Type, PluginBase Plugin) res)
+            {
+                return res.Meta.Assembly == TargetAssembly.FromMember
+                    ? res.Type.Assembly
+                    : res.Meta.GetType().Assembly;
+            }
+
             var handlers = new ObjectRegistry<BaseHandler>();
 
             // api handlers
@@ -66,7 +74,11 @@ namespace ThinkingHome.Plugins.WebServer
                 .ToObjectRegistry(
                     handlers,
                     res => res.Meta.Url,
-                    res => new StaticResourceHandler(res.Meta.ResourcePath, res.Meta.ContentType, res.Type.Assembly));
+                    res => new StaticResourceHandler(
+                            res.Meta.ResourcePath,
+                            res.Meta.ContentType,
+                            getEmbeddedResourceAssembly(res))
+                    );
 
             // localization handlers
             Context.GetAllPlugins()

@@ -3,22 +3,20 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
 using Telegram.Bot.Types;
 using ThinkingHome.Core.Plugins;
 using ThinkingHome.Plugins.Cron;
 using ThinkingHome.Plugins.Database;
-using ThinkingHome.Plugins.Mail;
 using ThinkingHome.Plugins.Mqtt;
 using ThinkingHome.Plugins.Scripts;
 using ThinkingHome.Plugins.Scripts.Attributes;
 using ThinkingHome.Plugins.TelegramBot;
 using ThinkingHome.Plugins.Timer;
-using ThinkingHome.Plugins.WebServer;
 using ThinkingHome.Plugins.WebServer.Attributes;
 using ThinkingHome.Plugins.WebServer.Handlers;
+using ThinkingHome.Plugins.WebUi;
 
 namespace ThinkingHome.Plugins.Tmp
 {
@@ -28,6 +26,9 @@ namespace ThinkingHome.Plugins.Tmp
     // [AppSection(SectionType.System, "Weather locations", "/static/tmp/inde6.js", "ThinkingHome.Plugins.Tmp.Resources.tmp.js")]
     //
     // [TemplateResource("/static/tmp/tmp.tpl", "ThinkingHome.Plugins.Tmp.Resources.tmp.tpl")]
+    [HttpWebPageResource("/moo")]
+    [HttpWebPageResource("/hroo")]
+    [HttpWebPageResource("/mimimi")]
     [HttpLocalizationResource("/static/tmp/lang.json")]
 
     public class TmpPlugin : PluginBase
