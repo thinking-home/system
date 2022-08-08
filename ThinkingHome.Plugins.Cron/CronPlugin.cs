@@ -127,7 +127,7 @@ namespace ThinkingHome.Plugins.Cron
                 using (var session = database.OpenSession())
                 {
                     schedule = session.Set<CronTask>()
-                        .Where(t => t.Enabled)
+                        .Where(t => t.Enabled).AsEnumerable()
                         .Select(CronScheduleItem.FromTask)
                         .ToList();
 
