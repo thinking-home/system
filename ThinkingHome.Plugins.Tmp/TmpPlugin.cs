@@ -37,15 +37,17 @@ namespace ThinkingHome.Plugins.Tmp
         private readonly CronPlugin cron;
         private readonly MqttPlugin mqtt;
         private readonly TelegramBotPlugin telegramBot;
+        private readonly MailPlugin mail;
 
         public TmpPlugin(DatabasePlugin database, ScriptsPlugin scripts, CronPlugin cron,
-            MqttPlugin mqtt, TelegramBotPlugin telegramBot)
+            MqttPlugin mqtt, TelegramBotPlugin telegramBot, MailPlugin mail)
         {
             this.database = database;
             this.scripts = scripts;
             this.cron = cron;
             this.mqtt = mqtt;
             this.telegramBot = telegramBot;
+            this.mail = mail;
         }
 
         public override void InitPlugin()
@@ -152,11 +154,13 @@ namespace ThinkingHome.Plugins.Tmp
         public void ReplyToTelegramMessage(string command, Message msg)
         {
             telegramBot.SendMessage(msg.Chat.Id, $"Ваше сообщение ({msg.Text}) получено");
-            telegramBot.SendMessage(msg.Chat.Id, $"Ловите новенький GUID ({Guid.NewGuid():P})");
+            telegramBot.SendMessage(msg.Chat.Id, $"Ловите новенький GUID ({Guid.NewGuid():D})");
 
-            telegramBot.SendFile(msg.Chat.Id, new Uri("https://www.noo.com.by/assets/files/PDF/PK314.pdf"));
+            // telegramBot.SendFile(msg.Chat.Id, new Uri("https://www.noo.com.by/assets/files/PDF/PK314.pdf"));
             telegramBot.SendFile(msg.Chat.Id, "mimimi.txt", new MemoryStream(Encoding.UTF8.GetBytes("хри-хри")));
             telegramBot.SendPhoto(msg.Chat.Id, new Uri("http://историк.рф/wp-content/uploads/2017/03/2804.jpg"));
+            
+            mail.SendMail("dima117a@gmail.com", "Test message", "This is the test");
         }
 
         [TelegramMessageHandler]

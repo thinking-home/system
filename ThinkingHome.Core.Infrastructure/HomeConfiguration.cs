@@ -14,13 +14,22 @@ namespace ThinkingHome.Core.Infrastructure
         public readonly IConfiguration Configuration;
 
         public readonly LoggerConfiguration LoggerConfiguration;
+        
+        public readonly string Environment;
 
         public HomeConfiguration()
         {
+            Environment = System.Environment.GetEnvironmentVariable("THINKINGHOME_ENVIRONMENT");
+            
             var builder = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
-                .AddJsonFile("appsettings.json", true)
-                .AddEnvironmentVariables();
+                .AddJsonFile("appsettings.json", true);
+
+            if (!String.IsNullOrWhiteSpace(Environment)) {
+                builder.AddJsonFile($"appsettings.{Environment}.json", optional: false);
+            }
+            
+            builder.AddEnvironmentVariables("THINKINGHOME_");
 
             Configuration = builder.Build();
 

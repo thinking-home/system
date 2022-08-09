@@ -1,5 +1,6 @@
 ﻿using MailKit.Net.Smtp;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using MimeKit;
 using ThinkingHome.Core.Plugins;
 using ThinkingHome.Plugins.Scripts;
@@ -23,6 +24,11 @@ namespace ThinkingHome.Plugins.Mail
         private bool UseAuth => !string.IsNullOrEmpty(AuthLogin) && !string.IsNullOrEmpty(AuthPassword);
 
         #endregion
+
+        public override void InitPlugin()
+        {
+	        Logger.LogInformation("Use mail account {FromMail} with {SmtpHost} SMTP host", FromMail, SmtpHost);
+        }
 
         #region private
 

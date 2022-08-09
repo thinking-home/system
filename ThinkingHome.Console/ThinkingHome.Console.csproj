@@ -7,6 +7,9 @@
     </PropertyGroup>
     <ItemGroup>
         <None Remove="logs\**\*" />
+        <None Update="appsettings.Development.json">
+          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
     </ItemGroup>
     <ItemGroup>
         <None Update="appsettings.json">
