@@ -33,12 +33,7 @@ namespace ThinkingHome.Core.Plugins
         #endregion
 
         #region life cycle
-
-        public virtual void NotifyPlugins()
-        {
-
-        }
-
+        
         public virtual void InitPlugin()
         {
 

@@ -35,13 +35,6 @@ namespace ThinkingHome.Core.Infrastructure
 
             try
             {
-                // notify plugins
-                foreach (var plugin in context.GetAllPlugins(PluginsOrder.Inverse))
-                {
-                    logger.LogInformation("notify plugins: {Plugin}", plugin.GetType().FullName);
-                    plugin.NotifyPlugins();
-                }
-
                 // init plugins
                 foreach (var plugin in context.GetAllPlugins())
                 {
