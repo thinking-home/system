@@ -49,7 +49,7 @@ namespace ThinkingHome.Plugins.Mqtt
         {
             var clientId = Guid.NewGuid().ToString();
 
-            Logger.LogInformation($"init MQTT client: {Host}:{Port} (ID: {{{clientId}}})");
+            Logger.LogInformation("init MQTT client: {Url} (ID: {{{ClientId}}})", $"{Host}:{Port}", clientId);
 
             options = new MqttClientOptionsBuilder()
                 .WithClientId(clientId)
@@ -135,7 +135,10 @@ namespace ThinkingHome.Plugins.Mqtt
 
                 foreach (var mi in plugin.FindMethods<MqttMessageHandlerAttribute, MqttMessageHandlerDelegate>())
                 {
-                    Logger.LogInformation($"register mqtt message handler: \"{mi.Method.Method.Name}\" ({pluginType.FullName})");
+                    Logger.LogInformation(
+                        "register mqtt message handler: {Method} ({PluginType})",
+                        mi.Method.Method.Name,
+                        pluginType.FullName);
                     list.Add(mi.Method);
                 }
             }
@@ -173,10 +176,10 @@ namespace ThinkingHome.Plugins.Mqtt
         {
             Logger.LogInformation("MQTT client is connected");
 
-            Logger.LogInformation($"Subscribe: {string.Join(", ", Topics)}");
+            Logger.LogInformation("Subscribe: {Topics}", string.Join(", ", Topics));
 
             foreach (var topic in Topics) {
-                Logger.LogInformation($"Subscribe MQTT client to \"{topic}\" topic");
+                Logger.LogInformation("Subscribe MQTT client to {Topic} topic", topic);
                 var topicFilter = new MqttTopicFilterBuilder().WithTopic(topic).WithAtMostOnceQoS().Build();
                 await client.SubscribeAsync(topicFilter);
             }
@@ -195,7 +198,9 @@ namespace ThinkingHome.Plugins.Mqtt
             var msg = e.ApplicationMessage;
             var payload = Encoding.UTF8.GetString(msg.Payload);
 
-            Logger.LogDebug($"topic: {msg.Topic}, payload: {payload}, qos: {msg.QualityOfServiceLevel}, retain: {msg.Retain}");
+            Logger.LogDebug(
+                "topic: {Topic}, payload: {Payload}, qos: {QualityOfServiceLevel}, retain: {Retain}",
+                msg.Topic, payload, msg.QualityOfServiceLevel, msg.Retain);
 
             // events
             await SafeInvokeAsync(handlers, h => h(msg.Topic, msg.Payload));

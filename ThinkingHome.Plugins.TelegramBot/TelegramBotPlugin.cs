@@ -41,7 +41,8 @@ namespace ThinkingHome.Plugins.TelegramBot
                 .FindMethods<TelegramMessageHandlerAttribute, TelegramMessageHandlerDelegate>()
                 .ToObjectSetRegistry(mi => mi.Meta.Command.TrimStart('/'), mi => mi.Method);
 
-            handlers.ForEach((command, handler) => Logger.LogInformation($"register telegram message handler: \"{command}\""));
+            handlers.ForEach((command, handler) => Logger.LogInformation(
+                "register telegram message handler: {Command}", command));
         }
 
         public override void StartPlugin()
@@ -53,7 +54,9 @@ namespace ThinkingHome.Plugins.TelegramBot
             {
                 if (me.Exception != null) return;
 
-                Logger.LogInformation($"telegram bot is inited: {me.Result.FirstName} (@{me.Result.Username})");
+                Logger.LogInformation(
+                    "telegram bot is inited: {FirstName} ({Username})",
+                    me.Result.FirstName, me.Result.Username);
             });
         }
 
@@ -69,7 +72,9 @@ namespace ThinkingHome.Plugins.TelegramBot
             if (update.Message is { } msg) {
                 var command = ParseCommand(msg.Text);
 
-                Logger.LogInformation($"New telegram message: messageID: {msg.MessageId}; chatID: {msg.Chat.Id} ({msg.Chat.Username})");
+                Logger.LogInformation(
+                    "New telegram message: messageID: {MessageId}; chatID: {ChatId} ({Username})",
+                    msg.MessageId, msg.Chat.Id, msg.Chat.Username);
 
                 SafeInvokeAsync(handlers[command], fn => fn(command, msg));
 

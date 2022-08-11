@@ -59,7 +59,11 @@ namespace ThinkingHome.Plugins.Cron
 
                 foreach (var mi in plugin.FindMethods<CronHandlerAttribute, CronHandlerDelegate>())
                 {
-                    Logger.LogInformation($"register cron handler: \"{mi.Method.Method.Name}\" ({pluginType.FullName})");
+                    Logger.LogInformation(
+                        "register cron handler: {Method} ({PluginType})",
+                        mi.Method.Method.Name,
+                        pluginType.FullName);
+
                     list.Add(mi.Method);
                 }
             }
@@ -100,7 +104,7 @@ namespace ThinkingHome.Plugins.Cron
                     {
                         foreach (var task in active)
                         {
-                            Logger.LogInformation($"cron task started: {task.TaskId}");
+                            Logger.LogInformation("cron task started: {TaskId}", task.TaskId);
 
                             if (!string.IsNullOrEmpty(task.EventAlias))
                             {
@@ -131,7 +135,7 @@ namespace ThinkingHome.Plugins.Cron
                         .Select(CronScheduleItem.FromTask)
                         .ToList();
 
-                    Logger.LogInformation($"{schedule.Count} cron tasks are loaded");
+                    Logger.LogInformation("{Count} cron tasks are loaded", schedule.Count);
                 }
             }
         }

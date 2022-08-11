@@ -52,7 +52,7 @@ namespace ThinkingHome.Plugins.Tmp
 
         public override void InitPlugin()
         {
-            Logger.LogInformation($"init tmp plugin {Guid.NewGuid()}");
+            Logger.LogInformation("init tmp plugin {Guid}", Guid.NewGuid());
             Logger.LogInformation(StringLocalizer.GetString("hello"));
 
             telegramBot.SendMessage(353206782, "MOOO!!!!!");
@@ -73,17 +73,17 @@ namespace ThinkingHome.Plugins.Tmp
         {
             var result = scripts.ExecuteScript("return host.api.мукнуть('это полезно!')");
 
-            Logger.LogInformation($"script result: {result}");
+            Logger.LogInformation("script result: {Result}", result);
 
-            Logger.LogWarning($"start tmp plugin {Guid.NewGuid()}");
+            Logger.LogWarning("start tmp plugin {Guid}", Guid.NewGuid());
 
-            // Context.Require<ScriptsPlugin>().ExecuteScript("host.api.мукнуть('хрюката', 12)");
-            // Context.Require<MailPlugin>().SendMail("dima117a@gmail.com", "Привет от коровы!", "Привет!\nЭто маленькая корова. У меня всё хорошо.");
+            scripts.ExecuteScript("host.api.мукнуть('хрюката', 12)");
+            mail.SendMail("dima117a@gmail.com", "Привет от коровы!", "Привет!\nЭто маленькая корова. У меня всё хорошо.");
         }
 
         public override void StopPlugin()
         {
-            Logger.LogDebug($"stop tmp plugin {Guid.NewGuid()}");
+            Logger.LogDebug("stop tmp plugin {Guid}", Guid.NewGuid());
         }
 
         [HttpDynamicResource("/api/tmp/mqtt-send")]
@@ -105,22 +105,20 @@ namespace ThinkingHome.Plugins.Tmp
 
             if (topic == "test")
             {
-                Logger.LogWarning($"TEST MESSAGE: {str}");
+                Logger.LogWarning("TEST MESSAGE: {Message}", str);
             }
             else
             {
-                Logger.LogInformation($"{topic}: {str}");
+                Logger.LogInformation("{Topic}: {Message}", topic, str);
             }
         }
 
         [TimerCallback(10000)]
         public void MimimiTimer(DateTime now)
         {
-            using (var db = database.OpenSession())
-            {
-                db.Set<SmallPig>().ToList()
-                    .ForEach(pig => Logger.LogWarning($"{pig.Name}, size: {pig.Size} ({pig.Id})"));
-            }
+            using var db = database.OpenSession();
+            db.Set<SmallPig>().ToList()
+                .ForEach(pig => Logger.LogWarning("{Name}, size: {Size} ({Id})", pig.Name, pig.Size, pig.Id));
         }
 
         // [TimerCallback(5000)]
@@ -138,13 +136,13 @@ namespace ThinkingHome.Plugins.Tmp
         [ScriptCommand("мукнуть")]
         public int SayMoo(string text, int count)
         {
-            Logger.LogInformation("count = {0}", count);
+            Logger.LogInformation("count = {Count}", count);
 
             var msg = $"Корова сказала: Му - {text}";
 
             for (var i = 0; i < count; i++)
             {
-                Logger.LogInformation($"{i + 1} - {msg}");
+                Logger.LogInformation("{Index} - {Message}", i + 1, msg);
             }
 
             return 2459 + count;
@@ -167,7 +165,7 @@ namespace ThinkingHome.Plugins.Tmp
         public void ReplyToTelegramMessage2(string command, Message msg)
         {
             telegramBot.SendMessage(msg.Chat.Id, $"mi mi mi");
-            Logger.LogInformation($"NEW TELEGRAM MESSAGE: {msg.Text} (cmd: {command})");
+            Logger.LogInformation("NEW TELEGRAM MESSAGE: {Message} (cmd: {Command})", msg.Text, command);
         }
 
         [ScriptCommand("протестировать")]
@@ -177,7 +175,7 @@ namespace ThinkingHome.Plugins.Tmp
 
             for (var i = 0; i < count; i++)
             {
-                Logger.LogCritical($"{i + 1} - {msg}");
+                Logger.LogCritical("{Index} - {Message}", i + 1, msg);
             }
         }
 
@@ -219,7 +217,7 @@ namespace ThinkingHome.Plugins.Tmp
             return null;
         }
 
-        [HttpDynamicResource("/api/tmp/index42.js")]
+        [HttpDynamicResource("/api/tmp/index42")]
         public HttpHandlerResult TmpHandlerMethod42(HttpRequestParams requestParams)
         {
             return HttpHandlerResult.Json(new
@@ -269,7 +267,7 @@ namespace ThinkingHome.Plugins.Tmp
         [CronHandler]
         public void TestCronHandler(Guid cronTaskId)
         {
-            Logger.LogWarning("CRON!!!!!!!!!!!! {0}", cronTaskId);
+            Logger.LogWarning("CRON!!!!!!!!!!!! {TaskId}", cronTaskId);
         }
     }
 }

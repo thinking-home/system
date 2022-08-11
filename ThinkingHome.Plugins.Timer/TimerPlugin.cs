@@ -31,7 +31,7 @@ namespace ThinkingHome.Plugins.Timer
             {
                 var info = callback.Method.GetMethodInfo();
 
-                Logger.LogInformation($"Register timer callback {info.Name} for {info.DeclaringType.FullName}");
+                Logger.LogInformation("Register timer callback {info.Name} for {TypeName}", info.Name, info.DeclaringType?.FullName);
 
                 var timer = new InternalTimer(
                     callback.Meta.Delay ?? random.Next(callback.Meta.Interval),

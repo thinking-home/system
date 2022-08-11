@@ -36,7 +36,7 @@ namespace ThinkingHome.Plugins.NooLite
 
             if (string.IsNullOrEmpty(portName)) throw new Exception("noolite portName is required");
 
-            Logger.LogInformation($"Use '{portName}' serial port");
+            Logger.LogInformation("Use {PortName} serial port", portName);
 
             device = new MTRFXXAdapter(portName);
             device.Connect += OnConnect;
@@ -58,7 +58,9 @@ namespace ThinkingHome.Plugins.NooLite
                     .FindMethods<CommandAttribute, CommandDelegate>())
                 {
                     Logger.LogInformation(
-                        $"register noolite command handler: \"{mi.Method.Method.Name}\" ({pluginType.FullName})");
+                        "register noolite command handler: {Method} ({PluginType})",
+                        mi.Method.Method.Name,
+                        pluginType.FullName);
                     cmdHandlers.Add(mi.Method);
                 }
 
@@ -66,7 +68,9 @@ namespace ThinkingHome.Plugins.NooLite
                     .FindMethods<MicroclimateAttribute, MicroclimateDelegate>())
                 {
                     Logger.LogInformation(
-                        $"register noolite microclimate handler: \"{mi.Method.Method.Name}\" ({pluginType.FullName})");
+                        "register noolite microclimate handler: {Method} ({PluginType})",
+                        mi.Method.Method.Name,
+                        pluginType.FullName);
                     microclimateHandlers.Add(mi.Method);
                 }
             }

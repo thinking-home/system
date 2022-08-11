@@ -38,21 +38,21 @@ namespace ThinkingHome.Core.Infrastructure
                 // notify plugins
                 foreach (var plugin in context.GetAllPlugins(PluginsOrder.Inverse))
                 {
-                    logger.LogInformation($"notify plugins: {plugin.GetType().FullName}");
+                    logger.LogInformation("notify plugins: {Plugin}", plugin.GetType().FullName);
                     plugin.NotifyPlugins();
                 }
 
                 // init plugins
                 foreach (var plugin in context.GetAllPlugins())
                 {
-                    logger.LogInformation($"init plugin: {plugin.GetType().FullName}");
+                    logger.LogInformation("init plugin: {Plugin}", plugin.GetType().FullName);
                     plugin.InitPlugin();
                 }
 
                 // start plugins
                 foreach (var plugin in context.GetAllPlugins())
                 {
-                    logger.LogInformation($"start plugin {plugin.GetType().FullName}");
+                    logger.LogInformation("start plugin {Plugin}", plugin.GetType().FullName);
                     plugin.StartPlugin();
                 }
 
@@ -80,7 +80,7 @@ namespace ThinkingHome.Core.Infrastructure
             {
                 try
                 {
-                    logger.LogInformation($"stop plugin {plugin.GetType().FullName}");
+                    logger.LogInformation("stop plugin {Plugin}", plugin.GetType().FullName);
                     plugin.StopPlugin();
                 }
                 catch (Exception ex)
@@ -98,7 +98,7 @@ namespace ThinkingHome.Core.Infrastructure
         {
             var culture = config.GetCulture();
 
-            logger.LogInformation($"init culture: {culture}");
+            logger.LogInformation("init culture: {Culture}", culture);
 
             Thread.CurrentThread.CurrentCulture =
                 Thread.CurrentThread.CurrentUICulture =
