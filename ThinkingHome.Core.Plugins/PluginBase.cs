@@ -51,7 +51,7 @@ namespace ThinkingHome.Core.Plugins
 
         #endregion
 
-        public void SafeInvoke<T>(IEnumerable<T> handlers, Action<T> action)
+        protected void SafeInvoke<T>(IEnumerable<T> handlers, Action<T> action)
         {
             if (handlers == null) return;
 
@@ -61,7 +61,7 @@ namespace ThinkingHome.Core.Plugins
             }
         }
 
-        public void SafeInvoke<T>(T handler, Action<T> action)
+        protected void SafeInvoke<T>(T handler, Action<T> action)
         {
             if (handler == null) return;
 
@@ -69,7 +69,7 @@ namespace ThinkingHome.Core.Plugins
             context.Invoke();
         }
 
-        public async Task SafeInvokeAsync<T>(IEnumerable<T> handlers, Action<T> action)
+        protected async Task SafeInvokeAsync<T>(IEnumerable<T> handlers, Action<T> action)
         {
             if (handlers == null) return;
 
@@ -78,7 +78,7 @@ namespace ThinkingHome.Core.Plugins
             await Task.WhenAll(tasks);
         }
 
-        public async Task SafeInvokeAsync<T>(T handler, Action<T> action)
+        protected async Task SafeInvokeAsync<T>(T handler, Action<T> action)
         {
             if (handler == null) return;
 

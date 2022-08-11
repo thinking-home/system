@@ -49,7 +49,7 @@ namespace ThinkingHome.Plugins.Mqtt
         {
             var clientId = Guid.NewGuid().ToString();
 
-            Logger.LogInformation("init MQTT client: {Url} (ID: {{{ClientId}}})", $"{Host}:{Port}", clientId);
+            Logger.LogInformation("init MQTT client: {Url} (ID: {ClientId})", $"{Host}:{Port}", clientId);
 
             options = new MqttClientOptionsBuilder()
                 .WithClientId(clientId)
