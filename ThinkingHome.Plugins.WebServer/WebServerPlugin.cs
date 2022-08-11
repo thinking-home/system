@@ -76,7 +76,7 @@ namespace ThinkingHome.Plugins.WebServer
                     res => res.Meta.Url,
                     res => new LocalizationHandler(res.Plugin.StringLocalizer));
 
-            handlers.ForEach((url, handler) => Logger.LogInformation($"register HTTP handler: \"{url}\""));
+            handlers.ForEach((url, handler) => Logger.LogInformation("register HTTP handler: {Url}", url));
 
             return handlers;
         }
@@ -87,7 +87,7 @@ namespace ThinkingHome.Plugins.WebServer
                 .FindMethods<HubMessageHandlerAttribute, HubMessageHandlerDelegate>()
                 .ToObjectSetRegistry(mi => mi.Meta.Channel, mi => mi.Method);
 
-            messageHandlers.ForEach((channel, handler) => Logger.LogInformation($"register hub message handler: \"{channel}\""));
+            messageHandlers.ForEach((channel, handler) => Logger.LogInformation("register hub message handler: {Channel}", channel));
 
             return messageHandlers;
         }

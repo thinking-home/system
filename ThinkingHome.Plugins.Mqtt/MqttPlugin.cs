@@ -1,15 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using MQTTnet;
 using MQTTnet.Client;
-using MQTTnet.Client.Connecting;
-using MQTTnet.Client.Disconnecting;
-using MQTTnet.Client.Options;
+using MQTTnet.Protocol;
 using ThinkingHome.Core.Plugins;
 using ThinkingHome.Core.Plugins.Utils;
 using ThinkingHome.Plugins.Scripts;
@@ -41,7 +38,7 @@ namespace ThinkingHome.Plugins.Mqtt
         #endregion
 
         private IMqttClient client;
-        private IMqttClientOptions options;
+        private MqttClientOptions options;
 
         public MqttPlugin(ScriptsPlugin scripts)
         {
@@ -52,7 +49,7 @@ namespace ThinkingHome.Plugins.Mqtt
         {
             var clientId = Guid.NewGuid().ToString();
 
-            Logger.LogInformation($"init MQTT client: {Host}:{Port} (ID: {{{clientId}}})");
+            Logger.LogInformation("init MQTT client: {Url} (ID: {ClientId})", $"{Host}:{Port}", clientId);
 
             options = new MqttClientOptionsBuilder()
                 .WithClientId(clientId)
@@ -61,9 +58,10 @@ namespace ThinkingHome.Plugins.Mqtt
                 .Build();
 
             client = new MqttFactory().CreateMqttClient();
-            client.UseConnectedHandler(client_Connected);
-            client.UseDisconnectedHandler(client_Disconnected);
-            client.UseApplicationMessageReceivedHandler(client_ApplicationMessageReceived);
+
+            client.ConnectedAsync += client_Connected;
+            client.DisconnectedAsync += client_Disconnected;
+            client.ApplicationMessageReceivedAsync += client_ApplicationMessageReceived;
 
             handlers = RegisterHandlers();
         }
@@ -113,10 +111,10 @@ namespace ThinkingHome.Plugins.Mqtt
             var msg = new MqttApplicationMessageBuilder()
                 .WithTopic(topic)
                 .WithPayload(payload)
-                .WithAtLeastOnceQoS()
+                .WithQualityOfServiceLevel(MqttQualityOfServiceLevel.AtLeastOnce)
                 .WithRetainFlag(retain)
                 .Build();
-
+            
             var ex = client.PublishAsync(msg).Exception;
 
             if (ex != null)
@@ -137,7 +135,10 @@ namespace ThinkingHome.Plugins.Mqtt
 
                 foreach (var mi in plugin.FindMethods<MqttMessageHandlerAttribute, MqttMessageHandlerDelegate>())
                 {
-                    Logger.LogInformation($"register mqtt message handler: \"{mi.Method.Method.Name}\" ({pluginType.FullName})");
+                    Logger.LogInformation(
+                        "register mqtt message handler: {Method} ({PluginType})",
+                        mi.Method.Method.Name,
+                        pluginType.FullName);
                     list.Add(mi.Method);
                 }
             }
@@ -147,11 +148,11 @@ namespace ThinkingHome.Plugins.Mqtt
 
         private void ReConnect()
         {
-            if (client != null && !client.IsConnected && reconnectEnabled)
+            if (client is { IsConnected: false } && reconnectEnabled)
             {
                 lock (client)
                 {
-                    if (client != null && !client.IsConnected && reconnectEnabled)
+                    if (client is { IsConnected: false } && reconnectEnabled)
                     {
                         try
                         {
@@ -171,32 +172,35 @@ namespace ThinkingHome.Plugins.Mqtt
             }
         }
 
-        private async void client_Connected(MqttClientConnectedEventArgs e)
+        private async Task client_Connected(MqttClientConnectedEventArgs e)
         {
             Logger.LogInformation("MQTT client is connected");
 
-            Logger.LogInformation($"Subscribe: {string.Join(", ", Topics)}");
+            Logger.LogInformation("Subscribe: {Topics}", string.Join(", ", Topics));
 
-            var filters = Topics
-                .Select(topic => new MqttTopicFilterBuilder().WithTopic(topic).WithAtMostOnceQoS().Build())
-                .ToArray();
-
-            await client.SubscribeAsync(filters);
+            foreach (var topic in Topics) {
+                Logger.LogInformation("Subscribe MQTT client to {Topic} topic", topic);
+                var topicFilter = new MqttTopicFilterBuilder().WithTopic(topic).WithAtMostOnceQoS().Build();
+                await client.SubscribeAsync(topicFilter);
+            }
 
             Logger.LogInformation("MQTT client is subscribed");
         }
 
-        private void client_Disconnected(MqttClientDisconnectedEventArgs e)
+        private Task client_Disconnected(MqttClientDisconnectedEventArgs e)
         {
             Logger.LogInformation("MQTT connection closed");
+            return Task.CompletedTask;
         }
-
+        
         private async Task client_ApplicationMessageReceived(MqttApplicationMessageReceivedEventArgs e)
         {
             var msg = e.ApplicationMessage;
             var payload = Encoding.UTF8.GetString(msg.Payload);
 
-            Logger.LogDebug($"topic: {msg.Topic}, payload: {payload}, qos: {msg.QualityOfServiceLevel}, retain: {msg.Retain}");
+            Logger.LogDebug(
+                "topic: {Topic}, payload: {Payload}, qos: {QualityOfServiceLevel}, retain: {Retain}",
+                msg.Topic, payload, msg.QualityOfServiceLevel, msg.Retain);
 
             // events
             await SafeInvokeAsync(handlers, h => h(msg.Topic, msg.Payload));

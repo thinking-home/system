@@ -31,7 +31,7 @@ namespace ThinkingHome.Plugins.Scripts
                 .SelectMany(plugin => plugin.FindMethods<ScriptCommandAttribute, Delegate>())
                 .ToObjectRegistry(methods, mi => mi.Meta.Alias, mi => mi.Method);
 
-            methods.ForEach((name, method) => Logger.LogInformation($"register script method \"{name}\""));
+            methods.ForEach((name, method) => Logger.LogInformation("register script method: {Name}", name));
 
             // создаем объект host
             host = new
@@ -77,7 +77,7 @@ namespace ThinkingHome.Plugins.Scripts
 
         public void EmitScriptEvent(DbContext session, string eventAlias, params object[] args)
         {
-            Logger.LogDebug($"execute script event handlers ({eventAlias})");
+            Logger.LogDebug("execute script event handlers ({EventAlias})", eventAlias);
 
             // find all subscribed scripts
             var scripts = session.Set<ScriptEventHandler>()
@@ -110,7 +110,7 @@ namespace ThinkingHome.Plugins.Scripts
             }
             catch (Exception ex)
             {
-                Logger.LogError(new EventId(), ex, $"Can't find the script '{name}'");
+                Logger.LogError(new EventId(), ex, "Can't find script: {Name}", name);
                 return null;
             }
         }
@@ -123,7 +123,7 @@ namespace ThinkingHome.Plugins.Scripts
             }
             catch (Exception ex)
             {
-                Logger.LogError(new EventId(), ex, $"Can't find the method '{name}'");
+                Logger.LogError(new EventId(), ex, "Can't find method: {Name}", name);
                 return null;
             }
         }
