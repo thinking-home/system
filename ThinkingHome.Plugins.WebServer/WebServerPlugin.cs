@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.ObjectModel;
+using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.SignalR;
@@ -51,23 +53,17 @@ namespace ThinkingHome.Plugins.WebServer
         private ObjectRegistry<BaseHandler> RegisterHandlers()
         {
             var handlers = new ObjectRegistry<BaseHandler>();
+            using var configBuilder = new WebServerConfigurationBuilder(handlers);
+            
+            var inits = Context.GetAllPlugins()
+                .SelectMany(p => p.FindMethods<WebServerConfigurationBuilderAttribute, WebServerConfigurationBuilderDelegate>())
+                .Select(obj => obj.Method)
+                .ToArray();
 
-            // api handlers
-            Context.GetAllPlugins()
-                .FindMethods<HttpDynamicResourceAttribute, HttpHandlerDelegate>()
-                .ToObjectRegistry(
-                    handlers,
-                    mi => mi.Meta.Url,
-                    mi => new DynamicResourceHandler(mi.Method, mi.Meta.IsCached));
-
-            // resource handlers
-            Context.GetAllPlugins()
-                .FindAttrs<HttpEmbeddedResourceAttribute>()
-                .ToObjectRegistry(
-                    handlers,
-                    res => res.Meta.Url,
-                    res => new StaticResourceHandler(res.Meta.ResourcePath, res.Meta.ContentType, res.Type.Assembly));
-
+            foreach (var fn in inits) {
+                fn(configBuilder);
+            }
+            
             // localization handlers
             Context.GetAllPlugins()
                 .FindAttrs<HttpLocalizationResourceAttribute>()

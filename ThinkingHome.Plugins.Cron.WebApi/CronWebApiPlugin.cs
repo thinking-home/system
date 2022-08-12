@@ -3,6 +3,7 @@ using System.Linq;
 using ThinkingHome.Core.Plugins;
 using ThinkingHome.Plugins.Cron.Model;
 using ThinkingHome.Plugins.Database;
+using ThinkingHome.Plugins.WebServer;
 using ThinkingHome.Plugins.WebServer.Attributes;
 using ThinkingHome.Plugins.WebServer.Handlers;
 
@@ -34,39 +35,42 @@ namespace ThinkingHome.Plugins.Cron.WebApi
                 minute = task.Minute
             };
         }
-
-        [HttpDynamicResource("/api/cron/web-api/list")]
-        public HttpHandlerResult GetTaskList(HttpRequestParams request)
+        
+        [WebServerConfigurationBuilder]
+        public void RegisterHttpHandlers(WebServerConfigurationBuilder config)
         {
-            using (var session = database.OpenSession())
-            {
-                var list = session.Set<CronTask>()
-                    .OrderBy(e => e.Month)
-                    .ThenBy(e => e.Day)
-                    .ThenBy(e => e.Hour)
-                    .ThenBy(e => e.Minute)
-                    .Select(ToApiModel)
-                    .ToArray();
-
-                return HttpHandlerResult.Json(list);
-            }
+            config
+                .RegisterDynamicResource("/api/cron/web-api/list", GetTaskList)
+                .RegisterDynamicResource("/api/cron/web-api/get", LoadTask)
+                .RegisterDynamicResource("/api/cron/web-api/save", SaveTask)
+                .RegisterDynamicResource("/api/cron/web-api/delete", DeleteTask);
         }
 
-        [HttpDynamicResource("/api/cron/web-api/get")]
-        public HttpHandlerResult LoadTask(HttpRequestParams request)
+        private HttpHandlerResult GetTaskList(HttpRequestParams request)
+        {
+            using var session = database.OpenSession();
+            var list = session.Set<CronTask>()
+                .OrderBy(e => e.Month)
+                .ThenBy(e => e.Day)
+                .ThenBy(e => e.Hour)
+                .ThenBy(e => e.Minute)
+                .Select(ToApiModel)
+                .ToArray();
+
+            return HttpHandlerResult.Json(list);
+        }
+
+        private HttpHandlerResult LoadTask(HttpRequestParams request)
         {
             var id = request.GetRequiredGuid("id");
 
-            using (var session = database.OpenSession())
-            {
-                var task = session.Set<CronTask>().Single(x => x.Id == id);
+            using var session = database.OpenSession();
+            var task = session.Set<CronTask>().Single(x => x.Id == id);
 
-                return HttpHandlerResult.Json(ToApiModel(task));
-            }
+            return HttpHandlerResult.Json(ToApiModel(task));
         }
 
-        [HttpDynamicResource("/api/cron/web-api/save")]
-        public HttpHandlerResult SaveTask(HttpRequestParams request)
+        private HttpHandlerResult SaveTask(HttpRequestParams request)
         {
             var id = request.GetGuid("id");
             var name = request.GetRequiredString("name");
@@ -77,51 +81,47 @@ namespace ThinkingHome.Plugins.Cron.WebApi
             var minute = request.GetInt32("minute");
             var enabled = request.GetRequiredBool("enabled");
 
-            using (var session = database.OpenSession())
+            using var session = database.OpenSession();
+            
+            CronTask task;
+
+            if (id.HasValue)
             {
-                CronTask task;
-
-                if (id.HasValue)
-                {
-                    task = session.Set<CronTask>().Single(s => s.Id == id.Value);
-                }
-                else
-                {
-                    task = new CronTask { Id = Guid.NewGuid() };
-                    session.Set<CronTask>().Add(task);
-                }
-
-                task.Name = name;
-                task.EventAlias = eventAlias;
-                task.Enabled = enabled;
-                task.Month = month;
-                task.Day = day;
-                task.Hour = hour;
-                task.Minute = minute;
-                session.SaveChanges();
-
-                // reset cron event cache
-                cron.ReloadTasks();
-
-                return HttpHandlerResult.Json(new { taskId = task.Id });
+                task = session.Set<CronTask>().Single(s => s.Id == id.Value);
             }
+            else
+            {
+                task = new CronTask { Id = Guid.NewGuid() };
+                session.Set<CronTask>().Add(task);
+            }
+
+            task.Name = name;
+            task.EventAlias = eventAlias;
+            task.Enabled = enabled;
+            task.Month = month;
+            task.Day = day;
+            task.Hour = hour;
+            task.Minute = minute;
+            session.SaveChanges();
+
+            // reset cron event cache
+            cron.ReloadTasks();
+
+            return HttpHandlerResult.Json(new { taskId = task.Id });
         }
 
-        [HttpDynamicResource("/api/cron/web-api/delete")]
-        public HttpHandlerResult DeleteTask(HttpRequestParams request)
+        private HttpHandlerResult DeleteTask(HttpRequestParams request)
         {
             var id = request.GetRequiredGuid("id");
 
-            using (var session = database.OpenSession())
-            {
-                var task = session.Set<CronTask>().Single(s => s.Id == id);
+            using var session = database.OpenSession();
+            var task = session.Set<CronTask>().Single(s => s.Id == id);
 
-                session.Set<CronTask>().Remove(task);
-                session.SaveChanges();
+            session.Set<CronTask>().Remove(task);
+            session.SaveChanges();
 
-                // reset cron event cache
-                cron.ReloadTasks();
-            }
+            // reset cron event cache
+            cron.ReloadTasks();
 
             return null;
         }
