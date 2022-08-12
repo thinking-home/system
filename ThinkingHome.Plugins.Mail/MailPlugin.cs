@@ -1,10 +1,11 @@
-﻿using MailKit.Net.Smtp;
+﻿using System;
+using MailKit.Net.Smtp;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using MimeKit;
 using ThinkingHome.Core.Plugins;
-using ThinkingHome.Plugins.Scripts;
 using ThinkingHome.Plugins.Scripts.Attributes;
+using Buffer = ThinkingHome.Plugins.Scripts.Buffer;
 
 namespace ThinkingHome.Plugins.Mail
 {
@@ -34,25 +35,26 @@ namespace ThinkingHome.Plugins.Mail
 
         private void SendMailInternal(MimeMessage message)
         {
+	        try {
+		        using var client = new SmtpClient();
 
-            using (var client = new SmtpClient())
-            {
-                if (DisableCertificateValidation)
-                {
-                    client.ServerCertificateValidationCallback = (s, c, h, e) => true;
-                }
+		        if (DisableCertificateValidation) {
+			        client.ServerCertificateValidationCallback = (s, c, h, e) => true;
+		        }
 
-                client.Connect(SmtpHost, SmtpPort, UseSSL);
-                client.AuthenticationMechanisms.Remove("XOAUTH2"); // Must be removed for Gmail SMTP
+		        client.Connect(SmtpHost, SmtpPort, UseSSL);
+		        client.AuthenticationMechanisms.Remove("XOAUTH2"); // Must be removed for Gmail SMTP
 
-                if (UseAuth)
-                {
-                    client.Authenticate(AuthLogin, AuthPassword);
-                }
+		        if (UseAuth) {
+			        client.Authenticate(AuthLogin, AuthPassword);
+		        }
 
-                client.Send(message);
-                client.Disconnect(true);
-            }
+		        client.Send(message);
+		        client.Disconnect(true);
+	        }
+	        catch (Exception e) {
+		        Logger.LogError(e, "Error when trying to send mail");
+	        }
         }
 
         private MimeMessage CreateMessage(string email, string subject)

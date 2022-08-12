@@ -12,7 +12,7 @@ namespace ThinkingHome.Plugins.WebServer.Handlers
     {
         private readonly IStringLocalizer stringLocalizer;
 
-        public LocalizationHandler(IStringLocalizer stringLocalizer) : base(true)
+        public LocalizationHandler(Type source, IStringLocalizer stringLocalizer) : base(source, true)
         {
             this.stringLocalizer = stringLocalizer ?? throw new ArgumentNullException(nameof(stringLocalizer));
         }

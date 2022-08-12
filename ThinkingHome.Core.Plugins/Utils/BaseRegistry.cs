@@ -14,8 +14,7 @@ namespace ThinkingHome.Core.Plugins.Utils
     /// </summary>
     public abstract class BaseRegistry<TValue, TData>
     {
-        private readonly ConcurrentDictionary<string, TData> data =
-            new ConcurrentDictionary<string, TData>(StringComparer.CurrentCultureIgnoreCase);
+        private readonly ConcurrentDictionary<string, TData> data = new(StringComparer.CurrentCultureIgnoreCase);
 
         protected abstract TData Add(string key, TValue value);
 
@@ -35,7 +34,7 @@ namespace ThinkingHome.Core.Plugins.Utils
 
         public TData this[string key] => ContainsKey(key) ? data[key] : default(TData);
 
-        public ReadOnlyDictionary<string, TData> Data => new ReadOnlyDictionary<string, TData>(data);
+        public ReadOnlyDictionary<string, TData> Data => new(data);
 
         public void ForEach(Action<string, TData> action)
         {

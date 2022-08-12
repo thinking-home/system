@@ -8,10 +8,12 @@ namespace ThinkingHome.Plugins.WebServer;
 public class WebServerConfigurationBuilder: IDisposable
 {
     private bool disposed;
+    private readonly Type source;
     private readonly ObjectRegistry<BaseHandler> handlers;
 
-    public WebServerConfigurationBuilder(ObjectRegistry<BaseHandler> handlers)
+    public WebServerConfigurationBuilder(Type source, ObjectRegistry<BaseHandler> handlers)
     {
+        this.source = source;
         this.handlers = handlers;
     }
 
@@ -31,11 +33,11 @@ public class WebServerConfigurationBuilder: IDisposable
     /// Зарегистрировать статический HTTP ресурс (кэшируется)
     /// </summary>
     public WebServerConfigurationBuilder RegisterEmbeddedResource(
-        string url, string resourcePath, Assembly assembly, string contentType = "text/plain")
+        string url, string resourcePath, string contentType = "text/plain", Assembly assembly = null)
     {
         EnsureState();
         
-        handlers.Register(url, new StaticResourceHandler(resourcePath, contentType, assembly));
+        handlers.Register(url, new StaticResourceHandler(source, resourcePath, contentType, assembly));
         return this;
     }
     
@@ -47,7 +49,7 @@ public class WebServerConfigurationBuilder: IDisposable
     {
         EnsureState();
         
-        handlers.Register(url, new DynamicResourceHandler(method, isCached));
+        handlers.Register(url, new DynamicResourceHandler(source, method, isCached));
         return this;
     }
 }

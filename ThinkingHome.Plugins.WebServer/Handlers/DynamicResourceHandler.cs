@@ -8,7 +8,7 @@ namespace ThinkingHome.Plugins.WebServer.Handlers
     {
         private readonly HttpHandlerDelegate method;
 
-        public DynamicResourceHandler(HttpHandlerDelegate method, bool isCached) : base(isCached)
+        public DynamicResourceHandler(Type source, HttpHandlerDelegate method, bool isCached) : base(source, isCached)
         {
             this.method = method ?? throw new ArgumentNullException(nameof(method));
         }

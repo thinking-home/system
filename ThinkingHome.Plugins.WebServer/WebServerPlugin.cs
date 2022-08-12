@@ -1,4 +1,4 @@
-﻿using System.Collections.ObjectModel;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
@@ -21,10 +21,15 @@ namespace ThinkingHome.Plugins.WebServer
 
         private IHubContext<MessageHub> hubContext;
 
+        private readonly ObjectRegistry<BaseHandler> handlers = new();
+
         public override void InitPlugin()
         {
             var port = Configuration.GetValue("port", 41831);
-            var handlers = RegisterHandlers();
+            
+            RegisterHandlers(handlers, Context);
+            
+            handlers.ForEach((url, handler) => Logger.LogInformation("register HTTP handler: {Url}", url));
 
             host = new WebHostBuilder()
                 .UseKestrel()
@@ -50,31 +55,26 @@ namespace ThinkingHome.Plugins.WebServer
                 SafeInvoke(msgHandlers[channel], fn => fn(id, timestamp, channel, data));
         }
 
-        private ObjectRegistry<BaseHandler> RegisterHandlers()
+        public IReadOnlyDictionary<string, BaseHandler> GetAllHandlers() => handlers.Data;
+
+        private static void RegisterHandlers(ObjectRegistry<BaseHandler> handlers, IServiceContext context)
         {
-            var handlers = new ObjectRegistry<BaseHandler>();
-            using var configBuilder = new WebServerConfigurationBuilder(handlers);
-            
-            var inits = Context.GetAllPlugins()
+            var inits = context.GetAllPlugins()
                 .SelectMany(p => p.FindMethods<WebServerConfigurationBuilderAttribute, WebServerConfigurationBuilderDelegate>())
-                .Select(obj => obj.Method)
                 .ToArray();
 
-            foreach (var fn in inits) {
+            foreach (var (meta, fn, plugin) in inits) {
+                using var configBuilder = new WebServerConfigurationBuilder(plugin.GetType(), handlers);
                 fn(configBuilder);
             }
             
             // localization handlers
-            Context.GetAllPlugins()
+            context.GetAllPlugins()
                 .FindAttrs<HttpLocalizationResourceAttribute>()
                 .ToObjectRegistry(
                     handlers,
                     res => res.Meta.Url,
-                    res => new LocalizationHandler(res.Plugin.StringLocalizer));
-
-            handlers.ForEach((url, handler) => Logger.LogInformation("register HTTP handler: {Url}", url));
-
-            return handlers;
+                    res => new LocalizationHandler(res.Type, res.Plugin.StringLocalizer));
         }
 
         private ObjectSetRegistry<HubMessageHandlerDelegate> RegisterMessageHandlers()
