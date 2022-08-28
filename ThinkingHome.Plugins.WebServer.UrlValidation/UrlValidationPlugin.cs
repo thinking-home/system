@@ -4,7 +4,6 @@ using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 using ThinkingHome.Core.Plugins;
-using ThinkingHome.Core.Plugins.Utils;
 using ThinkingHome.Plugins.WebServer.Attributes;
 using ThinkingHome.Plugins.WebServer.Handlers;
 
@@ -12,15 +11,26 @@ namespace ThinkingHome.Plugins.WebServer.UrlValidation
 {
     public class UrlValidationPlugin : PluginBase
     {
-        private static Regex caseTransformer = new Regex("([a-z])([A-Z]+)", RegexOptions.Compiled);
-        private readonly List<string> errors = new List<string>();
+        private readonly WebServerPlugin server;
+        private readonly Regex caseTransformer = new("([a-z])([A-Z]+)", RegexOptions.Compiled);
+        private readonly List<string> errors = new();
 
+        public UrlValidationPlugin(WebServerPlugin server)
+        {
+            this.server = server;
+        }
 
         public override void InitPlugin()
         {
-            foreach (var plugin in Context.GetAllPlugins()) {
-                ValidateStaticResources(plugin);
-                ValidateDynamicResources(plugin);
+            foreach (var (key, value) in server.GetAllHandlers()) {
+                switch (value) {
+                    case DynamicResourceHandler handler:
+                        ValidateDynamicResource(key, handler);
+                        break;
+                    case StaticResourceHandler handler:
+                        ValidateStaticResource(key, handler);
+                        break;
+                }
             }
         }
 
@@ -42,64 +52,64 @@ namespace ThinkingHome.Plugins.WebServer.UrlValidation
             return caseTransformer.Replace(name, "$1-$2").Replace(".", "/").ToLower();
         }
 
-        private void ValidateDynamicResources(PluginBase plugin)
+        private void ValidateDynamicResource(string url, DynamicResourceHandler handler)
         {
-            var type = plugin.GetType().GetTypeInfo();
+            var type = handler.Source.GetTypeInfo();
             var alias = GetPluginAlias(type);
 
-            foreach (var mi in plugin.FindMethods<HttpDynamicResourceAttribute, HttpHandlerDelegate>()) {
-                var resource = mi.Meta;
-
-                var ext = Path.GetExtension(resource.Url);
-                var prefixApi = $"/api/{alias}/";
-                var dynamicApi = $"/dynamic/{alias}/";
-
-                if (resource.Url.StartsWith(prefixApi)) {
-                    if (!string.IsNullOrEmpty(ext)) {
-                        AddError(type, $"not empty api extension: {resource.Url} (must be empty)");
-                    }
-                }
-                else if (resource.Url.StartsWith(dynamicApi)) {
-                    if (string.IsNullOrEmpty(ext)) {
-                        AddError(type, $"empty url extension: {resource.Url} (extension is required)");
-                    }
-                }
-                else {
-                    AddError(type, $"invalid url prefix: {resource.Url} (required: {prefixApi} or {dynamicApi})");
+            var ext = Path.GetExtension(url);
+            var prefixApi = $"/api/{alias}/";
+            var dynamicApi = $"/dynamic/{alias}/";
+        
+            if (url.StartsWith(prefixApi)) {
+                if (!string.IsNullOrEmpty(ext)) {
+                    AddError(type, $"not empty api extension: {url} (must be empty)");
                 }
             }
+            else if (url.StartsWith(dynamicApi)) {
+                if (string.IsNullOrEmpty(ext)) {
+                    AddError(type, $"empty url extension: {url} (extension is required)");
+                }
+            }
+            else {
+                AddError(type, $"invalid url prefix: {url} (required: {prefixApi} or {dynamicApi})");
+            }
         }
-
-        private void ValidateStaticResources(PluginBase plugin)
+        
+        private void ValidateStaticResource(string url, StaticResourceHandler handler)
         {
-            var type = plugin.GetType().GetTypeInfo();
+            var type = handler.Source.GetTypeInfo();
             var alias = GetPluginAlias(type);
+            
             var prefix = $"/static/{alias}/";
 
-            foreach (var resource in type.GetCustomAttributes<HttpEmbeddedResourceAttribute>()) {
-                if (resource.Url == "/" || resource.Url == "/favicon.ico") continue;
-
-                var ext = Path.GetExtension(resource.Url);
-
-                if (string.IsNullOrEmpty(ext)) {
-                    AddError(type, $"empty url extension: {resource.Url}");
-                }
-
-                var isVendor = resource.Url.StartsWith("/vendor/");
-
-                if (!isVendor && !resource.Url.StartsWith(prefix)) {
-                    AddError(type, $"invalid url prefix: {resource.Url} (required: {prefix})");
-                }
+            if (url is "/" or "/favicon.ico") return;
+            
+            var ext = Path.GetExtension(url);
+            
+            if (string.IsNullOrEmpty(ext)) {
+                AddError(type, $"empty url extension: {url}");
+            }
+        
+            var isVendor = url.StartsWith("/vendor/");
+        
+            if (!isVendor && !url.StartsWith(prefix)) {
+                AddError(type, $"invalid url prefix: {url} (required: {prefix})");
             }
         }
 
-        [HttpDynamicResource("/dynamic/web-server/url-validation/errors.txt")]
-        public HttpHandlerResult GetUrlErrors(HttpRequestParams requestParams)
+        [WebServerConfigurationBuilder]
+        public void RegisterHttpHandlers(WebServerConfigurationBuilder config)
+        {
+            config.RegisterDynamicResource("/dynamic/web-server/url-validation/errors.txt", GetUrlErrors);
+        }
+
+        private HttpHandlerResult GetUrlErrors(HttpRequestParams requestParams)
         {
             var sb = new StringBuilder();
-
+        
             errors.ForEach(msg => sb.AppendLine(msg));
-
+        
             return HttpHandlerResult.Text(sb.ToString());
         }
     }

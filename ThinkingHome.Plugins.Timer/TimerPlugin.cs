@@ -13,11 +13,9 @@ namespace ThinkingHome.Plugins.Timer
     {
         #region fields
 
-        public static readonly Random random = new Random();
+        private static readonly Random random = new();
 
-        public readonly object lockObject = new object();
-
-        public readonly List<InternalTimer> timers = new List<InternalTimer>();
+        private readonly List<InternalTimer> timers = new();
 
         #endregion
 

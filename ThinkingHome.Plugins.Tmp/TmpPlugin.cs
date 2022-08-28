@@ -3,7 +3,6 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
 using Telegram.Bot.Types;
@@ -86,8 +85,52 @@ namespace ThinkingHome.Plugins.Tmp
             Logger.LogDebug("stop tmp plugin {Guid}", Guid.NewGuid());
         }
 
-        [HttpDynamicResource("/api/tmp/mqtt-send")]
-        public HttpHandlerResult TmpSendMqttMessage(HttpRequestParams requestParams)
+        [WebServerConfigurationBuilder]
+        public void RegisterHttpHandlers(WebServerConfigurationBuilder config)
+        {
+            config
+                .RegisterDynamicResource("/api/tmp/mqtt-send", TmpSendMqttMessage)
+                .RegisterDynamicResource("/api/tmp/hello-pig", HelloPigHttpMethod)
+                .RegisterDynamicResource("/api/tmp/wefwefwef", TmpHandlerMethod)
+                .RegisterDynamicResource("/api/tmp/index42", TmpHandlerMethod42)
+                .RegisterDynamicResource("/api/tmp/pigs", TmpHandlerMethodPigs);
+        }
+
+        private HttpHandlerResult HelloPigHttpMethod(HttpRequestParams requestParams)
+        {
+            telegramBot.SendMessage(353206782, "ДОБРЫЙ ВЕЧЕР");
+            return null;
+        }
+
+        private HttpHandlerResult TmpHandlerMethod(HttpRequestParams requestParams)
+        {
+            scripts.EmitScriptEvent("mimi", 1, 2, 3, "GUID-111");
+            return null;
+        }
+
+        private HttpHandlerResult TmpHandlerMethod42(HttpRequestParams requestParams)
+        {
+            return HttpHandlerResult.Json(new
+            {
+                answer = 42,
+                name = requestParams.GetString("name")
+            });
+        }
+
+        private HttpHandlerResult TmpHandlerMethodPigs(HttpRequestParams requestParams)
+        {
+            using (var db = database.OpenSession())
+            {
+                var list = db.Set<SmallPig>()
+                    .Select(pig => new { id = pig.Id, name = pig.Name, size = pig.Size })
+                    .ToList();
+
+                return HttpHandlerResult.Json(list);
+            }
+        }
+
+        
+        private HttpHandlerResult TmpSendMqttMessage(HttpRequestParams requestParams)
         {
             var topic = requestParams.GetString("topic") ?? "test";
             var msg = requestParams.GetString("msg") ?? "mumu";
@@ -202,43 +245,6 @@ namespace ThinkingHome.Plugins.Tmp
         //
         //     return 200;
         // }
-
-        [HttpDynamicResource("/api/tmp/hello-pig")]
-        public HttpHandlerResult HelloPigHttpMethod(HttpRequestParams requestParams)
-        {
-            telegramBot.SendMessage(353206782, "ДОБРЫЙ ВЕЧЕР");
-            return null;
-        }
-
-        [HttpDynamicResource("/api/tmp/wefwefwef")]
-        public HttpHandlerResult TmpHandlerMethod(HttpRequestParams requestParams)
-        {
-            scripts.EmitScriptEvent("mimi", 1, 2, 3, "GUID-111");
-            return null;
-        }
-
-        [HttpDynamicResource("/api/tmp/index42")]
-        public HttpHandlerResult TmpHandlerMethod42(HttpRequestParams requestParams)
-        {
-            return HttpHandlerResult.Json(new
-            {
-                answer = 42,
-                name = requestParams.GetString("name")
-            });
-        }
-
-        [HttpDynamicResource("/api/tmp/pigs")]
-        public HttpHandlerResult TmpHandlerMethod43(HttpRequestParams requestParams)
-        {
-            using (var db = database.OpenSession())
-            {
-                var list = db.Set<SmallPig>()
-                    .Select(pig => new { id = pig.Id, name = pig.Name, size = pig.Size })
-                    .ToList();
-
-                return HttpHandlerResult.Json(list);
-            }
-        }
 
         // [WebApiMethod("/api/tmp/send")]
         // public object SendEmail(HttpRequestParams requestParams)

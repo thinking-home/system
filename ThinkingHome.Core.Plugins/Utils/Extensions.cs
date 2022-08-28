@@ -78,7 +78,7 @@ namespace ThinkingHome.Core.Plugins.Utils
 
         #region find methods
 
-        public static (TAttr Meta, TDelegate Method)[] FindMethods<TAttr, TDelegate>(
+        public static (TAttr Meta, TDelegate Method, PluginBase plugin)[] FindMethods<TAttr, TDelegate>(
             this IEnumerable<PluginBase> plugins) where TAttr: Attribute where TDelegate : class
         {
             return plugins
@@ -86,7 +86,7 @@ namespace ThinkingHome.Core.Plugins.Utils
                 .ToArray();
         }
 
-        public static (TAttr Meta, TDelegate Method)[] FindMethods<TAttr, TDelegate>(this PluginBase plugin)
+        public static (TAttr Meta, TDelegate Method, PluginBase plugin)[] FindMethods<TAttr, TDelegate>(this PluginBase plugin)
             where TAttr: Attribute where TDelegate : class
         {
             IEnumerable<Tuple<MethodInfo, TAttr>> GetMethodAttributes(MethodInfo method)
@@ -105,7 +105,7 @@ namespace ThinkingHome.Core.Plugins.Utils
                 return Expression.GetDelegateType(types2.ToArray());
             }
 
-            (TAttr Meta, TDelegate Method) GetPluginMethodInfo(Tuple<MethodInfo, TAttr> obj)
+            (TAttr Meta, TDelegate Method, PluginBase plugin) GetPluginMethodInfo(Tuple<MethodInfo, TAttr> obj)
             {
                 var delegateType = typeof(TDelegate);
 
@@ -118,7 +118,7 @@ namespace ThinkingHome.Core.Plugins.Utils
                     ? obj.Item1.CreateDelegate(delegateType)
                     : obj.Item1.CreateDelegate(delegateType, plugin);
 
-                return (obj.Item2, mthodDelegate as TDelegate);
+                return (obj.Item2, mthodDelegate as TDelegate, plugin);
             }
 
             return plugin

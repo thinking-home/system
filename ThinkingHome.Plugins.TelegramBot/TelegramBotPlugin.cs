@@ -88,8 +88,7 @@ namespace ThinkingHome.Plugins.TelegramBot
         public Task HandlePollingErrorAsync(ITelegramBotClient botClient, Exception exception, CancellationToken cancellationToken)
         {
             Logger.LogError(exception, "telegram bot API request error");
-            
-            return Task.CompletedTask;
+            return Task.Delay(5000, cancellationToken);
         }
 
         public static string ParseCommand(string message)
@@ -138,12 +137,11 @@ namespace ThinkingHome.Plugins.TelegramBot
 
         private void Try(Func<TelegramBotClient, Task> fn)
         {
-            var task = fn(bot);
-            task.Wait();
-
-            if (task.Exception != null)
-            {
-                Logger.LogError(task.Exception, "telegram bot error");
+            try {
+                fn(bot).Wait();
+            }
+            catch (Exception ex) {
+                Logger.LogError(ex, "telegram bot error");
             }
         }
 
