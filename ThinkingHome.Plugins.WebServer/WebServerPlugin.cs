@@ -60,7 +60,7 @@ namespace ThinkingHome.Plugins.WebServer
         private static void RegisterHandlers(ObjectRegistry<BaseHandler> handlers, IServiceContext context)
         {
             var inits = context.GetAllPlugins()
-                .SelectMany(p => p.FindMethods<WebServerConfigurationBuilderAttribute, WebServerConfigurationBuilderDelegate>())
+                .SelectMany(p => p.FindMethods<ConfigureWebServerAttribute, ConfigureWebServerDelegate>())
                 .ToArray();
 
             foreach (var (meta, fn, plugin) in inits) {

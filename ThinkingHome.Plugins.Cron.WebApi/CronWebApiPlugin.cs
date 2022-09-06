@@ -36,7 +36,7 @@ namespace ThinkingHome.Plugins.Cron.WebApi
             };
         }
         
-        [WebServerConfigurationBuilder]
+        [ConfigureWebServer]
         public void RegisterHttpHandlers(WebServerConfigurationBuilder config)
         {
             config

@@ -18,6 +18,8 @@ using ThinkingHome.Plugins.Timer;
 using ThinkingHome.Plugins.WebServer;
 using ThinkingHome.Plugins.WebServer.Attributes;
 using ThinkingHome.Plugins.WebServer.Handlers;
+using ThinkingHome.Plugins.WebUi;
+using ThinkingHome.Plugins.WebUi.Attributes;
 
 namespace ThinkingHome.Plugins.Tmp
 {
@@ -85,7 +87,16 @@ namespace ThinkingHome.Plugins.Tmp
             Logger.LogDebug("stop tmp plugin {Guid}", Guid.NewGuid());
         }
 
-        [WebServerConfigurationBuilder]
+        [ConfigureWebUi]
+        public void RegisterHttpHandlers(WebUiConfigurationBuilder config)
+        {
+            config.RegisterPage("/", "111");
+            config.RegisterPage("/moo", "222");
+            config.RegisterPage("/hru", "333");
+            config.RegisterPage("/meow", "444");
+        }
+
+        [ConfigureWebServer]
         public void RegisterHttpHandlers(WebServerConfigurationBuilder config)
         {
             config
