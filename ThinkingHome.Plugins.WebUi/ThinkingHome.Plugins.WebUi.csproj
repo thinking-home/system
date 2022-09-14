@@ -6,6 +6,10 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
     </PropertyGroup>
+    <Target Name="BuildClient" BeforeTargets="Build">
+        <Exec Command="npm run build" />
+    </Target>
+
     <ItemGroup>
         <None Remove="Resources\**\*" />
     </ItemGroup>
