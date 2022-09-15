@@ -27,6 +27,8 @@ public class WebUiPlugin: PluginBase
         config.RegisterEmbeddedResource("/static/webui/js/history.production.min.js", "ThinkingHome.Plugins.WebUi.Resources.static.history.production.min.js", "application/javascript");
         config.RegisterEmbeddedResource("/static/webui/js/react-router.production.min.js", "ThinkingHome.Plugins.WebUi.Resources.static.react-router.production.min.js", "application/javascript");
         config.RegisterEmbeddedResource("/static/webui/js/react-router-dom.production.min.js", "ThinkingHome.Plugins.WebUi.Resources.static.react-router-dom.production.min.js", "application/javascript");
+
+        config.RegisterEmbeddedResource("/static/webui/js/main.js", "ThinkingHome.Plugins.WebUi.Resources.app.main.js", "application/javascript");
     }
 
     private static void RegisterPages(ObjectRegistry<WebUiPageDefinition> pages, IServiceContext context)

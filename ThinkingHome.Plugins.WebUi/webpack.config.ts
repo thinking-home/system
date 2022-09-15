@@ -1,12 +1,13 @@
 import { Configuration } from 'webpack';
 import { resolve } from 'path';
-// import { externals, externalsType } from '@thinking-home/ui/build/initWebpackConfig';
+import { externals, externalsType } from '@thinking-home/ui/dist/build/initWebpackConfig';
 
 const config: Configuration = {
-    mode: 'production',
+    // mode: 'production',
+    mode: 'development',
     entry: './frontend/index.tsx',
-    // externals,
-    // externalsType,
+    externals,
+    externalsType,
     module: {
         rules: [
             {

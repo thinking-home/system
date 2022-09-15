@@ -4,8 +4,10 @@ import {FC} from "react";
 import {BrowserRouter} from "react-router-dom";
 
 
+const onClick = () => alert('МУУУУУУ1');
+
 const Application: FC = () => (
-    <div>mu mu mu</div>
+    <div onClick={onClick}>mu mu mu1</div>
 );
 
 const app = (
