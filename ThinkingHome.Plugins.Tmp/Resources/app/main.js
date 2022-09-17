@@ -1,0 +1,1 @@
+var e={d:(t,r)=>{for(var n in r)e.o(r,n)&&!e.o(t,n)&&Object.defineProperty(t,n,{enumerable:!0,get:r[n]})},o:(e,t)=>Object.prototype.hasOwnProperty.call(e,t)},t={};e.d(t,{Z:()=>n});const r=window.React,n=function(){return r.createElement("div",null,"mi mi mi — ",r.createElement("strong",null,"Tmp plugin"))};var o=t.Z;export{o as default};

@@ -29,4 +29,8 @@
     <PackageReference Include="ThinkingHome.Migrator.Framework" Version="3.5.0" />
     <PackageReference Include="Telegram.Bot" Version="18.0.0" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="frontend\index.tsx" />
+    <TypeScriptCompile Include="webpack.config.ts" />
+  </ItemGroup>
 </Project>

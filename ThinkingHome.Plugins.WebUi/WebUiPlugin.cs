@@ -9,6 +9,13 @@ namespace ThinkingHome.Plugins.WebUi;
 
 public class WebUiPlugin: PluginBase
 {
+    static string GetJsPath(string basePath)
+    {
+        // TODO: подумать про пути к css и пути к корневой странице + валидацию путей
+        // TODO: подумать про локализацию — отдавать все переводы одним файлом
+        return $"/static/webui/js/{basePath.Trim('/')}.js";
+    }
+
     private readonly ObjectRegistry<WebUiPageDefinition> pages = new();
 
     [ConfigureWebServer]
@@ -20,6 +27,7 @@ public class WebUiPlugin: PluginBase
 
         foreach (var pageDef in pages.Data) {
             config.RegisterEmbeddedResource(pageDef.Key, "ThinkingHome.Plugins.WebUi.Resources.static.index.html", "text/html");
+            config.RegisterEmbeddedResource(GetJsPath(pageDef.Key), pageDef.Value.ResourcePath, "application/javascript", pageDef.Value.Source.Assembly);
         }
 
         config.RegisterEmbeddedResource("/static/webui/js/react.production.min.js", "ThinkingHome.Plugins.WebUi.Resources.static.react.production.min.js", "application/javascript");
