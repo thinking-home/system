@@ -1,14 +1,7 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom/client';
-import {FC} from "react";
 import {BrowserRouter} from "react-router-dom";
-
-
-const onClick = () => alert('МУУУУУУ1');
-
-const Application: FC = () => (
-    <div onClick={onClick}>mu mu mu1</div>
-);
+import {Application} from "./components/Application";
 
 const app = (
     <React.StrictMode>

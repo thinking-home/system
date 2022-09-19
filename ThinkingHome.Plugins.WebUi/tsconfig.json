@@ -1,11 +1,17 @@
 {
   "compilerOptions": {
     "noImplicitAny": true,
-    "module": "commonjs",
+    "module": "esnext",
     "target": "es5",
     "jsx": "react",
     "allowJs": true,
     "moduleResolution": "node",
-    "esModuleInterop": true
+    "allowSyntheticDefaultImports": true
+  },
+  "ts-node": {
+    "compilerOptions": {
+      "module": "CommonJS",
+      "esModuleInterop": true
+    }
   }
 }

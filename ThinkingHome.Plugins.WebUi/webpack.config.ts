@@ -23,6 +23,7 @@ const config: Configuration = {
     output: {
         path: resolve(__dirname, 'Resources/app'),
         filename: '[name].js',
+        publicPath: '/',
         clean: true,
     },
 };
