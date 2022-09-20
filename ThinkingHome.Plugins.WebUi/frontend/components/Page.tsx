@@ -1,18 +1,21 @@
 import React from "react";
-import {ComponentType, FC, useEffect, useState} from "react";
+import {FC, useEffect, useState} from "react";
+import { UiModule } from '@thinking-home/ui';
 
 export const Page: FC<{ path: string }> = ({path}) => {
-    const [Content, setContent] = useState<ComponentType>(undefined);
+    const [content, setContent] = useState<UiModule>(undefined);
 
     useEffect(() => {
-        import(/*webpackIgnore: true*/ path).then((m: { default: ComponentType }) => {
+        import(/*webpackIgnore: true*/ path).then((m: { default: UiModule }) => {
             setContent(m.default);
         });
     }, [setContent]);
 
-    if (!Content) {
+    if (!content) {
         return <>LOADING</>;
     }
+    
+    const { Component } = content;
 
-    return <Content/>;
+    return <Component/>;
 };
