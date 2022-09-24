@@ -3,6 +3,7 @@ using ThinkingHome.Core.Plugins;
 using ThinkingHome.Core.Plugins.Utils;
 using ThinkingHome.Plugins.WebServer;
 using ThinkingHome.Plugins.WebServer.Attributes;
+using ThinkingHome.Plugins.WebServer.Handlers;
 using ThinkingHome.Plugins.WebUi.Attributes;
 
 namespace ThinkingHome.Plugins.WebUi;
@@ -25,12 +26,17 @@ public class WebUiPlugin: PluginBase
         
         pages.ForEach((url, handler) => Logger.LogInformation("register web ui page: {Url}", url));
 
+        // TODO: удалить после механизма регистрации контента главной страницы
+        config.RegisterEmbeddedResource("/", "ThinkingHome.Plugins.WebUi.Resources.static.index.html", "text/html");
+        
         foreach (var pageDef in pages.Data) {
             config.RegisterEmbeddedResource(pageDef.Key, "ThinkingHome.Plugins.WebUi.Resources.static.index.html", "text/html");
-            config.RegisterEmbeddedResource(GetJsPath(pageDef.Key), pageDef.Value.ResourcePath, "application/javascript", pageDef.Value.Source.Assembly);
-            // config.RegisterEmbeddedResource(pageDef.Value.JsPath, pageDef.Value.ResourcePath, "application/javascript", pageDef.Value.Source.Assembly);
+            config.RegisterEmbeddedResource(pageDef.Value.JsPath, pageDef.Value.ResourcePath, "application/javascript", pageDef.Value.Source.Assembly);
             // TODO: сделать генерацию путей к модулям на основе адреса или содержимого
             // TODO: проверить, инициализируется ли один и тот же модуль несколько раз
+            
+            // TODO: удалить после перехода на динамические пути
+            config.RegisterEmbeddedResource(GetJsPath(pageDef.Key), pageDef.Value.ResourcePath, "application/javascript", pageDef.Value.Source.Assembly);
         }
 
         config.RegisterEmbeddedResource("/static/webui/js/react.production.min.js", "ThinkingHome.Plugins.WebUi.Resources.static.react.production.min.js", "application/javascript");
@@ -42,6 +48,8 @@ public class WebUiPlugin: PluginBase
         config.RegisterEmbeddedResource("/static/webui/css/bootstrap.min.css", "ThinkingHome.Plugins.WebUi.Resources.static.bootstrap.min.css", "text/css");
 
         config.RegisterEmbeddedResource("/static/webui/js/main.js", "ThinkingHome.Plugins.WebUi.Resources.app.main.js", "application/javascript");
+
+        config.RegisterDynamicResource("/api/webui/meta", GetMeta);
     }
 
     private static void RegisterPages(ObjectRegistry<WebUiPageDefinition> pages, IServiceContext context)
@@ -54,5 +62,18 @@ public class WebUiPlugin: PluginBase
             using var configBuilder = new WebUiConfigurationBuilder(plugin.GetType(), pages);
             fn(configBuilder);
         }
+    }
+
+    private HttpHandlerResult GetMeta(HttpRequestParams requestParams)
+    {
+        var pages = this.pages.Data.Select(p => new {
+            route = p.Key,
+            js = p.Value.JsPath,
+            title = p.Value.Title
+        }).ToArray();
+
+        var config = new { zzz = 13 };
+
+        return HttpHandlerResult.Json(new { pages = pages, config });
     }
 }

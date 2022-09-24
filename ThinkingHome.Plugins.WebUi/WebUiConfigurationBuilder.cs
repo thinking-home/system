@@ -26,11 +26,11 @@ public class WebUiConfigurationBuilder: IDisposable
         }
     }
     
-    public WebUiConfigurationBuilder RegisterPage(string url, string resourcePath)
+    public WebUiConfigurationBuilder RegisterPage(string url, string title, string resourcePath)
     {
         EnsureState();
         
-        pages.Register(url, new WebUiPageDefinition(source, resourcePath));
+        pages.Register(url, new WebUiPageDefinition(source, title, resourcePath));
         return this;
     }
 }

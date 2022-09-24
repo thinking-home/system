@@ -1,6 +1,8 @@
 import { Configuration } from 'webpack';
 import { resolve } from 'path';
-import { externals, externalsType } from '@thinking-home/ui/dist/build/initWebpackConfig';
+import { externals, externalsType } from '@thinking-home/ui/dist/build';
+
+delete (externals as any)['@thinking-home/ui'];
 
 const config: Configuration = {
     // mode: 'production',
