@@ -1,50 +1,21 @@
-import React, {useEffect} from "react";
-import {FC, useState} from "react";
+import React from "react";
+import {FC} from "react";
 import {Route, Routes} from "react-router";
 import {Page} from "./Page";
 import {Link, NavLink} from "react-router-dom";
+import {PageDefinition} from "../utils";
 
-export interface PageDefinition {
-    route: string;
-    path: string;
-    name: string;
+export interface ApplicationProps {
+    pages: PageDefinition[];
 }
 
-export async function getPages(): Promise<PageDefinition[]> {
-    const sections: PageDefinition[] = [
-        {
-            route: '/moo',
-            path: '/static/webui/js/moo.js',
-            name: 'Plugin moo',
-        },
-        {
-            route: '/hru',
-            path: '/static/webui/js/moo.js',
-            name: 'Plugin hru',
-        },
-        {
-            route: '/meow',
-            path: '/static/webui/js/moo.js',
-            name: 'Plugin meow',
-        },
-    ];
-
-    return Promise.resolve(sections);
-}
-
-export const Application: FC = () => {
-    const [sections, setSections] = useState<PageDefinition[]>([]);
-
-    useEffect(() => {
-        getPages().then(setSections);
-    }, []);
-
-    const routes = sections.map(({ path, route }) => (
-        <Route key={route} path={route} element={<Page key={route} path={path} />} />
+export const Application: FC<ApplicationProps> = ({ pages }) => {
+    const routes = pages.map(({ js, route }) => (
+        <Route key={route} path={route} element={<Page key={route} path={js} />} />
     ));
 
-    const links = sections.map(({ name, route }) => (
-        <NavLink key={route} className="nav-link" to={route}>{name}</NavLink>
+    const links = pages.map(({ title, route }) => (
+        <NavLink key={route} className="nav-link" to={route}>{title}</NavLink>
     ));
 
     const home = (
