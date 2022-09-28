@@ -90,9 +90,9 @@ namespace ThinkingHome.Plugins.Tmp
         [ConfigureWebUi]
         public void RegisterWebUiPages(WebUiConfigurationBuilder config)
         {
-            config.RegisterPage("/moo", "Moo", "ThinkingHome.Plugins.Tmp.Resources.app.main.js");
-            config.RegisterPage("/hru", "Hru", "ThinkingHome.Plugins.Tmp.Resources.app.main.js");
-            config.RegisterPage("/meow", "Meow", "ThinkingHome.Plugins.Tmp.Resources.app.main.js");
+            config.RegisterPage("/moo", "ThinkingHome.Plugins.Tmp.Resources.app.main.js");
+            config.RegisterPage("/hru", "ThinkingHome.Plugins.Tmp.Resources.app.main.js");
+            config.RegisterPage("/meow", "ThinkingHome.Plugins.Tmp.Resources.app.main.js");
         }
 
         [ConfigureWebServer]

@@ -34,15 +34,14 @@ export class XClient implements ApiClient {
 }
 
 export const PageDefinitionDecoder = d.struct({
-    title: d.string,
-    route: d.string,
     js: d.string,
+    css: d.string,
 });
 
 export type PageDefinition = d.TypeOf<typeof PageDefinitionDecoder>;
 
 export const MetaResponseDecoder = d.struct({
-    pages: d.array(PageDefinitionDecoder),
+    pages: d.record(PageDefinitionDecoder),
     config: d.struct({
         lang: d.string,
     }),

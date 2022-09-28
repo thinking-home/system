@@ -25,12 +25,11 @@ public class WebUiConfigurationBuilder: IDisposable
             throw new InvalidOperationException("Can't add page into disposed registry");
         }
     }
-    
-    public WebUiConfigurationBuilder RegisterPage(string url, string title, string resourcePath)
+
+    public void RegisterPage(string url, string jsResourcePath, string? cssResourcePath = null)
     {
         EnsureState();
         
-        pages.Register(url, new WebUiPageDefinition(source, title, resourcePath));
-        return this;
+        pages.Register(url, new WebUiPageDefinition(source, url, jsResourcePath, cssResourcePath));
     }
 }

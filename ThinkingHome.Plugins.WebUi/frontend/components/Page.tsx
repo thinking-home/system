@@ -2,7 +2,11 @@ import React from "react";
 import {FC, useEffect, useState} from "react";
 import { UiModule } from '@thinking-home/ui';
 
-export const Page: FC<{ path: string }> = ({path}) => {
+interface PageProps {
+    path: string;
+}
+
+export const Page: FC<PageProps> = ({path}) => {
     const [content, setContent] = useState<UiModule>(undefined);
 
     useEffect(() => {
