@@ -35,7 +35,7 @@ export class XClient implements ApiClient {
 
 export const PageDefinitionDecoder = d.struct({
     js: d.string,
-    css: d.string,
+    css: d.nullable(d.string),
 });
 
 export type PageDefinition = d.TypeOf<typeof PageDefinitionDecoder>;

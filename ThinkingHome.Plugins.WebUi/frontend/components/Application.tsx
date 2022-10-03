@@ -51,6 +51,7 @@ export const Application: FC<ApplicationProps> = ({ pages }) => {
                             <NavLink className="nav-link" to='/'>Home</NavLink>
                             <NavLink className="nav-link" to='/apps'>TMP: APPS</NavLink>
                             <NavLink className="nav-link" to='/settings'>TMP: SETTINGS</NavLink>
+                            <NavLink className="nav-link" to='/moo'>TMP: MOO</NavLink>
                         </div>
                     </div>
                 </div>
