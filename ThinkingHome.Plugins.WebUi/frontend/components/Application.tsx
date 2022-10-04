@@ -3,7 +3,12 @@ import {FC} from "react";
 import {Page} from "./Page";
 import {Routes, Route } from "react-router";
 import {Link, NavLink, useLocation } from "react-router-dom";
+import {cn} from '@bem-react/classname';
 import {PageDefinition} from "../utils";
+
+import './Application.css';
+
+const bem = cn('Application');
 
 export interface ApplicationProps {
     pages: Record<string, PageDefinition>;
@@ -39,7 +44,7 @@ export const Content: React.FC<{pages: Record<string, PageDefinition>}> = ({page
 
 export const Application: FC<ApplicationProps> = ({ pages }) => {
     return (
-        <div>
+        <div className={bem()}>
             <nav className="navbar navbar-expand-sm bg-light">
                 <div className="container-fluid">
                     <Link className="navbar-brand" to="/">Logo</Link>
@@ -56,7 +61,7 @@ export const Application: FC<ApplicationProps> = ({ pages }) => {
                     </div>
                 </div>
             </nav>
-            <div className="container-fluid">
+            <div className={bem('Content', ['container-fluid'])}>
                 <Routes>
                     <Route path="/" element={<Home />} />
                     <Route path="/apps" element={<div>apps</div>} />
