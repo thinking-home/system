@@ -4,11 +4,12 @@ import {Page} from "./Page";
 import {Routes, Route } from "react-router";
 import {Link, NavLink, useLocation } from "react-router-dom";
 import {cn} from '@bem-react/classname';
+import {ErrorScreen} from "./ErrorScreen";
 import {PageDefinition} from "../utils";
 
 import './Application.css';
 
-const bem = cn('Application');
+const cls = cn('Application');
 
 export interface ApplicationProps {
     pages: Record<string, PageDefinition>;
@@ -39,12 +40,12 @@ export const Content: React.FC<{pages: Record<string, PageDefinition>}> = ({page
         return <Page key={pathname} path={def.js} />;
     }
     
-    return <div>404</div>;
+    return <ErrorScreen message='Page not found' />;
 }
 
 export const Application: FC<ApplicationProps> = ({ pages }) => {
     return (
-        <div className={bem()}>
+        <div className={cls()}>
             <nav className="navbar navbar-expand-sm bg-light">
                 <div className="container-fluid">
                     <Link className="navbar-brand" to="/">Logo</Link>
@@ -61,7 +62,7 @@ export const Application: FC<ApplicationProps> = ({ pages }) => {
                     </div>
                 </div>
             </nav>
-            <div className={bem('Content', ['container-fluid'])}>
+            <div className={cls('Content', ['container-fluid'])}>
                 <Routes>
                     <Route path="/" element={<Home />} />
                     <Route path="/apps" element={<div>apps</div>} />

@@ -2,6 +2,7 @@ import React from "react";
 import {FC, useEffect, useState} from "react";
 import {ErrorBoundary} from 'react-error-boundary'
 import { UiModule } from '@thinking-home/ui';
+import {ErrorScreen} from "./ErrorScreen";
 
 interface PageProps {
     path: string;
@@ -19,7 +20,7 @@ export const Page: FC<PageProps> = ({path}) => {
     }, [setContent]);
     
     if (error) {
-        return <>504</>;
+        return <ErrorScreen message="Can't load module" />;
     }
 
     if (!content) {
@@ -29,7 +30,7 @@ export const Page: FC<PageProps> = ({path}) => {
     const { Component } = content;
 
     return (
-        <ErrorBoundary fallback={<>500</>}>
+        <ErrorBoundary fallback={<ErrorScreen message='Undefined error' />}>
             <Component/>
         </ErrorBoundary>
     );
