@@ -41,42 +41,17 @@ public class WebUiPlugin : PluginBase
                 config.RegisterEmbeddedResource(pageDef.PathStylesheet, pageDef.CssResourcePath, MIME_CSS, pageDef.Source.Assembly);
             }
         }
-
-        // react
-        config.RegisterEmbeddedResource(
-            "/static/webui/js/react.production.min.js", 
-            "ThinkingHome.Plugins.WebUi.Resources.static.react.production.min.js",
-            MIME_JS);
         
-        // react-dom
-        config.RegisterEmbeddedResource(
-            "/static/webui/js/react-dom.production.min.js",
-            "ThinkingHome.Plugins.WebUi.Resources.static.react-dom.production.min.js",
-            MIME_JS);
-        
-        // history
-        config.RegisterEmbeddedResource(
-            "/static/webui/js/history.production.min.js", 
-            "ThinkingHome.Plugins.WebUi.Resources.static.history.production.min.js", 
-            MIME_JS);
-        
-        // react-router
-        config.RegisterEmbeddedResource(
-            "/static/webui/js/react-router.production.min.js", 
-            "ThinkingHome.Plugins.WebUi.Resources.static.react-router.production.min.js",
-            MIME_JS);
-        
-        // react-router-dom
-        config.RegisterEmbeddedResource(
-            "/static/webui/js/react-router-dom.production.min.js", 
-            "ThinkingHome.Plugins.WebUi.Resources.static.react-router-dom.production.min.js",
-            MIME_JS);
-
         config.RegisterEmbeddedResource(
             "/static/webui/css/bootstrap.min.css", 
             "ThinkingHome.Plugins.WebUi.Resources.static.bootstrap.min.css",
             MIME_CSS);
 
+        config.RegisterEmbeddedResource(
+            "/static/webui/js/vendor.js", 
+            "ThinkingHome.Plugins.WebUi.Resources.app.vendor.js",
+            MIME_JS);
+        
         config.RegisterEmbeddedResource(
             "/static/webui/js/main.js", 
             "ThinkingHome.Plugins.WebUi.Resources.app.main.js",

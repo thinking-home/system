@@ -1,9 +1,11 @@
 import React from "react";
 import {FC} from "react";
 import {Page} from "./Page";
-import {Routes, Route } from "react-router";
-import {Link, NavLink, useLocation } from "react-router-dom";
+import {Routes, Route} from "react-router";
+import {Link, NavLink, useLocation} from "react-router-dom";
 import {cn} from '@bem-react/classname';
+import {Gear, Grid3} from '@thinking-home/icons';
+
 import {ErrorScreen} from "./ErrorScreen";
 import {PageDefinition} from "../utils";
 
@@ -32,31 +34,37 @@ const Home: React.FC = () => (
     </div>
 );
 
-export const Content: React.FC<{pages: Record<string, PageDefinition>}> = ({pages}) => {
-    const { pathname } = useLocation();
+export const Content: React.FC<{ pages: Record<string, PageDefinition> }> = ({pages}) => {
+    const {pathname} = useLocation();
     const def = pages[pathname];
-    
+
     if (def) {
-        return <Page key={pathname} path={def.js} />;
+        return <Page key={pathname} path={def.js}/>;
     }
-    
-    return <ErrorScreen message='Page not found' />;
+
+    return <ErrorScreen message='Page not found'/>;
 }
 
-export const Application: FC<ApplicationProps> = ({ pages }) => {
+export const Application: FC<ApplicationProps> = ({pages}) => {
     return (
         <div className={cls()}>
             <nav className="navbar navbar-expand-sm bg-light">
                 <div className="container-fluid">
                     <Link className="navbar-brand" to="/">Logo</Link>
-                    <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+                    <button className="navbar-toggler" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup"
+                            aria-expanded="false" aria-label="Toggle navigation">
                         <span className="navbar-toggler-icon"></span>
                     </button>
                     <div className="collapse navbar-collapse" id="navbarNavAltMarkup">
                         <div className="navbar-nav">
                             <NavLink className="nav-link" to='/'>Home</NavLink>
-                            <NavLink className="nav-link" to='/apps'>TMP: APPS</NavLink>
-                            <NavLink className="nav-link" to='/settings'>TMP: SETTINGS</NavLink>
+                            <NavLink className="nav-link" to='/apps'>
+                                <Grid3 />
+                            </NavLink>
+                            <NavLink className="nav-link" to='/settings'>
+                                <Gear />
+                            </NavLink>
                             <NavLink className="nav-link" to='/moo'>TMP: MOO</NavLink>
                         </div>
                     </div>
@@ -64,10 +72,10 @@ export const Application: FC<ApplicationProps> = ({ pages }) => {
             </nav>
             <div className={cls('Content', ['container-fluid'])}>
                 <Routes>
-                    <Route path="/" element={<Home />} />
-                    <Route path="/apps" element={<div>apps</div>} />
-                    <Route path="/settings" element={<div>settings</div>} />
-                    <Route path="*" element={<Content pages={pages} />} />
+                    <Route path="/" element={<Home/>}/>
+                    <Route path="/apps" element={<div>apps</div>}/>
+                    <Route path="/settings" element={<div>settings</div>}/>
+                    <Route path="*" element={<Content pages={pages}/>}/>
                 </Routes>
             </div>
         </div>
