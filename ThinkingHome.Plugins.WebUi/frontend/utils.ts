@@ -5,31 +5,31 @@ import * as d from 'io-ts/Decoder';
 
 import {ApiClient, QueryData, QueryParams} from "@thinking-home/ui";
 
+const parseData = function<T>(decoder: Decoder<unknown, T>, data: unknown): T {
+    const parsed = decoder.decode(data);
+
+    if (isLeft(parsed)) {
+        throw new Error(draw(parsed.left));
+    }
+
+    return parsed.right;
+}
+
 export class XClient implements ApiClient {
     client = axios.create();
 
     async get<T>(decoder: Decoder<unknown, T>, query: { url: string; params?: QueryParams }): Promise<T> {
         const {url, params} = query;
         const response = await this.client.get(url, {params});
-        const parsed = decoder.decode(response.data);
-
-        if (isLeft(parsed)) {
-            throw new Error(draw(parsed.left));
-        }
-
-        return parsed.right;
+        
+        return parseData(decoder, response.data);
     }
 
     async post<T>(decoder: Decoder<unknown, T>, query: { url: string; params?: QueryParams; data: QueryData }): Promise<T> {
         const {url, params, data} = query;
         const response = await this.client.post(url, data, {params});
-        const parsed = decoder.decode(response.data);
 
-        if (isLeft(parsed)) {
-            throw new Error(draw(parsed.left));
-        }
-
-        return parsed.right;
+        return parseData(decoder, response.data);
     }
 }
 
