@@ -4,6 +4,12 @@
     <Description>Tmp plugin.</Description>
     <TargetFramework>net6.0</TargetFramework>
   </PropertyGroup>
+  <Target Name="BuildClientDevelopment" BeforeTargets="Build"  Condition="'$(Configuration)' != 'Release'">
+    <Exec Command="npm run build:development" />
+  </Target>
+  <Target Name="BuildClientpProduction" BeforeTargets="Build" Condition="'$(Configuration)' == 'Release'">
+    <Exec Command="npm run build:production" />
+  </Target>
   <ItemGroup>
     <None Remove="Resources\**\*" />
   </ItemGroup>
