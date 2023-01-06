@@ -3,7 +3,7 @@ import axios from 'axios';
 import {isLeft} from 'fp-ts/lib/Either';
 import * as d from 'io-ts/Decoder';
 
-import {ApiClient, QueryData, QueryParams} from "@thinking-home/ui";
+import {ApiClient as BaseApiClient, QueryData, QueryParams} from "@thinking-home/ui";
 
 const parseData = function<T>(decoder: Decoder<unknown, T>, data: unknown): T {
     const parsed = decoder.decode(data);
@@ -15,7 +15,7 @@ const parseData = function<T>(decoder: Decoder<unknown, T>, data: unknown): T {
     return parsed.right;
 }
 
-export class XClient implements ApiClient {
+export class ApiClient implements BaseApiClient {
     client = axios.create();
 
     async get<T>(decoder: Decoder<unknown, T>, query: { url: string; params?: QueryParams }): Promise<T> {

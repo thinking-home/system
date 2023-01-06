@@ -36,10 +36,6 @@ public class WebUiPlugin : PluginBase
         foreach (var pageDef in pages.Data.Values) {
             config.RegisterEmbeddedResource(pageDef.PathDocument, HTML_RES_PATH, MIME_HTML);
             config.RegisterEmbeddedResource(pageDef.PathJavaScript, pageDef.JsResourcePath, MIME_JS, pageDef.Source.Assembly);
-
-            if (!string.IsNullOrEmpty(pageDef.CssResourcePath)) {
-                config.RegisterEmbeddedResource(pageDef.PathStylesheet, pageDef.CssResourcePath, MIME_CSS, pageDef.Source.Assembly);
-            }
         }
         
         config.RegisterEmbeddedResource(
@@ -80,7 +76,6 @@ public class WebUiPlugin : PluginBase
             p => p.PathDocument,
             p => new {
                 js = p.PathJavaScript,
-                css = p.PathStylesheet
             });
 
         var config = new { lang };

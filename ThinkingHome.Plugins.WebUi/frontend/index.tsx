@@ -3,10 +3,10 @@ import * as ReactDOM from 'react-dom/client';
 import {BrowserRouter} from "react-router-dom";
 import {Application} from "./components/Application";
 import {AppContext, AppContextProvider} from "@thinking-home/ui";
-import {XClient, MetaResponseDecoder} from "./utils";
+import {ApiClient, MetaResponseDecoder} from "./utils";
 
 const init = async () => {
-    const api = new XClient();
+    const api = new ApiClient();
     
     const { pages, config: { lang } } = await api.get(MetaResponseDecoder, { url: '/api/webui/meta' });
 

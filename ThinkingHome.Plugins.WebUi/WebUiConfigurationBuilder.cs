@@ -26,10 +26,10 @@ public class WebUiConfigurationBuilder: IDisposable
         }
     }
 
-    public void RegisterPage(string url, string jsResourcePath, string? cssResourcePath = null)
+    public void RegisterPage(string url, string jsResourcePath)
     {
         EnsureState();
         
-        pages.Register(url, new WebUiPageDefinition(source, url, jsResourcePath, cssResourcePath));
+        pages.Register(url, new WebUiPageDefinition(source, url, jsResourcePath));
     }
 }
