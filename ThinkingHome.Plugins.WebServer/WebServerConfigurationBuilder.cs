@@ -5,28 +5,10 @@ using ThinkingHome.Plugins.WebServer.Handlers;
 
 namespace ThinkingHome.Plugins.WebServer;
 
-public class WebServerConfigurationBuilder: IDisposable
+public class WebServerConfigurationBuilder: BaseConfigurationBuilder<BaseHandler>
 {
-    private bool disposed;
-    private readonly Type source;
-    private readonly ObjectRegistry<BaseHandler> handlers;
-
-    public WebServerConfigurationBuilder(Type source, ObjectRegistry<BaseHandler> handlers)
+    public WebServerConfigurationBuilder(Type source, ObjectRegistry<BaseHandler> handlers): base(source, handlers)
     {
-        this.source = source;
-        this.handlers = handlers;
-    }
-
-    public void Dispose()
-    {
-        disposed = true;
-    }
-
-    private void EnsureState()
-    {
-        if (disposed) {
-            throw new InvalidOperationException("Can't add handler into disposed registry");
-        }
     }
 
     /// <summary>
@@ -35,9 +17,8 @@ public class WebServerConfigurationBuilder: IDisposable
     public WebServerConfigurationBuilder RegisterEmbeddedResource(
         string url, string resourcePath, string contentType = "text/plain", Assembly assembly = null)
     {
-        EnsureState();
-        
-        handlers.Register(url, new StaticResourceHandler(source, resourcePath, contentType, assembly));
+        RegisterItem(url, new StaticResourceHandler(Source, resourcePath, contentType, assembly));
+
         return this;
     }
     
@@ -47,9 +28,8 @@ public class WebServerConfigurationBuilder: IDisposable
     public WebServerConfigurationBuilder RegisterDynamicResource(
         string url, HttpHandlerDelegate method, bool isCached = false)
     {
-        EnsureState();
+        RegisterItem(url, new DynamicResourceHandler(Source, method, isCached));
         
-        handlers.Register(url, new DynamicResourceHandler(source, method, isCached));
         return this;
     }
 }

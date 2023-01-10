@@ -29,13 +29,15 @@ public class WebUiPlugin : PluginBase
 
         pages.ForEach((url, handler) => Logger.LogInformation("register web ui page: {Url}", url));
 
-        config.RegisterEmbeddedResource("/", HTML_RES_PATH, MIME_HTML);
-        config.RegisterEmbeddedResource("/apps", HTML_RES_PATH, MIME_HTML);
-        config.RegisterEmbeddedResource("/settings", HTML_RES_PATH, MIME_HTML);
+        config
+            .RegisterEmbeddedResource("/", HTML_RES_PATH, MIME_HTML)
+            .RegisterEmbeddedResource("/apps", HTML_RES_PATH, MIME_HTML)
+            .RegisterEmbeddedResource("/settings", HTML_RES_PATH, MIME_HTML);
 
         foreach (var pageDef in pages.Data.Values) {
-            config.RegisterEmbeddedResource(pageDef.PathDocument, HTML_RES_PATH, MIME_HTML);
-            config.RegisterEmbeddedResource(pageDef.PathJavaScript, pageDef.JsResourcePath, MIME_JS, pageDef.Source.Assembly);
+            config
+                .RegisterEmbeddedResource(pageDef.PathDocument, HTML_RES_PATH, MIME_HTML)
+                .RegisterEmbeddedResource(pageDef.PathJavaScript, pageDef.JsResourcePath, MIME_JS, pageDef.Source.Assembly);
         }
         
         config.RegisterEmbeddedResource(
