@@ -4,7 +4,7 @@
     <Description>Tmp plugin.</Description>
     <TargetFramework>net6.0</TargetFramework>
   </PropertyGroup>
-  <Target Name="BuildClientDevelopment" BeforeTargets="Build"  Condition="'$(Configuration)' != 'Release'">
+  <Target Name="BuildClientDevelopment" BeforeTargets="Build" Condition="'$(Configuration)' != 'Release'">
     <Exec Command="npm run build:development" />
   </Target>
   <Target Name="BuildClientpProduction" BeforeTargets="Build" Condition="'$(Configuration)' == 'Release'">
@@ -34,9 +34,5 @@
     <PackageReference Include="Microsoft.Extensions.Logging" Version="6.0.0" />
     <PackageReference Include="ThinkingHome.Migrator.Framework" Version="3.5.0" />
     <PackageReference Include="Telegram.Bot" Version="18.0.0" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="frontend\index.tsx" />
-    <TypeScriptCompile Include="webpack.config.ts" />
   </ItemGroup>
 </Project>

@@ -23,12 +23,6 @@ using ThinkingHome.Plugins.WebUi.Attributes;
 
 namespace ThinkingHome.Plugins.Tmp
 {
-    // [AppSection(SectionType.Common, "tmp user section 1", "/static/tmp/index1.js", "ThinkingHome.Plugins.Tmp.Resources.tmp.js", SortOrder = 4)]
-    // [AppSection(SectionType.Common, "tmp user section 2", "/static/tmp/index2.js", "ThinkingHome.Plugins.Tmp.Resources.tmp.js", SortOrder = 2)]
-    // [AppSection(SectionType.Common, "tmp user section 3", "/static/tmp/index3.js", "ThinkingHome.Plugins.Tmp.Resources.tmp.js")]
-    // [AppSection(SectionType.System, "Weather locations", "/static/tmp/inde6.js", "ThinkingHome.Plugins.Tmp.Resources.tmp.js")]
-    //
-    // [TemplateResource("/static/tmp/tmp.tpl", "ThinkingHome.Plugins.Tmp.Resources.tmp.tpl")]
     [HttpLocalizationResource("/static/tmp/lang.json")]
 
     public class TmpPlugin : PluginBase
@@ -90,9 +84,8 @@ namespace ThinkingHome.Plugins.Tmp
         [ConfigureWebUi]
         public void RegisterWebUiPages(WebUiConfigurationBuilder config)
         {
-            config.RegisterPage("/moo", "ThinkingHome.Plugins.Tmp.Resources.app.main.js");
-            config.RegisterPage("/hru", "ThinkingHome.Plugins.Tmp.Resources.app.main.js");
-            config.RegisterPage("/meow", "ThinkingHome.Plugins.Tmp.Resources.app.main.js");
+            config.RegisterPage("/page1", "ThinkingHome.Plugins.Tmp.Resources.app.page1.js");
+            config.RegisterPage("/page2", "ThinkingHome.Plugins.Tmp.Resources.app.page2.js");
         }
 
         [ConfigureWebServer]

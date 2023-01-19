@@ -25,14 +25,11 @@ public class WebUiPlugin : PluginBase
 
         // TODO: подумать про пути к корневой странице + валидацию путей
         // TODO: подумать про локализацию — отдавать все переводы одним файлом
-        // TODO: проверить, инициализируется ли один и тот же модуль несколько раз
+        // TODO: проверить, инициализируется ли один и тот же модуль несколько раз 
 
         pages.ForEach((url, handler) => Logger.LogInformation("register web ui page: {Url}", url));
 
-        config
-            .RegisterEmbeddedResource("/", HTML_RES_PATH, MIME_HTML)
-            .RegisterEmbeddedResource("/apps", HTML_RES_PATH, MIME_HTML)
-            .RegisterEmbeddedResource("/settings", HTML_RES_PATH, MIME_HTML);
+        config.RegisterEmbeddedResource("/", HTML_RES_PATH, MIME_HTML);
 
         foreach (var pageDef in pages.Data.Values) {
             config
