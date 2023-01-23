@@ -2,7 +2,7 @@ import React from "react";
 import {FC} from "react";
 import {Page} from "./Page";
 import {Routes, Route} from "react-router";
-import {Link, NavLink, useLocation} from "react-router-dom";
+import {Link, useLocation} from "react-router-dom";
 import {cn} from '@bem-react/classname';
 
 import {ErrorScreen} from "./ErrorScreen";

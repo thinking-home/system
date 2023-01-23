@@ -30,7 +30,7 @@
 
 ## HTTP-ресурсы
 
-В можете пометить метод своего плагина атрибутом `ThinkingHome.Plugins.WebServer.Attributes.ConfigureWebServerAttribute` и внутри этого метода настроить, чтобы веб-сервер по заданным URL отдавал на клиент статические или динамические ресурсы. Сигнатура метода должна соответствовать делегату `ThinkingHome.Plugins.WebServer.Attributes.ConfigureWebServerDelegate`: метод должен принимать один параметр типа `ThinkingHome.Plugins.WebServer.WebServerConfigurationBuilder` и не должен возвращать никакое значение. С помощью методов объекта `WebServerConfigurationBuilder` вы можете настроить, как обрабатывать запросы на различные URL.
+Вы можете пометить метод своего плагина атрибутом `ThinkingHome.Plugins.WebServer.Attributes.ConfigureWebServerAttribute` и внутри этого метода настроить, чтобы веб-сервер по заданным URL отдавал на клиент статические или динамические ресурсы. Сигнатура метода должна соответствовать делегату `ThinkingHome.Plugins.WebServer.Attributes.ConfigureWebServerDelegate`: метод должен принимать один параметр типа `ThinkingHome.Plugins.WebServer.WebServerConfigurationBuilder` и не должен возвращать никакое значение. С помощью методов объекта `WebServerConfigurationBuilder` вы можете настроить, как обрабатывать запросы на различные URL.
 
 #### Пример
 
