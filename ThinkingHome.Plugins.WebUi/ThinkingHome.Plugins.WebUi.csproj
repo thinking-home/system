@@ -1,0 +1,32 @@
+<Project Sdk="Microsoft.NET.Sdk">
+    <Import Project="..\Package.xml" />
+    <PropertyGroup>
+        <Description>ThinkingHome plugin which provide web UI core.</Description>
+        <TargetFramework>net6.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <Target Name="BuildClientDevelopment" BeforeTargets="Build"  Condition="'$(Configuration)' != 'Release'">
+        <Exec Command="npm run build:development" />
+    </Target>
+    <Target Name="BuildClientpProduction" BeforeTargets="Build" Condition="'$(Configuration)' == 'Release'">
+        <Exec Command="npm run build:production" />
+    </Target>
+    
+    <ItemGroup>
+        <None Remove="Resources\**\*" />
+    </ItemGroup>
+    <ItemGroup>
+        <EmbeddedResource Include="Resources\**\*" />
+    </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\ThinkingHome.Core.Plugins\ThinkingHome.Core.Plugins.csproj" />
+        <ProjectReference Include="..\ThinkingHome.Plugins.WebServer\ThinkingHome.Plugins.WebServer.csproj" />
+    </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="Microsoft.Extensions.Configuration" Version="6.0.1" />
+        <PackageReference Include="Microsoft.Extensions.Localization" Version="6.0.7" />
+        <PackageReference Include="Microsoft.Extensions.Logging" Version="6.0.0" />
+    </ItemGroup>
+</Project>

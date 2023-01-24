@@ -7,7 +7,7 @@
 Предоставляет другим плагинам возможность обрабатывать HTTP запросы:
 
 - выполнять методы плагинов для обработки HTTP запросов
-- возвращать заданные ресурсы по URL
+- возвращать заданные статические ресурсы по URL
 
 Также предоставляет клиент-серверную шину сообщений - средство для передачи данных между сервером и клиентом (например, браузером).
 
@@ -30,32 +30,55 @@
 
 ## HTTP-ресурсы
 
-### `[HttpEmbeddedResource]`
-
-С помощью атрибута `ThinkingHome.Plugins.WebServer.Attributes.HttpEmbeddedResourceAttribute` вы можете настроить, чтобы по заданному URL на клиент возвращался заданный файл ресурсов.
-
-Атрибутом необходимо отметить класс вашего плагина. В параметрах атрибута нужно указать: URL относительно корневого адреса, content type и путь к файлу в ресурсах DLL (файл ресурсов и плагин должны находиться в одной DLL).
+Вы можете пометить метод своего плагина атрибутом `ThinkingHome.Plugins.WebServer.Attributes.ConfigureWebServerAttribute` и внутри этого метода настроить, чтобы веб-сервер по заданным URL отдавал на клиент статические или динамические ресурсы. Сигнатура метода должна соответствовать делегату `ThinkingHome.Plugins.WebServer.Attributes.ConfigureWebServerDelegate`: метод должен принимать один параметр типа `ThinkingHome.Plugins.WebServer.WebServerConfigurationBuilder` и не должен возвращать никакое значение. С помощью методов объекта `WebServerConfigurationBuilder` вы можете настроить, как обрабатывать запросы на различные URL.
 
 #### Пример
 
 ```csharp
-[HttpEmbeddedResource("/favicon.ico", "MyPlugin.favicon.ico", "image/x-icon")]
-public class MyPlugin : PluginBase
+[ConfigureWebServer]
+public void RegisterHttpHandlers(WebServerConfigurationBuilder config)
 {
-
+    // настраиваем веб-сервер, вызывая методы объекта config
 }
 ```
 
-Статические ресурсы кэшируются на клиенте и сервере.
+### Статические ресурсы
 
-### `[HttpDynamicResource]`
+Метод `RegisterEmbeddedResource` добавляет URL, при запросе на который сервер отдает на клиент заданный файл из ресурсов DLL. Статические ресурсы кэшируются на клиенте и сервере.
 
-Содержимое динамических ресурсов генерируется при каждом запросе к ним. За генерацию содержимого отвечают методы плагинов, отмеченные атрибутом `ThinkingHome.Plugins.WebServer.Attributes.HttpDynamicResourceAttribute`. Нужный метод будет вызван автоматически при получении HTTP запроса на URL, указанный в параметрах атрибута.
+#### Параметры
+
+- `string url` — URL относительно корневого адреса
+- `string resourcePath` — путь к файлу в ресурсах DLL
+- `string contentType` — content type (по умолчанию "text/plain")
+- `Assembly assembly` — DLL, из которой нужно брать файл ресурсов (по умолчанию — из текущей)
+
+#### Пример
+
+```csharp
+[ConfigureWebServer]
+public void RegisterHttpHandlers(WebServerConfigurationBuilder config)
+{
+    config.RegisterEmbeddedResource("/favicon.ico", "MyPlugin.favicon.ico", "image/x-icon");
+}
+```
+
+### Динамические ресурсы
+
+Содержимое динамических ресурсов генерируется при каждом запросе к ним. За генерацию содержимого отвечают методы плагинов, зарегистрированные с помощью метода `RegisterDynamicResource`. Нужный метод будет вызван автоматически при получении HTTP запроса на указанный URL.
+
+#### Параметры
+
+- `string url` — URL относительно корневого адреса
+- `HttpHandlerDelegate method` — обработчик запросов
+- `bool isCached` — нужно ли кэшировать ответ (по умолчанию `false`)
+
+#### Обработчик запросов
 
 Сигнатура метода, обрабатывающего HTTP запрос, должна соответствовать делегату `ThinkingHome.Plugins.WebServer.HttpHandlerDelegate`:
 
 ```csharp
-public delegate HttpHandlerResult HttpHandlerDelegate(HttpRequestParams requestParams);
+delegate HttpHandlerResult HttpHandlerDelegate(HttpRequestParams requestParams)
 ```
 
 Входной параметр `requestParams` содержит информацию о параметрах HTTP запроса.
@@ -65,7 +88,12 @@ public delegate HttpHandlerResult HttpHandlerDelegate(HttpRequestParams requestP
 #### Пример
 
 ```csharp
-[HttpDynamicResource("/api/cow/add")]
+[ConfigureWebServer]
+public void RegisterHttpHandlers(WebServerConfigurationBuilder config)
+{
+    config.RegisterDynamicResource("/api/cow/add", AddCow);
+}
+
 public HttpHandlerResult AddCow(HttpRequestParams requestParams)
 {
     var name = requestParams.GetRequiredString("name");
@@ -78,19 +106,7 @@ public HttpHandlerResult AddCow(HttpRequestParams requestParams)
 }
 ```
 
-Динамические ресурсы по умолчанию не кэшируются. Чтобы включить кэширование результатов метода, передайте `true` в качестве второго аргумента для атрибута `[HttpDynamicResource]`.
-
-#### Пример
-
-```csharp
-[HttpDynamicResource("/dynamic/cached/resource", true)]
-public HttpHandlerResult GetMyCachedResource(HttpRequestParams requestParams)
-{
-    // ...
-}
-```
-
-### `[HttpLocalizationResource]`
+### `[HttpLocalizationResource]` (неактуально)
 
 Ресурсы локализации позволяют по заданному url отдать на клиент тексты для плагина на текущем языке. Чтобы добавить ресурс локализации пометьте класс плагина атрибутом `ThinkingHome.Plugins.WebServer.Attributes.HttpLocalizationResourceAttribute` и укажите в параметрах его конструктора нужный url. 
 
@@ -106,7 +122,7 @@ public class MyPlugin : PluginBase
 
 Ресурсы локализации кэшируются на клиенте и сервере.
 
-## Клиент-серверная шина сообщений
+## Клиент-серверная шина сообщений (неактуально)
 
 Клиент-серверная шина сообщений (HUB) - средство для передачи данных между сервером и клиентом (например, браузером). Инициировать отправку сообщения может как клиент, так и сервер.
 

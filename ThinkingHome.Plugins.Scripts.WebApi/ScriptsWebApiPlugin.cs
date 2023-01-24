@@ -20,7 +20,7 @@ namespace ThinkingHome.Plugins.Scripts.WebApi
             this.scripts = scripts;
         }
 
-        [WebServerConfigurationBuilder]
+        [ConfigureWebServer]
         public void RegisterHttpHandlers(WebServerConfigurationBuilder config)
         {
             config

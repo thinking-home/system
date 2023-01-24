@@ -4,6 +4,12 @@
     <Description>Tmp plugin.</Description>
     <TargetFramework>net6.0</TargetFramework>
   </PropertyGroup>
+  <Target Name="BuildClientDevelopment" BeforeTargets="Build" Condition="'$(Configuration)' != 'Release'">
+    <Exec Command="npm run build:development" />
+  </Target>
+  <Target Name="BuildClientpProduction" BeforeTargets="Build" Condition="'$(Configuration)' == 'Release'">
+    <Exec Command="npm run build:production" />
+  </Target>
   <ItemGroup>
     <None Remove="Resources\**\*" />
   </ItemGroup>
@@ -20,6 +26,7 @@
     <ProjectReference Include="../ThinkingHome.Plugins.Mqtt/ThinkingHome.Plugins.Mqtt.csproj" />
     <ProjectReference Include="../ThinkingHome.Plugins.Cron/ThinkingHome.Plugins.Cron.csproj" />
     <ProjectReference Include="../ThinkingHome.Plugins.TelegramBot\ThinkingHome.Plugins.TelegramBot.csproj" />
+    <ProjectReference Include="..\ThinkingHome.Plugins.WebUi\ThinkingHome.Plugins.WebUi.csproj" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.7" />

@@ -98,7 +98,7 @@ namespace ThinkingHome.Plugins.WebServer.UrlValidation
             }
         }
 
-        [WebServerConfigurationBuilder]
+        [ConfigureWebServer]
         public void RegisterHttpHandlers(WebServerConfigurationBuilder config)
         {
             config.RegisterDynamicResource("/dynamic/web-server/url-validation/errors.txt", GetUrlErrors);

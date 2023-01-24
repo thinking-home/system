@@ -1,0 +1,18 @@
+html,
+body,
+#root,
+.Application {
+    height: 100vh;
+}
+
+.Application {
+    display: flex;
+    flex-direction: column;
+}
+
+.Application-Content {
+    flex: 1;
+    overflow-y: scroll;
+    display: flex;
+    flex-direction: column;
+}
