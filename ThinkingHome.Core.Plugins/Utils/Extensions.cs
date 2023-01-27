@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
-using Newtonsoft.Json;
+using System.Text.Json;
 
 namespace ThinkingHome.Core.Plugins.Utils
 {
@@ -14,7 +14,7 @@ namespace ThinkingHome.Core.Plugins.Utils
         /// </summary>
         public static string ToJson(this object obj, string defaultValue = "")
         {
-            return obj == null ? defaultValue : JsonConvert.SerializeObject(obj);
+            return obj == null ? defaultValue : JsonSerializer.Serialize(obj);
         }
 
         #region parse
