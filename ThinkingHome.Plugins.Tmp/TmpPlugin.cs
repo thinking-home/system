@@ -24,7 +24,6 @@ using ThinkingHome.Plugins.WebUi.Attributes;
 namespace ThinkingHome.Plugins.Tmp
 {
     [HttpLocalizationResource("/static/tmp/lang.json")]
-
     public class TmpPlugin : PluginBase
     {
         private readonly DatabasePlugin database;
@@ -33,9 +32,10 @@ namespace ThinkingHome.Plugins.Tmp
         private readonly MqttPlugin mqtt;
         private readonly TelegramBotPlugin telegramBot;
         private readonly MailPlugin mail;
+        private readonly WebServerPlugin server;
 
         public TmpPlugin(DatabasePlugin database, ScriptsPlugin scripts, CronPlugin cron,
-            MqttPlugin mqtt, TelegramBotPlugin telegramBot, MailPlugin mail)
+            MqttPlugin mqtt, TelegramBotPlugin telegramBot, MailPlugin mail, WebServerPlugin server)
         {
             this.database = database;
             this.scripts = scripts;
@@ -43,6 +43,7 @@ namespace ThinkingHome.Plugins.Tmp
             this.mqtt = mqtt;
             this.telegramBot = telegramBot;
             this.mail = mail;
+            this.server = server;
         }
 
         public override void InitPlugin()
@@ -54,8 +55,7 @@ namespace ThinkingHome.Plugins.Tmp
 
             var sb = new StringBuilder("===================\nall strings:\n");
 
-            foreach (var str in StringLocalizer.GetAllStrings(true))
-            {
+            foreach (var str in StringLocalizer.GetAllStrings(true)) {
                 sb.AppendLine($"{str.Name}: {str.Value} ({str.SearchedLocation})");
             }
 
@@ -92,6 +92,7 @@ namespace ThinkingHome.Plugins.Tmp
         public void RegisterHttpHandlers(WebServerConfigurationBuilder config)
         {
             config
+                .RegisterDynamicResource("/api/tmp/signalr-send", TmpSendSignalrMessage)
                 .RegisterDynamicResource("/api/tmp/mqtt-send", TmpSendMqttMessage)
                 .RegisterDynamicResource("/api/tmp/hello-pig", HelloPigHttpMethod)
                 .RegisterDynamicResource("/api/tmp/wefwefwef", TmpHandlerMethod)
@@ -113,8 +114,7 @@ namespace ThinkingHome.Plugins.Tmp
 
         private HttpHandlerResult TmpHandlerMethod42(HttpRequestParams requestParams)
         {
-            return HttpHandlerResult.Json(new
-            {
+            return HttpHandlerResult.Json(new {
                 answer = 42,
                 name = requestParams.GetString("name")
             });
@@ -122,8 +122,7 @@ namespace ThinkingHome.Plugins.Tmp
 
         private HttpHandlerResult TmpHandlerMethodPigs(HttpRequestParams requestParams)
         {
-            using (var db = database.OpenSession())
-            {
+            using (var db = database.OpenSession()) {
                 var list = db.Set<SmallPig>()
                     .Select(pig => new { id = pig.Id, name = pig.Name, size = pig.Size })
                     .ToList();
@@ -132,7 +131,7 @@ namespace ThinkingHome.Plugins.Tmp
             }
         }
 
-        
+
         private HttpHandlerResult TmpSendMqttMessage(HttpRequestParams requestParams)
         {
             var topic = requestParams.GetString("topic") ?? "test";
@@ -143,18 +142,26 @@ namespace ThinkingHome.Plugins.Tmp
             return null;
         }
 
+        private HttpHandlerResult TmpSendSignalrMessage(HttpRequestParams requestParams)
+        {
+            var topic = requestParams.GetString("topic") ?? "test";
+            var msg = requestParams.GetString("msg") ?? "mumu";
+
+            server.Send(topic, new { msg, guid = Guid.NewGuid() });
+
+            return null;
+        }
+
 
         [MqttMessageHandler]
         public void HandleMqttMessage(string topic, byte[] payload)
         {
             var str = Encoding.UTF8.GetString(payload);
 
-            if (topic == "test")
-            {
+            if (topic == "test") {
                 Logger.LogWarning("TEST MESSAGE: {Message}", str);
             }
-            else
-            {
+            else {
                 Logger.LogInformation("{Topic}: {Message}", topic, str);
             }
         }
@@ -186,8 +193,7 @@ namespace ThinkingHome.Plugins.Tmp
 
             var msg = $"Корова сказала: Му - {text}";
 
-            for (var i = 0; i < count; i++)
-            {
+            for (var i = 0; i < count; i++) {
                 Logger.LogInformation("{Index} - {Message}", i + 1, msg);
             }
 
@@ -203,7 +209,7 @@ namespace ThinkingHome.Plugins.Tmp
             // telegramBot.SendFile(msg.Chat.Id, new Uri("https://www.noo.com.by/assets/files/PDF/PK314.pdf"));
             telegramBot.SendFile(msg.Chat.Id, "mimimi.txt", new MemoryStream(Encoding.UTF8.GetBytes("хри-хри")));
             telegramBot.SendPhoto(msg.Chat.Id, new Uri("http://историк.рф/wp-content/uploads/2017/03/2804.jpg"));
-            
+
             mail.SendMail("dima117a@gmail.com", "Test message", "This is the test");
         }
 
@@ -219,8 +225,7 @@ namespace ThinkingHome.Plugins.Tmp
         {
             var msg = string.Join("|", strings);
 
-            for (var i = 0; i < count; i++)
-            {
+            for (var i = 0; i < count; i++) {
                 Logger.LogCritical("{Index} - {Message}", i + 1, msg);
             }
         }

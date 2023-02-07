@@ -146,7 +146,7 @@ TODO:
 
 При отправке сообщения нужно указать *название канала* - строковый идентификатор. Зная его, обработчики могут подписаться на получение сообщений в этом канале.
 
-### `Task Send(string channel, object data)`
+### `Task Send(string topic, object data)`
 
 Отправляет сообщение в указанный канал.
 
@@ -154,7 +154,7 @@ TODO:
 
 ```csharp
 var result = Context.Require<WebServerPlugin>()
-    .Send("channel:name", new { query = "", answer = 42 });
+    .Send("topic:name", new { query = "", answer = 42 });
 
 ```
 
@@ -165,22 +165,22 @@ var result = Context.Require<WebServerPlugin>()
 Сигнатура метода должна соответствовать делегату `ThinkingHome.Plugins.WebServer.Messages.HubMessageHandlerDelegate`:
 
 ```csharp
-public delegate void HubMessageHandlerDelegate(Guid msgId, DateTime timestamp, string channel, object data);
+public delegate void HubMessageHandlerDelegate(Guid msgId, DateTime timestamp, string topic, object data);
 ```
 
 #### Параметры
 
 - `Guid msgId` - уникальный идентификатор сообщения.
 - `DateTime timestamp` - дата и время получения сообщения (серверные).
-- `string channel` - название канала, в который пришло сообщение.
+- `string topic` - название канала, в который пришло сообщение.
 - `object data` - полученные данные.
 
 #### Пример
 
 ```csharp
-[HubMessageHandler("channel:name")]
-public void TestMessageHandler(Guid msgId, DateTime timestamp, string channel, object data)
+[HubMessageHandler("topic:name")]
+public void TestMessageHandler(Guid msgId, DateTime timestamp, string topic, object data)
 {
-    Logger.LogInformation("{0}:{1}:{2}:{3}", msgId, timestamp, channel, data);
+    Logger.LogInformation("{0}:{1}:{2}:{3}", msgId, timestamp, topic, data);
 }
 ```

@@ -51,9 +51,9 @@ namespace ThinkingHome.Plugins.WebServer
             var msgHandlers = RegisterMessageHandlers();
             hubContext = host.Services.GetService<IHubContext<MessageHub>>();
 
-            MessageHub.Message += (id, timestamp, channel, data) => {
-                Logger.LogInformation("message sent in channel {Channel} with id {Id}", channel, id);
-                SafeInvoke(msgHandlers[channel], fn => fn(id, timestamp, channel, data));
+            MessageHub.Message += (id, timestamp, topic, data) => {
+                Logger.LogInformation("message sent in topic {Topic} with id {Id}", topic, id);
+                SafeInvoke(msgHandlers[topic], fn => fn(id, timestamp, topic, data));
             };
         }
 
@@ -83,9 +83,9 @@ namespace ThinkingHome.Plugins.WebServer
         {
             var messageHandlers = Context.GetAllPlugins()
                 .FindMethods<HubMessageHandlerAttribute, HubMessageHandlerDelegate>()
-                .ToObjectSetRegistry(mi => mi.Meta.Channel, mi => mi.Method);
+                .ToObjectSetRegistry(mi => mi.Meta.Topic, mi => mi.Method);
 
-            messageHandlers.ForEach((channel, handler) => Logger.LogInformation("register hub message handler: {Channel}", channel));
+            messageHandlers.ForEach((topic, handler) => Logger.LogInformation("register hub message handler: {Topic}", topic));
 
             return messageHandlers;
         }
@@ -101,9 +101,9 @@ namespace ThinkingHome.Plugins.WebServer
             host.Dispose();
         }
 
-        public Task Send(string channel, object data)
+        public Task Send(string topic, object data)
         {
-            return hubContext.Send(channel, data);
+            return hubContext.Send(topic, data);
         }
     }
 }

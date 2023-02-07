@@ -16,9 +16,9 @@ public class WebUiPlugin : PluginBase
     const string MIME_HTML = "text/html";
     const string MIME_JS = "application/javascript";
     const string MIME_CSS = "text/css";
-    
+
     private readonly ObjectRegistry<WebUiPageDefinition> pages = new();
-    
+
     [ConfigureWebServer]
     public void RegisterHttpHandlers(WebServerConfigurationBuilder config)
     {
@@ -37,19 +37,19 @@ public class WebUiPlugin : PluginBase
                 .RegisterEmbeddedResource(pageDef.PathDocument, HTML_RES_PATH, MIME_HTML)
                 .RegisterEmbeddedResource(pageDef.PathJavaScript, pageDef.JsResourcePath, MIME_JS, pageDef.Source.Assembly);
         }
-        
+
         config.RegisterEmbeddedResource(
-            "/static/webui/css/bootstrap.min.css", 
+            "/static/webui/css/bootstrap.min.css",
             "ThinkingHome.Plugins.WebUi.Resources.static.bootstrap.min.css",
             MIME_CSS);
 
         config.RegisterEmbeddedResource(
-            "/static/webui/js/vendor.js", 
+            "/static/webui/js/vendor.js",
             "ThinkingHome.Plugins.WebUi.Resources.app.vendor.js",
             MIME_JS);
-        
+
         config.RegisterEmbeddedResource(
-            "/static/webui/js/main.js", 
+            "/static/webui/js/main.js",
             "ThinkingHome.Plugins.WebUi.Resources.app.main.js",
             MIME_JS);
 
@@ -79,10 +79,10 @@ public class WebUiPlugin : PluginBase
             });
 
         var radio = new {
-            route = MessageHub.HUB_ROUTE,
+            route = $"/{MessageHub.HUB_ROUTE}",
             clientMethod = MessageHub.CLIENT_METHOD_NAME,
             serverMethod = MessageHub.SERVER_METHOD_NAME,
-            reconnectionTimeout = MessageHub.RECONNECTION_TIMEOUT
+            reconnectionTimeout = MessageHub.RECONNECTION_TIMEOUT_MS,
         };
 
         var config = new { lang, radio };

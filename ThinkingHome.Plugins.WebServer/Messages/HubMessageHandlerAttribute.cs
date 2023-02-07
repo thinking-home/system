@@ -5,11 +5,11 @@ namespace ThinkingHome.Plugins.WebServer.Messages
     [AttributeUsage(AttributeTargets.Method)]
     public class HubMessageHandlerAttribute : Attribute
     {
-        public string Channel { get; }
+        public string Topic { get; }
 
-        public HubMessageHandlerAttribute(string channel)
+        public HubMessageHandlerAttribute(string topic)
         {
-            Channel = channel;
+            Topic = topic;
         }
     }
 }

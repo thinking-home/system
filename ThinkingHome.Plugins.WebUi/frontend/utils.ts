@@ -2,8 +2,11 @@ import {Decoder, draw} from 'io-ts/Decoder';
 import axios from 'axios';
 import {isLeft} from 'fp-ts/lib/Either';
 import * as d from 'io-ts/Decoder';
+import {pipe} from 'fp-ts/function';
+import {HubConnectionBuilder, IRetryPolicy, HubConnection} from '@microsoft/signalr';
 
 import {ApiClient as BaseApiClient, QueryData, QueryParams} from "@thinking-home/ui";
+import {unknown} from "io-ts";
 
 const parseData = function <T>(decoder: Decoder<unknown, T>, data: unknown): T {
     const parsed = decoder.decode(data);
@@ -39,15 +42,57 @@ export const PageDefinitionDecoder = d.struct({
 
 export type PageDefinition = d.TypeOf<typeof PageDefinitionDecoder>;
 
+export const RadioConfigDecoder = d.struct({
+    route: d.string,
+    clientMethod: d.string,
+    serverMethod: d.string,
+    reconnectionTimeout: d.number,
+});
+
+export type RadioConfig = d.TypeOf<typeof RadioConfigDecoder>;
+
 export const MetaResponseDecoder = d.struct({
     pages: d.record(PageDefinitionDecoder),
     config: d.struct({
         lang: d.string,
-        radio: d.struct({
-            route: d.string,
-            clientMethod: d.string,
-            serverMethod: d.string,
-            reconnectionTimeout: d.number,
-        }),
+        radio: RadioConfigDecoder,
     }),
 });
+
+export const UnknownDecoder: d.Decoder<unknown, unknown> = d.fromGuard({
+    is: (_: unknown): _ is unknown => true,
+}, 'unknown value')
+
+export const RadioMessageDecoder = d.struct({
+    topic: d.string,
+    data: UnknownDecoder,
+    guid: d.string,
+    timestamp: d.string,
+});
+
+export type RadioMessage = d.TypeOf<typeof RadioMessageDecoder>;
+
+export class RadioConnection {
+    private connection: HubConnection;
+
+    constructor(private config: RadioConfig, callback: (msg: RadioMessage) => void) {
+        const {route, reconnectionTimeout, clientMethod} = config;
+
+        const retryPolicy: IRetryPolicy = {
+            nextRetryDelayInMilliseconds: () => reconnectionTimeout,
+        };
+
+        this.connection = new HubConnectionBuilder()
+            .withUrl(route)
+            .withAutomaticReconnect(retryPolicy)
+            .build();
+
+        this.connection.on(clientMethod, (msg: unknown) => {
+            const parsedMsg = parseData(RadioMessageDecoder, msg);
+            callback(parsedMsg);
+        });
+    }
+
+    start = (): Promise<void> => this.connection.start();
+    send = (channel: string, data: unknown) => this.connection.invoke(this.config.serverMethod, data);
+}
