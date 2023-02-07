@@ -5,6 +5,7 @@ using ThinkingHome.Core.Plugins.Utils;
 using ThinkingHome.Plugins.WebServer;
 using ThinkingHome.Plugins.WebServer.Attributes;
 using ThinkingHome.Plugins.WebServer.Handlers;
+using ThinkingHome.Plugins.WebServer.Messages;
 using ThinkingHome.Plugins.WebUi.Attributes;
 
 namespace ThinkingHome.Plugins.WebUi;
@@ -77,7 +78,14 @@ public class WebUiPlugin : PluginBase
                 js = p.PathJavaScript,
             });
 
-        var config = new { lang };
+        var radio = new {
+            route = MessageHub.HUB_ROUTE,
+            clientMethod = MessageHub.CLIENT_METHOD_NAME,
+            serverMethod = MessageHub.SERVER_METHOD_NAME,
+            reconnectionTimeout = MessageHub.RECONNECTION_TIMEOUT
+        };
+
+        var config = new { lang, radio };
 
         return HttpHandlerResult.Json(new { pages, config });
     }

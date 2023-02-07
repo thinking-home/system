@@ -51,8 +51,10 @@ namespace ThinkingHome.Plugins.WebServer
             var msgHandlers = RegisterMessageHandlers();
             hubContext = host.Services.GetService<IHubContext<MessageHub>>();
 
-            MessageHub.Message += (id, timestamp, channel, data) =>
+            MessageHub.Message += (id, timestamp, channel, data) => {
+                Logger.LogInformation("message sent in channel {Channel} with id {Id}", channel, id);
                 SafeInvoke(msgHandlers[channel], fn => fn(id, timestamp, channel, data));
+            };
         }
 
         public IReadOnlyDictionary<string, BaseHandler> GetAllHandlers() => handlers.Data;

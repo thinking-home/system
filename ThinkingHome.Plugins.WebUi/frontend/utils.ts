@@ -5,7 +5,7 @@ import * as d from 'io-ts/Decoder';
 
 import {ApiClient as BaseApiClient, QueryData, QueryParams} from "@thinking-home/ui";
 
-const parseData = function<T>(decoder: Decoder<unknown, T>, data: unknown): T {
+const parseData = function <T>(decoder: Decoder<unknown, T>, data: unknown): T {
     const parsed = decoder.decode(data);
 
     if (isLeft(parsed)) {
@@ -21,7 +21,7 @@ export class ApiClient implements BaseApiClient {
     async get<T>(decoder: Decoder<unknown, T>, query: { url: string; params?: QueryParams }): Promise<T> {
         const {url, params} = query;
         const response = await this.client.get(url, {params});
-        
+
         return parseData(decoder, response.data);
     }
 
@@ -43,5 +43,11 @@ export const MetaResponseDecoder = d.struct({
     pages: d.record(PageDefinitionDecoder),
     config: d.struct({
         lang: d.string,
+        radio: d.struct({
+            route: d.string,
+            clientMethod: d.string,
+            serverMethod: d.string,
+            reconnectionTimeout: d.number,
+        }),
     }),
 });
