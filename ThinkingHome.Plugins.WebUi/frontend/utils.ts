@@ -2,11 +2,9 @@ import {Decoder, draw} from 'io-ts/Decoder';
 import axios from 'axios';
 import {isLeft} from 'fp-ts/lib/Either';
 import * as d from 'io-ts/Decoder';
-import {pipe} from 'fp-ts/function';
 import {HubConnectionBuilder, IRetryPolicy, HubConnection} from '@microsoft/signalr';
 
 import {ApiClient as BaseApiClient, QueryData, QueryParams} from "@thinking-home/ui";
-import {unknown} from "io-ts";
 
 const parseData = function <T>(decoder: Decoder<unknown, T>, data: unknown): T {
     const parsed = decoder.decode(data);
@@ -42,20 +40,20 @@ export const PageDefinitionDecoder = d.struct({
 
 export type PageDefinition = d.TypeOf<typeof PageDefinitionDecoder>;
 
-export const RadioConfigDecoder = d.struct({
+export const MessageHubConfigDecoder = d.struct({
     route: d.string,
     clientMethod: d.string,
     serverMethod: d.string,
     reconnectionTimeout: d.number,
 });
 
-export type RadioConfig = d.TypeOf<typeof RadioConfigDecoder>;
+export type MessageHubConfig = d.TypeOf<typeof MessageHubConfigDecoder>;
 
 export const MetaResponseDecoder = d.struct({
     pages: d.record(PageDefinitionDecoder),
     config: d.struct({
         lang: d.string,
-        radio: RadioConfigDecoder,
+        messageHub: MessageHubConfigDecoder,
     }),
 });
 
@@ -63,19 +61,19 @@ export const UnknownDecoder: d.Decoder<unknown, unknown> = d.fromGuard({
     is: (_: unknown): _ is unknown => true,
 }, 'unknown value')
 
-export const RadioMessageDecoder = d.struct({
+export const MessageHubMessageDecoder = d.struct({
     topic: d.string,
     data: UnknownDecoder,
     guid: d.string,
     timestamp: d.string,
 });
 
-export type RadioMessage = d.TypeOf<typeof RadioMessageDecoder>;
+export type MessageHubMessage = d.TypeOf<typeof MessageHubMessageDecoder>;
 
-export class RadioConnection {
+export class MessageHubConnection {
     private connection: HubConnection;
 
-    constructor(private config: RadioConfig, callback: (msg: RadioMessage) => void) {
+    constructor(private config: MessageHubConfig, callback: (msg: MessageHubMessage) => void) {
         const {route, reconnectionTimeout, clientMethod} = config;
 
         const retryPolicy: IRetryPolicy = {
@@ -88,7 +86,7 @@ export class RadioConnection {
             .build();
 
         this.connection.on(clientMethod, (msg: unknown) => {
-            const parsedMsg = parseData(RadioMessageDecoder, msg);
+            const parsedMsg = parseData(MessageHubMessageDecoder, msg);
             callback(parsedMsg);
         });
     }

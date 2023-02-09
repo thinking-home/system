@@ -78,14 +78,14 @@ public class WebUiPlugin : PluginBase
                 js = p.PathJavaScript,
             });
 
-        var radio = new {
+        var messageHub = new {
             route = $"/{MessageHub.HUB_ROUTE}",
             clientMethod = MessageHub.CLIENT_METHOD_NAME,
             serverMethod = MessageHub.SERVER_METHOD_NAME,
             reconnectionTimeout = MessageHub.RECONNECTION_TIMEOUT_MS,
         };
 
-        var config = new { lang, radio };
+        var config = new { lang, messageHub };
 
         return HttpHandlerResult.Json(new { pages, config });
     }

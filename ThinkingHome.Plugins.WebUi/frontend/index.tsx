@@ -3,21 +3,21 @@ import * as ReactDOM from 'react-dom/client';
 import {BrowserRouter} from "react-router-dom";
 import {Application} from "./components/Application";
 import {AppContext, AppContextProvider} from "@thinking-home/ui";
-import {ApiClient, MetaResponseDecoder, RadioConnection} from "./utils";
+import {ApiClient, MetaResponseDecoder, MessageHubConnection} from "./utils";
 
 const init = async () => {
     const api = new ApiClient();
 
-    const {pages, config: {lang, radio: radioConfig}} = await api.get(MetaResponseDecoder, {url: '/api/webui/meta'});
+    const {pages, config: {lang, messageHub: messageHubConfig }} = await api.get(MetaResponseDecoder, {url: '/api/webui/meta'});
 
-    const radio = new RadioConnection(radioConfig, ({topic, guid, timestamp, data}) => {
+    const messageHub = new MessageHubConnection(messageHubConfig, ({topic, guid, timestamp, data}) => {
         console.log('topic:', topic);
         console.log('id:', guid);
         console.log('timestamp:', timestamp);
         console.log(data);
     });
 
-    radio.start();
+    messageHub.start();
 
     const context: AppContext = {lang, api};
 
