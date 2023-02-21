@@ -8,7 +8,7 @@
   "dependencies": {
     "@bem-react/classname": "^1.5.12",
     "@microsoft/signalr": "^7.0.2",
-    "@thinking-home/ui": "^0.1.4",
+    "@thinking-home/ui": "^0.1.7",
     "axios": "^0.27.2",
     "fp-ts": "^2.12.3",
     "history": "^5.3.0",
@@ -17,7 +17,8 @@
     "react-dom": "^18.2.0",
     "react-error-boundary": "^3.1.4",
     "react-router": "^6.6.1",
-    "react-router-dom": "^6.6.1"
+    "react-router-dom": "^6.6.1",
+    "react-toastify": "^9.1.1"
   },
   "devDependencies": {
     "@types/node": "^18.7.17",

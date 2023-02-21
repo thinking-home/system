@@ -20,14 +20,17 @@ const Home: React.FC = () => (
     <div>
         <h1>Home</h1>
         <p className="muted">
-            This is example pages.
+            This is demo pages.
         </p>
         <ul>
             <li>
-                <Link to="/page1">Nested page 1</Link>
+                <Link to="/page1">Error handling example</Link>
             </li>
             <li>
-                <Link to="/page2">Nested page 2</Link>
+                <Link to="/page2">Data loading example</Link>
+            </li>
+            <li>
+                <Link to="/page3">Message hub and notifications example</Link>
             </li>
         </ul>
     </div>

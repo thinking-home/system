@@ -3,12 +3,18 @@ import * as ReactDOM from 'react-dom/client';
 import {BrowserRouter} from "react-router-dom";
 import {Application} from "./components/Application";
 import {AppContext, AppContextProvider} from "@thinking-home/ui";
-import {ApiClient, MetaResponseDecoder, MessageHubConnection} from "./utils";
+import {ApiClient, MetaResponseDecoder, MessageHubConnection, toaster} from "./utils";
+import {ToastContainer} from 'react-toastify';
+
+import 'react-toastify/dist/ReactToastify.css';
 
 const init = async () => {
     const api = new ApiClient();
 
-    const {pages, config: {lang, messageHub: messageHubConfig }} = await api.get(MetaResponseDecoder, {url: '/api/webui/meta'});
+    const {
+        pages,
+        config: {lang, messageHub: messageHubConfig}
+    } = await api.get(MetaResponseDecoder, {url: '/api/webui/meta'});
 
     const messageHub = new MessageHubConnection(messageHubConfig, ({topic, guid, timestamp, data}) => {
         console.log('topic:', topic);
@@ -19,13 +25,14 @@ const init = async () => {
 
     messageHub.start();
 
-    const context: AppContext = {lang, api};
+    const context: AppContext = {lang, api, toaster, messageHub};
 
     const app = (
         <React.StrictMode>
             <BrowserRouter>
                 <AppContextProvider value={context}>
                     <Application pages={pages}/>
+                    <ToastContainer theme='colored' hideProgressBar/>
                 </AppContextProvider>
             </BrowserRouter>
         </React.StrictMode>

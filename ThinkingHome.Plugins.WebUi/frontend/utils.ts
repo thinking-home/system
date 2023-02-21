@@ -1,10 +1,18 @@
+import * as d from 'io-ts/Decoder';
 import {Decoder, draw} from 'io-ts/Decoder';
 import axios from 'axios';
 import {isLeft} from 'fp-ts/lib/Either';
-import * as d from 'io-ts/Decoder';
-import {HubConnectionBuilder, IRetryPolicy, HubConnection} from '@microsoft/signalr';
+import {HubConnection, HubConnectionBuilder, IRetryPolicy, LogLevel} from '@microsoft/signalr';
 
-import {ApiClient as BaseApiClient, QueryData, QueryParams} from "@thinking-home/ui";
+import {
+    ApiClient as BaseApiClient,
+    MessageHub,
+    MessageHubCallback,
+    QueryData,
+    QueryParams,
+    Toaster
+} from "@thinking-home/ui";
+import {toast} from 'react-toastify';
 
 const parseData = function <T>(decoder: Decoder<unknown, T>, data: unknown): T {
     const parsed = decoder.decode(data);
@@ -26,7 +34,11 @@ export class ApiClient implements BaseApiClient {
         return parseData(decoder, response.data);
     }
 
-    async post<T>(decoder: Decoder<unknown, T>, query: { url: string; params?: QueryParams; data: QueryData }): Promise<T> {
+    async post<T>(decoder: Decoder<unknown, T>, query: {
+        url: string;
+        params?: QueryParams;
+        data: QueryData
+    }): Promise<T> {
         const {url, params, data} = query;
         const response = await this.client.post(url, data, {params});
 
@@ -70,10 +82,10 @@ export const MessageHubMessageDecoder = d.struct({
 
 export type MessageHubMessage = d.TypeOf<typeof MessageHubMessageDecoder>;
 
-export class MessageHubConnection {
+export class MessageHubConnection implements MessageHub {
     private connection: HubConnection;
 
-    constructor(private config: MessageHubConfig, callback: (msg: MessageHubMessage) => void) {
+    constructor(private config: MessageHubConfig, callback?: (msg: MessageHubMessage) => void) {
         const {route, reconnectionTimeout, clientMethod} = config;
 
         const retryPolicy: IRetryPolicy = {
@@ -86,11 +98,54 @@ export class MessageHubConnection {
             .build();
 
         this.connection.on(clientMethod, (msg: unknown) => {
-            const parsedMsg = parseData(MessageHubMessageDecoder, msg);
-            callback(parsedMsg);
+            try {
+                const parsedMsg = parseData(MessageHubMessageDecoder, msg);
+                callback?.(parsedMsg);
+            } catch (err: unknown) {
+                console.error(err);
+            }
         });
     }
 
     start = (): Promise<void> => this.connection.start();
-    send = (channel: string, data: unknown) => this.connection.invoke(this.config.serverMethod, data);
+
+    send = (topic: string, data: unknown) => this.connection.invoke(this.config.serverMethod, topic, data);
+
+    subscribe<T>(
+        topic: string,
+        decoder: Decoder<unknown, T>,
+        callback: MessageHubCallback<T>,
+        handleError?: MessageHubCallback<unknown>
+    ): () => void {
+        const {clientMethod} = this.config;
+
+        const handler = (msg: unknown) => {
+            try {
+                const {topic, guid, timestamp, data} = parseData(MessageHubMessageDecoder, msg);
+                const parsedData = parseData(decoder, data);
+
+                try {
+                    callback(topic, guid, timestamp, parsedData);
+                } catch (err) {
+                    console.error(err);
+                }
+            } catch (err: unknown) {
+                console.error(err);
+            }
+        };
+
+        this.connection.on(clientMethod, handler);
+
+        return () => {
+            this.connection.off(clientMethod, handler);
+        };
+    }
 }
+
+export const toaster: Toaster = {
+    show: toast,
+    showError: toast.error,
+    showSuccess: toast.success,
+    showInfo: toast.info,       
+    showWarning: toast.warning,
+};

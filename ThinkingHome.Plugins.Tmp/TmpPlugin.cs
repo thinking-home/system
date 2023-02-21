@@ -86,6 +86,7 @@ namespace ThinkingHome.Plugins.Tmp
         {
             config.RegisterPage("/page1", "ThinkingHome.Plugins.Tmp.Resources.app.page1.js");
             config.RegisterPage("/page2", "ThinkingHome.Plugins.Tmp.Resources.app.page2.js");
+            config.RegisterPage("/page3", "ThinkingHome.Plugins.Tmp.Resources.app.page3.js");
         }
 
         [ConfigureWebServer]
