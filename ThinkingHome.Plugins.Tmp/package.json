@@ -2,11 +2,12 @@
   "name": "@thinking-home/plugins-tmp",
   "version": "1.0.0",
   "scripts": {
-    "build:production": "webpack --mode=production",
-    "build:development": "webpack --mode=development"
+    "build": "npm run build:development",
+    "build:development": "webpack --mode=development",
+    "build:production": "webpack --mode=production"
   },
   "dependencies": {
-    "@thinking-home/ui": "^0.1.7",
+    "@thinking-home/ui": "^0.1.10",
     "fp-ts": "^2.13.1",
     "io-ts": "^2.2.20",
     "react": "^18.2.0",

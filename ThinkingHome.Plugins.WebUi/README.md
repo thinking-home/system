@@ -179,4 +179,25 @@ export default createModule(ExampleSection);
 
 ### Настройки стартовой страницы (TBD)
 
-### Шина сообщений (TBD)
+### Шина сообщений
+
+Из контекста приложения, который предоставляет `useAppContext` из библиотеки `@thinking-home/ui`, вы также можете получить экземпляр API для работы с клиент-серверной шиной сообщений, которую предоставляет плагин `WebServerPlugin`.
+
+```tsx
+import {createModule, useAppContext} from '@thinking-home/ui';
+
+const TmpSection: FC = () => {
+    const {messageHub} = useAppContext();
+    
+    const onClick = useCallback(() => {
+        // отправляем сообщение в канал 'my-topic'
+        messageHub.send('my-topic', {name: 'John', age: 42});
+    }, [messageHub.send]);
+    
+    return <button onClick={onClick}>Send</button>;
+}
+
+export default createModule(ExampleSection);
+```
+
+### Нотификация (TBD)

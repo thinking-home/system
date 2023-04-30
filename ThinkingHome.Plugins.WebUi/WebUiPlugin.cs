@@ -26,7 +26,6 @@ public class WebUiPlugin : PluginBase
 
         // TODO: подумать про пути к корневой странице + валидацию путей
         // TODO: подумать про локализацию — отдавать все переводы одним файлом
-        // TODO: проверить, инициализируется ли один и тот же модуль несколько раз 
 
         pages.ForEach((url, handler) => Logger.LogInformation("register web ui page: {Url}", url));
 

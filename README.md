@@ -18,6 +18,7 @@ ThinkingHome - кроссплатформенное приложение, поз
 - [ThinkingHome.Plugins.Timer](./ThinkingHome.Plugins.Timer) - выполнение действий по таймеру
 - [ThinkingHome.Plugins.WebServer](./ThinkingHome.Plugins.WebServer) - инфраструктура для обращения к методам плагинов по HTTP
 - [ThinkingHome.Plugins.WebServer.UrlValidation](./ThinkingHome.Plugins.WebServer.UrlValidation) - валидация URL методов плагинов на соответствие правилам
+- [ThinkingHome.Plugins.WebUi](./ThinkingHome.Plugins.WebUi) - инфраструктура для веб-интерфейса
 
 **[Как написать свой плагин](ThinkingHome.Core.Plugins)**
 

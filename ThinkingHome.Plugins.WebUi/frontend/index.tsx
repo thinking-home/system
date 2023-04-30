@@ -40,6 +40,27 @@ const init = async () => {
 
     const root = ReactDOM.createRoot(document.getElementById("root"));
     root.render(app);
+
+    return async () => {
+        root.unmount();
+        api.abortController.abort();
+        await messageHub.dispose();
+    };
 };
 
-init();
+declare global {
+    interface Window {
+        __DESTROY_TH_APP__?: () => Promise<void>;
+    }
+}
+
+// TODO: сделать клиентский логгер и прокидывать как зависимость, логировать в дебаге запросы и сообщения
+// TODO: переделать подписку message hub на builder и описать в серверной документации
+// TODO: написать клиентскую документацию про hub в зависимостях и про useMessageHandler
+// TODO: написать клиентскую документацию про toaster
+// TODO: написать клиентскую документацию отмену запросов и про деструктор приложения
+// TODO: сделать серверные методы плагинов асинхронными 
+
+init().then(destroy => {
+    window.__DESTROY_TH_APP__ = destroy;
+});

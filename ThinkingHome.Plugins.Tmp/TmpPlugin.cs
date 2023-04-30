@@ -2,6 +2,7 @@
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
@@ -92,7 +93,7 @@ namespace ThinkingHome.Plugins.Tmp
         [ConfigureWebServer]
         public void RegisterHttpHandlers(WebServerConfigurationBuilder config)
         {
-            config
+            config 
                 .RegisterDynamicResource("/api/tmp/signalr-send", TmpSendSignalrMessage)
                 .RegisterDynamicResource("/api/tmp/mqtt-send", TmpSendMqttMessage)
                 .RegisterDynamicResource("/api/tmp/hello-pig", HelloPigHttpMethod)
@@ -123,13 +124,13 @@ namespace ThinkingHome.Plugins.Tmp
 
         private HttpHandlerResult TmpHandlerMethodPigs(HttpRequestParams requestParams)
         {
-            using (var db = database.OpenSession()) {
-                var list = db.Set<SmallPig>()
-                    .Select(pig => new { id = pig.Id, name = pig.Name, size = pig.Size })
-                    .ToList();
+            Thread.Sleep(5000);
+            using var db = database.OpenSession();
+            var list = db.Set<SmallPig>()
+                .Select(pig => new { id = pig.Id, name = pig.Name, size = pig.Size })
+                .ToList();
 
-                return HttpHandlerResult.Json(list);
-            }
+            return HttpHandlerResult.Json(list);
         }
 
 
@@ -218,6 +219,9 @@ namespace ThinkingHome.Plugins.Tmp
         public void ReplyToTelegramMessage2(string command, Message msg)
         {
             telegramBot.SendMessage(msg.Chat.Id, $"mi mi mi");
+
+            server.Send("mh-example", new { name = msg.Text, size = 111 });
+            
             Logger.LogInformation("NEW TELEGRAM MESSAGE: {Message} (cmd: {Command})", msg.Text, command);
         }
 
