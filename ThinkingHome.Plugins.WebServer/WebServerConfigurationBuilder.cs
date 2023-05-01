@@ -2,13 +2,20 @@ using System;
 using System.Reflection;
 using ThinkingHome.Core.Plugins.Utils;
 using ThinkingHome.Plugins.WebServer.Handlers;
+using ThinkingHome.Plugins.WebServer.Messages;
 
 namespace ThinkingHome.Plugins.WebServer;
 
-public class WebServerConfigurationBuilder: BaseConfigurationBuilder<BaseHandler>
+public class WebServerConfigurationBuilder : BaseConfigurationBuilder<BaseHandler>
 {
-    public WebServerConfigurationBuilder(Type source, ObjectRegistry<BaseHandler> handlers): base(source, handlers)
+    private readonly ObjectSetRegistry<HubMessageHandlerDelegate> msgHandlers;
+
+    public WebServerConfigurationBuilder(
+        Type source,
+        ObjectRegistry<BaseHandler> handlers,
+        ObjectSetRegistry<HubMessageHandlerDelegate> msgHandlers) : base(source, handlers)
     {
+        this.msgHandlers = msgHandlers;
     }
 
     /// <summary>
@@ -21,7 +28,7 @@ public class WebServerConfigurationBuilder: BaseConfigurationBuilder<BaseHandler
 
         return this;
     }
-    
+
     /// <summary>
     /// Зарегистрировать динамический HTTP ресурс (опционально кэшируется)
     /// </summary>
@@ -29,7 +36,19 @@ public class WebServerConfigurationBuilder: BaseConfigurationBuilder<BaseHandler
         string url, HttpHandlerDelegate method, bool isCached = false)
     {
         RegisterItem(url, new DynamicResourceHandler(Source, method, isCached));
-        
+
+        return this;
+    }
+
+    /// <summary>
+    /// Зарегистрировать обработчик в шине сообщений
+    /// </summary>
+    public WebServerConfigurationBuilder RegisterMessageHandler(string topic, HubMessageHandlerDelegate method)
+    {
+        EnsureState();
+
+        msgHandlers.Register(topic, method);
+
         return this;
     }
 }

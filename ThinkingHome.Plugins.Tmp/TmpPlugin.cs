@@ -91,15 +91,19 @@ namespace ThinkingHome.Plugins.Tmp
         }
 
         [ConfigureWebServer]
-        public void RegisterHttpHandlers(WebServerConfigurationBuilder config)
+        public void ConfigureWebServer(WebServerConfigurationBuilder config)
         {
-            config 
+            // register http handlers
+            config
                 .RegisterDynamicResource("/api/tmp/signalr-send", TmpSendSignalrMessage)
                 .RegisterDynamicResource("/api/tmp/mqtt-send", TmpSendMqttMessage)
                 .RegisterDynamicResource("/api/tmp/hello-pig", HelloPigHttpMethod)
                 .RegisterDynamicResource("/api/tmp/wefwefwef", TmpHandlerMethod)
                 .RegisterDynamicResource("/api/tmp/index42", TmpHandlerMethod42)
                 .RegisterDynamicResource("/api/tmp/pigs", TmpHandlerMethodPigs);
+
+            // register message handlers
+            config.RegisterMessageHandler("mh-example", TestMessageHandler);
         }
 
         private HttpHandlerResult HelloPigHttpMethod(HttpRequestParams requestParams)
@@ -221,7 +225,7 @@ namespace ThinkingHome.Plugins.Tmp
             telegramBot.SendMessage(msg.Chat.Id, $"mi mi mi");
 
             server.Send("mh-example", new { name = msg.Text, size = 111 });
-            
+
             Logger.LogInformation("NEW TELEGRAM MESSAGE: {Message} (cmd: {Command})", msg.Text, command);
         }
 
@@ -277,11 +281,10 @@ namespace ThinkingHome.Plugins.Tmp
             return new Scripts.Buffer(bytes);
         }
 
-        // [HubMessageHandler("mi-mi-mi")]
-        // public void TestMessageHandler(Guid msgId, DateTime timestamp, string channel, object data)
-        // {
-        //     Logger.LogInformation("{0}:{1}:{2}:{3}", msgId, timestamp, channel, data);
-        // }
+        private void TestMessageHandler(Guid msgId, DateTime timestamp, string topic, object data)
+        {
+            Logger.LogInformation("{Id}:{Timestamp}:{Topic}:{Data}", msgId, timestamp, topic, data);
+        }
 
         [CronHandler]
         public void TestCronHandler(Guid cronTaskId)

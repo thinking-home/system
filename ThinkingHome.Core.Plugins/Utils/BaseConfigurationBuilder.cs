@@ -27,7 +27,7 @@ namespace ThinkingHome.Core.Plugins.Utils
             items.Register(key, item);
         }
         
-        private void EnsureState()
+        protected void EnsureState()
         {
             if (disposed) {
                 throw new InvalidOperationException("Can't add item into disposed registry");
