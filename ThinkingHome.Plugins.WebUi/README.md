@@ -201,3 +201,11 @@ export default createModule(ExampleSection);
 ```
 
 ### Нотификация (TBD)
+
+### Клиентское логирование
+
+```js
+localStorage.setItem('ROARR_FILTER', 'context.logLevel:>10')
+```
+
+[Язык запросов](https://github.com/gajus/liqe#query-syntax)

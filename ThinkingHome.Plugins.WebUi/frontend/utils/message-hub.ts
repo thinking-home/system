@@ -1,19 +1,41 @@
-import {MessageHub, ReceivedMessage} from "@thinking-home/ui";
-import {HubConnection, HubConnectionBuilder, IRetryPolicy} from "@microsoft/signalr";
+import {Logger, LogLevel, MessageHub, ReceivedMessage} from "@thinking-home/ui";
+import {
+    HubConnection,
+    HubConnectionBuilder,
+    ILogger,
+    IRetryPolicy,
+    LogLevel as SignalrLogLevel
+} from "@microsoft/signalr";
 import {Decoder} from "io-ts/Decoder";
 import {MessageHubConfig, MessageHubMessage, MessageHubMessageDecoder, parseData} from "./types";
+
+const LogLevelMap: Record<SignalrLogLevel, LogLevel> = {
+    [SignalrLogLevel.None]: LogLevel.Trace,
+    [SignalrLogLevel.Trace]: LogLevel.Trace,
+    [SignalrLogLevel.Debug]: LogLevel.Debug,
+    [SignalrLogLevel.Information]: LogLevel.Information,
+    [SignalrLogLevel.Warning]: LogLevel.Warning,
+    [SignalrLogLevel.Error]: LogLevel.Error,
+    [SignalrLogLevel.Critical]: LogLevel.Fatal,
+};
 
 export class MessageHubConnection implements MessageHub {
     private connection: HubConnection;
 
-    constructor(private config: MessageHubConfig, callback?: (msg: MessageHubMessage) => void) {
+    constructor(
+        private config: MessageHubConfig,
+        private logger: Logger,
+        callback?: (msg: MessageHubMessage) => void,
+    ) {
         const {route, reconnectionTimeout, clientMethod} = config;
+        const log: ILogger['log'] = (level, message) => logger.log(LogLevelMap[level], message);
 
         const retryPolicy: IRetryPolicy = {
             nextRetryDelayInMilliseconds: () => reconnectionTimeout,
         };
 
         this.connection = new HubConnectionBuilder()
+            .configureLogging({log})
             .withUrl(route)
             .withAutomaticReconnect(retryPolicy)
             .build();
