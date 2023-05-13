@@ -7,7 +7,7 @@
     "build:production": "webpack --mode=production"
   },
   "dependencies": {
-    "@thinking-home/ui": "^0.1.10",
+    "@thinking-home/ui": "^0.1.14",
     "fp-ts": "^2.13.1",
     "io-ts": "^2.2.20",
     "react": "^18.2.0",

@@ -1,10 +1,19 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom/client';
 import {BrowserRouter} from "react-router-dom";
-import {Application} from "./components/Application";
-import {AppContext, AppContextProvider, LoggerProvider} from "@thinking-home/ui";
-import {ApiClient, MetaResponseDecoder, MessageHubConnection, toaster, AppLogger, initLogger} from "./utils";
+import {AppContext, AppContextProvider, LoggerProvider, LogLevel} from "@thinking-home/ui";
 import {ToastContainer} from 'react-toastify';
+
+import {Application} from "./components/Application";
+import {
+    ApiClient,
+    AppLogger,
+    ConsoleLogDestination,
+    MessageHubConnection,
+    MetaResponseDecoder,
+    toaster,
+    NS_FIELD,
+} from "./utils";
 
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -17,9 +26,9 @@ const init = async () => {
     } = await api.get(MetaResponseDecoder, {url: '/api/webui/meta'});
 
     // logger
-    const logger = new AppLogger();
-    initLogger();
-    
+    const writerConsole = new ConsoleLogDestination(LogLevel.Information);
+    const logger = new AppLogger([writerConsole], {[NS_FIELD]: 'application'});
+
     // messages
     const messageHub = new MessageHubConnection(messageHubConfig, logger);
     messageHub.start();

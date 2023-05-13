@@ -1,6 +1,6 @@
 import * as React from 'react';
 import {FC, useCallback, useState} from 'react';
-import {createModule, ReceivedMessage, useAppContext, useMessageHandler} from '@thinking-home/ui';
+import {createModule, LogLevel, ReceivedMessage, useAppContext, useLogger, useMessageHandler} from '@thinking-home/ui';
 import * as d from 'io-ts/Decoder';
 
 const tmpPigDecoder = d.struct({
@@ -30,15 +30,18 @@ const TmpPigToast: FC<{ msg: ReceivedMessage<TmpPig>, counter: number }> = (e) =
 const TmpSection: FC = () => {
     const {messageHub: {send}, toaster: {showInfo}} = useAppContext();
     const [value, setValue] = useState(0);
+    const logger = useLogger();
 
     useMessageHandler(TOPIC, tmpPigDecoder, (msg) => {
         showInfo(<TmpPigToast msg={msg} counter={value}/>);
-    }, [showInfo, value]);
+        logger.log(LogLevel.Information, 'message was received')
+    }, [showInfo, value, logger]);
 
     const onClick = useCallback(() => {
         const name = prompt('Enter the name of the pig');
         send<TmpPig>(TOPIC, {name, size: value});
-    }, [send, value]);
+        logger.log(LogLevel.Information, 'button has been pressed')
+    }, [send, value, logger]);
 
     const onIncement = useCallback(() => {
         setValue(value + 1);
