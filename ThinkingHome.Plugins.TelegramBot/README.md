@@ -43,11 +43,17 @@ Telegram бот для умного дома. Предоставляет пла�
 #### Пример
 
 ```csharp
-long chatId = ...
-
-Context.Require<TelegramBotPlugin>()
-    .SendMessage(chatId, "Привет!");
-
+public class MyPlugin : PluginBase
+{
+    private readonly TelegramBotPlugin telegram;
+    
+    private void MyMethod()
+    {
+        long chatId = ...
+        
+        telegram.SendMessage(chatId, "Привет!");
+    }
+}
 ```
 
 ### `void SendPhoto(long chatId, string filename, Stream content)`
@@ -63,14 +69,20 @@ Context.Require<TelegramBotPlugin>()
 #### Пример
 
 ```csharp
-long chatId = ...
-
-using (var stream = System.IO.File.OpenRead("/Users/username/photo.jpg"))
+public class MyPlugin : PluginBase
 {
-    Context.Require<TelegramBotPlugin>()
-        .SendPhoto(chatId, "photo.jpg", stream);
+    private readonly TelegramBotPlugin telegram;
+    
+    private void MyMethod()
+    {
+        long chatId = ...
+        
+        using (var stream = System.IO.File.OpenRead("/Users/username/photo.jpg"))
+        {
+            telegram.SendPhoto(chatId, "photo.jpg", stream);
+        }
+    }
 }
-
 ```
 
 ### `void SendPhoto(long chatId, Uri url)`
@@ -85,11 +97,17 @@ using (var stream = System.IO.File.OpenRead("/Users/username/photo.jpg"))
 #### Пример
 
 ```csharp
-long chatId = ...
-
-Context.Require<TelegramBotPlugin>()
-    .SendPhoto(chatId, new Uri("http://example.com/images/котики.jpg"));
-
+public class MyPlugin : PluginBase
+{
+    private readonly TelegramBotPlugin telegram;
+    
+    private void MyMethod()
+    {
+        long chatId = ...
+        
+        telegram.SendPhoto(chatId, new Uri("http://example.com/images/котики.jpg"));
+    }
+}
 ```
 
 ### `void SendFile(long chatId, string filename, Stream content)`
@@ -105,14 +123,20 @@ Context.Require<TelegramBotPlugin>()
 #### Пример
 
 ```csharp
-long chatId = ...
-
-using (var stream = System.IO.File.OpenRead("/Users/username/user-manual.pdf"))
+public class MyPlugin : PluginBase
 {
-    Context.Require<TelegramBotPlugin>()
-        .SendFile(chatId, "user-manual.pdf", stream);
+    private readonly TelegramBotPlugin telegram;
+    
+    private void MyMethod()
+    {
+        long chatId = ...
+        
+        using (var stream = System.IO.File.OpenRead("/Users/username/user-manual.pdf"))
+        {
+            telegram.SendFile(chatId, "user-manual.pdf", stream);
+        }
+    }
 }
-
 ```
 
 ### `void SendFile(long chatId, Uri url)`
@@ -127,11 +151,17 @@ using (var stream = System.IO.File.OpenRead("/Users/username/user-manual.pdf"))
 #### Пример
 
 ```csharp
-long chatId = ...
-
-Context.Require<TelegramBotPlugin>()
-    .SendFile(chatId, new Uri("http://example.com/user-manual.pdf"));
-
+public class MyPlugin : PluginBase
+{
+    private readonly TelegramBotPlugin telegram;
+    
+    private void MyMethod()
+    {
+        long chatId = ...
+        
+        telegram.SendFile(chatId, new Uri("http://example.com/user-manual.pdf"));
+    }
+}
 ```
 
 ### `[TelegramMessageHandler]`
@@ -159,7 +189,7 @@ public delegate void TelegramMessageHandlerDelegate(string command, Message mess
 
 ```csharp
 // обработка сообщений, которые начинаются с команды 'test'
-[HubMessageHandler("test")]
+[TelegramMessageHandler("test")]
 public void TestMessageHandler1(string command, Message msg)
 {
     // command == "test"
@@ -168,7 +198,7 @@ public void TestMessageHandler1(string command, Message msg)
 }
 
 // обработка сообщения, которое не содержит команду
-[HubMessageHandler("")]
+[TelegramMessageHandler("")]
 public void TestMessageHandler2(string command, Message msg)
 {
     // command == ""
@@ -177,7 +207,7 @@ public void TestMessageHandler2(string command, Message msg)
 }
 
 // обработка всех сообщений
-[HubMessageHandler]
+[TelegramMessageHandler]
 public void TestMessageHandler3(string command, Message msg)
 {
     switch (command)

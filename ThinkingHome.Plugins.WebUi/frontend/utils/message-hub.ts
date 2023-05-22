@@ -45,9 +45,14 @@ export class MessageHubConnection implements MessageHub {
                 const parsedMsg = parseData(MessageHubMessageDecoder, msg);
                 callback?.(parsedMsg);
             } catch (err: unknown) {
-                console.error(err);
+                this.handleError(err);
             }
         });
+    }
+    
+    private handleError = (error: unknown) => {
+        const message = error instanceof Error ? error.message : 'unknown error';
+        this.logger.log(LogLevel.Error, message);
     }
 
     start = (): Promise<void> => this.connection.start();
@@ -68,13 +73,9 @@ export class MessageHubConnection implements MessageHub {
                 const {topic, guid, timestamp, data} = parseData(MessageHubMessageDecoder, msg);
                 const parsedData = parseData(decoder, data);
 
-                try {
-                    callback({topic, guid, timestamp, data: parsedData});
-                } catch (err) {
-                    console.error(err);
-                }
+                callback({topic, guid, timestamp, data: parsedData});
             } catch (err: unknown) {
-                console.error(err);
+                this.handleError(err);
             }
         };
 

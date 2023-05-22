@@ -42,9 +42,15 @@
 #### Пример
 
 ```csharp
-Context.Require<MailPlugin>()
-    .SendEmail("test@example.com", "My subject", "My message body.");
-
+public class MyPlugin : PluginBase
+{
+    private readonly MailPlugin mail;
+    
+    private void MyMethod()
+    {
+        mail.SendEmail("test@example.com", "My subject", "My message body.");
+    }
+}
 ```
 
 ### `void SendEmail(string email, string subject, string message, string fileName, byte[] fileContent)`
@@ -54,11 +60,17 @@ Context.Require<MailPlugin>()
 #### Пример
 
 ```csharp
-var bytes = File.ReadAllBytes("image.jpg");
-
-Context.Require<MailPlugin>()
-    .SendEmail("test@example.com", "My subject", "My message body.", "image.jpg", bytes);
-
+public class MyPlugin : PluginBase
+{
+    private readonly MailPlugin mail;
+    
+    private void MyMethod()
+    {
+        var bytes = File.ReadAllBytes("image.jpg");
+        
+        mail.SendEmail("test@example.com", "My subject", "My message body.", "image.jpg", bytes);
+    }
+}
 ```
 
 ### `void SendEmail(string email, string subject, string message, string fileName, Buffer fileContent)`
@@ -69,12 +81,18 @@ Context.Require<MailPlugin>()
 #### Пример
 
 ```csharp
-var bytes = File.ReadAllBytes("image.jpg");
-var buffer = new Buffer(bytes);
-
-Context.Require<MailPlugin>()
-    .SendEmail("test@example.com", "My subject", "My message body.", "image.jpg", buffer);
-
+public class MyPlugin : PluginBase
+{
+    private readonly MailPlugin mail;
+    
+    private void MyMethod()
+    {
+        var bytes = File.ReadAllBytes("image.jpg");
+        var buffer = new Buffer(bytes);
+        
+        mail.SendEmail("test@example.com", "My subject", "My message body.", "image.jpg", buffer);
+    }
+}
 ```
 
 ## API сценариев

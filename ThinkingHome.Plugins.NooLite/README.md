@@ -36,11 +36,18 @@
 #### Пример
 
 ```csharp
-var adapter = Context.Require<NooLitePlugin>()
-    .Open(true);
-
-// set brightness 255 in channel 13
-adapter.SetBrightness(13, 255);
+public class MyPlugin : PluginBase
+{
+    private readonly NooLitePlugin noolite;
+    
+    private void MyMethod()
+    {
+        var adapter = noolite.Open(true);
+        
+        // set brightness 255 in channel 13
+        adapter.SetBrightness(13, 255);
+    }
+}
 ```
 
 ### `[NooLiteCommandHandler]`

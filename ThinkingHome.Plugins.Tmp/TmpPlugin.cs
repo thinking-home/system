@@ -179,13 +179,7 @@ namespace ThinkingHome.Plugins.Tmp
             db.Set<SmallPig>().ToList()
                 .ForEach(pig => Logger.LogWarning("{Name}, size: {Size} ({Id})", pig.Name, pig.Size, pig.Id));
         }
-
-        // [TimerCallback(5000)]
-        // public void MimimiMqTimer(DateTime now)
-        // {
-        //     Context.Require<WebServerPlugin>().Send("mi-mi-mi", DateTime.Now);
-        // }
-
+        
         [DbModelBuilder]
         public void InitModel(ModelBuilder modelBuilder)
         {
@@ -238,45 +232,12 @@ namespace ThinkingHome.Plugins.Tmp
                 Logger.LogCritical("{Index} - {Message}", i + 1, msg);
             }
         }
-
-        // [WebApiMethod("/api/tmp/add-schedule")]
-        // public object AddTimer(HttpRequestParams requestParams)
-        // {
-        //     using (var db = Context.Require<DatabasePlugin>().OpenSession())
-        //     {
-        //         var time = DateTime.Now.AddMinutes(1);
-        //
-        //         var t = new CronTask
-        //         {
-        //             Id = Guid.NewGuid(),
-        //             Enabled = true,
-        //             EventAlias = $"event:{time.ToShortTimeString()}",
-        //             Name = $"time:{time.ToShortTimeString()}"
-        //         };
-        //
-        //         db.Set<CronTask>().Add(t);
-        //         db.SaveChanges();
-        //     }
-        //
-        //     Context.Require<CronPlugin>().ReloadTasks();
-        //
-        //     return 200;
-        // }
-
-        // [WebApiMethod("/api/tmp/send")]
-        // public object SendEmail(HttpRequestParams requestParams)
-        // {
-        //     Context.Require<MailPlugin>()
-        //            .SendMail("dima117a@gmail.com", "test2", Guid.NewGuid().ToString());
-        //
-        //     return null;
-        // }
-
+        
         [ScriptCommand("generateBuffer")]
         public Scripts.Buffer GetTestBuffer()
         {
             var content = Guid.NewGuid().ToString();
-            var bytes = System.Text.Encoding.UTF8.GetBytes(content);
+            var bytes = Encoding.UTF8.GetBytes(content);
 
             return new Scripts.Buffer(bytes);
         }

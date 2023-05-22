@@ -1,6 +1,6 @@
 import * as React from 'react';
 import {FC, useCallback, useEffect, useMemo, useState} from 'react';
-import {createModule, useAppContext} from '@thinking-home/ui';
+import {createModule, LogLevel, useAppContext, useLogger} from '@thinking-home/ui';
 import * as d from 'io-ts/Decoder';
 
 const url = '/api/tmp/pigs';
@@ -18,13 +18,14 @@ const TmpSection: FC = () => {
     const [list, setList] = useState<Pig[]>([]);
     const {api} = useAppContext();
     const controller = useMemo(() => new AbortController(), []);
+    const logger = useLogger();
 
     useEffect(() => {
         api.get(tmpResponseDecoder, {url, signal: controller.signal})
-            .then(setList, (e) => console.error(e));
+            .then(setList, (e) => logger.log(LogLevel.Error, e instanceof Error ? e.message : 'error'));
 
         return () => controller.abort();
-    }, [controller]);
+    }, [controller, logger]);
 
     const cancel = useCallback(() => controller.abort(), [controller]);
 
