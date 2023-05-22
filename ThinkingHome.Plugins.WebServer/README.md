@@ -124,7 +124,7 @@ public class MyPlugin : PluginBase
 
 ## Клиент-серверная шина сообщений
 
-Клиент-серверная шина сообщений (HUB) - средство для передачи данных между сервером и клиентом (например, браузером). Инициировать отправку сообщения может как клиент, так и сервер.
+Клиент-серверная шина сообщений (message hub) - средство для передачи данных между сервером и клиентом (например, браузером). Инициировать отправку сообщения может как клиент, так и сервер.
 
 В начале работы плагин создает SignalR Hub по адресу [/hub](http://localhost:8080/hub). В него можно отправлять сообщения как с клиента, так и с сервера. Эти сообщения будут получены подписанными на них обработчиками на сервере и на всех клиентах, подключенных в текущий момент.
 
@@ -148,9 +148,9 @@ public class MyPlugin : PluginBase
 }
 ```
 
-### `[HubMessageHandler]`
+#### Обработка сообщений
 
-Вы можете отметить методы своего плагина атрибутом `ThinkingHome.Plugins.WebServer.Messages.HubMessageHandlerAttribute`. Метод вашего плагина будет автоматически вызываться при получении сообщений в указанном канале.
+Когда вы конфигурируете веб-сервер, вы можете назначить обработчики для сообщений, полученных через шину сообщений.
 
 Сигнатура метода должна соответствовать делегату `ThinkingHome.Plugins.WebServer.Messages.HubMessageHandlerDelegate`:
 
@@ -160,15 +160,20 @@ public delegate void HubMessageHandlerDelegate(Guid msgId, DateTime timestamp, s
 
 #### Параметры
 
-- `Guid msgId` - уникальный идентификатор сообщения.
-- `DateTime timestamp` - дата и время получения сообщения (серверные).
-- `string topic` - название канала, в который пришло сообщение.
+- `Guid msgId` - уникальный идентификатор сообщения;
+- `DateTime timestamp` - дата и время получения сообщения (серверные);
+- `string topic` - название канала, в который пришло сообщение;
 - `object data` - полученные данные.
 
 #### Пример
 
 ```csharp
-[HubMessageHandler("topic:name")]
+[ConfigureWebServer]
+public void RegisterHttpHandlers(WebServerConfigurationBuilder config)
+{
+    config.RegisterMessageHandler("my-topic", TestMessageHandler);
+}
+
 public void TestMessageHandler(Guid msgId, DateTime timestamp, string topic, object data)
 {
     Logger.LogInformation("{0}:{1}:{2}:{3}", msgId, timestamp, topic, data);
