@@ -30,7 +30,7 @@ export class ConsoleLogDestination implements LogDestination {
         if (level >= this.minLevel) {
             const log = level >= LogLevel.Warning ? console.error : console.info;
             
-            const ts = new Date(timestamp).toUTCString();
+            const ts = new Date(timestamp).toISOString();
             const ns = String(context[NS_FIELD]).toUpperCase();
             const lvl = LEVEL_NAMES[level];
 

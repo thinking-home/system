@@ -61,9 +61,13 @@ const init = async () => {
 declare global {
     interface Window {
         __DESTROY_TH_APP__?: () => Promise<void>;
+        __RELOAD_TH_APP__?: () => Promise<void>;
     }
 }
 
-init().then(destroy => {
-    window.__DESTROY_TH_APP__ = destroy;
-});
+window.__RELOAD_TH_APP__ = async () => {
+    await window.__DESTROY_TH_APP__?.();
+    window.__DESTROY_TH_APP__ = await init();
+}
+
+window.__RELOAD_TH_APP__();
