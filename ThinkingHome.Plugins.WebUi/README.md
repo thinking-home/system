@@ -248,8 +248,41 @@ const MySection: FC = () => {
 
 ### Клиентское логирование
 
-```js
-localStorage.setItem('ROARR_FILTER', 'context.logLevel:>10')
+Платформа предоставляет API для клиентского логирования. Вы можете получить экземпляр логгера с помощью хука `useLogger`. Для каждого сообщения в логе нужно указать уровень логирования (`Trace`, `Debug`, `Information`, `Warning`, `Error`, `Fatal`) и текст сообщения (`string`).
+
+```tsx
+import {LogLevel, useLogger} from '@thinking-home/ui';
+
+const MyContent: FC = () => {
+   const logger = useLogger();
+
+   logger.log(LogLevel.Debug, "render: MyContent")
+
+   const onClick = useCallback(
+           () => logger.log(LogLevel.Information, "click: Example button"),
+           [logger],
+   );
+
+   return <button onClick={onClick}>Click me</button>;
+}
 ```
 
-[Язык запросов](https://github.com/gajus/liqe#query-syntax)
+Каждое сообщение логгера имеет контекст — объект с дополнительными данными. Контекст задается при создании логгера. Вы можете создать дочерний логгер и при его создании указать дополнительные данные, которые нужно добавить в его контекст. Чтобы предоставить экземпляр дочернего логгера вложенным компонентам (вместо общего логгера), используйте `LoggerProvider` из библиотеки `@thinking-home/ui`.
+
+```tsx
+import {LoggerProvider, LogLevel, useLogger} from '@thinking-home/ui';
+const MySection: FC = () => {
+   const logger = useLogger();
+
+   // мемоизируем дочерний логгер, чтобы не создавался новый при каждом рендеринге 
+   const childLogger = useMemo(() => logger.child({info: "test"}), [logger])
+
+   logger.log(LogLevel.Debug, "render: MySection");
+
+   return (
+       <LoggerProvider value={childLogger}>
+          <MyContent />
+       </LoggerProvider>
+   )
+}
+```

@@ -4,6 +4,7 @@ export interface LogItem {
     level: LogLevel;
     context: Record<string, JsonValue>;
     message: string;
+    timestamp: number;
 }
 
 export interface LogDestination {
@@ -25,11 +26,15 @@ export class ConsoleLogDestination implements LogDestination {
     constructor(private minLevel: LogLevel) {
     }
 
-    write({level, message, context}: LogItem): void {
+    write({level, message, context, timestamp}: LogItem): void {
         if (level >= this.minLevel) {
             const log = level >= LogLevel.Warning ? console.error : console.info;
+            
+            const ts = new Date(timestamp).toUTCString();
+            const ns = String(context[NS_FIELD]).toUpperCase();
+            const lvl = LEVEL_NAMES[level];
 
-            const prefix = `[${LEVEL_NAMES[level]}] ${context[NS_FIELD]}:`.toUpperCase();
+            const prefix = `${ts} ${lvl} ${ns}:`;
 
             log(prefix, message);
         }
@@ -37,15 +42,19 @@ export class ConsoleLogDestination implements LogDestination {
 }
 
 export class AppLogger implements Logger {
-    constructor(private destinations: LogDestination[], private context: Record<string, JsonValue> = {}) {
+    constructor(
+        private destinations: LogDestination[],
+        private context: Record<string, JsonValue> = {},
+        private getTimestemp: () => number,
+    ) {
     }
 
     child(context: Record<string, JsonValue>): Logger {
-        return new AppLogger(this.destinations, {...this.context, ...context});
+        return new AppLogger(this.destinations, {...this.context, ...context}, this.getTimestemp);
     }
 
     log(level: LogLevel, message: string): void {
-        const item: LogItem = {level, message, context: this.context};
+        const item: LogItem = {level, message, timestamp: this.getTimestemp(), context: this.context};
 
         this.destinations.forEach(d => d.write(item));
     }

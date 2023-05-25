@@ -8,8 +8,8 @@
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "getApplicativeComposition": () => (/* binding */ getApplicativeComposition),
-/* harmony export */   "getApplicativeMonoid": () => (/* binding */ getApplicativeMonoid)
+/* harmony export */   getApplicativeComposition: () => (/* binding */ getApplicativeComposition),
+/* harmony export */   getApplicativeMonoid: () => (/* binding */ getApplicativeMonoid)
 /* harmony export */ });
 /* harmony import */ var _Apply__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Apply */ "./node_modules/fp-ts/es6/Apply.js");
 /* harmony import */ var _function__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./function */ "./node_modules/fp-ts/es6/function.js");
@@ -65,13 +65,13 @@ function getApplicativeComposition(F, G) {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "ap": () => (/* binding */ ap),
-/* harmony export */   "apFirst": () => (/* binding */ apFirst),
-/* harmony export */   "apS": () => (/* binding */ apS),
-/* harmony export */   "apSecond": () => (/* binding */ apSecond),
-/* harmony export */   "getApplySemigroup": () => (/* binding */ getApplySemigroup),
-/* harmony export */   "sequenceS": () => (/* binding */ sequenceS),
-/* harmony export */   "sequenceT": () => (/* binding */ sequenceT)
+/* harmony export */   ap: () => (/* binding */ ap),
+/* harmony export */   apFirst: () => (/* binding */ apFirst),
+/* harmony export */   apS: () => (/* binding */ apS),
+/* harmony export */   apSecond: () => (/* binding */ apSecond),
+/* harmony export */   getApplySemigroup: () => (/* binding */ getApplySemigroup),
+/* harmony export */   sequenceS: () => (/* binding */ sequenceS),
+/* harmony export */   sequenceT: () => (/* binding */ sequenceT)
 /* harmony export */ });
 /* harmony import */ var _function__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./function */ "./node_modules/fp-ts/es6/function.js");
 /* harmony import */ var _internal__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./internal */ "./node_modules/fp-ts/es6/internal.js");
@@ -265,8 +265,8 @@ function sequenceS(F) {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "bind": () => (/* binding */ bind),
-/* harmony export */   "chainFirst": () => (/* binding */ chainFirst)
+/* harmony export */   bind: () => (/* binding */ bind),
+/* harmony export */   chainFirst: () => (/* binding */ chainFirst)
 /* harmony export */ });
 function chainFirst(M) {
     return function (f) { return function (first) { return M.chain(first, function (a) { return M.map(f(a), function () { return a; }); }); }; };
@@ -289,7 +289,7 @@ function bind(M) {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "tailRec": () => (/* binding */ tailRec)
+/* harmony export */   tailRec: () => (/* binding */ tailRec)
 /* harmony export */ });
 /**
  * @since 2.0.0
@@ -313,107 +313,107 @@ var tailRec = function (startWith, f) {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "Alt": () => (/* binding */ Alt),
-/* harmony export */   "ApT": () => (/* binding */ ApT),
-/* harmony export */   "Applicative": () => (/* binding */ Applicative),
-/* harmony export */   "Apply": () => (/* binding */ Apply),
-/* harmony export */   "Bifunctor": () => (/* binding */ Bifunctor),
-/* harmony export */   "Chain": () => (/* binding */ Chain),
-/* harmony export */   "ChainRec": () => (/* binding */ ChainRec),
-/* harmony export */   "Do": () => (/* binding */ Do),
-/* harmony export */   "Extend": () => (/* binding */ Extend),
-/* harmony export */   "Foldable": () => (/* binding */ Foldable),
-/* harmony export */   "FromEither": () => (/* binding */ FromEither),
-/* harmony export */   "Functor": () => (/* binding */ Functor),
-/* harmony export */   "Monad": () => (/* binding */ Monad),
-/* harmony export */   "MonadThrow": () => (/* binding */ MonadThrow),
-/* harmony export */   "Pointed": () => (/* binding */ Pointed),
-/* harmony export */   "Traversable": () => (/* binding */ Traversable),
-/* harmony export */   "URI": () => (/* binding */ URI),
-/* harmony export */   "alt": () => (/* binding */ alt),
-/* harmony export */   "altW": () => (/* binding */ altW),
-/* harmony export */   "ap": () => (/* binding */ ap),
-/* harmony export */   "apFirst": () => (/* binding */ apFirst),
-/* harmony export */   "apFirstW": () => (/* binding */ apFirstW),
-/* harmony export */   "apS": () => (/* binding */ apS),
-/* harmony export */   "apSW": () => (/* binding */ apSW),
-/* harmony export */   "apSecond": () => (/* binding */ apSecond),
-/* harmony export */   "apSecondW": () => (/* binding */ apSecondW),
-/* harmony export */   "apW": () => (/* binding */ apW),
-/* harmony export */   "bimap": () => (/* binding */ bimap),
-/* harmony export */   "bind": () => (/* binding */ bind),
-/* harmony export */   "bindTo": () => (/* binding */ bindTo),
-/* harmony export */   "bindW": () => (/* binding */ bindW),
-/* harmony export */   "chain": () => (/* binding */ chain),
-/* harmony export */   "chainFirst": () => (/* binding */ chainFirst),
-/* harmony export */   "chainFirstW": () => (/* binding */ chainFirstW),
-/* harmony export */   "chainNullableK": () => (/* binding */ chainNullableK),
-/* harmony export */   "chainOptionK": () => (/* binding */ chainOptionK),
-/* harmony export */   "chainOptionKW": () => (/* binding */ chainOptionKW),
-/* harmony export */   "chainW": () => (/* binding */ chainW),
-/* harmony export */   "duplicate": () => (/* binding */ duplicate),
-/* harmony export */   "either": () => (/* binding */ either),
-/* harmony export */   "elem": () => (/* binding */ elem),
-/* harmony export */   "exists": () => (/* binding */ exists),
-/* harmony export */   "extend": () => (/* binding */ extend),
-/* harmony export */   "filterOrElse": () => (/* binding */ filterOrElse),
-/* harmony export */   "filterOrElseW": () => (/* binding */ filterOrElseW),
-/* harmony export */   "flap": () => (/* binding */ flap),
-/* harmony export */   "flatMap": () => (/* binding */ flatMap),
-/* harmony export */   "flatten": () => (/* binding */ flatten),
-/* harmony export */   "flattenW": () => (/* binding */ flattenW),
-/* harmony export */   "fold": () => (/* binding */ fold),
-/* harmony export */   "foldMap": () => (/* binding */ foldMap),
-/* harmony export */   "foldW": () => (/* binding */ foldW),
-/* harmony export */   "fromNullable": () => (/* binding */ fromNullable),
-/* harmony export */   "fromNullableK": () => (/* binding */ fromNullableK),
-/* harmony export */   "fromOption": () => (/* binding */ fromOption),
-/* harmony export */   "fromOptionK": () => (/* binding */ fromOptionK),
-/* harmony export */   "fromPredicate": () => (/* binding */ fromPredicate),
-/* harmony export */   "getAltValidation": () => (/* binding */ getAltValidation),
-/* harmony export */   "getApplicativeValidation": () => (/* binding */ getApplicativeValidation),
-/* harmony export */   "getApplyMonoid": () => (/* binding */ getApplyMonoid),
-/* harmony export */   "getApplySemigroup": () => (/* binding */ getApplySemigroup),
-/* harmony export */   "getCompactable": () => (/* binding */ getCompactable),
-/* harmony export */   "getEq": () => (/* binding */ getEq),
-/* harmony export */   "getFilterable": () => (/* binding */ getFilterable),
-/* harmony export */   "getOrElse": () => (/* binding */ getOrElse),
-/* harmony export */   "getOrElseW": () => (/* binding */ getOrElseW),
-/* harmony export */   "getSemigroup": () => (/* binding */ getSemigroup),
-/* harmony export */   "getShow": () => (/* binding */ getShow),
-/* harmony export */   "getValidation": () => (/* binding */ getValidation),
-/* harmony export */   "getValidationMonoid": () => (/* binding */ getValidationMonoid),
-/* harmony export */   "getValidationSemigroup": () => (/* binding */ getValidationSemigroup),
-/* harmony export */   "getWitherable": () => (/* binding */ getWitherable),
-/* harmony export */   "isLeft": () => (/* binding */ isLeft),
-/* harmony export */   "isRight": () => (/* binding */ isRight),
-/* harmony export */   "left": () => (/* binding */ left),
+/* harmony export */   Alt: () => (/* binding */ Alt),
+/* harmony export */   ApT: () => (/* binding */ ApT),
+/* harmony export */   Applicative: () => (/* binding */ Applicative),
+/* harmony export */   Apply: () => (/* binding */ Apply),
+/* harmony export */   Bifunctor: () => (/* binding */ Bifunctor),
+/* harmony export */   Chain: () => (/* binding */ Chain),
+/* harmony export */   ChainRec: () => (/* binding */ ChainRec),
+/* harmony export */   Do: () => (/* binding */ Do),
+/* harmony export */   Extend: () => (/* binding */ Extend),
+/* harmony export */   Foldable: () => (/* binding */ Foldable),
+/* harmony export */   FromEither: () => (/* binding */ FromEither),
+/* harmony export */   Functor: () => (/* binding */ Functor),
+/* harmony export */   Monad: () => (/* binding */ Monad),
+/* harmony export */   MonadThrow: () => (/* binding */ MonadThrow),
+/* harmony export */   Pointed: () => (/* binding */ Pointed),
+/* harmony export */   Traversable: () => (/* binding */ Traversable),
+/* harmony export */   URI: () => (/* binding */ URI),
+/* harmony export */   alt: () => (/* binding */ alt),
+/* harmony export */   altW: () => (/* binding */ altW),
+/* harmony export */   ap: () => (/* binding */ ap),
+/* harmony export */   apFirst: () => (/* binding */ apFirst),
+/* harmony export */   apFirstW: () => (/* binding */ apFirstW),
+/* harmony export */   apS: () => (/* binding */ apS),
+/* harmony export */   apSW: () => (/* binding */ apSW),
+/* harmony export */   apSecond: () => (/* binding */ apSecond),
+/* harmony export */   apSecondW: () => (/* binding */ apSecondW),
+/* harmony export */   apW: () => (/* binding */ apW),
+/* harmony export */   bimap: () => (/* binding */ bimap),
+/* harmony export */   bind: () => (/* binding */ bind),
+/* harmony export */   bindTo: () => (/* binding */ bindTo),
+/* harmony export */   bindW: () => (/* binding */ bindW),
+/* harmony export */   chain: () => (/* binding */ chain),
+/* harmony export */   chainFirst: () => (/* binding */ chainFirst),
+/* harmony export */   chainFirstW: () => (/* binding */ chainFirstW),
+/* harmony export */   chainNullableK: () => (/* binding */ chainNullableK),
+/* harmony export */   chainOptionK: () => (/* binding */ chainOptionK),
+/* harmony export */   chainOptionKW: () => (/* binding */ chainOptionKW),
+/* harmony export */   chainW: () => (/* binding */ chainW),
+/* harmony export */   duplicate: () => (/* binding */ duplicate),
+/* harmony export */   either: () => (/* binding */ either),
+/* harmony export */   elem: () => (/* binding */ elem),
+/* harmony export */   exists: () => (/* binding */ exists),
+/* harmony export */   extend: () => (/* binding */ extend),
+/* harmony export */   filterOrElse: () => (/* binding */ filterOrElse),
+/* harmony export */   filterOrElseW: () => (/* binding */ filterOrElseW),
+/* harmony export */   flap: () => (/* binding */ flap),
+/* harmony export */   flatMap: () => (/* binding */ flatMap),
+/* harmony export */   flatten: () => (/* binding */ flatten),
+/* harmony export */   flattenW: () => (/* binding */ flattenW),
+/* harmony export */   fold: () => (/* binding */ fold),
+/* harmony export */   foldMap: () => (/* binding */ foldMap),
+/* harmony export */   foldW: () => (/* binding */ foldW),
+/* harmony export */   fromNullable: () => (/* binding */ fromNullable),
+/* harmony export */   fromNullableK: () => (/* binding */ fromNullableK),
+/* harmony export */   fromOption: () => (/* binding */ fromOption),
+/* harmony export */   fromOptionK: () => (/* binding */ fromOptionK),
+/* harmony export */   fromPredicate: () => (/* binding */ fromPredicate),
+/* harmony export */   getAltValidation: () => (/* binding */ getAltValidation),
+/* harmony export */   getApplicativeValidation: () => (/* binding */ getApplicativeValidation),
+/* harmony export */   getApplyMonoid: () => (/* binding */ getApplyMonoid),
+/* harmony export */   getApplySemigroup: () => (/* binding */ getApplySemigroup),
+/* harmony export */   getCompactable: () => (/* binding */ getCompactable),
+/* harmony export */   getEq: () => (/* binding */ getEq),
+/* harmony export */   getFilterable: () => (/* binding */ getFilterable),
+/* harmony export */   getOrElse: () => (/* binding */ getOrElse),
+/* harmony export */   getOrElseW: () => (/* binding */ getOrElseW),
+/* harmony export */   getSemigroup: () => (/* binding */ getSemigroup),
+/* harmony export */   getShow: () => (/* binding */ getShow),
+/* harmony export */   getValidation: () => (/* binding */ getValidation),
+/* harmony export */   getValidationMonoid: () => (/* binding */ getValidationMonoid),
+/* harmony export */   getValidationSemigroup: () => (/* binding */ getValidationSemigroup),
+/* harmony export */   getWitherable: () => (/* binding */ getWitherable),
+/* harmony export */   isLeft: () => (/* binding */ isLeft),
+/* harmony export */   isRight: () => (/* binding */ isRight),
+/* harmony export */   left: () => (/* binding */ left),
 /* harmony export */   "let": () => (/* binding */ let_),
-/* harmony export */   "map": () => (/* binding */ map),
-/* harmony export */   "mapLeft": () => (/* binding */ mapLeft),
-/* harmony export */   "match": () => (/* binding */ match),
-/* harmony export */   "matchW": () => (/* binding */ matchW),
-/* harmony export */   "of": () => (/* binding */ of),
-/* harmony export */   "orElse": () => (/* binding */ orElse),
-/* harmony export */   "orElseW": () => (/* binding */ orElseW),
-/* harmony export */   "parseJSON": () => (/* binding */ parseJSON),
-/* harmony export */   "reduce": () => (/* binding */ reduce),
-/* harmony export */   "reduceRight": () => (/* binding */ reduceRight),
-/* harmony export */   "right": () => (/* binding */ right),
-/* harmony export */   "sequence": () => (/* binding */ sequence),
-/* harmony export */   "sequenceArray": () => (/* binding */ sequenceArray),
-/* harmony export */   "stringifyJSON": () => (/* binding */ stringifyJSON),
-/* harmony export */   "swap": () => (/* binding */ swap),
-/* harmony export */   "throwError": () => (/* binding */ throwError),
-/* harmony export */   "toError": () => (/* binding */ toError),
-/* harmony export */   "toUnion": () => (/* binding */ toUnion),
-/* harmony export */   "traverse": () => (/* binding */ traverse),
-/* harmony export */   "traverseArray": () => (/* binding */ traverseArray),
-/* harmony export */   "traverseArrayWithIndex": () => (/* binding */ traverseArrayWithIndex),
-/* harmony export */   "traverseReadonlyArrayWithIndex": () => (/* binding */ traverseReadonlyArrayWithIndex),
-/* harmony export */   "traverseReadonlyNonEmptyArrayWithIndex": () => (/* binding */ traverseReadonlyNonEmptyArrayWithIndex),
-/* harmony export */   "tryCatch": () => (/* binding */ tryCatch),
-/* harmony export */   "tryCatchK": () => (/* binding */ tryCatchK)
+/* harmony export */   map: () => (/* binding */ map),
+/* harmony export */   mapLeft: () => (/* binding */ mapLeft),
+/* harmony export */   match: () => (/* binding */ match),
+/* harmony export */   matchW: () => (/* binding */ matchW),
+/* harmony export */   of: () => (/* binding */ of),
+/* harmony export */   orElse: () => (/* binding */ orElse),
+/* harmony export */   orElseW: () => (/* binding */ orElseW),
+/* harmony export */   parseJSON: () => (/* binding */ parseJSON),
+/* harmony export */   reduce: () => (/* binding */ reduce),
+/* harmony export */   reduceRight: () => (/* binding */ reduceRight),
+/* harmony export */   right: () => (/* binding */ right),
+/* harmony export */   sequence: () => (/* binding */ sequence),
+/* harmony export */   sequenceArray: () => (/* binding */ sequenceArray),
+/* harmony export */   stringifyJSON: () => (/* binding */ stringifyJSON),
+/* harmony export */   swap: () => (/* binding */ swap),
+/* harmony export */   throwError: () => (/* binding */ throwError),
+/* harmony export */   toError: () => (/* binding */ toError),
+/* harmony export */   toUnion: () => (/* binding */ toUnion),
+/* harmony export */   traverse: () => (/* binding */ traverse),
+/* harmony export */   traverseArray: () => (/* binding */ traverseArray),
+/* harmony export */   traverseArrayWithIndex: () => (/* binding */ traverseArrayWithIndex),
+/* harmony export */   traverseReadonlyArrayWithIndex: () => (/* binding */ traverseReadonlyArrayWithIndex),
+/* harmony export */   traverseReadonlyNonEmptyArrayWithIndex: () => (/* binding */ traverseReadonlyNonEmptyArrayWithIndex),
+/* harmony export */   tryCatch: () => (/* binding */ tryCatch),
+/* harmony export */   tryCatchK: () => (/* binding */ tryCatchK)
 /* harmony export */ });
 /* harmony import */ var _Applicative__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./Applicative */ "./node_modules/fp-ts/es6/Applicative.js");
 /* harmony import */ var _Apply__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./Apply */ "./node_modules/fp-ts/es6/Apply.js");
@@ -1852,14 +1852,14 @@ function getValidation(SE) {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "chainEitherK": () => (/* binding */ chainEitherK),
-/* harmony export */   "chainFirstEitherK": () => (/* binding */ chainFirstEitherK),
-/* harmony export */   "chainOptionK": () => (/* binding */ chainOptionK),
-/* harmony export */   "filterOrElse": () => (/* binding */ filterOrElse),
-/* harmony export */   "fromEitherK": () => (/* binding */ fromEitherK),
-/* harmony export */   "fromOption": () => (/* binding */ fromOption),
-/* harmony export */   "fromOptionK": () => (/* binding */ fromOptionK),
-/* harmony export */   "fromPredicate": () => (/* binding */ fromPredicate)
+/* harmony export */   chainEitherK: () => (/* binding */ chainEitherK),
+/* harmony export */   chainFirstEitherK: () => (/* binding */ chainFirstEitherK),
+/* harmony export */   chainOptionK: () => (/* binding */ chainOptionK),
+/* harmony export */   filterOrElse: () => (/* binding */ filterOrElse),
+/* harmony export */   fromEitherK: () => (/* binding */ fromEitherK),
+/* harmony export */   fromOption: () => (/* binding */ fromOption),
+/* harmony export */   fromOptionK: () => (/* binding */ fromOptionK),
+/* harmony export */   fromPredicate: () => (/* binding */ fromPredicate)
 /* harmony export */ });
 /* harmony import */ var _Chain__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./Chain */ "./node_modules/fp-ts/es6/Chain.js");
 /* harmony import */ var _function__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./function */ "./node_modules/fp-ts/es6/function.js");
@@ -1925,11 +1925,11 @@ function filterOrElse(F, M) {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "bindTo": () => (/* binding */ bindTo),
-/* harmony export */   "flap": () => (/* binding */ flap),
-/* harmony export */   "getFunctorComposition": () => (/* binding */ getFunctorComposition),
+/* harmony export */   bindTo: () => (/* binding */ bindTo),
+/* harmony export */   flap: () => (/* binding */ flap),
+/* harmony export */   getFunctorComposition: () => (/* binding */ getFunctorComposition),
 /* harmony export */   "let": () => (/* binding */ let_),
-/* harmony export */   "map": () => (/* binding */ map)
+/* harmony export */   map: () => (/* binding */ map)
 /* harmony export */ });
 /* harmony import */ var _function__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./function */ "./node_modules/fp-ts/es6/function.js");
 /**
@@ -1984,16 +1984,16 @@ function getFunctorComposition(F, G) {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "Bifunctor": () => (/* binding */ Bifunctor),
-/* harmony export */   "Functor": () => (/* binding */ Functor),
-/* harmony export */   "URI": () => (/* binding */ URI),
-/* harmony export */   "bimap": () => (/* binding */ bimap),
-/* harmony export */   "flap": () => (/* binding */ flap),
-/* harmony export */   "left": () => (/* binding */ left),
-/* harmony export */   "map": () => (/* binding */ map),
-/* harmony export */   "mapLeft": () => (/* binding */ mapLeft),
-/* harmony export */   "right": () => (/* binding */ right),
-/* harmony export */   "separated": () => (/* binding */ separated)
+/* harmony export */   Bifunctor: () => (/* binding */ Bifunctor),
+/* harmony export */   Functor: () => (/* binding */ Functor),
+/* harmony export */   URI: () => (/* binding */ URI),
+/* harmony export */   bimap: () => (/* binding */ bimap),
+/* harmony export */   flap: () => (/* binding */ flap),
+/* harmony export */   left: () => (/* binding */ left),
+/* harmony export */   map: () => (/* binding */ map),
+/* harmony export */   mapLeft: () => (/* binding */ mapLeft),
+/* harmony export */   right: () => (/* binding */ right),
+/* harmony export */   separated: () => (/* binding */ separated)
 /* harmony export */ });
 /* harmony import */ var _function__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./function */ "./node_modules/fp-ts/es6/function.js");
 /* harmony import */ var _Functor__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Functor */ "./node_modules/fp-ts/es6/Functor.js");
@@ -2106,9 +2106,9 @@ var right = function (s) { return s.right; };
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "filterE": () => (/* binding */ filterE),
-/* harmony export */   "wiltDefault": () => (/* binding */ wiltDefault),
-/* harmony export */   "witherDefault": () => (/* binding */ witherDefault)
+/* harmony export */   filterE: () => (/* binding */ filterE),
+/* harmony export */   wiltDefault: () => (/* binding */ wiltDefault),
+/* harmony export */   witherDefault: () => (/* binding */ witherDefault)
 /* harmony export */ });
 /* harmony import */ var _internal__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./internal */ "./node_modules/fp-ts/es6/internal.js");
 
@@ -2142,34 +2142,34 @@ function filterE(W) {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "SK": () => (/* binding */ SK),
-/* harmony export */   "absurd": () => (/* binding */ absurd),
-/* harmony export */   "apply": () => (/* binding */ apply),
-/* harmony export */   "constFalse": () => (/* binding */ constFalse),
-/* harmony export */   "constNull": () => (/* binding */ constNull),
-/* harmony export */   "constTrue": () => (/* binding */ constTrue),
-/* harmony export */   "constUndefined": () => (/* binding */ constUndefined),
-/* harmony export */   "constVoid": () => (/* binding */ constVoid),
-/* harmony export */   "constant": () => (/* binding */ constant),
-/* harmony export */   "decrement": () => (/* binding */ decrement),
-/* harmony export */   "dual": () => (/* binding */ dual),
-/* harmony export */   "flip": () => (/* binding */ flip),
-/* harmony export */   "flow": () => (/* binding */ flow),
-/* harmony export */   "getBooleanAlgebra": () => (/* binding */ getBooleanAlgebra),
-/* harmony export */   "getEndomorphismMonoid": () => (/* binding */ getEndomorphismMonoid),
-/* harmony export */   "getMonoid": () => (/* binding */ getMonoid),
-/* harmony export */   "getRing": () => (/* binding */ getRing),
-/* harmony export */   "getSemigroup": () => (/* binding */ getSemigroup),
-/* harmony export */   "getSemiring": () => (/* binding */ getSemiring),
-/* harmony export */   "hole": () => (/* binding */ hole),
-/* harmony export */   "identity": () => (/* binding */ identity),
-/* harmony export */   "increment": () => (/* binding */ increment),
-/* harmony export */   "not": () => (/* binding */ not),
-/* harmony export */   "pipe": () => (/* binding */ pipe),
-/* harmony export */   "tuple": () => (/* binding */ tuple),
-/* harmony export */   "tupled": () => (/* binding */ tupled),
-/* harmony export */   "unsafeCoerce": () => (/* binding */ unsafeCoerce),
-/* harmony export */   "untupled": () => (/* binding */ untupled)
+/* harmony export */   SK: () => (/* binding */ SK),
+/* harmony export */   absurd: () => (/* binding */ absurd),
+/* harmony export */   apply: () => (/* binding */ apply),
+/* harmony export */   constFalse: () => (/* binding */ constFalse),
+/* harmony export */   constNull: () => (/* binding */ constNull),
+/* harmony export */   constTrue: () => (/* binding */ constTrue),
+/* harmony export */   constUndefined: () => (/* binding */ constUndefined),
+/* harmony export */   constVoid: () => (/* binding */ constVoid),
+/* harmony export */   constant: () => (/* binding */ constant),
+/* harmony export */   decrement: () => (/* binding */ decrement),
+/* harmony export */   dual: () => (/* binding */ dual),
+/* harmony export */   flip: () => (/* binding */ flip),
+/* harmony export */   flow: () => (/* binding */ flow),
+/* harmony export */   getBooleanAlgebra: () => (/* binding */ getBooleanAlgebra),
+/* harmony export */   getEndomorphismMonoid: () => (/* binding */ getEndomorphismMonoid),
+/* harmony export */   getMonoid: () => (/* binding */ getMonoid),
+/* harmony export */   getRing: () => (/* binding */ getRing),
+/* harmony export */   getSemigroup: () => (/* binding */ getSemigroup),
+/* harmony export */   getSemiring: () => (/* binding */ getSemiring),
+/* harmony export */   hole: () => (/* binding */ hole),
+/* harmony export */   identity: () => (/* binding */ identity),
+/* harmony export */   increment: () => (/* binding */ increment),
+/* harmony export */   not: () => (/* binding */ not),
+/* harmony export */   pipe: () => (/* binding */ pipe),
+/* harmony export */   tuple: () => (/* binding */ tuple),
+/* harmony export */   tupled: () => (/* binding */ tupled),
+/* harmony export */   unsafeCoerce: () => (/* binding */ unsafeCoerce),
+/* harmony export */   untupled: () => (/* binding */ untupled)
 /* harmony export */ });
 var __spreadArray = (undefined && undefined.__spreadArray) || function (to, from, pack) {
     if (pack || arguments.length === 2) for (var i = 0, l = from.length, ar; i < l; i++) {
@@ -2528,22 +2528,22 @@ var dual = function (arity, body) {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "emptyReadonlyArray": () => (/* binding */ emptyReadonlyArray),
-/* harmony export */   "emptyRecord": () => (/* binding */ emptyRecord),
-/* harmony export */   "fromReadonlyNonEmptyArray": () => (/* binding */ fromReadonlyNonEmptyArray),
-/* harmony export */   "has": () => (/* binding */ has),
-/* harmony export */   "head": () => (/* binding */ head),
-/* harmony export */   "isLeft": () => (/* binding */ isLeft),
-/* harmony export */   "isNonEmpty": () => (/* binding */ isNonEmpty),
-/* harmony export */   "isNone": () => (/* binding */ isNone),
-/* harmony export */   "isRight": () => (/* binding */ isRight),
-/* harmony export */   "isSome": () => (/* binding */ isSome),
-/* harmony export */   "left": () => (/* binding */ left),
-/* harmony export */   "none": () => (/* binding */ none),
-/* harmony export */   "right": () => (/* binding */ right),
-/* harmony export */   "singleton": () => (/* binding */ singleton),
-/* harmony export */   "some": () => (/* binding */ some),
-/* harmony export */   "tail": () => (/* binding */ tail)
+/* harmony export */   emptyReadonlyArray: () => (/* binding */ emptyReadonlyArray),
+/* harmony export */   emptyRecord: () => (/* binding */ emptyRecord),
+/* harmony export */   fromReadonlyNonEmptyArray: () => (/* binding */ fromReadonlyNonEmptyArray),
+/* harmony export */   has: () => (/* binding */ has),
+/* harmony export */   head: () => (/* binding */ head),
+/* harmony export */   isLeft: () => (/* binding */ isLeft),
+/* harmony export */   isNonEmpty: () => (/* binding */ isNonEmpty),
+/* harmony export */   isNone: () => (/* binding */ isNone),
+/* harmony export */   isRight: () => (/* binding */ isRight),
+/* harmony export */   isSome: () => (/* binding */ isSome),
+/* harmony export */   left: () => (/* binding */ left),
+/* harmony export */   none: () => (/* binding */ none),
+/* harmony export */   right: () => (/* binding */ right),
+/* harmony export */   singleton: () => (/* binding */ singleton),
+/* harmony export */   some: () => (/* binding */ some),
+/* harmony export */   tail: () => (/* binding */ tail)
 /* harmony export */ });
 var __spreadArray = (undefined && undefined.__spreadArray) || function (to, from, pack) {
     if (pack || arguments.length === 2) for (var i = 0, l = from.length, ar; i < l; i++) {
@@ -2616,33 +2616,33 @@ var fromReadonlyNonEmptyArray = function (as) { return __spreadArray([as[0]], as
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "alt": () => (/* binding */ alt),
-/* harmony export */   "ap": () => (/* binding */ ap),
-/* harmony export */   "bimap": () => (/* binding */ bimap),
-/* harmony export */   "chain": () => (/* binding */ chain),
-/* harmony export */   "compose": () => (/* binding */ compose),
-/* harmony export */   "contramap": () => (/* binding */ contramap),
-/* harmony export */   "extend": () => (/* binding */ extend),
-/* harmony export */   "filter": () => (/* binding */ filter),
-/* harmony export */   "filterMap": () => (/* binding */ filterMap),
-/* harmony export */   "filterMapWithIndex": () => (/* binding */ filterMapWithIndex),
-/* harmony export */   "filterWithIndex": () => (/* binding */ filterWithIndex),
-/* harmony export */   "foldMap": () => (/* binding */ foldMap),
-/* harmony export */   "foldMapWithIndex": () => (/* binding */ foldMapWithIndex),
-/* harmony export */   "map": () => (/* binding */ map),
-/* harmony export */   "mapLeft": () => (/* binding */ mapLeft),
-/* harmony export */   "mapWithIndex": () => (/* binding */ mapWithIndex),
-/* harmony export */   "partition": () => (/* binding */ partition),
-/* harmony export */   "partitionMap": () => (/* binding */ partitionMap),
-/* harmony export */   "partitionMapWithIndex": () => (/* binding */ partitionMapWithIndex),
-/* harmony export */   "partitionWithIndex": () => (/* binding */ partitionWithIndex),
-/* harmony export */   "pipe": () => (/* binding */ pipe),
-/* harmony export */   "pipeable": () => (/* binding */ pipeable),
-/* harmony export */   "promap": () => (/* binding */ promap),
-/* harmony export */   "reduce": () => (/* binding */ reduce),
-/* harmony export */   "reduceRight": () => (/* binding */ reduceRight),
-/* harmony export */   "reduceRightWithIndex": () => (/* binding */ reduceRightWithIndex),
-/* harmony export */   "reduceWithIndex": () => (/* binding */ reduceWithIndex)
+/* harmony export */   alt: () => (/* binding */ alt),
+/* harmony export */   ap: () => (/* binding */ ap),
+/* harmony export */   bimap: () => (/* binding */ bimap),
+/* harmony export */   chain: () => (/* binding */ chain),
+/* harmony export */   compose: () => (/* binding */ compose),
+/* harmony export */   contramap: () => (/* binding */ contramap),
+/* harmony export */   extend: () => (/* binding */ extend),
+/* harmony export */   filter: () => (/* binding */ filter),
+/* harmony export */   filterMap: () => (/* binding */ filterMap),
+/* harmony export */   filterMapWithIndex: () => (/* binding */ filterMapWithIndex),
+/* harmony export */   filterWithIndex: () => (/* binding */ filterWithIndex),
+/* harmony export */   foldMap: () => (/* binding */ foldMap),
+/* harmony export */   foldMapWithIndex: () => (/* binding */ foldMapWithIndex),
+/* harmony export */   map: () => (/* binding */ map),
+/* harmony export */   mapLeft: () => (/* binding */ mapLeft),
+/* harmony export */   mapWithIndex: () => (/* binding */ mapWithIndex),
+/* harmony export */   partition: () => (/* binding */ partition),
+/* harmony export */   partitionMap: () => (/* binding */ partitionMap),
+/* harmony export */   partitionMapWithIndex: () => (/* binding */ partitionMapWithIndex),
+/* harmony export */   partitionWithIndex: () => (/* binding */ partitionWithIndex),
+/* harmony export */   pipe: () => (/* binding */ pipe),
+/* harmony export */   pipeable: () => (/* binding */ pipeable),
+/* harmony export */   promap: () => (/* binding */ promap),
+/* harmony export */   reduce: () => (/* binding */ reduce),
+/* harmony export */   reduceRight: () => (/* binding */ reduceRight),
+/* harmony export */   reduceRightWithIndex: () => (/* binding */ reduceRightWithIndex),
+/* harmony export */   reduceWithIndex: () => (/* binding */ reduceWithIndex)
 /* harmony export */ });
 /* harmony import */ var _Apply__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Apply */ "./node_modules/fp-ts/es6/Apply.js");
 /* harmony import */ var _Chain__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Chain */ "./node_modules/fp-ts/es6/Chain.js");
@@ -2857,16 +2857,16 @@ var pipe = _function__WEBPACK_IMPORTED_MODULE_2__.pipe;
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "fold": () => (/* binding */ fold),
-/* harmony export */   "getSemigroup": () => (/* binding */ getSemigroup),
-/* harmony export */   "index": () => (/* binding */ index),
-/* harmony export */   "key": () => (/* binding */ key),
-/* harmony export */   "lazy": () => (/* binding */ lazy),
-/* harmony export */   "leaf": () => (/* binding */ leaf),
-/* harmony export */   "member": () => (/* binding */ member),
-/* harmony export */   "optional": () => (/* binding */ optional),
-/* harmony export */   "required": () => (/* binding */ required),
-/* harmony export */   "wrap": () => (/* binding */ wrap)
+/* harmony export */   fold: () => (/* binding */ fold),
+/* harmony export */   getSemigroup: () => (/* binding */ getSemigroup),
+/* harmony export */   index: () => (/* binding */ index),
+/* harmony export */   key: () => (/* binding */ key),
+/* harmony export */   lazy: () => (/* binding */ lazy),
+/* harmony export */   leaf: () => (/* binding */ leaf),
+/* harmony export */   member: () => (/* binding */ member),
+/* harmony export */   optional: () => (/* binding */ optional),
+/* harmony export */   required: () => (/* binding */ required),
+/* harmony export */   wrap: () => (/* binding */ wrap)
 /* harmony export */ });
 /* harmony import */ var _FreeSemigroup__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./FreeSemigroup */ "./node_modules/io-ts/es6/FreeSemigroup.js");
 
@@ -2976,56 +2976,56 @@ function getSemigroup() {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "Alt": () => (/* binding */ Alt),
-/* harmony export */   "Category": () => (/* binding */ Category),
-/* harmony export */   "Functor": () => (/* binding */ Functor),
-/* harmony export */   "SE": () => (/* binding */ SE),
-/* harmony export */   "Schemable": () => (/* binding */ Schemable),
-/* harmony export */   "URI": () => (/* binding */ URI),
-/* harmony export */   "UnknownArray": () => (/* binding */ UnknownArray),
-/* harmony export */   "UnknownRecord": () => (/* binding */ UnknownRecord),
-/* harmony export */   "WithRefine": () => (/* binding */ WithRefine),
-/* harmony export */   "WithUnion": () => (/* binding */ WithUnion),
-/* harmony export */   "WithUnknownContainers": () => (/* binding */ WithUnknownContainers),
-/* harmony export */   "alt": () => (/* binding */ alt),
-/* harmony export */   "ap": () => (/* binding */ ap),
-/* harmony export */   "array": () => (/* binding */ array),
-/* harmony export */   "boolean": () => (/* binding */ boolean),
-/* harmony export */   "compose": () => (/* binding */ compose),
-/* harmony export */   "draw": () => (/* binding */ draw),
-/* harmony export */   "error": () => (/* binding */ error),
-/* harmony export */   "failure": () => (/* binding */ failure),
-/* harmony export */   "fromArray": () => (/* binding */ fromArray),
-/* harmony export */   "fromGuard": () => (/* binding */ fromGuard),
-/* harmony export */   "fromPartial": () => (/* binding */ fromPartial),
-/* harmony export */   "fromRecord": () => (/* binding */ fromRecord),
-/* harmony export */   "fromRefinement": () => (/* binding */ fromRefinement),
-/* harmony export */   "fromStruct": () => (/* binding */ fromStruct),
-/* harmony export */   "fromSum": () => (/* binding */ fromSum),
-/* harmony export */   "fromTuple": () => (/* binding */ fromTuple),
-/* harmony export */   "fromType": () => (/* binding */ fromType),
-/* harmony export */   "id": () => (/* binding */ id),
-/* harmony export */   "intersect": () => (/* binding */ intersect),
-/* harmony export */   "lazy": () => (/* binding */ lazy),
-/* harmony export */   "literal": () => (/* binding */ literal),
-/* harmony export */   "map": () => (/* binding */ map),
-/* harmony export */   "mapLeftWithInput": () => (/* binding */ mapLeftWithInput),
-/* harmony export */   "nullable": () => (/* binding */ nullable),
-/* harmony export */   "number": () => (/* binding */ number),
-/* harmony export */   "parse": () => (/* binding */ parse),
-/* harmony export */   "partial": () => (/* binding */ partial),
-/* harmony export */   "readonly": () => (/* binding */ readonly),
-/* harmony export */   "record": () => (/* binding */ record),
-/* harmony export */   "refine": () => (/* binding */ refine),
-/* harmony export */   "string": () => (/* binding */ string),
-/* harmony export */   "stringify": () => (/* binding */ stringify),
-/* harmony export */   "struct": () => (/* binding */ struct),
-/* harmony export */   "success": () => (/* binding */ success),
-/* harmony export */   "sum": () => (/* binding */ sum),
-/* harmony export */   "tuple": () => (/* binding */ tuple),
-/* harmony export */   "type": () => (/* binding */ type),
-/* harmony export */   "union": () => (/* binding */ union),
-/* harmony export */   "withMessage": () => (/* binding */ withMessage)
+/* harmony export */   Alt: () => (/* binding */ Alt),
+/* harmony export */   Category: () => (/* binding */ Category),
+/* harmony export */   Functor: () => (/* binding */ Functor),
+/* harmony export */   SE: () => (/* binding */ SE),
+/* harmony export */   Schemable: () => (/* binding */ Schemable),
+/* harmony export */   URI: () => (/* binding */ URI),
+/* harmony export */   UnknownArray: () => (/* binding */ UnknownArray),
+/* harmony export */   UnknownRecord: () => (/* binding */ UnknownRecord),
+/* harmony export */   WithRefine: () => (/* binding */ WithRefine),
+/* harmony export */   WithUnion: () => (/* binding */ WithUnion),
+/* harmony export */   WithUnknownContainers: () => (/* binding */ WithUnknownContainers),
+/* harmony export */   alt: () => (/* binding */ alt),
+/* harmony export */   ap: () => (/* binding */ ap),
+/* harmony export */   array: () => (/* binding */ array),
+/* harmony export */   boolean: () => (/* binding */ boolean),
+/* harmony export */   compose: () => (/* binding */ compose),
+/* harmony export */   draw: () => (/* binding */ draw),
+/* harmony export */   error: () => (/* binding */ error),
+/* harmony export */   failure: () => (/* binding */ failure),
+/* harmony export */   fromArray: () => (/* binding */ fromArray),
+/* harmony export */   fromGuard: () => (/* binding */ fromGuard),
+/* harmony export */   fromPartial: () => (/* binding */ fromPartial),
+/* harmony export */   fromRecord: () => (/* binding */ fromRecord),
+/* harmony export */   fromRefinement: () => (/* binding */ fromRefinement),
+/* harmony export */   fromStruct: () => (/* binding */ fromStruct),
+/* harmony export */   fromSum: () => (/* binding */ fromSum),
+/* harmony export */   fromTuple: () => (/* binding */ fromTuple),
+/* harmony export */   fromType: () => (/* binding */ fromType),
+/* harmony export */   id: () => (/* binding */ id),
+/* harmony export */   intersect: () => (/* binding */ intersect),
+/* harmony export */   lazy: () => (/* binding */ lazy),
+/* harmony export */   literal: () => (/* binding */ literal),
+/* harmony export */   map: () => (/* binding */ map),
+/* harmony export */   mapLeftWithInput: () => (/* binding */ mapLeftWithInput),
+/* harmony export */   nullable: () => (/* binding */ nullable),
+/* harmony export */   number: () => (/* binding */ number),
+/* harmony export */   parse: () => (/* binding */ parse),
+/* harmony export */   partial: () => (/* binding */ partial),
+/* harmony export */   readonly: () => (/* binding */ readonly),
+/* harmony export */   record: () => (/* binding */ record),
+/* harmony export */   refine: () => (/* binding */ refine),
+/* harmony export */   string: () => (/* binding */ string),
+/* harmony export */   stringify: () => (/* binding */ stringify),
+/* harmony export */   struct: () => (/* binding */ struct),
+/* harmony export */   success: () => (/* binding */ success),
+/* harmony export */   sum: () => (/* binding */ sum),
+/* harmony export */   tuple: () => (/* binding */ tuple),
+/* harmony export */   type: () => (/* binding */ type),
+/* harmony export */   union: () => (/* binding */ union),
+/* harmony export */   withMessage: () => (/* binding */ withMessage)
 /* harmony export */ });
 /* harmony import */ var fp_ts_es6_Either__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! fp-ts/es6/Either */ "./node_modules/fp-ts/es6/Either.js");
 /* harmony import */ var fp_ts_es6_function__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! fp-ts/es6/function */ "./node_modules/fp-ts/es6/function.js");
@@ -3517,10 +3517,10 @@ fp_ts_es6_Either__WEBPACK_IMPORTED_MODULE_1__.fold(draw, function (a) { return J
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "concat": () => (/* binding */ concat),
-/* harmony export */   "fold": () => (/* binding */ fold),
-/* harmony export */   "getSemigroup": () => (/* binding */ getSemigroup),
-/* harmony export */   "of": () => (/* binding */ of)
+/* harmony export */   concat: () => (/* binding */ concat),
+/* harmony export */   fold: () => (/* binding */ fold),
+/* harmony export */   getSemigroup: () => (/* binding */ getSemigroup),
+/* harmony export */   of: () => (/* binding */ of)
 /* harmony export */ });
 /**
  * @category constructors
@@ -3567,34 +3567,34 @@ function getSemigroup() {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "Schemable": () => (/* binding */ Schemable),
-/* harmony export */   "URI": () => (/* binding */ URI),
-/* harmony export */   "UnknownArray": () => (/* binding */ UnknownArray),
-/* harmony export */   "UnknownRecord": () => (/* binding */ UnknownRecord),
-/* harmony export */   "WithRefine": () => (/* binding */ WithRefine),
-/* harmony export */   "WithUnion": () => (/* binding */ WithUnion),
-/* harmony export */   "WithUnknownContainers": () => (/* binding */ WithUnknownContainers),
-/* harmony export */   "alt": () => (/* binding */ alt),
-/* harmony export */   "array": () => (/* binding */ array),
-/* harmony export */   "boolean": () => (/* binding */ boolean),
-/* harmony export */   "compose": () => (/* binding */ compose),
-/* harmony export */   "id": () => (/* binding */ id),
-/* harmony export */   "intersect": () => (/* binding */ intersect),
-/* harmony export */   "lazy": () => (/* binding */ lazy),
-/* harmony export */   "literal": () => (/* binding */ literal),
-/* harmony export */   "nullable": () => (/* binding */ nullable),
-/* harmony export */   "number": () => (/* binding */ number),
-/* harmony export */   "partial": () => (/* binding */ partial),
-/* harmony export */   "readonly": () => (/* binding */ readonly),
-/* harmony export */   "record": () => (/* binding */ record),
-/* harmony export */   "refine": () => (/* binding */ refine),
-/* harmony export */   "string": () => (/* binding */ string),
-/* harmony export */   "struct": () => (/* binding */ struct),
-/* harmony export */   "sum": () => (/* binding */ sum),
-/* harmony export */   "tuple": () => (/* binding */ tuple),
-/* harmony export */   "type": () => (/* binding */ type),
-/* harmony export */   "union": () => (/* binding */ union),
-/* harmony export */   "zero": () => (/* binding */ zero)
+/* harmony export */   Schemable: () => (/* binding */ Schemable),
+/* harmony export */   URI: () => (/* binding */ URI),
+/* harmony export */   UnknownArray: () => (/* binding */ UnknownArray),
+/* harmony export */   UnknownRecord: () => (/* binding */ UnknownRecord),
+/* harmony export */   WithRefine: () => (/* binding */ WithRefine),
+/* harmony export */   WithUnion: () => (/* binding */ WithUnion),
+/* harmony export */   WithUnknownContainers: () => (/* binding */ WithUnknownContainers),
+/* harmony export */   alt: () => (/* binding */ alt),
+/* harmony export */   array: () => (/* binding */ array),
+/* harmony export */   boolean: () => (/* binding */ boolean),
+/* harmony export */   compose: () => (/* binding */ compose),
+/* harmony export */   id: () => (/* binding */ id),
+/* harmony export */   intersect: () => (/* binding */ intersect),
+/* harmony export */   lazy: () => (/* binding */ lazy),
+/* harmony export */   literal: () => (/* binding */ literal),
+/* harmony export */   nullable: () => (/* binding */ nullable),
+/* harmony export */   number: () => (/* binding */ number),
+/* harmony export */   partial: () => (/* binding */ partial),
+/* harmony export */   readonly: () => (/* binding */ readonly),
+/* harmony export */   record: () => (/* binding */ record),
+/* harmony export */   refine: () => (/* binding */ refine),
+/* harmony export */   string: () => (/* binding */ string),
+/* harmony export */   struct: () => (/* binding */ struct),
+/* harmony export */   sum: () => (/* binding */ sum),
+/* harmony export */   tuple: () => (/* binding */ tuple),
+/* harmony export */   type: () => (/* binding */ type),
+/* harmony export */   union: () => (/* binding */ union),
+/* harmony export */   zero: () => (/* binding */ zero)
 /* harmony export */ });
 /* harmony import */ var fp_ts_es6_function__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! fp-ts/es6/function */ "./node_modules/fp-ts/es6/function.js");
 /* harmony import */ var fp_ts_es6_pipeable__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! fp-ts/es6/pipeable */ "./node_modules/fp-ts/es6/pipeable.js");
@@ -3896,26 +3896,26 @@ var WithRefine = {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "alt": () => (/* binding */ alt),
-/* harmony export */   "compose": () => (/* binding */ compose),
-/* harmony export */   "fromArray": () => (/* binding */ fromArray),
-/* harmony export */   "fromPartial": () => (/* binding */ fromPartial),
-/* harmony export */   "fromRecord": () => (/* binding */ fromRecord),
-/* harmony export */   "fromRefinement": () => (/* binding */ fromRefinement),
-/* harmony export */   "fromStruct": () => (/* binding */ fromStruct),
-/* harmony export */   "fromSum": () => (/* binding */ fromSum),
-/* harmony export */   "fromTuple": () => (/* binding */ fromTuple),
-/* harmony export */   "fromType": () => (/* binding */ fromType),
-/* harmony export */   "id": () => (/* binding */ id),
-/* harmony export */   "intersect": () => (/* binding */ intersect),
-/* harmony export */   "lazy": () => (/* binding */ lazy),
-/* harmony export */   "literal": () => (/* binding */ literal),
-/* harmony export */   "map": () => (/* binding */ map),
-/* harmony export */   "mapLeftWithInput": () => (/* binding */ mapLeftWithInput),
-/* harmony export */   "nullable": () => (/* binding */ nullable),
-/* harmony export */   "parse": () => (/* binding */ parse),
-/* harmony export */   "refine": () => (/* binding */ refine),
-/* harmony export */   "union": () => (/* binding */ union)
+/* harmony export */   alt: () => (/* binding */ alt),
+/* harmony export */   compose: () => (/* binding */ compose),
+/* harmony export */   fromArray: () => (/* binding */ fromArray),
+/* harmony export */   fromPartial: () => (/* binding */ fromPartial),
+/* harmony export */   fromRecord: () => (/* binding */ fromRecord),
+/* harmony export */   fromRefinement: () => (/* binding */ fromRefinement),
+/* harmony export */   fromStruct: () => (/* binding */ fromStruct),
+/* harmony export */   fromSum: () => (/* binding */ fromSum),
+/* harmony export */   fromTuple: () => (/* binding */ fromTuple),
+/* harmony export */   fromType: () => (/* binding */ fromType),
+/* harmony export */   id: () => (/* binding */ id),
+/* harmony export */   intersect: () => (/* binding */ intersect),
+/* harmony export */   lazy: () => (/* binding */ lazy),
+/* harmony export */   literal: () => (/* binding */ literal),
+/* harmony export */   map: () => (/* binding */ map),
+/* harmony export */   mapLeftWithInput: () => (/* binding */ mapLeftWithInput),
+/* harmony export */   nullable: () => (/* binding */ nullable),
+/* harmony export */   parse: () => (/* binding */ parse),
+/* harmony export */   refine: () => (/* binding */ refine),
+/* harmony export */   union: () => (/* binding */ union)
 /* harmony export */ });
 /* harmony import */ var fp_ts_es6_Either__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! fp-ts/es6/Either */ "./node_modules/fp-ts/es6/Either.js");
 /* harmony import */ var _Guard__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Guard */ "./node_modules/io-ts/es6/Guard.js");
@@ -4227,8 +4227,8 @@ var compactRecord = function (r) {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "intersect_": () => (/* binding */ intersect_),
-/* harmony export */   "memoize": () => (/* binding */ memoize)
+/* harmony export */   intersect_: () => (/* binding */ intersect_),
+/* harmony export */   memoize: () => (/* binding */ memoize)
 /* harmony export */ });
 /**
  * @since 2.2.0

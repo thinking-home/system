@@ -27,7 +27,7 @@ const init = async () => {
 
     // logger
     const writerConsole = new ConsoleLogDestination(LogLevel.Information);
-    const logger = new AppLogger([writerConsole], {[NS_FIELD]: 'application'});
+    const logger = new AppLogger([writerConsole], {[NS_FIELD]: 'application'}, Date.now);
 
     // messages
     const messageHub = new MessageHubConnection(messageHubConfig, logger);
