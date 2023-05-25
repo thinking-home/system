@@ -207,7 +207,7 @@ export default createModule(ExampleSection);
 Также библиотека `@thinking-home/ui` предоставляет хук `useMessageHandler`, при помощи которого вы можете подписываться на сообщения в шине. Когда компонент удаляется со страницы, подписка будет отменена. 
 
 ```tsx
-import {createModule, useMessageHandler} from '@thinking-home/ui';
+import {useMessageHandler} from '@thinking-home/ui';
 import * as d from 'io-ts/Decoder';
 
 const ExampleSection: FC = () => {
@@ -222,11 +222,29 @@ const ExampleSection: FC = () => {
 
    return <p>Last message: {lastMessage}</p>;
 }
-
-export default createModule(ExampleSection);
 ```
 
-### Нотификация (TBD)
+### Нотификация
+
+Контекст приложения, полученный через хук `useAppContext`, содержит также API для показа всплывающих сообщений пользователю. Сообщения реализованы с помощью библиотеки [react-toastify](https://fkhadra.github.io/react-toastify).
+
+```tsx
+import {useAppContext} from '@thinking-home/ui';
+
+const MySection: FC = () => {
+    const {toaster: {show, showError}} = useAppContext();
+
+    const onMessage = useCallback(() => show("Example message"), [show]);
+    const onError = useCallback(() => showError(<b>Example error</b>), [showError]);
+
+    return (
+        <p>
+            <button onClick={onMessage}>Example message</button>
+            <button onClick={onError}>Example error</button>
+        </p>
+    );
+}
+```
 
 ### Клиентское логирование
 
