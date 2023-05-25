@@ -14,6 +14,9 @@
 - загрузка разделов интерфейса с сервера по требованию и отображение их содержимого,
 - роутинг (механизм перехода между разделами, в зависимости от адреса в адресной строке),
 - API для получения данных с сервера с возможностью валидации формата данных
+- API для работы с клиент-серверной шиной сообщений (message hub)
+- API для показа всплывающих сообщений
+- API для логирования
 
 Веб-интерфейс открывается по корневому адресу веб-сервера.
 
@@ -49,22 +52,23 @@ public void RegisterWebUiPages(WebUiConfigurationBuilder config)
    ```
 3. Создайте в корне файл tsconfig.json со следующим содержимым:
    ```json
-    {
-      "compilerOptions": {
-        "noImplicitAny": true,
-        "module": "esnext",
-        "target": "es5",
-        "jsx": "react",
-        "allowJs": true,
-        "moduleResolution": "node"
-      },
-      "ts-node": {
-        "compilerOptions": {
-          "module": "CommonJS",
-          "esModuleInterop": true
-        }
-      }
-    }
+   {
+     "compilerOptions": {
+       "noImplicitAny": true,
+       "module": "esnext",
+       "target": "es6",
+       "jsx": "react",
+       "allowJs": true,
+       "moduleResolution": "node",
+       "allowSyntheticDefaultImports": true
+     },
+     "ts-node": {
+       "compilerOptions": {
+         "module": "CommonJS",
+         "esModuleInterop": true
+       }
+     }
+   }
    ```
 4. Создайте файл с расширением `.tsx`, который будет основным файлом страницы (например, `./frontend/myPage.tsx`).
 5. Создайте в корне проекта конфиг для сборки — файл `webpack.config.ts`, импортируйте в нем хелпер `initWebpackConfig` из библиотеки `@thinking-home/ui` и с его помощью подготовьте конфигурацию сборки.
@@ -186,7 +190,7 @@ export default createModule(ExampleSection);
 ```tsx
 import {createModule, useAppContext} from '@thinking-home/ui';
 
-const TmpSection: FC = () => {
+const ExampleSection: FC = () => {
     const {messageHub} = useAppContext();
     
     const onClick = useCallback(() => {
@@ -195,6 +199,28 @@ const TmpSection: FC = () => {
     }, [messageHub.send]);
     
     return <button onClick={onClick}>Send</button>;
+}
+
+export default createModule(ExampleSection);
+```
+
+Также библиотека `@thinking-home/ui` предоставляет хук `useMessageHandler`, при помощи которого вы можете подписываться на сообщения в шине. Когда компонент удаляется со страницы, подписка будет отменена. 
+
+```tsx
+import {createModule, useMessageHandler} from '@thinking-home/ui';
+import * as d from 'io-ts/Decoder';
+
+const ExampleSection: FC = () => {
+   const [lastMessage, setLastMessage] = useState<string>();
+
+   useMessageHandler(
+       'my-topic',      // топик шины сообщений, в котором нужно слушать сообщения
+       d.string,        // декодер io-ts для обработки полученных данных
+       msg => setLastMessage(msg.data), // callback, который будет вызван для каждого сообщения
+       [setLastMessage], // список зависимостей callback (аналогично useCallback)
+   );
+
+   return <p>Last message: {lastMessage}</p>;
 }
 
 export default createModule(ExampleSection);
