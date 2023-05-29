@@ -1,12 +1,15 @@
-import React from "react";
+import React, {useMemo} from "react";
 import {FC} from "react";
-import {Page} from "./Page";
 import {Routes, Route} from "react-router";
 import {Link, useLocation} from "react-router-dom";
 import {cn} from '@bem-react/classname';
+import {LoggerProvider, useLogger} from "@thinking-home/ui";
+
+import {PageDefinition} from "../utils";
+import {NS_FIELD} from "../utils/logger";
 
 import {ErrorScreen} from "./ErrorScreen";
-import {PageDefinition} from "../utils";
+import {Page} from "./Page";
 
 import './Application.css';
 
@@ -20,25 +23,35 @@ const Home: React.FC = () => (
     <div>
         <h1>Home</h1>
         <p className="muted">
-            This is example pages.
+            This is demo pages.
         </p>
         <ul>
             <li>
-                <Link to="/page1">Nested page 1</Link>
+                <Link to="/page1">Error handling example</Link>
             </li>
             <li>
-                <Link to="/page2">Nested page 2</Link>
+                <Link to="/page2">Data loading example</Link>
+            </li>
+            <li>
+                <Link to="/page3">Message hub and notifications example</Link>
             </li>
         </ul>
     </div>
 );
 
 export const Content: React.FC<{ pages: Record<string, PageDefinition> }> = ({pages}) => {
+    const rootLogger = useLogger();
     const {pathname} = useLocation();
     const def = pages[pathname];
 
+    const logger = useMemo(() => rootLogger.child({[NS_FIELD]: pathname}), [rootLogger, pathname]);
+    
     if (def) {
-        return <Page key={pathname} path={def.js}/>;
+        return (
+            <LoggerProvider value={logger}>
+                <Page key={pathname} pathJs={def.js}/>
+            </LoggerProvider>
+        );
     }
 
     return <ErrorScreen message='Page not found'/>;

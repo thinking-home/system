@@ -11,7 +11,7 @@ public class WebUiConfigurationBuilder: BaseConfigurationBuilder<WebUiPageDefini
     public WebUiConfigurationBuilder RegisterPage(string url, string jsResourcePath)
     {
         RegisterItem(url, new WebUiPageDefinition(Source, url, jsResourcePath));
-        
+
         return this;
     }
 }

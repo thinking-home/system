@@ -54,14 +54,21 @@ public void InitModel(ModelBuilder modelBuilder)
 #### Пример
 
 ```csharp
-using (var db = Context.Require<DatabasePlugin>().OpenSession())
+public class MyPlugin : PluginBase
 {
-    foreach (var user in db.Set<Users>())
+    private readonly DatabasePlugin database;
+    
+    private void MyMethod()
     {
-        Logger.LogInformation($"{user.Name} ({user.Id})");
+        using (var db = database.OpenSession())
+        {
+            foreach (var user in db.Set<Users>())
+            {
+                Logger.LogInformation($"{user.Name} ({user.Id})");
+            }
+        }
     }
 }
-
 ```
 
 ## Миграция структуры БД

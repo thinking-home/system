@@ -40,8 +40,15 @@
 #### Пример
 
 ```csharp
-Context.Require<CronPlugin>().ReloadTasks();
+public class MyPlugin : PluginBase
+{
+   private readonly CronPlugin cron;
 
+   private void MyMethod()
+   {
+      cron.ReloadTasks();
+   }
+}
 ```
 
 ### `[CronHandler]`
@@ -65,16 +72,21 @@ public delegate void CronHandlerDelegate(Guid cronTaskId);
 #### Пример
 
 ```csharp
-[CronHandler]
-public void PlayAlarm(Guid cronTaskId)
+public class MyPlugin : PluginBase
 {
-    using (var db = Context.Require<DatabasePlugin>().OpenSession())
-    {
-        var alarm = db.Set<AlarmSettings>().FirstOrDefault(a => a.TaskId == cronTaskId);
+    private readonly DatabasePlugin database;
 
-        if (alarm != null)
+    [CronHandler]
+    public void PlayAlarm(Guid cronTaskId)
+    {
+        using (var db = database.OpenSession())
         {
-            PlayMusic(alarm.Music);
+            var alarm = db.Set<AlarmSettings>().FirstOrDefault(a => a.TaskId == cronTaskId);
+    
+            if (alarm != null)
+            {
+                PlayMusic(alarm.Music);
+            }
         }
     }
 }

@@ -45,9 +45,15 @@
 #### Пример
 
 ```csharp
-Context.Require<MqttPlugin>()
-    .Publish("myhome/kitchen/temperature", new byte[] {12}, false);
-
+public class MyPlugin : PluginBase
+{
+    private readonly MqttPlugin mqtt;
+    
+    private void MyMethod()
+    {
+        mqtt.Publish("myhome/kitchen/temperature", new byte[] {12}, false);
+    }
+}
 ```
 
 ### `void Publish(string topic, string payload, bool retain = false)`
@@ -57,24 +63,35 @@ Context.Require<MqttPlugin>()
 #### Пример
 
 ```csharp
-Context.Require<MqttPlugin>()
-    .Publish("myhome/kitchen/temperature", "value=12", false);
-
+public class MyPlugin : PluginBase
+{
+    private readonly MqttPlugin mqtt;
+    
+    private void MyMethod()
+    {
+        mqtt.Publish("myhome/kitchen/temperature", "value=12", false);
+    }
+}
 ```
-
 
 ### `void Publish(string topic, Buffer payload, bool retain = false)`
 
-Публикует сообщение в указанном канале. Работает полностью аналогично предыдущему методу, но данные передаются в виде объекта `Buffer`. Метод для использования в сценариях.
+Публикует сообщение в указанном канале. Работает полностью аналогично предыдущему методу, но данные передаются в виде объекта `Buffer`. Метод предназначен для использования в сценариях.
 
 #### Пример
 
 ```csharp
-Buffer payload = ...
-
-Context.Require<MqttPlugin>()
-    .Publish("myhome/kitchen/temperature", payload, false);
-
+public class MyPlugin : PluginBase
+{
+    private readonly MqttPlugin mqtt;
+    
+    private void MyMethod()
+    {
+        Buffer payload = ...
+        
+        mqtt.Publish("myhome/kitchen/temperature", payload, false);
+    }
+}
 ```
 
 ### `[MqttMessageHandler]`

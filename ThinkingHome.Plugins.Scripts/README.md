@@ -43,16 +43,22 @@
 #### Пример
 
 ```csharp
-string script = "var res = 0;" +
-                "for (var i = 0; i < arguments.length; i++)" +
-                "res += arguments[i];" +
-                "return res;";
-
-var result = Context.Require<ScriptsPlugin>()
-    .ExecuteScript(script, 1, 2, 3, 4, 5, 6);
+public class MyPlugin : PluginBase
+{
+    private readonly ScriptsPlugin scripts;
     
-// result == 15    
+    private void MyMethod()
+    {
+        string script = "var res = 0;" +
+            "for (var i = 0; i < arguments.length; i++)" +
+            "res += arguments[i];" +
+            "return res;";
 
+        scripts.ExecuteScript(script, 1, 2, 3, 4, 5, 6);
+        
+        // result == 15  
+    }
+}
 ```
 
 ### `object ExecuteScriptByName(string name, params object[] args)`
@@ -62,9 +68,15 @@ var result = Context.Require<ScriptsPlugin>()
 #### Пример
 
 ```csharp
-var result = Context.Require<ScriptsPlugin>()
-    .ExecuteScriptByName("switch-on", 42);
-
+public class MyPlugin : PluginBase
+{
+    private readonly ScriptsPlugin scripts;
+    
+    private void MyMethod()
+    {
+        scripts.ExecuteScriptByName("switch-on", 42);
+    }
+}
 ```
 
 ### `void EmitScriptEvent(string eventAlias, params object[] args)`
@@ -74,9 +86,15 @@ var result = Context.Require<ScriptsPlugin>()
 #### Пример
 
 ```csharp
-var result = Context.Require<ScriptsPlugin>()
-    .EmitScriptEvent("обнаружено-движение", roomName);
-
+public class MyPlugin : PluginBase
+{
+    private readonly ScriptsPlugin scripts;
+    
+    private void MyMethod(string roomName)
+    {
+        scripts.EmitScriptEvent("обнаружено-движение", roomName);
+    }
+}
 ```
 
 ### `[ScriptCommand]`
@@ -182,11 +200,18 @@ host.emit('я дома', 35, 4, 'строка текста');
 #### Использование
 
 ```csharp
-var bytes = ...
-var buffer = new Buffer(bytes);
-
-Context.Require<ScriptsPlugin>()
-    .EmitScriptEvent("my-event", buffer");
+public class MyPlugin : PluginBase
+{
+    private readonly ScriptsPlugin scripts;
+    
+    private void MyMethod()
+    {
+        var bytes = ...
+        var buffer = new Buffer(bytes);
+        
+        scripts.EmitScriptEvent("my-event", buffer");
+    }
+}
 ```
 
 Класс `Buffer` имеет методы для получения находящихся в нем данных в виде массива чисел и в виде строк UTF8 и Base64.

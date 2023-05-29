@@ -22,14 +22,17 @@ namespace ThinkingHome.Plugins.WebServer
         private IHubContext<MessageHub> hubContext;
 
         private readonly ObjectRegistry<BaseHandler> handlers = new();
+        private readonly ObjectSetRegistry<HubMessageHandlerDelegate> msgHandlers = new();
 
         public override void InitPlugin()
         {
             var port = Configuration.GetValue("port", 41831);
-            
-            RegisterHandlers(handlers, Context);
-            
-            handlers.ForEach((url, handler) => Logger.LogInformation("register HTTP handler: {Url}", url));
+
+            RegisterHandlers(handlers, msgHandlers, Context);
+
+            handlers.ForEach((url, _) => Logger.LogInformation("register HTTP handler: {Url}", url));
+            msgHandlers.ForEach((topic, _) => Logger.LogInformation("register hub message handler: {Topic}", topic));
+
 
             host = new WebHostBuilder()
                 .UseKestrel()
@@ -48,26 +51,30 @@ namespace ThinkingHome.Plugins.WebServer
                     builder.AddProxy(Logger))
                 .Build();
 
-            var msgHandlers = RegisterMessageHandlers();
             hubContext = host.Services.GetService<IHubContext<MessageHub>>();
 
-            MessageHub.Message += (id, timestamp, channel, data) =>
-                SafeInvoke(msgHandlers[channel], fn => fn(id, timestamp, channel, data));
+            MessageHub.Message += (id, timestamp, topic, data) => {
+                Logger.LogInformation("message sent in topic {Topic} with id {Id}", topic, id);
+                SafeInvoke(msgHandlers[topic], fn => fn(id, timestamp, topic, data));
+            };
         }
 
         public IReadOnlyDictionary<string, BaseHandler> GetAllHandlers() => handlers.Data;
 
-        private static void RegisterHandlers(ObjectRegistry<BaseHandler> handlers, IServiceContext context)
+        private static void RegisterHandlers(
+            ObjectRegistry<BaseHandler> handlers,
+            ObjectSetRegistry<HubMessageHandlerDelegate> msgHandlers,
+            IServiceContext context)
         {
             var inits = context.GetAllPlugins()
                 .SelectMany(p => p.FindMethods<ConfigureWebServerAttribute, ConfigureWebServerDelegate>())
                 .ToArray();
 
-            foreach (var (meta, fn, plugin) in inits) {
-                using var configBuilder = new WebServerConfigurationBuilder(plugin.GetType(), handlers);
+            foreach (var (_, fn, plugin) in inits) {
+                using var configBuilder = new WebServerConfigurationBuilder(plugin.GetType(), handlers, msgHandlers);
                 fn(configBuilder);
             }
-            
+
             // localization handlers
             context.GetAllPlugins()
                 .FindAttrs<HttpLocalizationResourceAttribute>()
@@ -76,18 +83,7 @@ namespace ThinkingHome.Plugins.WebServer
                     res => res.Meta.Url,
                     res => new LocalizationHandler(res.Type, res.Plugin.StringLocalizer));
         }
-
-        private ObjectSetRegistry<HubMessageHandlerDelegate> RegisterMessageHandlers()
-        {
-            var messageHandlers = Context.GetAllPlugins()
-                .FindMethods<HubMessageHandlerAttribute, HubMessageHandlerDelegate>()
-                .ToObjectSetRegistry(mi => mi.Meta.Channel, mi => mi.Method);
-
-            messageHandlers.ForEach((channel, handler) => Logger.LogInformation("register hub message handler: {Channel}", channel));
-
-            return messageHandlers;
-        }
-
+        
         public override void StartPlugin()
         {
             // важно запускать Start вместо Run, чтобы оно не лезло напрямую в консоль
@@ -99,9 +95,9 @@ namespace ThinkingHome.Plugins.WebServer
             host.Dispose();
         }
 
-        public Task Send(string channel, object data)
+        public Task Send(string topic, object data)
         {
-            return hubContext.Send(channel, data);
+            return hubContext.Send(topic, data);
         }
     }
 }

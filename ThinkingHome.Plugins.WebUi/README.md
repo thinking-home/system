@@ -14,6 +14,9 @@
 - загрузка разделов интерфейса с сервера по требованию и отображение их содержимого,
 - роутинг (механизм перехода между разделами, в зависимости от адреса в адресной строке),
 - API для получения данных с сервера с возможностью валидации формата данных
+- API для работы с клиент-серверной шиной сообщений (message hub)
+- API для показа всплывающих сообщений
+- API для логирования
 
 Веб-интерфейс открывается по корневому адресу веб-сервера.
 
@@ -49,22 +52,23 @@ public void RegisterWebUiPages(WebUiConfigurationBuilder config)
    ```
 3. Создайте в корне файл tsconfig.json со следующим содержимым:
    ```json
-    {
-      "compilerOptions": {
-        "noImplicitAny": true,
-        "module": "esnext",
-        "target": "es5",
-        "jsx": "react",
-        "allowJs": true,
-        "moduleResolution": "node"
-      },
-      "ts-node": {
-        "compilerOptions": {
-          "module": "CommonJS",
-          "esModuleInterop": true
-        }
-      }
-    }
+   {
+     "compilerOptions": {
+       "noImplicitAny": true,
+       "module": "esnext",
+       "target": "es6",
+       "jsx": "react",
+       "allowJs": true,
+       "moduleResolution": "node",
+       "allowSyntheticDefaultImports": true
+     },
+     "ts-node": {
+       "compilerOptions": {
+         "module": "CommonJS",
+         "esModuleInterop": true
+       }
+     }
+   }
    ```
 4. Создайте файл с расширением `.tsx`, который будет основным файлом страницы (например, `./frontend/myPage.tsx`).
 5. Создайте в корне проекта конфиг для сборки — файл `webpack.config.ts`, импортируйте в нем хелпер `initWebpackConfig` из библиотеки `@thinking-home/ui` и с его помощью подготовьте конфигурацию сборки.
@@ -179,4 +183,94 @@ export default createModule(ExampleSection);
 
 ### Настройки стартовой страницы (TBD)
 
-### Шина сообщений (TBD)
+### Шина сообщений
+
+Из контекста приложения, который предоставляет `useAppContext` из библиотеки `@thinking-home/ui`, вы также можете получить экземпляр API для работы с клиент-серверной шиной сообщений, которую предоставляет плагин `WebServerPlugin`.
+
+```tsx
+import {createModule, useAppContext} from '@thinking-home/ui';
+
+const ExampleSection: FC = () => {
+    const {messageHub} = useAppContext();
+    
+    const onClick = useCallback(() => {
+        // отправляем сообщение в канал 'my-topic'
+        messageHub.send('my-topic', {name: 'John', age: 42});
+    }, [messageHub.send]);
+    
+    return <button onClick={onClick}>Send</button>;
+}
+
+export default createModule(ExampleSection);
+```
+
+Также библиотека `@thinking-home/ui` предоставляет хук `useMessageHandler`, при помощи которого вы можете подписываться на сообщения в шине. Когда компонент удаляется со страницы, подписка будет отменена. 
+
+```tsx
+import {useMessageHandler} from '@thinking-home/ui';
+import * as d from 'io-ts/Decoder';
+
+const ExampleSection: FC = () => {
+   const [lastMessage, setLastMessage] = useState<string>();
+
+   useMessageHandler(
+       'my-topic',      // топик шины сообщений, в котором нужно слушать сообщения
+       d.string,        // декодер io-ts для обработки полученных данных
+       msg => setLastMessage(msg.data), // callback, который будет вызван для каждого сообщения
+       [setLastMessage], // список зависимостей callback (аналогично useCallback)
+   );
+
+   return <p>Last message: {lastMessage}</p>;
+}
+```
+
+### Нотификация
+
+Контекст приложения, полученный через хук `useAppContext`, содержит также API для показа всплывающих сообщений пользователю. Сообщения реализованы с помощью библиотеки [react-toastify](https://fkhadra.github.io/react-toastify).
+
+```tsx
+import {useAppContext} from '@thinking-home/ui';
+
+const MySection: FC = () => {
+    const {toaster: {show, showError}} = useAppContext();
+
+    const onMessage = useCallback(() => show("Example message"), [show]);
+    const onError = useCallback(() => showError(<b>Example error</b>), [showError]);
+
+    return (
+        <p>
+            <button onClick={onMessage}>Example message</button>
+            <button onClick={onError}>Example error</button>
+        </p>
+    );
+}
+```
+
+### Клиентское логирование
+
+Платформа предоставляет API для клиентского логирования. Вы можете получить экземпляр логгера с помощью хука `useLogger`. Для каждого сообщения в логе нужно указать уровень логирования (`Trace`, `Debug`, `Information`, `Warning`, `Error`, `Fatal`) и текст сообщения (`string`).
+
+```tsx
+import {LogLevel, useLogger} from '@thinking-home/ui';
+
+const MyContent: FC = () => {
+   const logger = useLogger();
+
+   logger.log(LogLevel.Debug, "render: MyContent")
+
+   const onClick = useCallback(
+           () => logger.log(LogLevel.Information, "click: Example button"),
+           [logger],
+   );
+
+   return <button onClick={onClick}>Click me</button>;
+}
+```
+
+### Повторная инициализация приложения
+
+После старта приложения будет создана глобальная функция `__RELOAD_TH_APP__`. При вызове этой функции текущее приложение будет удалено со страницы (размонтированы react компоненты, остановлены ajax активные запросы, закрыто соединение с шиной сообщений), а сразу после этого приложение будет проинициализировано заново. Функция `__RELOAD_TH_APP__` возвращает `Promise<void>`.
+
+```tsx
+window.__RELOAD_TH_APP__().then(() => console.log('DONE'))
+```
