@@ -163,6 +163,8 @@ namespace ThinkingHome.Plugins.Tmp
         public void HandleMqttMessage(string topic, byte[] payload)
         {
             var str = Encoding.UTF8.GetString(payload);
+            
+            telegramBot.SendMessage(353206782, $"{topic}: {str}");
 
             if (topic == "test") {
                 Logger.LogWarning("TEST MESSAGE: {Message}", str);
