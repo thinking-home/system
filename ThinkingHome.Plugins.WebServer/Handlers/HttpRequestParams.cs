@@ -2,10 +2,8 @@
 using Microsoft.AspNetCore.Http;
 using ThinkingHome.Core.Plugins.Utils;
 
-namespace ThinkingHome.Plugins.WebServer.Handlers
-{
-    public class HttpRequestParams
-    {
+namespace ThinkingHome.Plugins.WebServer.Handlers {
+    public class HttpRequestParams {
         public readonly PathString path;
         public readonly IQueryCollection urlData;
         public readonly IFormCollection formData;
@@ -69,7 +67,7 @@ namespace ThinkingHome.Plugins.WebServer.Handlers
         {
             var value = GetString(name);
 
-            if (string.IsNullOrEmpty(value)) throw new ArgumentException($"parameter {name} is required");
+            if (string.IsNullOrEmpty(value)) throw new HttpHandlerException(StatusCode.BadRequest, $"parameter {name} is required");
 
             return value;
         }
@@ -78,7 +76,7 @@ namespace ThinkingHome.Plugins.WebServer.Handlers
         {
             var value = GetInt32(name);
 
-            if (!value.HasValue) throw new ArgumentException($"parameter {name} is required");
+            if (!value.HasValue) throw new HttpHandlerException(StatusCode.BadRequest, $"parameter {name} is required");
 
             return value.Value;
         }
@@ -87,7 +85,7 @@ namespace ThinkingHome.Plugins.WebServer.Handlers
         {
             var value = GetGuid(name);
 
-            if (!value.HasValue) throw new ArgumentException($"parameter {name} is required");
+            if (!value.HasValue) throw new HttpHandlerException(StatusCode.BadRequest, $"parameter {name} is required");
 
             return value.Value;
         }
@@ -96,7 +94,7 @@ namespace ThinkingHome.Plugins.WebServer.Handlers
         {
             var value = GetBool(name);
 
-            if (!value.HasValue) throw new ArgumentException($"parameter {name} is required");
+            if (!value.HasValue) throw new HttpHandlerException(StatusCode.BadRequest, $"parameter {name} is required");
 
             return value.Value;
         }

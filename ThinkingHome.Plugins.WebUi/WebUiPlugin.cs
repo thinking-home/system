@@ -1,4 +1,5 @@
 ﻿using System.Globalization;
+using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
 using ThinkingHome.Core.Plugins;
 using ThinkingHome.Core.Plugins.Utils;
@@ -10,24 +11,24 @@ using ThinkingHome.Plugins.WebUi.Attributes;
 
 namespace ThinkingHome.Plugins.WebUi;
 
-public class WebUiPlugin : PluginBase
-{
+public class WebUiPlugin : PluginBase {
     const string HTML_RES_PATH = "ThinkingHome.Plugins.WebUi.Resources.static.index.html";
     const string MIME_HTML = "text/html";
     const string MIME_JS = "application/javascript";
     const string MIME_CSS = "text/css";
 
     private readonly ObjectRegistry<WebUiPageDefinition> pages = new();
+    private readonly ObjectRegistry<IStringLocalizer> localizers = new();
 
     [ConfigureWebServer]
     public void RegisterHttpHandlers(WebServerConfigurationBuilder config)
     {
-        RegisterPages(pages, Context);
+        RegisterPages(pages, localizers, Context);
 
         // TODO: подумать про пути к корневой странице + валидацию путей
-        // TODO: подумать про локализацию — отдавать все переводы одним файлом
 
-        pages.ForEach((url, handler) => Logger.LogInformation("register web ui page: {Url}", url));
+        pages.ForEach((url, handler) =>
+            Logger.LogInformation("register web ui page: {Url} (lang id: {LangId})", url, handler.LangId));
 
         config.RegisterEmbeddedResource("/", HTML_RES_PATH, MIME_HTML);
 
@@ -53,18 +54,42 @@ public class WebUiPlugin : PluginBase
             MIME_JS);
 
         config.RegisterDynamicResource("/api/webui/meta", GetMeta);
+        config.RegisterDynamicResource("/api/webui/lang", GetLang, true);
     }
 
-    private static void RegisterPages(ObjectRegistry<WebUiPageDefinition> pages, IServiceContext context)
+    private static void RegisterPages(ObjectRegistry<WebUiPageDefinition> pages, ObjectRegistry<IStringLocalizer> localizers, IServiceContext context)
     {
         var inits = context.GetAllPlugins()
             .SelectMany(p => p.FindMethods<ConfigureWebUiAttribute, ConfigureWebUiDelegate>())
             .ToArray();
 
         foreach (var (meta, fn, plugin) in inits) {
-            using var configBuilder = new WebUiConfigurationBuilder(plugin.GetType(), pages);
+            var source = plugin.GetType();
+            var localizerId = source.ToString().GetHashString();
+
+            using var configBuilder = new WebUiConfigurationBuilder(source, localizerId, pages);
             fn(configBuilder);
+
+            if (configBuilder.HasPages) {
+                localizers.Register(localizerId, plugin.StringLocalizer);
+            }
         }
+    }
+
+    private HttpHandlerResult GetLang(HttpRequestParams requestParams)
+    {
+        var id = requestParams.GetRequiredString("id");
+
+        if (!localizers.ContainsKey(id)) {
+            throw new HttpHandlerException(StatusCode.BadRequest, "localizer not found");
+        }
+
+        var stringLocalizer = localizers[id];
+        var values = stringLocalizer
+            .GetAllStrings()
+            .ToDictionary(str => str.Name, str => str.Value);
+
+        return HttpHandlerResult.Json(values);
     }
 
     private HttpHandlerResult GetMeta(HttpRequestParams requestParams)

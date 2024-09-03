@@ -3,12 +3,25 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+using System.Security.Cryptography;
+using System.Text;
 using System.Text.Json;
 
-namespace ThinkingHome.Core.Plugins.Utils
-{
-    public static class Extensions
-    {
+namespace ThinkingHome.Core.Plugins.Utils {
+    public static class Extensions {
+        public static string GetHashString(this string value)
+        {
+            return GetHashString(Encoding.UTF8.GetBytes(value));
+        }
+
+        public static string GetHashString(this byte[] bytes)
+        {
+            var hashBytes = MD5.HashData(bytes);
+            var hash = string.Join("", hashBytes.Select(x => x.ToString("x2")));
+
+            return hash;
+        }
+
         /// <summary>
         /// Сериализация в JSON
         /// </summary>
@@ -21,8 +34,7 @@ namespace ThinkingHome.Core.Plugins.Utils
 
         public static int? ParseInt(this string stringValue)
         {
-            if (int.TryParse(stringValue, out var result))
-            {
+            if (int.TryParse(stringValue, out var result)) {
                 return result;
             }
 
@@ -31,8 +43,7 @@ namespace ThinkingHome.Core.Plugins.Utils
 
         public static Guid? ParseGuid(this string stringValue)
         {
-            if (Guid.TryParse(stringValue, out var result))
-            {
+            if (Guid.TryParse(stringValue, out var result)) {
                 return result;
             }
 
@@ -41,8 +52,7 @@ namespace ThinkingHome.Core.Plugins.Utils
 
         public static bool? ParseBool(this string stringValue)
         {
-            if (bool.TryParse(stringValue, out var result))
-            {
+            if (bool.TryParse(stringValue, out var result)) {
                 return result;
             }
 
@@ -61,7 +71,8 @@ namespace ThinkingHome.Core.Plugins.Utils
                 .ToArray();
         }
 
-        public static (TAttr Meta, TypeInfo Type, PluginBase Plugin)[] FindAttrs<TAttr>(this PluginBase plugin, Func<TAttr, bool> filter = null) where TAttr : Attribute
+        public static (TAttr Meta, TypeInfo Type, PluginBase Plugin)[] FindAttrs<TAttr>(this PluginBase plugin, Func<TAttr, bool> filter = null)
+            where TAttr : Attribute
         {
             var fn = filter ?? (a => true);
 
@@ -79,7 +90,7 @@ namespace ThinkingHome.Core.Plugins.Utils
         #region find methods
 
         public static (TAttr Meta, TDelegate Method, PluginBase plugin)[] FindMethods<TAttr, TDelegate>(
-            this IEnumerable<PluginBase> plugins) where TAttr: Attribute where TDelegate : class
+            this IEnumerable<PluginBase> plugins) where TAttr : Attribute where TDelegate : class
         {
             return plugins
                 .SelectMany(p => p.FindMethods<TAttr, TDelegate>())
@@ -87,7 +98,7 @@ namespace ThinkingHome.Core.Plugins.Utils
         }
 
         public static (TAttr Meta, TDelegate Method, PluginBase plugin)[] FindMethods<TAttr, TDelegate>(this PluginBase plugin)
-            where TAttr: Attribute where TDelegate : class
+            where TAttr : Attribute where TDelegate : class
         {
             IEnumerable<Tuple<MethodInfo, TAttr>> GetMethodAttributes(MethodInfo method)
             {
@@ -109,8 +120,7 @@ namespace ThinkingHome.Core.Plugins.Utils
             {
                 var delegateType = typeof(TDelegate);
 
-                if (delegateType == typeof(Delegate))
-                {
+                if (delegateType == typeof(Delegate)) {
                     delegateType = GetDelegateType(obj.Item1);
                 }
 
@@ -145,8 +155,7 @@ namespace ThinkingHome.Core.Plugins.Utils
         public static ObjectRegistry<T> ToObjectRegistry<T, T2>(
             this IEnumerable<T2> collection, ObjectRegistry<T> registry, Func<T2, string> getKey, Func<T2, T> getValue)
         {
-            foreach (var item in collection)
-            {
+            foreach (var item in collection) {
                 var key = getKey(item);
                 var value = getValue(item);
                 registry.Register(key, value);
@@ -170,8 +179,7 @@ namespace ThinkingHome.Core.Plugins.Utils
         public static ObjectSetRegistry<T> ToObjectSetRegistry<T, T2>(
             this IEnumerable<T2> collection, ObjectSetRegistry<T> registry, Func<T2, string> getKey, Func<T2, T> getValue)
         {
-            foreach (var item in collection)
-            {
+            foreach (var item in collection) {
                 var key = getKey(item);
                 var value = getValue(item);
                 registry.Register(key, value);
