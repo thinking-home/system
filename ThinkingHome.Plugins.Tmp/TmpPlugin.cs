@@ -24,7 +24,6 @@ using ThinkingHome.Plugins.WebUi.Attributes;
 
 namespace ThinkingHome.Plugins.Tmp
 {
-    [HttpLocalizationResource("/static/tmp/lang.json")]
     public class TmpPlugin : PluginBase
     {
         private readonly DatabasePlugin database;
