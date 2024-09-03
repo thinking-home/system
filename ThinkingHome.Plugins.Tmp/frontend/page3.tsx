@@ -1,7 +1,17 @@
 import * as React from 'react';
 import {FC, useCallback, useState} from 'react';
-import {createModule, LogLevel, ReceivedMessage, useAppContext, useLogger, useMessageHandler} from '@thinking-home/ui';
+
+import {
+    createModule,
+    LogLevel,
+    ReceivedMessage,
+    useAppContext,
+    useLogger,
+    useMessageHandler,
+    useKeyset
+} from '@thinking-home/ui';
 import * as d from 'io-ts/Decoder';
+import {Keyset, text} from "@thinking-home/i18n";
 
 const tmpPigDecoder = d.struct({
     name: d.string,
@@ -12,18 +22,25 @@ type TmpPig = d.TypeOf<typeof tmpPigDecoder>;
 
 const TOPIC = 'mh-example';
 
+const keyset = new Keyset("en", {
+    newMessage: text("New Message"),
+    currentValue: text("CURRENT VALUE: {counter}"),
+    pig: text("pig: {name} ({size}m)"),
+});
+
 const TmpPigToast: FC<{ msg: ReceivedMessage<TmpPig>, counter: number }> = (e) => {
     const {msg: {topic, guid, timestamp, data: {name, size}}, counter} = e;
 
+    const {t} = useKeyset(keyset);
+
     return (
         <>
-            <div><strong>New Message:</strong></div>
-            <div>CURRENT VALUE: {counter}</div>
+            <div><strong>{t('newMessage')}:</strong></div>
+            <div>{t('currentValue', {counter})}</div>
             <div>topic: {topic}</div>
             <div>guid: {guid}</div>
             <div>timestamp: {timestamp}</div>
-            <div>pig: {name}</div>
-            <div>size: {size}</div>
+            <div>{t('pig', {name, size})}</div>
         </>
     );
 }
