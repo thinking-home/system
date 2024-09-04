@@ -19,4 +19,10 @@
     <data name="web-test-3" xml:space="preserve">
         <value>Web-test-3.</value>
     </data>
+    <data name="incement" xml:space="preserve">
+        <value>Incement</value>
+    </data>
+    <data name="sendPigMessage" xml:space="preserve">
+        <value />
+    </data>
 </root>

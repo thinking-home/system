@@ -23,6 +23,7 @@ export type MessageHubConfig = d.TypeOf<typeof MessageHubConfigDecoder>;
 
 export const PageDefinitionDecoder = d.struct({
     js: d.string,
+    langId: d.string,
 });
 
 export type PageDefinition = d.TypeOf<typeof PageDefinitionDecoder>;
@@ -38,6 +39,8 @@ export const MetaResponseDecoder = d.struct({
 export const UnknownDecoder: d.Decoder<unknown, unknown> = d.fromGuard({
     is: (_: unknown): _ is unknown => true,
 }, 'unknown value')
+
+export const LangDataDecoder = d.record(d.string);
 
 export const MessageHubMessageDecoder = d.struct({
     topic: d.string,

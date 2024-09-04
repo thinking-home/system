@@ -23,28 +23,26 @@ type TmpPig = d.TypeOf<typeof tmpPigDecoder>;
 const TOPIC = 'mh-example';
 
 const keyset = new Keyset("en", {
-    newMessage: text("New Message"),
-    currentValue: text("CURRENT VALUE: {counter}"),
-    pig: text("pig: {name} ({size}m)"),
+    incement: text('Incement'),
+    sendPigMessage: text('Send pig message'),
 });
 
 const TmpPigToast: FC<{ msg: ReceivedMessage<TmpPig>, counter: number }> = (e) => {
     const {msg: {topic, guid, timestamp, data: {name, size}}, counter} = e;
-
-    const {t} = useKeyset(keyset);
-
+    
     return (
         <>
-            <div><strong>{t('newMessage')}:</strong></div>
-            <div>{t('currentValue', {counter})}</div>
+            <div><strong>Message</strong></div>
+            <div>Current value: {counter}</div>
             <div>topic: {topic}</div>
             <div>guid: {guid}</div>
             <div>timestamp: {timestamp}</div>
-            <div>{t('pig', {name, size})}</div>
+            <div>pig: {name} (size: {size})</div>
         </>
     );
 }
 const TmpSection: FC = () => {
+    const {t} = useKeyset(keyset);
     const {messageHub: {send}, toaster: {showInfo}} = useAppContext();
     const [value, setValue] = useState(0);
     const logger = useLogger();
@@ -67,8 +65,8 @@ const TmpSection: FC = () => {
     return (
         <div>
             <p>Current value: {value}</p>
-            <button onClick={onClick}>Send pig message</button>
-            <button onClick={onIncement}>Incement</button>
+            <button onClick={onClick}>{t('sendPigMessage')}</button>
+            <button onClick={onIncement}>{t('incement')}</button>
         </div>
     );
 };

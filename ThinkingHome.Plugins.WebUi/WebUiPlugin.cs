@@ -100,6 +100,7 @@ public class WebUiPlugin : PluginBase {
             p => p.PathDocument,
             p => new {
                 js = p.PathJavaScript,
+                langId = p.LangId,
             });
 
         var messageHub = new {
