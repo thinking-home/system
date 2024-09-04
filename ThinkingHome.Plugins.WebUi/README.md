@@ -13,6 +13,7 @@
 - общая разметка страницы (навигационное меню и область для контента),
 - загрузка разделов интерфейса с сервера по требованию и отображение их содержимого,
 - роутинг (механизм перехода между разделами, в зависимости от адреса в адресной строке),
+- локализация (механизм для отображения в интерфейсе текстов на выбранном в настройках языке),
 - API для получения данных с сервера с возможностью валидации формата данных
 - API для работы с клиент-серверной шиной сообщений (message hub)
 - API для показа всплывающих сообщений
@@ -48,7 +49,7 @@ public void RegisterWebUiPages(WebUiConfigurationBuilder config)
 1. Создайте в корне проекта файл `package.json`. Лёгкий вариант его создания — запустить в терминале команду `npm init -y`.
 2. Добавьте в свой проект необходмые клиентские библиотеки:
    ```shell
-   $ npm i typescript react @types/react react-router-dom webpack webpack-cli ts-node @types/node io-ts fp-ts @thinking-home/ui
+   $ npm i typescript react @types/react react-router-dom webpack webpack-cli ts-node @types/node io-ts fp-ts @thinking-home/ui @thinking-home/i18n
    ```
 3. Создайте в корне файл tsconfig.json со следующим содержимым:
    ```json
@@ -180,6 +181,35 @@ const ExampleSection: FC = () => {
 
 export default createModule(ExampleSection);
 ```
+
+### Локализация
+
+В инфрастуктуре веб-интерфейса реализован API для локализации. Для работы с переводами используется мини-библиотека [@thinking-home/i18n](https://github.com/thinking-home/i18n). В интерфейсе вам автоматически будут доступны все ключи, которые есть в ресурсах текущего плагина.
+
+Чтобы использовать в компонентах интерфейса строки на нужном языке, необходимо описать набор ключей с текстами по умолчанию:
+
+```ts
+import {Keyset, text} from '@thinking-home/i18n';
+
+const keyset = new Keyset('en', {
+   hello: text('Hello, {name}!'),
+   sendMessage: text('Send message'),
+});
+```
+
+Внутри компонента используйте хук `useKeyset` из библиотеки `@thinking-home/ui`:
+
+```tsx
+import {useKeyset} from '@thinking-home/ui';
+
+const MyComponent: FC = () => {
+    const {t} = useKeyset(keyset);
+    
+    return <button>{t('sendMessage')}</button>;
+}
+```
+
+Вы можете добавлять в тексты значения параметров (в том числе, сложные объекты, например, react компоненты) и описывать тексты, которые зависят от числового значения. Узнайте в [документации](https://github.com/thinking-home/i18n#readme), как это сделать.
 
 ### Настройки стартовой страницы (TBD)
 
