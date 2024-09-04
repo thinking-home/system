@@ -1,16 +1,22 @@
+using Microsoft.Extensions.Localization;
 using ThinkingHome.Core.Plugins.Utils;
 
 namespace ThinkingHome.Plugins.WebUi;
 
-public class WebUiConfigurationBuilder: BaseConfigurationBuilder<WebUiPageDefinition>
-{
-    public WebUiConfigurationBuilder(Type source, ObjectRegistry<WebUiPageDefinition> pages): base(source, pages)
+public class WebUiConfigurationBuilder : BaseConfigurationBuilder<WebUiPageDefinition> {
+    private readonly string LangId;
+    public bool HasPages { get; private set; }
+
+    public WebUiConfigurationBuilder(Type source, string langId, ObjectRegistry<WebUiPageDefinition> pages) : base(source, pages)
     {
+        LangId = langId;
     }
 
-    public WebUiConfigurationBuilder RegisterPage(string url, string jsResourcePath)
+    public WebUiConfigurationBuilder RegisterPage(string url, string jsEmbeddedResourcePath)
     {
-        RegisterItem(url, new WebUiPageDefinition(Source, url, jsResourcePath));
+        RegisterItem(url, new WebUiPageDefinition(Source, url, jsEmbeddedResourcePath, LangId));
+
+        HasPages = true;
 
         return this;
     }

@@ -85,6 +85,8 @@ delegate HttpHandlerResult HttpHandlerDelegate(HttpRequestParams requestParams)
 
 Метод должен возвращать экземпляр класса `HttpHandlerResult`, на основе которого будет сформирован ответ для клиента. Вы можете использовать статические методы класса `HttpHandlerResult`, чтобы вренуть результ нужного типа: `Text`, `Json`, `Binary`. Если вернуть из метода значение `null`, то на клиент уйдет ответ с пустым содержимым.
 
+Если внутри динамического обработчика будет сгенерировано исключение, то сервер отдаст на клиент ответ с кодом 500 (внутренняя ошибка сервера). Если вы хотите отдать ответ с кодом 400 (bad request), то сгенерируйте исключение `ThinkingHome.Plugins.WebServer.Handlers.HttpHandlerException` и передайте нужный параметр `statusCode`.
+
 #### Пример
 
 ```csharp
@@ -105,22 +107,6 @@ public HttpHandlerResult AddCow(HttpRequestParams requestParams)
     return HttpHandlerResult.Json(result);
 }
 ```
-
-### `[HttpLocalizationResource]` (неактуально)
-
-Ресурсы локализации позволяют по заданному url отдать на клиент тексты для плагина на текущем языке. Чтобы добавить ресурс локализации пометьте класс плагина атрибутом `ThinkingHome.Plugins.WebServer.Attributes.HttpLocalizationResourceAttribute` и укажите в параметрах его конструктора нужный url. 
-
-#### Пример
-
-```csharp
-[HttpLocalizationResource("/static/my-plugin/lang.json")]
-public class MyPlugin : PluginBase
-{
-
-}
-```
-
-Ресурсы локализации кэшируются на клиенте и сервере.
 
 ## Клиент-серверная шина сообщений
 

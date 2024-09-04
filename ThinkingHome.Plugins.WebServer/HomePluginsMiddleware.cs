@@ -6,10 +6,8 @@ using Microsoft.Extensions.Logging;
 using ThinkingHome.Core.Plugins.Utils;
 using ThinkingHome.Plugins.WebServer.Handlers;
 
-namespace ThinkingHome.Plugins.WebServer
-{
-    public class HomePluginsMiddleware
-    {
+namespace ThinkingHome.Plugins.WebServer {
+    public class HomePluginsMiddleware {
         // cache params
         private const int CACHE_EXPIRATION = 7200; // в секундах (7200 == 2 часа)
 
@@ -61,8 +59,15 @@ namespace ThinkingHome.Plugins.WebServer
                     }
                 }
                 catch (Exception ex) {
-                    logger.LogInformation(0, ex, $"http handler error: {path}");
-                    context.Response.StatusCode = 500;
+                    logger.LogError(0, ex, "http handler error: {Path}; message: {Message}", path, ex.Message);
+                    
+                    var statusCode = StatusCode.Internal;
+
+                    if (ex is HttpHandlerException exception) {
+                        statusCode = exception.StatusCode;
+                    }
+
+                    context.Response.StatusCode = Convert.ToInt32(statusCode);
                 }
             }
             else {

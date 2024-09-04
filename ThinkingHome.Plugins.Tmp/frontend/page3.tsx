@@ -1,7 +1,17 @@
 import * as React from 'react';
 import {FC, useCallback, useState} from 'react';
-import {createModule, LogLevel, ReceivedMessage, useAppContext, useLogger, useMessageHandler} from '@thinking-home/ui';
+
+import {
+    createModule,
+    LogLevel,
+    ReceivedMessage,
+    useAppContext,
+    useLogger,
+    useMessageHandler,
+    useKeyset
+} from '@thinking-home/ui';
 import * as d from 'io-ts/Decoder';
+import {Keyset, text} from "@thinking-home/i18n";
 
 const tmpPigDecoder = d.struct({
     name: d.string,
@@ -12,22 +22,27 @@ type TmpPig = d.TypeOf<typeof tmpPigDecoder>;
 
 const TOPIC = 'mh-example';
 
+const keyset = new Keyset("en", {
+    incement: text('Incement'),
+    sendPigMessage: text('Send pig message'),
+});
+
 const TmpPigToast: FC<{ msg: ReceivedMessage<TmpPig>, counter: number }> = (e) => {
     const {msg: {topic, guid, timestamp, data: {name, size}}, counter} = e;
-
+    
     return (
         <>
-            <div><strong>New Message:</strong></div>
-            <div>CURRENT VALUE: {counter}</div>
+            <div><strong>Message</strong></div>
+            <div>Current value: {counter}</div>
             <div>topic: {topic}</div>
             <div>guid: {guid}</div>
             <div>timestamp: {timestamp}</div>
-            <div>pig: {name}</div>
-            <div>size: {size}</div>
+            <div>pig: {name} (size: {size})</div>
         </>
     );
 }
 const TmpSection: FC = () => {
+    const {t} = useKeyset(keyset);
     const {messageHub: {send}, toaster: {showInfo}} = useAppContext();
     const [value, setValue] = useState(0);
     const logger = useLogger();
@@ -50,8 +65,8 @@ const TmpSection: FC = () => {
     return (
         <div>
             <p>Current value: {value}</p>
-            <button onClick={onClick}>Send pig message</button>
-            <button onClick={onIncement}>Incement</button>
+            <button onClick={onClick}>{t('sendPigMessage')}</button>
+            <button onClick={onIncement}>{t('incement')}</button>
         </div>
     );
 };

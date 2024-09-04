@@ -5,8 +5,7 @@ import {Link, useLocation} from "react-router-dom";
 import {cn} from '@bem-react/classname';
 import {LoggerProvider, useLogger} from "@thinking-home/ui";
 
-import {PageDefinition} from "../utils";
-import {NS_FIELD} from "../utils/logger";
+import {PageDefinition, NS_FIELD} from "../utils";
 
 import {ErrorScreen} from "./ErrorScreen";
 import {Page} from "./Page";
@@ -49,7 +48,7 @@ export const Content: React.FC<{ pages: Record<string, PageDefinition> }> = ({pa
     if (def) {
         return (
             <LoggerProvider value={logger}>
-                <Page key={pathname} pathJs={def.js}/>
+                <Page key={pathname} pathJs={def.js} langId={def.langId}/>
             </LoggerProvider>
         );
     }

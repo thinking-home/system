@@ -74,14 +74,6 @@ namespace ThinkingHome.Plugins.WebServer
                 using var configBuilder = new WebServerConfigurationBuilder(plugin.GetType(), handlers, msgHandlers);
                 fn(configBuilder);
             }
-
-            // localization handlers
-            context.GetAllPlugins()
-                .FindAttrs<HttpLocalizationResourceAttribute>()
-                .ToObjectRegistry(
-                    handlers,
-                    res => res.Meta.Url,
-                    res => new LocalizationHandler(res.Type, res.Plugin.StringLocalizer));
         }
         
         public override void StartPlugin()

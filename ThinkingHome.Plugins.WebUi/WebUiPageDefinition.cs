@@ -1,5 +1,4 @@
-using System.Security.Cryptography;
-using System.Text;
+using ThinkingHome.Core.Plugins.Utils;
 
 namespace ThinkingHome.Plugins.WebUi;
 
@@ -10,19 +9,18 @@ public class WebUiPageDefinition
 
     public readonly Type Source;
     public readonly string JsResourcePath;
+    public readonly string LangId;
 
-    public WebUiPageDefinition(
-        Type source,
+    public WebUiPageDefinition(Type source,
         string url,
-        string jsResourcePath)
+        string jsResourcePath, 
+        string langId)
     {
         Source = source;
         JsResourcePath = jsResourcePath;
+        LangId = langId;
 
-        var hashBytes = MD5.HashData(Encoding.UTF8.GetBytes(url));
-        var hash = string.Join("", hashBytes.Select(x => x.ToString("x2")));
-        
         PathDocument = url;
-        PathJavaScript = $"/static/webui/js/{hash}.js";
+        PathJavaScript = $"/static/webui/js/{url.GetHashString()}.js";
     }
 }

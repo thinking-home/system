@@ -13,4 +13,10 @@
     <data name="web-test-2" xml:space="preserve">
         <value>Тестовая строка - два.</value>
     </data>
+    <data name="incement" xml:space="preserve">
+        <value>Увеличить</value>
+    </data>
+    <data name="sendPigMessage" xml:space="preserve">
+        <value>Отправить сообщение</value>
+    </data>
 </root>
