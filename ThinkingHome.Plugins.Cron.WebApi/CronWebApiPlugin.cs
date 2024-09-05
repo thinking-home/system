@@ -9,18 +9,7 @@ using ThinkingHome.Plugins.WebServer.Handlers;
 
 namespace ThinkingHome.Plugins.Cron.WebApi
 {
-    public class CronWebApiPlugin : PluginBase
-    {
-        private readonly DatabasePlugin database;
-
-        private readonly CronPlugin cron;
-
-        public CronWebApiPlugin(DatabasePlugin database, CronPlugin cron)
-        {
-            this.database = database;
-            this.cron = cron;
-        }
-
+    public class CronWebApiPlugin(DatabasePlugin database, CronPlugin cron) : PluginBase {
         private object ToApiModel(CronTask task)
         {
             return new

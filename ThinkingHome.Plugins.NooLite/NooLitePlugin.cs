@@ -15,20 +15,13 @@ namespace ThinkingHome.Plugins.NooLite
     using MicroclimateAttribute = NooLiteMicroclimateDataHandlerAttribute;
     using MicroclimateDelegate = NooLiteMicroclimateDataHandlerDelegate;
 
-    public class NooLitePlugin : PluginBase
-    {
-        private readonly ScriptsPlugin scripts;
+    public class NooLitePlugin(ScriptsPlugin scripts) : PluginBase {
         private MTRFXXAdapter device;
         private AdapterWrapper wrapper;
         private AdapterWrapper wrapperF;
 
         private readonly List<CommandDelegate> cmdHandlers = new List<CommandDelegate>();
         private readonly List<MicroclimateDelegate> microclimateHandlers = new List<MicroclimateDelegate>();
-
-        public NooLitePlugin(ScriptsPlugin scripts)
-        {
-            this.scripts = scripts;
-        }
 
         public override void InitPlugin()
         {
