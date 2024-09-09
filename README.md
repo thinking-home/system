@@ -52,3 +52,10 @@ $ docker run --name thinking-home --link postgres:postgres -p 8080:8080 -t dima1
 
 После запуска в консоль начнет выодиться лог приложения, а в браузере по адресу http://localhost:8080 будет доступен веб-интерфейс.
 
+## Для разработчиков
+
+Сборка docker-образа:
+
+```shell
+docker build -t dima117a/thinking-home:4.0.0-alpha34 .
+```

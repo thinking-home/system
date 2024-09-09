@@ -1,17 +1,36 @@
-# базовый образ для нашего приложения
-FROM microsoft/dotnet:2.0.0-runtime
+# BUILD .NET CORE APP
 
-# рабочая директория внутри контейнера для запуска команды CMD
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+
+# install node
+RUN curl -sL https://deb.nodesource.com/setup_18.x | bash - 
+RUN apt-get install -y nodejs
+
+# copy csproj and restore as distinct layers
+WORKDIR /app
+COPY . .
+RUN dotnet restore
+
+# publish
+RUN dotnet publish -c Release -o dist
+
+# PREPARE RUNTIME
+FROM mcr.microsoft.com/dotnet/runtime:8.0 AS runtime
+
+# install utils
+RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y locales tzdata wget iputils-ping
+
+# lang
+ENV LANG=en_US.UTF-8
+RUN locale-gen "en_US.UTF-8" && dpkg-reconfigure --frontend noninteractive locales
+
+# timezone
+RUN ln -fs /usr/share/zoneinfo/Europe/Moscow /etc/localtime && dpkg-reconfigure --frontend noninteractive tzdata
+
+# prepare application
 WORKDIR /system
+COPY --from=build /app/dist ./
+RUN rm -f appsettings.*.json
 
-# копируем бинарники для публикации нашего приложения(напомню,что dockerfile лежит в корневой папке проекта) в рабочую директорию
-COPY /ThinkingHome.Console/bin/publish /system
-
-# db connection string
-ENV plugins:ThinkingHome.Plugins.Database.DatabasePlugin:connectionString host=postgres;port=5432;database=postgres;user name=postgres;password=123
-     
-# пробрасываем из контейнера порт 8080
 EXPOSE 8080
-
-# при старте контейнера поднимаем наше приложение
-CMD ["dotnet","ThinkingHome.Console.dll"]
+ENTRYPOINT ["dotnet","ThinkingHome.Console.dll"]
