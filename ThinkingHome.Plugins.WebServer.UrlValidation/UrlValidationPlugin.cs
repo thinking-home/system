@@ -9,16 +9,9 @@ using ThinkingHome.Plugins.WebServer.Handlers;
 
 namespace ThinkingHome.Plugins.WebServer.UrlValidation
 {
-    public class UrlValidationPlugin : PluginBase
-    {
-        private readonly WebServerPlugin server;
+    public class UrlValidationPlugin(WebServerPlugin server) : PluginBase {
         private readonly Regex caseTransformer = new("([a-z])([A-Z]+)", RegexOptions.Compiled);
         private readonly List<string> errors = new();
-
-        public UrlValidationPlugin(WebServerPlugin server)
-        {
-            this.server = server;
-        }
 
         public override void InitPlugin()
         {

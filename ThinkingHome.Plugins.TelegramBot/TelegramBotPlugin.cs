@@ -8,7 +8,6 @@ using Telegram.Bot;
 using Telegram.Bot.Polling;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
-using Telegram.Bot.Types.InputFiles;
 using ThinkingHome.Core.Plugins;
 using ThinkingHome.Core.Plugins.Utils;
 
@@ -109,28 +108,28 @@ namespace ThinkingHome.Plugins.TelegramBot
 
         public void SendPhoto(long chatId, string filename, Stream content)
         {
-            var file = new InputOnlineFile(content, filename);
+            var file = new InputFileStream(content, filename);
 
             Try(t => t.SendPhotoAsync(chatId, file, cancellationToken: cts.Token));
         }
 
         public void SendPhoto(long chatId, Uri url)
         {
-            var file = new InputOnlineFile(url);
+            var file = new InputFileUrl(url);
 
             Try(t => t.SendPhotoAsync(chatId, file, cancellationToken: cts.Token));
         }
 
         public void SendFile(long chatId, string filename, Stream content)
         {
-            var file = new InputOnlineFile(content, filename);
+            var file = new InputFileStream(content, filename);
 
             Try(t => t.SendDocumentAsync(chatId, file, cancellationToken: cts.Token));
         }
 
         public void SendFile(long chatId, Uri url)
         {
-            var file = new InputOnlineFile(url);
+            var file = new InputFileUrl(url);
 
             Try(t => t.SendDocumentAsync(chatId, file, cancellationToken: cts.Token));
         }

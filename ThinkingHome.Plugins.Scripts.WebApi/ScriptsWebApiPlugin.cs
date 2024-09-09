@@ -9,17 +9,7 @@ using ThinkingHome.Plugins.WebServer.Handlers;
 
 namespace ThinkingHome.Plugins.Scripts.WebApi
 {
-    public class ScriptsWebApiPlugin : PluginBase
-    {
-        private readonly DatabasePlugin database;
-        private readonly ScriptsPlugin scripts;
-
-        public ScriptsWebApiPlugin(DatabasePlugin database, ScriptsPlugin scripts)
-        {
-            this.database = database;
-            this.scripts = scripts;
-        }
-
+    public class ScriptsWebApiPlugin(DatabasePlugin database, ScriptsPlugin scripts) : PluginBase {
         [ConfigureWebServer]
         public void RegisterHttpHandlers(WebServerConfigurationBuilder config)
         {

@@ -35,9 +35,7 @@ namespace ThinkingHome.Plugins.Scripts.Internal
                     
                     string code =  $"(function(){{{body}}}).apply(this,{argumentsVariable});";
 
-                    return engine.Execute(code)
-                        .GetCompletionValue()
-                        .ToObject();
+                    return engine.Evaluate(code).ToObject();
                 }
                 catch (Exception ex)
                 {

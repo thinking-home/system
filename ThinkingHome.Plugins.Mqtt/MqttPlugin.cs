@@ -16,10 +16,7 @@ using Buffer = ThinkingHome.Plugins.Scripts.Buffer;
 
 namespace ThinkingHome.Plugins.Mqtt
 {
-    public class MqttPlugin : PluginBase
-    {
-        private readonly ScriptsPlugin scripts;
-
+    public class MqttPlugin(ScriptsPlugin scripts) : PluginBase {
         #region settings
 
         private const string DEFAULT_HOST = "localhost";
@@ -39,11 +36,6 @@ namespace ThinkingHome.Plugins.Mqtt
 
         private IMqttClient client;
         private MqttClientOptions options;
-
-        public MqttPlugin(ScriptsPlugin scripts)
-        {
-            this.scripts = scripts;
-        }
 
         public override void InitPlugin()
         {
@@ -196,16 +188,16 @@ namespace ThinkingHome.Plugins.Mqtt
         private async Task client_ApplicationMessageReceived(MqttApplicationMessageReceivedEventArgs e)
         {
             var msg = e.ApplicationMessage;
-            var payload = Encoding.UTF8.GetString(msg.Payload);
+            var payload = Encoding.UTF8.GetString(msg.PayloadSegment);
 
             Logger.LogDebug(
                 "topic: {Topic}, payload: {Payload}, qos: {QualityOfServiceLevel}, retain: {Retain}",
                 msg.Topic, payload, msg.QualityOfServiceLevel, msg.Retain);
 
             // events
-            await SafeInvokeAsync(handlers, h => h(msg.Topic, msg.Payload));
+            await SafeInvokeAsync(handlers, h => h(msg.Topic, msg.PayloadSegment.Array));
 
-            scripts.EmitScriptEvent("mqtt:message:received", msg.Topic, new Buffer(msg.Payload));
+            scripts.EmitScriptEvent("mqtt:message:received", msg.Topic, new Buffer(msg.PayloadSegment.Array));
         }
 
         #endregion

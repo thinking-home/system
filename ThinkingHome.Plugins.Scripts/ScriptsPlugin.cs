@@ -11,18 +11,10 @@ using ThinkingHome.Plugins.Scripts.Model;
 
 namespace ThinkingHome.Plugins.Scripts
 {
-    public class ScriptsPlugin : PluginBase
-    {
-        private readonly DatabasePlugin database;
-        
+    public class ScriptsPlugin(DatabasePlugin database) : PluginBase {
         private object host;
 
         private readonly ObjectRegistry<Delegate> methods = new ObjectRegistry<Delegate>();
-
-        public ScriptsPlugin(DatabasePlugin database)
-        {
-            this.database = database;
-        }
 
         public override void InitPlugin()
         {

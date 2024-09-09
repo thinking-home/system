@@ -23,7 +23,7 @@
             "port": 1883,
             "login": "",
             "password": "",
-            "topics": ["#"]
+            "topics": ["#", "$devices/#"]
         }
     }
 }
@@ -170,7 +170,7 @@ host.log.info('[MQTT MESSAGE] ' + topic + ': ' + text)
 ```bash
 # создаем конфиг, в котором разрешаем анонимное подключение
 # без этого конфига анонимно можно подключиться только с localhost
-echo "allow_anonymous true" > mosquitto.conf
+echo "listener 1883\nallow_anonymous true" > mosquitto.conf
 
 # запускаем контейнер и кладем в него конфиг
 docker run --name mosquitto -it -p 1883:1883 -p 9001:9001 -v $PWD/mosquitto.conf:/mosquitto/config/mosquitto.conf eclipse-mosquitto

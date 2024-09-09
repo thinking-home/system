@@ -12,12 +12,7 @@ using ThinkingHome.Plugins.Timer;
 
 namespace ThinkingHome.Plugins.Cron
 {
-    public class CronPlugin: PluginBase
-    {
-        private readonly DatabasePlugin database;
-
-        private readonly ScriptsPlugin scripts;
-
+    public class CronPlugin(DatabasePlugin database, ScriptsPlugin scripts) : PluginBase {
         private const int CHECK_INTERVAL = 20000; // ms
 
         private const int ACTIVE_PERIOD = 5; // minutes
@@ -29,12 +24,6 @@ namespace ThinkingHome.Plugins.Cron
         private List<CronScheduleItem> schedule;
 
         private List<CronHandlerDelegate> handlers;
-
-        public CronPlugin(DatabasePlugin database, ScriptsPlugin scripts)
-        {
-            this.database = database;
-            this.scripts = scripts;
-        }
 
         public override void InitPlugin()
         {

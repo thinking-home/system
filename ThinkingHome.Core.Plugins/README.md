@@ -80,6 +80,19 @@ public class MyPlugin : PluginBase
 }
 ```
 
+Также поддерживаются параметры [первичного конструктора](https://learn.microsoft.com/ru-ru/dotnet/csharp/whats-new/tutorials/primary-constructors).
+
+```csharp
+public class MyPlugin(OtherPlugin otherPlugin) : PluginBase
+{
+    public override void InitPlugin()
+    {
+        otherPlugin.ExecuteSomeMethod();
+    }
+}
+```
+
+
 ### Подписка на события плагинов
 
 Плагины могут подписываться на события друг друга. Например, плагин "будильник" может подписаться на событие
