@@ -15,7 +15,7 @@ RUN dotnet restore
 RUN dotnet publish -c Release -o dist
 
 # PREPARE RUNTIME
-FROM mcr.microsoft.com/dotnet/runtime:8.0 AS runtime
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS runtime
 
 # install utils
 RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y locales tzdata wget iputils-ping

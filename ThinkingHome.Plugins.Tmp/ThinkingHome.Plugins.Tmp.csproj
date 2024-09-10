@@ -1,38 +1,48 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <Import Project="../Package.xml" />
-  <PropertyGroup>
-    <Description>Tmp plugin.</Description>
-    <TargetFramework>net8.0</TargetFramework>
-  </PropertyGroup>
-  <Target Name="BuildClientDevelopment" BeforeTargets="Build" Condition="'$(Configuration)' != 'Release'">
-    <Exec Command="npm run build:development" />
-  </Target>
-  <Target Name="BuildClientpProduction" BeforeTargets="Build" Condition="'$(Configuration)' == 'Release'">
-    <Exec Command="npm run build:production" />
-  </Target>
-  <ItemGroup>
-    <None Remove="Resources\**\*" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Resources\**\*" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="../ThinkingHome.Core.Plugins/ThinkingHome.Core.Plugins.csproj" />
-    <ProjectReference Include="../ThinkingHome.Plugins.Database/ThinkingHome.Plugins.Database.csproj" />
-    <ProjectReference Include="../ThinkingHome.Plugins.Scripts/ThinkingHome.Plugins.Scripts.csproj" />
-    <ProjectReference Include="../ThinkingHome.Plugins.WebServer/ThinkingHome.Plugins.WebServer.csproj" />
-    <ProjectReference Include="../ThinkingHome.Plugins.Timer/ThinkingHome.Plugins.Timer.csproj" />
-    <ProjectReference Include="../ThinkingHome.Plugins.Mail/ThinkingHome.Plugins.Mail.csproj" />
-    <ProjectReference Include="../ThinkingHome.Plugins.Mqtt/ThinkingHome.Plugins.Mqtt.csproj" />
-    <ProjectReference Include="../ThinkingHome.Plugins.Cron/ThinkingHome.Plugins.Cron.csproj" />
-    <ProjectReference Include="../ThinkingHome.Plugins.TelegramBot\ThinkingHome.Plugins.TelegramBot.csproj" />
-    <ProjectReference Include="..\ThinkingHome.Plugins.WebUi\ThinkingHome.Plugins.WebUi.csproj" />
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.8" />
-    <PackageReference Include="Microsoft.Extensions.Configuration" Version="8.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Logging" Version="8.0.0" />
-    <PackageReference Include="ThinkingHome.Migrator.Framework" Version="3.8.0" />
-    <PackageReference Include="Telegram.Bot" Version="19.0.0" />
-  </ItemGroup>
+    <Import Project="../Package.xml"/>
+    <PropertyGroup>
+        <Description>Tmp plugin.</Description>
+        <TargetFramework>net8.0</TargetFramework>
+    </PropertyGroup>
+    <Target Name="NpmInstall" Inputs="package.json" Outputs="node_modules/.install-stamp">
+        <PropertyGroup>
+            <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
+        </PropertyGroup>
+        <Exec Command="npm ci" Condition="'$(RestorePackagesWithLockFile)' == 'true'"/>
+        <Exec Command="npm install" Condition="'$(RestorePackagesWithLockFile)' != 'true'"/>
+
+        <!-- Write the stamp file, so incremental builds work -->
+        <Touch Files="node_modules/.install-stamp" AlwaysCreate="true"/>
+    </Target>
+    <Target Name="BuildClientDevelopment" DependsOnTargets="NpmInstall" BeforeTargets="Build" Condition="'$(Configuration)' != 'Release'">
+        <Exec Command="npm run build:development"/>
+    </Target>
+    <Target Name="BuildClientpProduction" DependsOnTargets="NpmInstall" BeforeTargets="Build" Condition="'$(Configuration)' == 'Release'">
+        <Exec Command="npm run build:production"/>
+    </Target>
+    <ItemGroup>
+        <None Remove="Resources\**\*"/>
+    </ItemGroup>
+    <ItemGroup>
+        <EmbeddedResource Include="Resources\**\*"/>
+    </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="../ThinkingHome.Core.Plugins/ThinkingHome.Core.Plugins.csproj"/>
+        <ProjectReference Include="../ThinkingHome.Plugins.Database/ThinkingHome.Plugins.Database.csproj"/>
+        <ProjectReference Include="../ThinkingHome.Plugins.Scripts/ThinkingHome.Plugins.Scripts.csproj"/>
+        <ProjectReference Include="../ThinkingHome.Plugins.WebServer/ThinkingHome.Plugins.WebServer.csproj"/>
+        <ProjectReference Include="../ThinkingHome.Plugins.Timer/ThinkingHome.Plugins.Timer.csproj"/>
+        <ProjectReference Include="../ThinkingHome.Plugins.Mail/ThinkingHome.Plugins.Mail.csproj"/>
+        <ProjectReference Include="../ThinkingHome.Plugins.Mqtt/ThinkingHome.Plugins.Mqtt.csproj"/>
+        <ProjectReference Include="../ThinkingHome.Plugins.Cron/ThinkingHome.Plugins.Cron.csproj"/>
+        <ProjectReference Include="../ThinkingHome.Plugins.TelegramBot\ThinkingHome.Plugins.TelegramBot.csproj"/>
+        <ProjectReference Include="..\ThinkingHome.Plugins.WebUi\ThinkingHome.Plugins.WebUi.csproj"/>
+    </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.8"/>
+        <PackageReference Include="Microsoft.Extensions.Configuration" Version="8.0.0"/>
+        <PackageReference Include="Microsoft.Extensions.Logging" Version="8.0.0"/>
+        <PackageReference Include="ThinkingHome.Migrator.Framework" Version="3.8.0"/>
+        <PackageReference Include="Telegram.Bot" Version="19.0.0"/>
+    </ItemGroup>
 </Project>
