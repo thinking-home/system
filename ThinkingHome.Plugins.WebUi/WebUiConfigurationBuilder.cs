@@ -1,4 +1,3 @@
-using Microsoft.Extensions.Localization;
 using ThinkingHome.Core.Plugins.Utils;
 
 namespace ThinkingHome.Plugins.WebUi;
