@@ -1,10 +1,18 @@
 ﻿using Microsoft.Extensions.Logging;
 using ThinkingHome.Core.Plugins;
+using ThinkingHome.Plugins.Mqtt;
 
 namespace ThinkingHome.Plugins.Waterius;
 
 public class WateriusPlugin : PluginBase {
     public string? MqttTopic => Configuration["mqttTopic"];
+    
+    private readonly MqttPlugin mqttPlugin;
+
+    public WateriusPlugin(MqttPlugin mqttPlugin)
+    {
+        this.mqttPlugin = mqttPlugin;
+    }
 
     public override void InitPlugin()
     {

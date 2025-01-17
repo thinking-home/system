@@ -68,7 +68,7 @@ public class MyPlugin : PluginBase
 {
     private readonly OtherPlugin otherPlugin;
 
-    public PluginBase(OtherPlugin otherPlugin) {
+    public MyPlugin(OtherPlugin otherPlugin) {
         // сохраняем полученный экземпляр плагина в поле своего плагина 
         this.otherPlugin = otherPlugin;
     }
