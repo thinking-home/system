@@ -12,6 +12,7 @@ using ThinkingHome.Plugins.Cron;
 using ThinkingHome.Plugins.Database;
 using ThinkingHome.Plugins.Mail;
 using ThinkingHome.Plugins.Mqtt;
+using ThinkingHome.Plugins.Mqtt.Attributes;
 using ThinkingHome.Plugins.Scripts;
 using ThinkingHome.Plugins.Scripts.Attributes;
 using ThinkingHome.Plugins.TelegramBot;
@@ -77,6 +78,12 @@ namespace ThinkingHome.Plugins.Tmp {
             config.RegisterPage("/page1", "ThinkingHome.Plugins.Tmp.Resources.app.page1.js");
             config.RegisterPage("/page2", "ThinkingHome.Plugins.Tmp.Resources.app.page2.js");
             config.RegisterPage("/page3", "ThinkingHome.Plugins.Tmp.Resources.app.page3.js");
+        }
+
+        [ConfigureMqtt]
+        public void RegisterMqttListeners(MqttConfigurationBuilder config)
+        {
+            config.RegisterListener("aaa", (topic, b) => { Logger.LogInformation("mumu: {Topic} — {Message}", topic, Encoding.UTF8.GetString(b)); });
         }
 
         [ConfigureWebServer]
