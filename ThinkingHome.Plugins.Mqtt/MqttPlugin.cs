@@ -183,7 +183,10 @@ public class MqttPlugin(ScriptsPlugin scripts) : PluginBase {
 
         Logger.LogInformation("Subscribe: {Topics}", string.Join(", ", Topics));
 
-        foreach (var topic in Topics) {
+        var allTopics = new HashSet<string>(Topics);
+        listeners.ForEach((topic, def) => allTopics.Add(topic));
+
+        foreach (var topic in allTopics) {
             Logger.LogInformation("Subscribe MQTT client to {Topic} topic", topic);
             var topicFilter = new MqttTopicFilterBuilder().WithTopic(topic).WithAtMostOnceQoS().Build();
             await client.SubscribeAsync(topicFilter);
@@ -210,6 +213,10 @@ public class MqttPlugin(ScriptsPlugin scripts) : PluginBase {
         var payloadBytes = msg.PayloadSegment.Array;
 
         // events
+        if (listeners.ContainsKey(msg.Topic)) {
+            await SafeInvokeAsync(listeners[msg.Topic], h => h.Handler(msg.Topic, payloadBytes));
+        }
+
         await SafeInvokeAsync(handlers, h => h(msg.Topic, payloadBytes));
 
         scripts.EmitScriptEvent("mqtt:message:received", msg.Topic, new Buffer(payloadBytes));
