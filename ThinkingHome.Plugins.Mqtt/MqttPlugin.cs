@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -30,16 +31,17 @@ public class MqttPlugin(ScriptsPlugin scripts) : PluginBase {
 
     private readonly ObjectRegistry<MqttConfigurationBuilder.MqttListenerDefinition> listeners = new();
 
-    public string Host => Configuration.GetValue("host", DEFAULT_HOST);
-    public int Port => Configuration.GetValue("port", DEFAULT_PORT);
-    public string Login => Configuration["login"];
-    public string Password => Configuration["password"];
-    public string[] Topics => Configuration.GetSection("topics").Get<string[]>() ?? ["#"];
+    private string Host => Configuration.GetValue("host", DEFAULT_HOST);
+    private int Port => Configuration.GetValue("port", DEFAULT_PORT);
+    private string Login => Configuration["login"];
+    private string Password => Configuration["password"];
+    private string[] Topics => Configuration.GetSection("topics").Get<string[]>() ?? ["#"];
 
     #endregion
 
     private IMqttClient client;
     private MqttClientOptions options;
+    private readonly ConcurrentDictionary<string, HashSet<string>> topicsMap = new();
 
     public override void InitPlugin()
     {
@@ -62,7 +64,7 @@ public class MqttPlugin(ScriptsPlugin scripts) : PluginBase {
         handlers = RegisterHandlers();
 
         // custom handlers
-        RegisterCustomListeners(listeners, Context);
+        RegisterListeners(listeners, Context);
         listeners.ForEach((topic, def) =>
             Logger.LogInformation("register MQTT message handler: {Topic} ({PluginType})", topic, def.Source.FullName));
     }
@@ -104,6 +106,13 @@ public class MqttPlugin(ScriptsPlugin scripts) : PluginBase {
         Publish(topic, payload.GetBytes(), retain);
     }
 
+    private HashSet<string> GetFiltersByTopic(string topic)
+    {
+        return listeners.Keys
+            .Where(filter => MqttTopicFilterComparer.Compare(topic, filter) == MqttTopicFilterCompareResult.IsMatch)
+            .ToHashSet();
+    }
+
     public void Publish(string topic, byte[] payload, bool retain = false)
     {
         var msg = new MqttApplicationMessageBuilder()
@@ -122,7 +131,7 @@ public class MqttPlugin(ScriptsPlugin scripts) : PluginBase {
 
     #region private
 
-    private static void RegisterCustomListeners(
+    private static void RegisterListeners(
         ObjectRegistry<MqttConfigurationBuilder.MqttListenerDefinition> listeners, IServiceContext context)
     {
         var inits = context.GetAllPlugins()
@@ -211,10 +220,11 @@ public class MqttPlugin(ScriptsPlugin scripts) : PluginBase {
             msg.Topic, payload, msg.QualityOfServiceLevel, msg.Retain);
 
         var payloadBytes = msg.PayloadSegment.Array;
+        var matchedFilters = topicsMap.GetOrAdd(msg.Topic, GetFiltersByTopic);
 
         // events
-        if (listeners.ContainsKey(msg.Topic)) {
-            await SafeInvokeAsync(listeners[msg.Topic], h => h.Handler(msg.Topic, payloadBytes));
+        foreach (var filter in matchedFilters.Where(filter => listeners.ContainsKey(filter))) {
+            await SafeInvokeAsync(listeners[filter], h => h.Handler(msg.Topic, payloadBytes));
         }
 
         await SafeInvokeAsync(handlers, h => h(msg.Topic, payloadBytes));

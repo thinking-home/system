@@ -83,7 +83,12 @@ namespace ThinkingHome.Plugins.Tmp {
         [ConfigureMqtt]
         public void RegisterMqttListeners(MqttConfigurationBuilder config)
         {
-            config.RegisterListener("aaa", (topic, b) => { Logger.LogInformation("mumu: {Topic} — {Message}", topic, Encoding.UTF8.GetString(b)); });
+            config.RegisterListener("counter/+/value", 
+                (topic, b) => { Logger.LogInformation("COUNTER VALUE: {Topic} — {Message}", topic, Encoding.UTF8.GetString(b)); });
+            config.RegisterListener("counter/123/status", 
+                (topic, b) => { Logger.LogInformation("COUNTER 123 STATUS: {Topic} — {Message}", topic, Encoding.UTF8.GetString(b)); });
+            config.RegisterListener("counter/#", 
+                (topic, b) => { Logger.LogInformation("COUNTER ANY: {Topic} — {Message}", topic, Encoding.UTF8.GetString(b)); });
         }
 
         [ConfigureWebServer]
