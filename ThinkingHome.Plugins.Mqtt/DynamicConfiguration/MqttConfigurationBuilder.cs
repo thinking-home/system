@@ -1,8 +1,7 @@
 using System;
-using System.Collections.Generic;
 using ThinkingHome.Core.Plugins.Utils;
 
-namespace ThinkingHome.Plugins.Mqtt;
+namespace ThinkingHome.Plugins.Mqtt.DynamicConfiguration;
 
 public class MqttConfigurationBuilder(Type source, ObjectRegistry<MqttConfigurationBuilder.MqttListenerDefinition> items)
     : BaseConfigurationBuilder<MqttConfigurationBuilder.MqttListenerDefinition>(source, items) {

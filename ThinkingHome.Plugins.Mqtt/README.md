@@ -22,8 +22,7 @@
             "host": "localhost",
             "port": 1883,
             "login": "",
-            "password": "",
-            "topics": ["#", "$devices/#"]
+            "password": ""
         }
     }
 }
@@ -181,10 +180,3 @@ docker exec -i mosquitto mosquitto_sub -t '$devices/#' -v
 # отправка сообщений (в отдельной вкладке)
 docker exec -i mosquitto mosquitto_pub -t '$devices/1377/events' -m '{"text":"MOO"}'
 ```
-
-### TODO
-
-- доделать регистрацию кастомных листенеров
-- выпилить константные топики
-- сделать регистрацию префиксов
-- обновить документацию

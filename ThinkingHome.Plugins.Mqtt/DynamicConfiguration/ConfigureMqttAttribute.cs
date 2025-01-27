@@ -1,6 +1,6 @@
 using System;
 
-namespace ThinkingHome.Plugins.Mqtt.Attributes;
+namespace ThinkingHome.Plugins.Mqtt.DynamicConfiguration;
 
 public class ConfigureMqttAttribute : Attribute {
 }

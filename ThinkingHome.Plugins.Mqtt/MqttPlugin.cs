@@ -11,7 +11,7 @@ using MQTTnet.Client;
 using MQTTnet.Protocol;
 using ThinkingHome.Core.Plugins;
 using ThinkingHome.Core.Plugins.Utils;
-using ThinkingHome.Plugins.Mqtt.Attributes;
+using ThinkingHome.Plugins.Mqtt.DynamicConfiguration;
 using ThinkingHome.Plugins.Scripts;
 using ThinkingHome.Plugins.Scripts.Attributes;
 using ThinkingHome.Plugins.Timer;
@@ -27,15 +27,12 @@ public class MqttPlugin(ScriptsPlugin scripts) : PluginBase {
 
     private bool reconnectEnabled;
 
-    private List<MqttMessageHandlerDelegate> handlers;
-
     private readonly ObjectRegistry<MqttConfigurationBuilder.MqttListenerDefinition> listeners = new();
 
     private string Host => Configuration.GetValue("host", DEFAULT_HOST);
     private int Port => Configuration.GetValue("port", DEFAULT_PORT);
     private string Login => Configuration["login"];
     private string Password => Configuration["password"];
-    private string[] Topics => Configuration.GetSection("topics").Get<string[]>() ?? ["#"];
 
     #endregion
 
@@ -60,10 +57,8 @@ public class MqttPlugin(ScriptsPlugin scripts) : PluginBase {
         client.ConnectedAsync += client_Connected;
         client.DisconnectedAsync += client_Disconnected;
         client.ApplicationMessageReceivedAsync += client_ApplicationMessageReceived;
-
-        handlers = RegisterHandlers();
-
-        // custom handlers
+        
+        // listeners
         RegisterListeners(listeners, Context);
         listeners.ForEach((topic, def) =>
             Logger.LogInformation("register MQTT message handler: {Topic} ({PluginType})", topic, def.Source.FullName));
@@ -146,25 +141,6 @@ public class MqttPlugin(ScriptsPlugin scripts) : PluginBase {
         }
     }
 
-    private List<MqttMessageHandlerDelegate> RegisterHandlers()
-    {
-        var list = new List<MqttMessageHandlerDelegate>();
-
-        foreach (var plugin in Context.GetAllPlugins()) {
-            var pluginType = plugin.GetType();
-
-            foreach (var mi in plugin.FindMethods<MqttMessageHandlerAttribute, MqttMessageHandlerDelegate>()) {
-                Logger.LogInformation(
-                    "register common MQTT message handler: {Method} ({PluginType})",
-                    mi.Method.Method.Name,
-                    pluginType.FullName);
-                list.Add(mi.Method);
-            }
-        }
-
-        return list;
-    }
-
     private void ReConnect()
     {
         if (client is { IsConnected: false } && reconnectEnabled) {
@@ -189,13 +165,8 @@ public class MqttPlugin(ScriptsPlugin scripts) : PluginBase {
     private async Task client_Connected(MqttClientConnectedEventArgs e)
     {
         Logger.LogInformation("MQTT client is connected");
-
-        Logger.LogInformation("Subscribe: {Topics}", string.Join(", ", Topics));
-
-        var allTopics = new HashSet<string>(Topics);
-        listeners.ForEach((topic, def) => allTopics.Add(topic));
-
-        foreach (var topic in allTopics) {
+        
+        foreach (var topic in listeners.Keys) {
             Logger.LogInformation("Subscribe MQTT client to {Topic} topic", topic);
             var topicFilter = new MqttTopicFilterBuilder().WithTopic(topic).WithAtMostOnceQoS().Build();
             await client.SubscribeAsync(topicFilter);
@@ -226,9 +197,7 @@ public class MqttPlugin(ScriptsPlugin scripts) : PluginBase {
         foreach (var filter in matchedFilters.Where(filter => listeners.ContainsKey(filter))) {
             await SafeInvokeAsync(listeners[filter], h => h.Handler(msg.Topic, payloadBytes));
         }
-
-        await SafeInvokeAsync(handlers, h => h(msg.Topic, payloadBytes));
-
+        
         scripts.EmitScriptEvent("mqtt:message:received", msg.Topic, new Buffer(payloadBytes));
     }
 

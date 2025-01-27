@@ -12,7 +12,7 @@ using ThinkingHome.Plugins.Cron;
 using ThinkingHome.Plugins.Database;
 using ThinkingHome.Plugins.Mail;
 using ThinkingHome.Plugins.Mqtt;
-using ThinkingHome.Plugins.Mqtt.Attributes;
+using ThinkingHome.Plugins.Mqtt.DynamicConfiguration;
 using ThinkingHome.Plugins.Scripts;
 using ThinkingHome.Plugins.Scripts.Attributes;
 using ThinkingHome.Plugins.TelegramBot;
@@ -158,21 +158,7 @@ namespace ThinkingHome.Plugins.Tmp {
 
             return null;
         }
-
-
-        [MqttMessageHandler]
-        public void HandleMqttMessage(string topic, byte[] payload)
-        {
-            var str = Encoding.UTF8.GetString(payload);
-
-            if (topic == "test") {
-                Logger.LogWarning("TEST MESSAGE: {Message}", str);
-            }
-            else {
-                Logger.LogInformation("{Topic}: {Message}", topic, str);
-            }
-        }
-
+        
         [TimerCallback(10000)]
         public void MimimiTimer(DateTime now)
         {
