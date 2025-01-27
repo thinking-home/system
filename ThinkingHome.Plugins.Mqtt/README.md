@@ -10,7 +10,7 @@
 
 ## Конфигурация
 
-Вы можете настраивать параметры подключения к MQTT брокеру и список каналов, в которых нужно обрабатывать сообщения.
+Вы можете настраивать параметры подключения к MQTT брокеру.
 
 ```js
 {
@@ -93,26 +93,39 @@ public class MyPlugin : PluginBase
 }
 ```
 
-### `[MqttMessageHandler]`
+### Подписка на сообщения
 
-Вы можете отметить методы своего плагина атрибутом `ThinkingHome.Plugins.Mqtt.MqttMessageHandlerAttribute`. Метод вашего плагина будет автоматически вызываться при получении MQTT сообщений в одном из прослушиваемых каналов.
+API для подписки на сообщения MQTT находится в пространстве имен `ThinkingHome.Plugins.Mqtt.DynamicConfiguration`.
 
-Сигнатура метода, вызываемого по таймеру, должна соответствовать делегату `ThinkingHome.Plugins.Mqtt.MqttMessageHandlerDelegate`:
+Вы можете пометить метод своего плагина атрибутом `ConfigureMqttAttribute` и внутри этого метода настроить обработчики, которые будут выполняться при получении сообщений MQTT, попадающих под заданные фильтры. Сигнатура метода должна соответствовать делегату `ConfigureMqttDelegate`: метод должен принимать один параметр типа `MqttConfigurationBuilder` и не должен возвращать никакое значение.
 
-```csharp
-public delegate void MqttMessageHandlerDelegate(string topic, byte[] payload);
-```
+Вы можете настроить подписку обработчиков на сообщения с помощью метода `RegisterListener` объекта `MqttConfigurationBuilder`.
 
 #### Параметры
 
-- `string topic` - название канала, в который пришло сообщение.
-- `byte[] payload` - полученные данные.
+- `string topicFilter` — фильтр сообщений: если пришло сообщение в топик, который соответствует этому фильтру, то будет вызван заданный обработчик. В фильтре моно использовать [подстановки](https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901241).
+- `Action<string, byte[]> handler` — функция-обработчик сообщения, принимающая параметры: 
+  - `string topic` — топик MQTT, в котором получено сообщение
+  - `byte[] payload` — содержимое полученного сообщения (массив байтов)
 
 #### Пример
 
 ```csharp
-[MqttMessageHandler]
-public void HandleMqttMessage(string topic, byte[] payload)
+[ConfigureMqtt]
+public void RegisterMqttListeners(MqttConfigurationBuilder config)
+{
+    // подписка на отдельный топик "counter/123/status"
+    config.RegisterListener("counter/123/status", HandleMqttMessage);
+
+    // подписка группу топиков, соответствующую шаблону, где на втором уровне
+    // может быть любое значение, например: "counter/41/status", "counter/32/status"
+    config.RegisterListener("counter/+/status", HandleMqttMessage);
+
+    // подписка на все топики с префиксом "counter/"
+    config.RegisterListener("counter/#", HandleMqttMessage);
+}
+
+private void HandleMqttMessage(string topic, byte[] payload)
 {
     var str = Encoding.UTF8.GetString(payload);
 
