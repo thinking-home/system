@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
 namespace ThinkingHome.Core.Plugins.Utils
@@ -14,7 +13,7 @@ namespace ThinkingHome.Core.Plugins.Utils
     /// </summary>
     public abstract class BaseRegistry<TValue, TData>
     {
-        private readonly ConcurrentDictionary<string, TData> data = new(StringComparer.CurrentCultureIgnoreCase);
+        protected readonly ConcurrentDictionary<string, TData> data = new(StringComparer.CurrentCultureIgnoreCase);
 
         protected abstract TData Add(string key, TValue value);
 

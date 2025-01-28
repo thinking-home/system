@@ -12,6 +12,7 @@ using ThinkingHome.Plugins.Cron;
 using ThinkingHome.Plugins.Database;
 using ThinkingHome.Plugins.Mail;
 using ThinkingHome.Plugins.Mqtt;
+using ThinkingHome.Plugins.Mqtt.DynamicConfiguration;
 using ThinkingHome.Plugins.Scripts;
 using ThinkingHome.Plugins.Scripts.Attributes;
 using ThinkingHome.Plugins.TelegramBot;
@@ -77,6 +78,17 @@ namespace ThinkingHome.Plugins.Tmp {
             config.RegisterPage("/page1", "ThinkingHome.Plugins.Tmp.Resources.app.page1.js");
             config.RegisterPage("/page2", "ThinkingHome.Plugins.Tmp.Resources.app.page2.js");
             config.RegisterPage("/page3", "ThinkingHome.Plugins.Tmp.Resources.app.page3.js");
+        }
+
+        [ConfigureMqtt]
+        public void RegisterMqttListeners(MqttConfigurationBuilder config)
+        {
+            config.RegisterListener("counter/+/value", 
+                (topic, b) => { Logger.LogInformation("COUNTER VALUE: {Topic} — {Message}", topic, Encoding.UTF8.GetString(b)); });
+            config.RegisterListener("counter/123/status", 
+                (topic, b) => { Logger.LogInformation("COUNTER 123 STATUS: {Topic} — {Message}", topic, Encoding.UTF8.GetString(b)); });
+            config.RegisterListener("counter/#", 
+                (topic, b) => { Logger.LogInformation("COUNTER ANY: {Topic} — {Message}", topic, Encoding.UTF8.GetString(b)); });
         }
 
         [ConfigureWebServer]
@@ -146,21 +158,7 @@ namespace ThinkingHome.Plugins.Tmp {
 
             return null;
         }
-
-
-        [MqttMessageHandler]
-        public void HandleMqttMessage(string topic, byte[] payload)
-        {
-            var str = Encoding.UTF8.GetString(payload);
-
-            if (topic == "test") {
-                Logger.LogWarning("TEST MESSAGE: {Message}", str);
-            }
-            else {
-                Logger.LogInformation("{Topic}: {Message}", topic, str);
-            }
-        }
-
+        
         [TimerCallback(10000)]
         public void MimimiTimer(DateTime now)
         {
