@@ -61,10 +61,9 @@ namespace ThinkingHome.Plugins.Scripts
 
         public void EmitScriptEvent(string eventAlias, params object[] args)
         {
-            using (var session = database.OpenSession())
-            {
-                EmitScriptEvent(session, eventAlias, args);
-            }
+            using var session = database.OpenSession();
+            
+            EmitScriptEvent(session, eventAlias, args);
         }
 
         public void EmitScriptEvent(DbContext session, string eventAlias, params object[] args)

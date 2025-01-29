@@ -21,11 +21,10 @@ namespace ThinkingHome.Plugins.TelegramBot
 
         private TelegramBotClient bot;
         
-        private readonly CancellationTokenSource cts = new CancellationTokenSource();
+        private readonly CancellationTokenSource cts = new();
         
-        private readonly ReceiverOptions receiverOptions = new ReceiverOptions
-        {
-            AllowedUpdates = new[] { UpdateType.Message }
+        private readonly ReceiverOptions receiverOptions = new() {
+            AllowedUpdates = [UpdateType.Message]
         };
 
         public override void InitPlugin()
@@ -49,7 +48,7 @@ namespace ThinkingHome.Plugins.TelegramBot
             bot.StartReceiving(this, receiverOptions, cts.Token);
 
             // receive bot info
-            bot.GetMeAsync().ContinueWith(me =>
+            bot.GetMe().ContinueWith(me =>
             {
                 if (me.Exception != null) return;
 
@@ -75,16 +74,16 @@ namespace ThinkingHome.Plugins.TelegramBot
                     "New telegram message: messageID: {MessageId}; chatID: {ChatId} ({Username})",
                     msg.MessageId, msg.Chat.Id, msg.Chat.Username);
 
-                SafeInvokeAsync(handlers[command], fn => fn(command, msg));
+                _ = SafeInvokeAsync(handlers[command], fn => fn(command, msg));
 
-                SafeInvokeAsync(handlers[TelegramMessageHandlerAttribute.ALL_COMMANDS], fn => fn(command, msg));
+                _ = SafeInvokeAsync(handlers[TelegramMessageHandlerAttribute.ALL_COMMANDS], fn => fn(command, msg));
           
             }
 
             return Task.CompletedTask;
         }
 
-        public Task HandlePollingErrorAsync(ITelegramBotClient botClient, Exception exception, CancellationToken cancellationToken)
+        public Task HandleErrorAsync(ITelegramBotClient botClient, Exception exception, HandleErrorSource source, CancellationToken cancellationToken)
         {
             Logger.LogError(exception, "telegram bot API request error");
             return Task.Delay(5000, cancellationToken);
@@ -103,35 +102,35 @@ namespace ThinkingHome.Plugins.TelegramBot
 
         public void SendMessage(long chatId, string text)
         {
-            Try(t => t.SendTextMessageAsync(chatId, text, cancellationToken: cts.Token));
+            Try(t => t.SendMessage(chatId, text, cancellationToken: cts.Token));
         }
 
         public void SendPhoto(long chatId, string filename, Stream content)
         {
             var file = new InputFileStream(content, filename);
 
-            Try(t => t.SendPhotoAsync(chatId, file, cancellationToken: cts.Token));
+            Try(t => t.SendPhoto(chatId, file, cancellationToken: cts.Token));
         }
 
         public void SendPhoto(long chatId, Uri url)
         {
             var file = new InputFileUrl(url);
 
-            Try(t => t.SendPhotoAsync(chatId, file, cancellationToken: cts.Token));
+            Try(t => t.SendPhoto(chatId, file, cancellationToken: cts.Token));
         }
 
         public void SendFile(long chatId, string filename, Stream content)
         {
             var file = new InputFileStream(content, filename);
 
-            Try(t => t.SendDocumentAsync(chatId, file, cancellationToken: cts.Token));
+            Try(t => t.SendDocument(chatId, file, cancellationToken: cts.Token));
         }
 
         public void SendFile(long chatId, Uri url)
         {
             var file = new InputFileUrl(url);
 
-            Try(t => t.SendDocumentAsync(chatId, file, cancellationToken: cts.Token));
+            Try(t => t.SendDocument(chatId, file, cancellationToken: cts.Token));
         }
 
         private void Try(Func<TelegramBotClient, Task> fn)

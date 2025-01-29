@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Buffers;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +8,6 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using MQTTnet;
-using MQTTnet.Client;
 using MQTTnet.Protocol;
 using ThinkingHome.Core.Plugins;
 using ThinkingHome.Core.Plugins.Utils;
@@ -52,7 +52,8 @@ public class MqttPlugin(ScriptsPlugin scripts) : PluginBase {
             .WithCredentials(Login, Password)
             .Build();
 
-        client = new MqttFactory().CreateMqttClient();
+        var mqttFactory = new MqttClientFactory();
+        client = mqttFactory.CreateMqttClient();
 
         client.ConnectedAsync += client_Connected;
         client.DisconnectedAsync += client_Disconnected;
@@ -81,6 +82,8 @@ public class MqttPlugin(ScriptsPlugin scripts) : PluginBase {
                 }
             }
         }
+        
+        client.Dispose();
     }
 
     [TimerCallback(60000)]
@@ -184,13 +187,13 @@ public class MqttPlugin(ScriptsPlugin scripts) : PluginBase {
     private async Task client_ApplicationMessageReceived(MqttApplicationMessageReceivedEventArgs e)
     {
         var msg = e.ApplicationMessage;
-        var payload = Encoding.UTF8.GetString(msg.PayloadSegment);
+        var payloadBytes = msg.Payload.ToArray();
+        var payloadString = Encoding.UTF8.GetString(payloadBytes);
 
         Logger.LogDebug(
             "topic: {Topic}, payload: {Payload}, qos: {QualityOfServiceLevel}, retain: {Retain}",
-            msg.Topic, payload, msg.QualityOfServiceLevel, msg.Retain);
+            msg.Topic, payloadString, msg.QualityOfServiceLevel, msg.Retain);
 
-        var payloadBytes = msg.PayloadSegment.Array;
         var matchedFilters = topicsMap.GetOrAdd(msg.Topic, GetFiltersByTopic);
 
         // events

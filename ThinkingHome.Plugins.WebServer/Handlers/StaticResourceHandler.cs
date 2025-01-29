@@ -29,7 +29,7 @@ namespace ThinkingHome.Plugins.WebServer.Handlers
             if (stream == null) throw new MissingManifestResourceException($"resource {resourcePath} is not found");
             
             var result = new byte[stream.Length];
-            await stream.ReadAsync(result, 0, result.Length);
+            await stream.ReadExactlyAsync(result);
             return HttpHandlerResult.Binary(result, contentType);
         }
     }
