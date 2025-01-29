@@ -1,12 +1,21 @@
 ﻿using System.Text;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using ThinkingHome.Core.Plugins;
+using ThinkingHome.Plugins.Database;
 using ThinkingHome.Plugins.Mqtt;
 using ThinkingHome.Plugins.Mqtt.DynamicConfiguration;
+using ThinkingHome.Plugins.Waterius.Model;
 
 namespace ThinkingHome.Plugins.Waterius;
 
 public class WateriusPlugin : PluginBase {
+    
+    [DbModelBuilder]
+    public void InitModel(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<MeterData>(cfg => cfg.ToTable("Waterius_MeterData"));
+    }
 
     [ConfigureMqtt]
     public void WateriusListeners(MqttConfigurationBuilder config)
