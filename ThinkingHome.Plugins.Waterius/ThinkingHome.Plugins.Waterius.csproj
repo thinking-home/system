@@ -11,4 +11,8 @@
       <ProjectReference Include="..\ThinkingHome.Plugins.Mqtt\ThinkingHome.Plugins.Mqtt.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <PackageReference Include="ThinkingHome.Migrator.Framework" Version="3.8.1" />
+    </ItemGroup>
+
 </Project>
