@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using ThinkingHome.Core.Plugins;
@@ -17,7 +18,7 @@ namespace ThinkingHome.Plugins.Cron
 
         private const int ACTIVE_PERIOD = 5; // minutes
 
-        private readonly object lockObject = new object();
+        private readonly Lock lockObject = new();
 
         private DateTime lastEventTime = DateTime.MinValue;
 
@@ -89,21 +90,20 @@ namespace ThinkingHome.Plugins.Cron
                 {
                     lastEventTime = now;
 
-                    using (var session = database.OpenSession())
+                    using var session = database.OpenSession();
+                    
+                    foreach (var task in active)
                     {
-                        foreach (var task in active)
+                        Logger.LogInformation("cron task started: {TaskId}", task.TaskId);
+
+                        if (!string.IsNullOrEmpty(task.EventAlias))
                         {
-                            Logger.LogInformation("cron task started: {TaskId}", task.TaskId);
-
-                            if (!string.IsNullOrEmpty(task.EventAlias))
-                            {
-                                scripts.EmitScriptEvent(session, task.EventAlias);
-                            }
-
-                            SafeInvokeAsync(handlers, h => h(task.TaskId));
-
-                            scripts.EmitScriptEvent(session, "cron:task:started", task.TaskId);
+                            scripts.EmitScriptEvent(session, task.EventAlias);
                         }
+
+                        _ = SafeInvokeAsync(handlers, h => h(task.TaskId));
+
+                        scripts.EmitScriptEvent(session, "cron:task:started", task.TaskId);
                     }
                 }
             }

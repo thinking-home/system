@@ -4,18 +4,10 @@ using ThinkingHome.Plugins.Cron.Model;
 
 namespace ThinkingHome.Plugins.Cron
 {
-    public class CronScheduleItem
-    {
-        public readonly Guid TaskId;
-        public readonly string EventAlias;
-        private readonly CrontabSchedule schedule;
-
-        public CronScheduleItem(Guid taskId, string eventAlias, string pattern)
-        {
-            TaskId = taskId;
-            EventAlias = eventAlias;
-            schedule = CrontabSchedule.Parse(pattern);
-        }
+    public class CronScheduleItem(Guid taskId, string eventAlias, string pattern) {
+        public readonly Guid TaskId = taskId;
+        public readonly string EventAlias = eventAlias;
+        private readonly CrontabSchedule schedule = CrontabSchedule.Parse(pattern);
 
         public bool IsActive(DateTime from, DateTime to)
         {
