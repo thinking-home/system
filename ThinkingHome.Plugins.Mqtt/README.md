@@ -10,7 +10,7 @@
 
 ## Конфигурация
 
-Вы можете настраивать параметры подключения к MQTT брокеру.
+Вы можете настраивать параметры подключения к MQTT брокеру и названия сценарных событий при получении сообщений MQTT.
 
 ```js
 {
@@ -22,7 +22,11 @@
             "host": "localhost",
             "port": 1883,
             "login": "",
-            "password": ""
+            "password": "", 
+            "scriptEvents": {
+                "counter/+/value": "mqtt:message:counter:changed",
+                "device/#": "mqtt:message:received:status:received"
+            }
         }
     }
 }
@@ -161,9 +165,26 @@ host.api.mqttPublishBuffer('myhome/kitchen/temperature', buffer, false);
 
 ## Сценарные события
 
-### `mqtt:message:received`
+В настройках плагина при помощи параметра `scriptEvents` вы можете настроить сценарные события, связанные с сообщениями MQTT.
 
-Сценарное событие `mqtt:message:received` генерируется при получени сообщения в одном из прослушиваемых каналов. В обработчик события передаются параметры:
+В качестве значения параметра `scriptEvents` нужно указать объект, ключи которого содержат фильтры топиков MQTT, а значения — названия сценарных событий, которые будут генерироваться при получении сообщений MQTT, подходящих под заданные фильтры.
+
+```js
+{
+    "plugins": {
+        ...
+        "ThinkingHome.Plugins.Mqtt.MqttPlugin": {
+            ...
+            "scriptEvents": {
+                "counter/+/value": "mqtt:message:counter:changed",
+                "device/#": "mqtt:message:received:status:received"
+            }
+        }
+    }
+}
+```
+
+В обработчик события передаются параметры:
 
 - `arguments[0]` - название канала, в который пришло сообщение (`string`).
 - `arguments[1]` - полученные данные (`Buffer`).
