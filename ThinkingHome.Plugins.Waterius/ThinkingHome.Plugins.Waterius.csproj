@@ -1,0 +1,19 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <Description>ThinkingHome plugin that receives water meter readings and stores them in a database. The following device is used to interact with water meters https://waterius.ru</Description>
+        <TargetFramework>net9.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\ThinkingHome.Core.Plugins\ThinkingHome.Core.Plugins.csproj" />
+      <ProjectReference Include="..\ThinkingHome.Plugins.Mqtt\ThinkingHome.Plugins.Mqtt.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="ThinkingHome.Migrator.Framework" Version="3.9.0" />
+    </ItemGroup>
+
+</Project>
