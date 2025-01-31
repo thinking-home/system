@@ -2,7 +2,7 @@
     <Import Project="../Package.xml" />
     <PropertyGroup>
         <Description />
-        <TargetFramework>net8.0</TargetFramework>
+        <TargetFramework>net9.0</TargetFramework>
         <OutputType>Exe</OutputType>
     </PropertyGroup>
     <ItemGroup>
@@ -35,7 +35,7 @@
         <ProjectReference Include="..\ThinkingHome.Plugins.WebUi\ThinkingHome.Plugins.WebUi.csproj" />
     </ItemGroup>
     <ItemGroup>
-        <PackageReference Include="Serilog.Sinks.Console" Version="4.1.0" />
+        <PackageReference Include="Serilog.Sinks.Console" Version="6.0.0" />
         <PackageReference Include="Serilog.Sinks.RollingFile" Version="3.3.0" />
     </ItemGroup>
 </Project>

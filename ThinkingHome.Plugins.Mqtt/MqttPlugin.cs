@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Collections.Concurrent;
+using System.Buffers;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using MQTTnet;
-using MQTTnet.Client;
 using MQTTnet.Protocol;
 using ThinkingHome.Core.Plugins;
 using ThinkingHome.Core.Plugins.Utils;
@@ -38,7 +37,7 @@ public class MqttPlugin(ScriptsPlugin scripts) : PluginBase {
 
     private IMqttClient client;
     private MqttClientOptions options;
-    private readonly ConcurrentDictionary<string, HashSet<string>> topicsMap = new();
+    private readonly Dictionary<uint, string> topicIndexById = new();
 
     public override void InitPlugin()
     {
@@ -52,14 +51,15 @@ public class MqttPlugin(ScriptsPlugin scripts) : PluginBase {
             .WithCredentials(Login, Password)
             .Build();
 
-        client = new MqttFactory().CreateMqttClient();
+        var mqttFactory = new MqttClientFactory();
+        client = mqttFactory.CreateMqttClient();
 
         client.ConnectedAsync += client_Connected;
         client.DisconnectedAsync += client_Disconnected;
         client.ApplicationMessageReceivedAsync += client_ApplicationMessageReceived;
-        
+
         // listeners
-        RegisterListeners(listeners, Context);
+        RegisterListeners(listeners, topicIndexById, Context);
         listeners.ForEach((topic, def) =>
             Logger.LogInformation("register MQTT message handler: {Topic} ({PluginType})", topic, def.Source.FullName));
     }
@@ -81,6 +81,8 @@ public class MqttPlugin(ScriptsPlugin scripts) : PluginBase {
                 }
             }
         }
+
+        client.Dispose();
     }
 
     [TimerCallback(60000)]
@@ -99,13 +101,6 @@ public class MqttPlugin(ScriptsPlugin scripts) : PluginBase {
     public void Publish(string topic, Buffer payload, bool retain = false)
     {
         Publish(topic, payload.GetBytes(), retain);
-    }
-
-    private HashSet<string> GetFiltersByTopic(string topic)
-    {
-        return listeners.Keys
-            .Where(filter => MqttTopicFilterComparer.Compare(topic, filter) == MqttTopicFilterCompareResult.IsMatch)
-            .ToHashSet();
     }
 
     public void Publish(string topic, byte[] payload, bool retain = false)
@@ -127,17 +122,25 @@ public class MqttPlugin(ScriptsPlugin scripts) : PluginBase {
     #region private
 
     private static void RegisterListeners(
-        ObjectRegistry<MqttConfigurationBuilder.MqttListenerDefinition> listeners, IServiceContext context)
+        ObjectRegistry<MqttConfigurationBuilder.MqttListenerDefinition> listeners,
+        Dictionary<uint, string> topicIndexById,
+        IServiceContext context)
     {
         var inits = context.GetAllPlugins()
             .SelectMany(p => p.FindMethods<ConfigureMqttAttribute, ConfigureMqttDelegate>())
             .ToArray();
 
+        uint currentId = 1377000;
+
         foreach (var (_, fn, plugin) in inits) {
             var source = plugin.GetType();
 
-            using var configBuilder = new MqttConfigurationBuilder(source, listeners);
+            using var configBuilder = new MqttConfigurationBuilder(source, listeners, () => ++currentId);
             fn(configBuilder);
+        }
+
+        foreach (var item in listeners.Data) {
+            topicIndexById[item.Value.TopicFilterId] = item.Key;
         }
     }
 
@@ -165,11 +168,15 @@ public class MqttPlugin(ScriptsPlugin scripts) : PluginBase {
     private async Task client_Connected(MqttClientConnectedEventArgs e)
     {
         Logger.LogInformation("MQTT client is connected");
-        
-        foreach (var topic in listeners.Keys) {
-            Logger.LogInformation("Subscribe MQTT client to {Topic} topic", topic);
-            var topicFilter = new MqttTopicFilterBuilder().WithTopic(topic).WithAtMostOnceQoS().Build();
-            await client.SubscribeAsync(topicFilter);
+
+        foreach (var sub in listeners.Data.Values) {
+            Logger.LogInformation("Subscribe MQTT client to {Topic} topic filter", sub.TopicFilter);
+            var opts = new MqttClientSubscribeOptionsBuilder()
+                .WithTopicFilter(sub.TopicFilter)
+                .WithSubscriptionIdentifier(sub.TopicFilterId)
+                .Build();
+            
+            await client.SubscribeAsync(opts);
         }
 
         Logger.LogInformation("MQTT client is subscribed");
@@ -184,20 +191,22 @@ public class MqttPlugin(ScriptsPlugin scripts) : PluginBase {
     private async Task client_ApplicationMessageReceived(MqttApplicationMessageReceivedEventArgs e)
     {
         var msg = e.ApplicationMessage;
-        var payload = Encoding.UTF8.GetString(msg.PayloadSegment);
+        var payloadBytes = msg.Payload.ToArray();
+        var payloadString = Encoding.UTF8.GetString(payloadBytes);
+        var subIds = msg.SubscriptionIdentifiers ?? [];
 
         Logger.LogDebug(
-            "topic: {Topic}, payload: {Payload}, qos: {QualityOfServiceLevel}, retain: {Retain}",
-            msg.Topic, payload, msg.QualityOfServiceLevel, msg.Retain);
-
-        var payloadBytes = msg.PayloadSegment.Array;
-        var matchedFilters = topicsMap.GetOrAdd(msg.Topic, GetFiltersByTopic);
+            "subs: {Subs}, topic: {Topic}, payload: {Payload}, qos: {QualityOfServiceLevel}, retain: {Retain}",
+            string.Join(',', subIds), msg.Topic, payloadString, msg.QualityOfServiceLevel, msg.Retain);
 
         // events
-        foreach (var filter in matchedFilters.Where(filter => listeners.ContainsKey(filter))) {
-            await SafeInvokeAsync(listeners[filter], h => h.Handler(msg.Topic, payloadBytes));
+        foreach (var subscriptionId in msg.SubscriptionIdentifiers ?? []) {
+            if (!topicIndexById.TryGetValue(subscriptionId, out var filterKey)) continue;
+            if (listeners.ContainsKey(filterKey)) {
+                await SafeInvokeAsync(listeners[filterKey], h => h.Handler(msg.Topic, payloadBytes));
+            }
         }
-        
+
         scripts.EmitScriptEvent("mqtt:message:received", msg.Topic, new Buffer(payloadBytes));
     }
 
