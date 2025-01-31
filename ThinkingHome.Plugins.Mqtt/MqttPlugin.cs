@@ -33,6 +33,10 @@ public class MqttPlugin(ScriptsPlugin scripts) : PluginBase {
     private string Login => Configuration["login"];
     private string Password => Configuration["password"];
 
+    private Dictionary<string, string> ScriptEvents => Configuration
+        .GetSection("scriptEvents")
+        .Get<Dictionary<string, string>>();
+
     #endregion
 
     private IMqttClient client;
@@ -59,7 +63,7 @@ public class MqttPlugin(ScriptsPlugin scripts) : PluginBase {
         client.ApplicationMessageReceivedAsync += client_ApplicationMessageReceived;
 
         // listeners
-        RegisterListeners(listeners, topicIndexById, Context);
+        RegisterListeners();
         listeners.ForEach((topic, def) =>
             Logger.LogInformation("register MQTT message handler: {Topic} ({PluginType})", topic, def.Source.FullName));
     }
@@ -121,12 +125,9 @@ public class MqttPlugin(ScriptsPlugin scripts) : PluginBase {
 
     #region private
 
-    private static void RegisterListeners(
-        ObjectRegistry<MqttConfigurationBuilder.MqttListenerDefinition> listeners,
-        Dictionary<uint, string> topicIndexById,
-        IServiceContext context)
+    private void RegisterListeners()
     {
-        var inits = context.GetAllPlugins()
+        var inits = Context.GetAllPlugins()
             .SelectMany(p => p.FindMethods<ConfigureMqttAttribute, ConfigureMqttDelegate>())
             .ToArray();
 
@@ -137,6 +138,23 @@ public class MqttPlugin(ScriptsPlugin scripts) : PluginBase {
 
             using var configBuilder = new MqttConfigurationBuilder(source, listeners, () => ++currentId);
             fn(configBuilder);
+        }
+
+        // script events
+        if (ScriptEvents != null) {
+            using var scriptEventsConfigBuilder = new MqttConfigurationBuilder(GetType(), listeners, () => ++currentId);
+            
+            foreach (var e in ScriptEvents) {
+                var topicFilter = e.Key.Trim();
+                var scriptEvent = e.Value.Trim();
+
+                if (string.IsNullOrWhiteSpace(topicFilter) || string.IsNullOrWhiteSpace(scriptEvent)) continue;
+
+                Logger.LogInformation("Register \"{ScriptEvent}\" script event for \"{TopicFilter}\" MQTT topic filter", scriptEvent, topicFilter);
+
+                scriptEventsConfigBuilder.RegisterListener(topicFilter,
+                    (topic, payloadBytes) => { scripts.EmitScriptEvent(scriptEvent, topic, new Buffer(payloadBytes)); });
+            }
         }
 
         foreach (var item in listeners.Data) {
@@ -175,7 +193,7 @@ public class MqttPlugin(ScriptsPlugin scripts) : PluginBase {
                 .WithTopicFilter(sub.TopicFilter)
                 .WithSubscriptionIdentifier(sub.TopicFilterId)
                 .Build();
-            
+
             await client.SubscribeAsync(opts);
         }
 
@@ -199,15 +217,13 @@ public class MqttPlugin(ScriptsPlugin scripts) : PluginBase {
             "subs: {Subs}, topic: {Topic}, payload: {Payload}, qos: {QualityOfServiceLevel}, retain: {Retain}",
             string.Join(',', subIds), msg.Topic, payloadString, msg.QualityOfServiceLevel, msg.Retain);
 
-        // events
+        // handlers
         foreach (var subscriptionId in msg.SubscriptionIdentifiers ?? []) {
             if (!topicIndexById.TryGetValue(subscriptionId, out var filterKey)) continue;
             if (listeners.ContainsKey(filterKey)) {
                 await SafeInvokeAsync(listeners[filterKey], h => h.Handler(msg.Topic, payloadBytes));
             }
         }
-
-        scripts.EmitScriptEvent("mqtt:message:received", msg.Topic, new Buffer(payloadBytes));
     }
 
     #endregion
