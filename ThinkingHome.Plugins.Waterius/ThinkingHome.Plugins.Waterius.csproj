@@ -1,7 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>net8.0</TargetFramework>
+        <Description>ThinkingHome plugin that receives water meter readings and stores them in a database. The following device is used to interact with water meters https://waterius.ru</Description>
+        <TargetFramework>net9.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
     </PropertyGroup>
@@ -12,7 +13,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="ThinkingHome.Migrator.Framework" Version="3.8.1" />
+      <PackageReference Include="ThinkingHome.Migrator.Framework" Version="3.9.0" />
     </ItemGroup>
 
 </Project>
