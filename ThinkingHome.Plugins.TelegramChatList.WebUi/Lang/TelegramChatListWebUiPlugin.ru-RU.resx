@@ -1,0 +1,7 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<root>
+    <data name="hello" xml:space="preserve">
+        <value>Привет!</value>
+    </data>
+</root>

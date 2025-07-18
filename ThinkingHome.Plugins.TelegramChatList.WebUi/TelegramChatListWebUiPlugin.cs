@@ -1,11 +1,14 @@
 ﻿using Microsoft.Extensions.Logging;
 using ThinkingHome.Core.Plugins;
+using ThinkingHome.Plugins.WebUi;
+using ThinkingHome.Plugins.WebUi.Attributes;
 
 namespace ThinkingHome.Plugins.TelegramChatList.WebUi;
 
 public class TelegramChatListWebUiPlugin : PluginBase {
-    public override void StartPlugin()
+    [ConfigureWebUi]
+    public void RegisterWebUiPages(WebUiConfigurationBuilder config)
     {
-        Logger.LogInformation("куку ахахахахахаха");
+        config.RegisterPage("/telegram-chat-list", "ThinkingHome.Plugins.TelegramChatList.WebUi.Resources.app.telegramChatList.js");
     }
 }
