@@ -21,6 +21,13 @@
 
 Веб-интерфейс открывается по корневому адресу веб-сервера.
 
+Каждый раздел интерфейса — это самодостаточный ES-модуль (бандл), который хост
+загружает по требованию через нативный `import(url)`. Общие библиотеки (React,
+react-router, `@thinking-home/ui` и т. д.) не вшиваются в бандлы разделов — хост
+раздаёт их как отдельные ESM-модули и подключает через
+[import map](https://developer.mozilla.org/docs/Web/HTML/Element/script/type/importmap),
+так что все разделы используют один общий экземпляр React.
+
 ## API
 
 ### `[ConfigureWebUi]`
@@ -46,62 +53,68 @@ public void RegisterWebUiPages(WebUiConfigurationBuilder config)
 
 ### Подготовка окружения для разработки
 
+Сборку клиентского кода целиком берёт на себя `@thinking-home/ui` — вам **не нужно**
+добавлять в проект Vite, webpack или конфиги сборки. Достаточно раннера `th-build`,
+который поставляется вместе с библиотекой.
+
 1. Создайте в корне проекта файл `package.json`. Лёгкий вариант его создания — запустить в терминале команду `npm init -y`.
-2. Добавьте в свой проект необходмые клиентские библиотеки:
+2. Добавьте в свой проект необходимые клиентские библиотеки:
    ```shell
-   $ npm i typescript react @types/react react-router-dom webpack webpack-cli ts-node @types/node io-ts fp-ts @thinking-home/ui @thinking-home/i18n
+   $ npm i @thinking-home/ui @thinking-home/i18n react react-router-dom valibot
+   $ npm i -D typescript @types/react
    ```
-3. Создайте в корне файл tsconfig.json со следующим содержимым:
+   (React, react-router и `@thinking-home/ui` при сборке помечаются как внешние и
+   резолвятся хостом через import map, поэтому нужны только для проверки типов;
+   `valibot` для валидации данных вшивается в бандл раздела.)
+3. Создайте в корне файл `tsconfig.json` со следующим содержимым:
    ```json
    {
      "compilerOptions": {
-       "noImplicitAny": true,
+       "target": "es2020",
        "module": "esnext",
-       "target": "es6",
+       "moduleResolution": "bundler",
        "jsx": "react",
        "allowJs": true,
-       "moduleResolution": "node",
-       "allowSyntheticDefaultImports": true
+       "allowSyntheticDefaultImports": true,
+       "esModuleInterop": true,
+       "skipLibCheck": true,
+       "noImplicitAny": true,
+       "noEmit": true
      },
-     "ts-node": {
-       "compilerOptions": {
-         "module": "CommonJS",
-         "esModuleInterop": true
-       }
-     }
+     "include": ["frontend"]
    }
    ```
 4. Создайте файл с расширением `.tsx`, который будет основным файлом страницы (например, `./frontend/myPage.tsx`).
-5. Создайте в корне проекта конфиг для сборки — файл `webpack.config.ts`, импортируйте в нем хелпер `initWebpackConfig` из библиотеки `@thinking-home/ui` и с его помощью подготовьте конфигурацию сборки.
-   ```typescript
-   import {resolve} from "path";
-   import {initWebpackConfig} from '@thinking-home/ui/dist/tools/build';
-   
-   // список корневых файлов разделов
-   const pages = {
-       myPage: './frontend/myPage.tsx',
-   };
-   
-   // путь к папке, куда нужно поместить собранный бандл
-   const resultPath = resolve(__dirname, 'Resources/app');
-   
-   // генерируем конфигурацию сборки и экспортируем её
-   export default initWebpackConfig(pages, resultPath);
-   ``` 
-
-6. Добавьте в package.json команду для сборки клиентского кода:
-   ```json lines
+5. Опишите точки входа и команды сборки в `package.json`. Точки входа задаются в поле
+   `thPlugin.entries` (имя бандла → путь к файлу раздела), а сборка запускается
+   раннером `th-build` — он собирает каждую точку входа в отдельный ESM-бандл в папку,
+   указанную в `--outDir`:
+   ```json
    {
-       // ...
-       "scripts": {
-           "build": "webpack --mode=production",
+     "thPlugin": {
+       "entries": {
+         "myPage": "frontend/myPage.tsx"
        }
+     },
+     "scripts": {
+       "build:development": "th-build --mode development --outDir Resources/app",
+       "build:production": "th-build --outDir Resources/app"
+     }
    }
    ```
-7. Настройте включение собранных файлов в ресурсы DLL. Для этого отредактируйте `.csproj` файл своего плагина:
+6. Настройте сборку клиентского кода при сборке DLL и включение собранных файлов в ресурсы.
+   Для этого отредактируйте `.csproj` файл своего плагина:
    ```xml
    <Project Sdk="Microsoft.NET.Sdk">
        <!-- ... -->
+       <Target Name="NpmInstall" Inputs="package.json" Outputs="node_modules/.install-stamp">
+           <Exec Command="npm ci" />
+           <Touch Files="node_modules/.install-stamp" AlwaysCreate="true" />
+       </Target>
+       <Target Name="BuildClient" DependsOnTargets="NpmInstall" BeforeTargets="Build">
+           <Exec Command="npm run build:production" Condition="'$(Configuration)' == 'Release'" />
+           <Exec Command="npm run build:development" Condition="'$(Configuration)' != 'Release'" />
+       </Target>
        <ItemGroup>
            <None Remove="Resources\**\*" />
        </ItemGroup>
@@ -111,7 +124,7 @@ public void RegisterWebUiPages(WebUiConfigurationBuilder config)
    </Project>
    ```
 
-Теперь мы можем писать в файле, созданном на 4 шаге, код, который реализует наш новый раздел интерфейса. При запуске команды `npm run build` из исходного кода на TypeScript будет собран клиентский бандл, содержащий код на JavaScript. Далее при сборке DLL (`dotnet build`) собранный файл попадет в ресурсы DLL.
+Теперь мы можем писать в файле, созданном на 4 шаге, код, который реализует наш новый раздел интерфейса. При сборке DLL (`dotnet build`) сначала запустится `th-build` — из исходного кода на TypeScript будет собран клиентский бандл, — а затем собранный файл попадёт в ресурсы DLL.
 
 В коде своего плагина вы можете передать путь к собранному файлу в ресурсах DLL в метод `RegisterPage` и новый раздел, который вы реализовали, начнет отображаться в интерфейсе.
 
@@ -141,36 +154,38 @@ export default createModule(MySection);
 
 #### Как загрузить данные и провалидировать их формат
 
-Библиотека `@thinking-home/ui` предоставляет хук `useAppContext`, позволяющий получить экземпляр API для загрузки данных с сервера. Методы API получают первым параметром [decoder](https://gcanti.github.io/io-ts/modules/Decoder.ts.html), который будет валидировать формат данных, полученных от сервера. Если сервер пришлёт данные не в том формате, то будет сгенерировано исключение.
+Библиотека `@thinking-home/ui` предоставляет хук `useAppContext`, позволяющий получить экземпляр API для загрузки данных с сервера. Методы API получают первым параметром [схему valibot](https://valibot.dev/), которая будет валидировать формат данных, полученных от сервера. Если сервер пришлёт данные не в том формате, то будет сгенерировано исключение.
 
 #### Пример
 
 ```tsx
-import * as d from 'io-ts/Decoder';
+import * as React from 'react';
+import {FC, useEffect, useState} from 'react';
+import * as v from 'valibot';
 import {createModule, useAppContext} from '@thinking-home/ui';
 
 // описываем формат данных
-const myResponseDecoder = d.struct({
-   id: d.string,
-   name: d.string,
-   size: d.number,
+const myResponseSchema = v.object({
+   id: v.string(),
+   name: v.string(),
+   size: v.number(),
 });
 
-// получаем из декодера тип данных 
-type MyResponse = d.TypeOf<typeof myResponseDecoder>;
+// получаем из схемы тип данных
+type MyResponse = v.InferOutput<typeof myResponseSchema>;
 
 const ExampleSection: FC = () => {
    const [data, setData] = useState<MyResponse>();
-   
+
    // получаем экземпляр API из хука useAppContext
    const {api} = useAppContext();
 
    useEffect(() => {
       // делаем запрос за данными на заданный url
-      // первым параметром передаем декодер, который будет валидировать полученные данные
-      api.get(myResponseDecoder, {url: '/get/my/data'}).then(setData)
+      // первым параметром передаем схему, которая провалидирует полученные данные
+      api.get(myResponseSchema, {url: '/get/my/data'}).then(setData)
    }, []);
-   
+
    if (!data) {
        return <div>LOADING...</div>;
    }
@@ -238,14 +253,14 @@ export default createModule(ExampleSection);
 
 ```tsx
 import {useMessageHandler} from '@thinking-home/ui';
-import * as d from 'io-ts/Decoder';
+import * as v from 'valibot';
 
 const ExampleSection: FC = () => {
    const [lastMessage, setLastMessage] = useState<string>();
 
    useMessageHandler(
        'my-topic',      // топик шины сообщений, в котором нужно слушать сообщения
-       d.string,        // декодер io-ts для обработки полученных данных
+       v.string(),      // valibot-схема для валидации данных полученного сообщения
        msg => setLastMessage(msg.data), // callback, который будет вызван для каждого сообщения
        [setLastMessage], // список зависимостей callback (аналогично useCallback)
    );
