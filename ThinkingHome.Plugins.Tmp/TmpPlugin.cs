@@ -41,8 +41,8 @@ namespace ThinkingHome.Plugins.Tmp {
             Logger.LogInformation("init tmp plugin {Guid}", Guid.NewGuid());
             Logger.LogInformation(StringLocalizer.GetString("hello"));
 
-            telegramBot.SendMessage(353206782, "MOOO!!!!!");
-            telegramBot.SendPhoto(353206782, new Uri("https://t4.ftcdn.net/jpg/00/05/89/49/240_F_5894964_2ZUytwp46CoKFcBW6q4NjRDrVK7n2kuv.jpg"));
+            // telegramBot.SendMessage(353206782, "MOOO!!!!!");
+            // telegramBot.SendPhoto(353206782, new Uri("https://t4.ftcdn.net/jpg/00/05/89/49/240_F_5894964_2ZUytwp46CoKFcBW6q4NjRDrVK7n2kuv.jpg"));
 
             var sb = new StringBuilder("===================\nall strings:\n");
 

@@ -1,26 +1,29 @@
 {
   "name": "@thinking-home/plugins-tmp",
   "version": "1.0.0",
+  "thPlugin": {
+    "entries": {
+      "page1": "frontend/page1.tsx",
+      "page2": "frontend/page2.tsx",
+      "page3": "frontend/page3.tsx"
+    }
+  },
   "scripts": {
     "build": "npm run build:development",
-    "build:development": "webpack --mode=development",
-    "build:production": "webpack --mode=production"
+    "build:development": "th-build --mode development --outDir Resources/app",
+    "build:production": "th-build --outDir Resources/app"
   },
   "dependencies": {
     "@thinking-home/i18n": "^0.4.0",
-    "@thinking-home/ui": "^0.1.16",
+    "@thinking-home/ui": "^0.5.0",
     "fp-ts": "^2.16.9",
     "io-ts": "^2.2.22",
     "react": "^19.0.0",
-    "react-router": "^7.1.4"
+    "react-router": "^7.1.0"
   },
   "devDependencies": {
     "@types/node": "^20.17.16",
     "@types/react": "^19.0.8",
-    "@types/webpack": "^5.28.5",
-    "ts-node": "^10.9.2",
-    "typescript": "^5.7.3",
-    "webpack": "^5.97.1",
-    "webpack-cli": "^6.0.1"
+    "typescript": "^5.7.3"
   }
 }

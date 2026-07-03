@@ -21,7 +21,7 @@ export const Page: FC<PageProps> = ({pathJs, langId}) => {
 
     useEffect(() => {
         Promise.all([
-            import(/*webpackIgnore: true*/ pathJs),
+            import(/* @vite-ignore */ pathJs),
             api.get(LangDataDecoder, {url: '/api/webui/lang', params: {id: langId}})
         ]).then(
             ([m, messages]: [{ default: UiModule }, Record<string, string>]) => {
