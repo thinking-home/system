@@ -1,52 +1,43 @@
-import {Decoder, draw} from "io-ts/Decoder";
-import {isLeft} from "fp-ts/Either";
-import * as d from "io-ts/Decoder";
+import * as v from "valibot";
+import type { GenericSchema } from "valibot";
 
-export const parseData = function <T>(decoder: Decoder<unknown, T>, data: unknown): T {
-    const parsed = decoder.decode(data);
-
-    if (isLeft(parsed)) {
-        throw new Error(draw(parsed.left));
-    }
-
-    return parsed.right;
+export const parseData = function <T>(schema: GenericSchema<unknown, T>, data: unknown): T {
+    return v.parse(schema, data);
 }
 
-export const MessageHubConfigDecoder = d.struct({
-    route: d.string,
-    clientMethod: d.string,
-    serverMethod: d.string,
-    reconnectionTimeout: d.number,
+export const MessageHubConfigSchema = v.object({
+    route: v.string(),
+    clientMethod: v.string(),
+    serverMethod: v.string(),
+    reconnectionTimeout: v.number(),
 });
 
-export type MessageHubConfig = d.TypeOf<typeof MessageHubConfigDecoder>;
+export type MessageHubConfig = v.InferOutput<typeof MessageHubConfigSchema>;
 
-export const PageDefinitionDecoder = d.struct({
-    js: d.string,
-    langId: d.string,
+export const PageDefinitionSchema = v.object({
+    js: v.string(),
+    langId: v.string(),
 });
 
-export type PageDefinition = d.TypeOf<typeof PageDefinitionDecoder>;
+export type PageDefinition = v.InferOutput<typeof PageDefinitionSchema>;
 
-export const MetaResponseDecoder = d.struct({
-    pages: d.record(PageDefinitionDecoder),
-    config: d.struct({
-        lang: d.string,
-        messageHub: MessageHubConfigDecoder,
+export const MetaResponseSchema = v.object({
+    pages: v.record(v.string(), PageDefinitionSchema),
+    config: v.object({
+        lang: v.string(),
+        messageHub: MessageHubConfigSchema,
     }),
 });
 
-export const UnknownDecoder: d.Decoder<unknown, unknown> = d.fromGuard({
-    is: (_: unknown): _ is unknown => true,
-}, 'unknown value')
+export const UnknownSchema: GenericSchema<unknown, unknown> = v.unknown();
 
-export const LangDataDecoder = d.record(d.string);
+export const LangDataSchema = v.record(v.string(), v.string());
 
-export const MessageHubMessageDecoder = d.struct({
-    topic: d.string,
-    data: UnknownDecoder,
-    guid: d.string,
-    timestamp: d.string,
+export const MessageHubMessageSchema = v.object({
+    topic: v.string(),
+    data: UnknownSchema,
+    guid: v.string(),
+    timestamp: v.string(),
 });
 
-export type MessageHubMessage = d.TypeOf<typeof MessageHubMessageDecoder>;
+export type MessageHubMessage = v.InferOutput<typeof MessageHubMessageSchema>;

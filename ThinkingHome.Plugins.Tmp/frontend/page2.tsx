@@ -1,18 +1,18 @@
 import * as React from 'react';
 import {FC, useCallback, useEffect, useMemo, useState} from 'react';
 import {createModule, LogLevel, useAppContext, useLogger} from '@thinking-home/ui';
-import * as d from 'io-ts/Decoder';
+import * as v from 'valibot';
 
 const url = '/api/tmp/pigs';
-const tmpPigDecoder = d.struct({
-    id: d.string,
-    name: d.string,
-    size: d.number,
+const tmpPigSchema = v.object({
+    id: v.string(),
+    name: v.string(),
+    size: v.number(),
 });
 
-type Pig = d.TypeOf<typeof tmpPigDecoder>;
+type Pig = v.InferOutput<typeof tmpPigSchema>;
 
-const tmpResponseDecoder = d.array(tmpPigDecoder);
+const tmpResponseSchema = v.array(tmpPigSchema);
 
 const TmpSection: FC = () => {
     const [list, setList] = useState<Pig[]>([]);
@@ -21,7 +21,7 @@ const TmpSection: FC = () => {
     const logger = useLogger();
 
     useEffect(() => {
-        api.get(tmpResponseDecoder, {url, signal: controller.signal})
+        api.get(tmpResponseSchema, {url, signal: controller.signal})
             .then(setList, (e) => logger.log(LogLevel.Error, e instanceof Error ? e.message : 'error'));
 
         return () => controller.abort();

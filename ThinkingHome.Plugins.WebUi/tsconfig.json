@@ -1,17 +1,15 @@
 {
   "compilerOptions": {
-    "noImplicitAny": true,
+    "target": "es2020",
     "module": "esnext",
-    "target": "es6",
+    "moduleResolution": "bundler",
     "jsx": "react",
     "allowJs": true,
-    "moduleResolution": "node",
-    "allowSyntheticDefaultImports": true
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "noImplicitAny": true,
+    "noEmit": true
   },
-  "ts-node": {
-    "compilerOptions": {
-      "module": "CommonJS",
-      "esModuleInterop": true
-    }
-  }
+  "include": ["frontend"]
 }

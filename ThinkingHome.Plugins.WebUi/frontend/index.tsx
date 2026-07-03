@@ -10,7 +10,7 @@ import {
     AppLogger,
     ConsoleLogDestination,
     MessageHubConnection,
-    MetaResponseDecoder,
+    MetaResponseSchema,
     toaster,
     NS_FIELD,
 } from "./utils";
@@ -23,7 +23,7 @@ const init = async () => {
     const {
         pages,
         config: {lang, messageHub: messageHubConfig}
-    } = await api.get(MetaResponseDecoder, {url: '/api/webui/meta'});
+    } = await api.get(MetaResponseSchema, {url: '/api/webui/meta'});
 
     // logger
     const writerConsole = new ConsoleLogDestination(LogLevel.Information);
@@ -48,7 +48,7 @@ const init = async () => {
         </React.StrictMode>
     );
 
-    const root = ReactDOM.createRoot(document.getElementById("root"));
+    const root = ReactDOM.createRoot(document.getElementById("root")!);
     root.render(app);
 
     return async () => {
