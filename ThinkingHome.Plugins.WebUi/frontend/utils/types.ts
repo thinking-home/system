@@ -29,13 +29,11 @@ export const MetaResponseSchema = v.object({
     }),
 });
 
-export const UnknownSchema: GenericSchema<unknown, unknown> = v.unknown();
-
 export const LangDataSchema = v.record(v.string(), v.string());
 
 export const MessageHubMessageSchema = v.object({
     topic: v.string(),
-    data: UnknownSchema,
+    data: v.unknown(),
     guid: v.string(),
     timestamp: v.string(),
 });
