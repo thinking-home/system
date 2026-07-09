@@ -10,15 +10,15 @@ import {
     useMessageHandler,
     useKeyset
 } from '@thinking-home/ui';
-import * as d from 'io-ts/Decoder';
+import * as v from 'valibot';
 import {Keyset, text} from "@thinking-home/i18n";
 
-const tmpPigDecoder = d.struct({
-    name: d.string,
-    size: d.number,
+const tmpPigSchema = v.object({
+    name: v.string(),
+    size: v.number(),
 });
 
-type TmpPig = d.TypeOf<typeof tmpPigDecoder>;
+type TmpPig = v.InferOutput<typeof tmpPigSchema>;
 
 const TOPIC = 'mh-example';
 
@@ -47,13 +47,13 @@ const TmpSection: FC = () => {
     const [value, setValue] = useState(0);
     const logger = useLogger();
 
-    useMessageHandler(TOPIC, tmpPigDecoder, (msg) => {
+    useMessageHandler(TOPIC, tmpPigSchema, (msg) => {
         showInfo(<TmpPigToast msg={msg} counter={value}/>);
         logger.log(LogLevel.Information, 'message was received')
     }, [showInfo, value, logger]);
 
     const onClick = useCallback(() => {
-        const name = prompt('Enter the name of the pig');
+        const name = prompt('Enter the name of the pig') || "";
         send<TmpPig>(TOPIC, {name, size: value});
         logger.log(LogLevel.Information, 'button has been pressed')
     }, [send, value, logger]);

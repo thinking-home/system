@@ -1,4 +1,10 @@
-﻿using System.Globalization;
+﻿using System.Collections.Generic;
+using System.Globalization;
+using System.IO;
+using System.Linq;
+using System.Resources;
+using System.Text;
+using System.Text.Json;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
 using ThinkingHome.Core.Plugins;
@@ -13,9 +19,17 @@ namespace ThinkingHome.Plugins.WebUi;
 
 public class WebUiPlugin : PluginBase {
     const string HTML_RES_PATH = "ThinkingHome.Plugins.WebUi.Resources.static.index.html";
-    const string MIME_HTML = "text/html";
+    const string MIME_HTML = "text/html;charset=utf-8";
     const string MIME_JS = "application/javascript";
     const string MIME_CSS = "text/css";
+
+    // The shared ESM libraries (react, react-router, @thinking-home/ui, …) ship
+    // prebuilt inside @thinking-home/ui and are copied into Resources/app/vendor
+    // by the client build. shared.json maps each bare specifier to its file.
+    const string VENDOR_MANIFEST_RES = "ThinkingHome.Plugins.WebUi.Resources.app.vendor.shared.json";
+    const string VENDOR_RES_PREFIX = "ThinkingHome.Plugins.WebUi.Resources.app.vendor.";
+    const string VENDOR_URL_PREFIX = "/static/webui/vendor/";
+    const string IMPORTMAP_PLACEHOLDER = "<!--th:importmap-->";
 
     private readonly ObjectRegistry<WebUiPageDefinition> pages = new();
     private readonly ObjectRegistry<IStringLocalizer> localizers = new();
@@ -30,11 +44,16 @@ public class WebUiPlugin : PluginBase {
         pages.ForEach((url, handler) =>
             Logger.LogInformation("register web ui page: {Url} (lang id: {LangId})", url, handler.LangId));
 
-        config.RegisterEmbeddedResource("/", HTML_RES_PATH, MIME_HTML);
+        // Build the host document once: registers the vendor modules and injects
+        // the import map so the browser can resolve their bare specifiers.
+        var indexDocument = BuildIndexDocument(config);
+        HttpHandlerResult ServeIndex(HttpRequestParams _) => indexDocument;
+
+        config.RegisterDynamicResource("/", ServeIndex, true);
 
         foreach (var pageDef in pages.Data.Values) {
             config
-                .RegisterEmbeddedResource(pageDef.PathDocument, HTML_RES_PATH, MIME_HTML)
+                .RegisterDynamicResource(pageDef.PathDocument, ServeIndex, true)
                 .RegisterEmbeddedResource(pageDef.PathJavaScript, pageDef.JsResourcePath, MIME_JS, pageDef.Source.Assembly);
         }
 
@@ -44,17 +63,45 @@ public class WebUiPlugin : PluginBase {
             MIME_CSS);
 
         config.RegisterEmbeddedResource(
-            "/static/webui/js/vendor.js",
-            "ThinkingHome.Plugins.WebUi.Resources.app.vendor.js",
-            MIME_JS);
-
-        config.RegisterEmbeddedResource(
             "/static/webui/js/main.js",
             "ThinkingHome.Plugins.WebUi.Resources.app.main.js",
             MIME_JS);
 
         config.RegisterDynamicResource("/api/webui/meta", GetMeta);
         config.RegisterDynamicResource("/api/webui/lang", GetLang, true);
+    }
+
+    private HttpHandlerResult BuildIndexDocument(WebServerConfigurationBuilder config)
+    {
+        // shared.json: specifier -> vendor file name (single source of truth from th-ui)
+        var manifest = JsonSerializer.Deserialize<Dictionary<string, string>>(
+                ReadTextResource(VENDOR_MANIFEST_RES))
+            ?? throw new InvalidDataException($"invalid vendor manifest: {VENDOR_MANIFEST_RES}");
+
+        // register each vendor module for serving (deduplicated by file name)
+        foreach (var fileName in manifest.Values.Distinct()) {
+            config.RegisterEmbeddedResource(VENDOR_URL_PREFIX + fileName, VENDOR_RES_PREFIX + fileName, MIME_JS);
+        }
+
+        // build the import map { imports: { specifier: url } } and inject it
+        var imports = manifest.ToDictionary(pair => pair.Key, pair => VENDOR_URL_PREFIX + pair.Value);
+        var importMap = $"<script type=\"importmap\">{new { imports }.ToJson()}</script>";
+
+        var html = ReadTextResource(HTML_RES_PATH).Replace(IMPORTMAP_PLACEHOLDER, importMap);
+
+        return HttpHandlerResult.Binary(Encoding.UTF8.GetBytes(html), MIME_HTML);
+    }
+
+    private string ReadTextResource(string resourcePath)
+    {
+        using var stream = GetType().Assembly.GetManifestResourceStream(resourcePath);
+
+        if (stream == null) {
+            throw new MissingManifestResourceException($"resource {resourcePath} is not found");
+        }
+
+        using var reader = new StreamReader(stream, Encoding.UTF8);
+        return reader.ReadToEnd();
     }
 
     private static void RegisterPages(ObjectRegistry<WebUiPageDefinition> pages, ObjectRegistry<IStringLocalizer> localizers, IServiceContext context)

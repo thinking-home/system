@@ -1,6 +1,6 @@
 import {ApiClient as BaseApiClient, QueryData, QueryParams} from "@thinking-home/ui";
 import axios from "axios";
-import {Decoder} from "io-ts/Decoder";
+import type {GenericSchema} from "valibot";
 import {parseData} from "./types";
 
 export class ApiClient implements BaseApiClient {
@@ -41,7 +41,7 @@ export class ApiClient implements BaseApiClient {
         }
     }
 
-    public async get<T>(decoder: Decoder<unknown, T>, query: {
+    public async get<T>(schema: GenericSchema<unknown, T>, query: {
         url: string;
         params?: QueryParams,
         signal?: AbortSignal,
@@ -51,13 +51,13 @@ export class ApiClient implements BaseApiClient {
 
         try {
             const response = await this.client.get(url, {params, signal});
-            return parseData(decoder, response.data);
+            return parseData(schema, response.data);
         } finally {
             unsubscribe?.();
         }
     }
 
-    public async post<T>(decoder: Decoder<unknown, T>, query: {
+    public async post<T>(schema: GenericSchema<unknown, T>, query: {
         url: string;
         params?: QueryParams;
         data: QueryData,
@@ -68,7 +68,7 @@ export class ApiClient implements BaseApiClient {
 
         try {
             const response = await this.client.post(url, data, {params, signal});
-            return parseData(decoder, response.data);
+            return parseData(schema, response.data);
         } finally {
             unsubscribe?.();
         }

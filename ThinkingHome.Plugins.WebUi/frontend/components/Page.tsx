@@ -4,7 +4,7 @@ import {ErrorBoundary} from 'react-error-boundary'
 import {UiModule, useAppContext, I18nProvider} from '@thinking-home/ui';
 import {Context as I18nContext} from '@thinking-home/i18n';
 
-import {LangDataDecoder} from "../utils";
+import {LangDataSchema} from "../utils";
 
 import {ErrorScreen} from "./ErrorScreen";
 
@@ -16,13 +16,13 @@ interface PageProps {
 export const Page: FC<PageProps> = ({pathJs, langId}) => {
     const {api, lang} = useAppContext();
     const [error, setError] = useState(false);
-    const [content, setContent] = useState<UiModule>(undefined);
+    const [content, setContent] = useState<UiModule|undefined>(undefined);
     const [i18nContext, setI18nContext] = useState<I18nContext | undefined>(undefined);
 
     useEffect(() => {
         Promise.all([
-            import(/*webpackIgnore: true*/ pathJs),
-            api.get(LangDataDecoder, {url: '/api/webui/lang', params: {id: langId}})
+            import(/* @vite-ignore */ pathJs),
+            api.get(LangDataSchema, {url: '/api/webui/lang', params: {id: langId}})
         ]).then(
             ([m, messages]: [{ default: UiModule }, Record<string, string>]) => {
                 setContent(m.default);

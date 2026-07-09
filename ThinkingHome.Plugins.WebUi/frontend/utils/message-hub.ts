@@ -6,8 +6,8 @@ import {
     IRetryPolicy,
     LogLevel as SignalrLogLevel
 } from "@microsoft/signalr";
-import {Decoder} from "io-ts/Decoder";
-import {MessageHubConfig, MessageHubMessage, MessageHubMessageDecoder, parseData} from "./types";
+import type {GenericSchema} from "valibot";
+import {MessageHubConfig, MessageHubMessage, MessageHubMessageSchema, parseData} from "./types";
 
 const LogLevelMap: Record<SignalrLogLevel, LogLevel> = {
     [SignalrLogLevel.None]: LogLevel.Trace,
@@ -42,7 +42,7 @@ export class MessageHubConnection implements MessageHub {
 
         this.connection.on(clientMethod, (msg: unknown) => {
             try {
-                const parsedMsg = parseData(MessageHubMessageDecoder, msg);
+                const parsedMsg = parseData(MessageHubMessageSchema, msg);
                 callback?.(parsedMsg);
             } catch (err: unknown) {
                 this.handleError(err);
@@ -63,17 +63,28 @@ export class MessageHubConnection implements MessageHub {
 
     subscribe<T>(
         topic: string,
-        decoder: Decoder<unknown, T>,
+        schema: GenericSchema<unknown, T>,
         callback: (msg: ReceivedMessage<T>) => void,
     ): () => void {
         const {clientMethod} = this.config;
 
         const handler = (msg: unknown) => {
             try {
-                const {topic, guid, timestamp, data} = parseData(MessageHubMessageDecoder, msg);
-                const parsedData = parseData(decoder, data);
+                const message = parseData(MessageHubMessageSchema, msg);
 
-                callback({topic, guid, timestamp, data: parsedData});
+                // deliver only messages for the subscribed topic
+                if (message.topic !== topic) {
+                    return;
+                }
+
+                const data = parseData(schema, message.data);
+
+                callback({
+                    topic: message.topic,
+                    guid: message.guid,
+                    timestamp: message.timestamp,
+                    data,
+                });
             } catch (err: unknown) {
                 this.handleError(err);
             }
