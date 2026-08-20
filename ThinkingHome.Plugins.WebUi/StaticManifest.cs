@@ -16,6 +16,13 @@ public class StaticManifest {
     public Dictionary<string, string> Imports { get; init; } = new();
 
     /// <summary>
+    /// Файлы стилей, которые нужно подключить в документе. Список задаёт сборка
+    /// @thinking-home/ui: при обновлении пакета он меняется вместе с самими файлами.
+    /// </summary>
+    [JsonPropertyName("styles")]
+    public List<string> Styles { get; init; } = new();
+
+    /// <summary>
     /// Сжатые варианты каждого бандла: имя кодировки -> имя файла.
     /// </summary>
     [JsonPropertyName("files")]
