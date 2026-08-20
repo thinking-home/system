@@ -4,9 +4,11 @@ using System.Text.Json.Serialization;
 namespace ThinkingHome.Plugins.WebUi;
 
 /// <summary>
-/// Манифест vendor-модулей, который генерирует сборка @thinking-home/ui.
+/// Манифест собранной статики, который генерируют сборки на основе @thinking-home/ui:
+/// vendor-модули, main.js веб-интерфейса и бандлы разделов плагинов. У бандлов
+/// заполнен только раздел files, у vendor-модулей еще imports.
 /// </summary>
-public class VendorManifest {
+public class StaticManifest {
     /// <summary>
     /// Соответствие имени импорта файлу бандла (react-dom -> react.js).
     /// </summary>

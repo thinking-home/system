@@ -27,36 +27,31 @@ namespace ThinkingHome.Plugins.WebServer.Handlers
         /// </summary>
         private readonly List<KeyValuePair<string, ResourceVariant>> compressed = [];
 
-        public StaticResourceHandler(Type source, string resourcePath, string contentType, Assembly assembly = null) : base(source, true)
+        /// <summary>
+        /// Если у ресурса есть предсжатые копии, готовый файл отдается по заголовку
+        /// Accept-Encoding: сжатие не пересчитывается на каждый запрос и имеет максимальное
+        /// качество. Браузеры анонсируют brotli только в защищенном контексте (HTTPS или
+        /// localhost), поэтому в локальной сети используется gzip.
+        /// </summary>
+        public StaticResourceHandler(Type source, StaticResource resource, string contentType, Assembly assembly = null) : base(source, true)
         {
             if (string.IsNullOrWhiteSpace(contentType)) throw new ArgumentNullException(nameof(contentType));
-            if (string.IsNullOrWhiteSpace(resourcePath)) throw new ArgumentNullException(nameof(resourcePath));
+            if (string.IsNullOrWhiteSpace(resource.ResourcePath)) throw new ArgumentNullException(nameof(resource));
 
             this.contentType = contentType;
             this.assembly = assembly ?? source.Assembly;
 
-            original = new ResourceVariant(resourcePath, null);
-        }
+            original = new ResourceVariant(resource.ResourcePath, null);
 
-        /// <summary>
-        /// Ресурс, для которого при сборке созданы предсжатые копии. Готовый файл отдается
-        /// по заголовку Accept-Encoding: сжатие не пересчитывается на каждый запрос и имеет
-        /// максимальное качество. Браузеры анонсируют brotli только в защищенном контексте
-        /// (HTTPS или localhost), поэтому в локальной сети используется gzip.
-        /// </summary>
-        public StaticResourceHandler(
-            Type source,
-            string resourcePath,
-            string gzipResourcePath,
-            string brotliResourcePath,
-            string contentType,
-            Assembly assembly = null) : this(source, resourcePath, contentType, assembly)
-        {
-            if (string.IsNullOrWhiteSpace(gzipResourcePath)) throw new ArgumentNullException(nameof(gzipResourcePath));
-            if (string.IsNullOrWhiteSpace(brotliResourcePath)) throw new ArgumentNullException(nameof(brotliResourcePath));
+            if (!resource.IsCompressed) return;
 
-            compressed.Add(new("br", new ResourceVariant(brotliResourcePath, CreateHeaders("br"))));
-            compressed.Add(new("gzip", new ResourceVariant(gzipResourcePath, CreateHeaders("gzip"))));
+            // указан только один сжатый вариант: это ошибка регистрации, а не повод
+            // отдавать часть клиентов несжатыми
+            if (string.IsNullOrWhiteSpace(resource.GzipResourcePath)) throw new ArgumentNullException(nameof(resource.GzipResourcePath));
+            if (string.IsNullOrWhiteSpace(resource.BrotliResourcePath)) throw new ArgumentNullException(nameof(resource.BrotliResourcePath));
+
+            compressed.Add(new("br", new ResourceVariant(resource.BrotliResourcePath, CreateHeaders("br"))));
+            compressed.Add(new("gzip", new ResourceVariant(resource.GzipResourcePath, CreateHeaders("gzip"))));
 
             // ответ зависит от заголовка запроса даже когда отдается несжатый вариант
             original = original with { Headers = CreateHeaders() };

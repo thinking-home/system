@@ -72,12 +72,20 @@ namespace ThinkingHome.Plugins.Tmp {
             Logger.LogDebug("stop tmp plugin {Guid}", Guid.NewGuid());
         }
 
+        // Клиентская часть собирается через th-build: рядом с каждым бандлом он кладет
+        // предсжатые копии. Схему имен знает сборка этого плагина, поэтому пути к ним
+        // указываются здесь, а не достраиваются сервером.
+        private const string APP = "ThinkingHome.Plugins.Tmp.Resources.app.";
+
+        private static StaticResource Bundle(string name) =>
+            new($"{APP}{name}", $"{APP}{name}.gz", $"{APP}{name}.br");
+
         [ConfigureWebUi]
         public void RegisterWebUiPages(WebUiConfigurationBuilder config)
         {
-            config.RegisterPage("/page1", "ThinkingHome.Plugins.Tmp.Resources.app.page1.js");
-            config.RegisterPage("/page2", "ThinkingHome.Plugins.Tmp.Resources.app.page2.js");
-            config.RegisterPage("/page3", "ThinkingHome.Plugins.Tmp.Resources.app.page3.js");
+            config.RegisterPage("/page1", Bundle("page1.js"));
+            config.RegisterPage("/page2", Bundle("page2.js"));
+            config.RegisterPage("/page3", Bundle("page3.js"));
         }
 
         [ConfigureMqtt]

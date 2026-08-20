@@ -32,6 +32,12 @@ public class WebUiPlugin : PluginBase {
     const string VENDOR_URL_PREFIX = "/static/webui/vendor/";
     const string IMPORTMAP_PLACEHOLDER = "<!--th:importmap-->";
 
+    // Клиент веб-интерфейса и его предсжатые копии, созданные сборкой.
+    static readonly StaticResource MAIN_BUNDLE = new(
+        "ThinkingHome.Plugins.WebUi.Resources.app.main.js",
+        "ThinkingHome.Plugins.WebUi.Resources.app.main.js.gz",
+        "ThinkingHome.Plugins.WebUi.Resources.app.main.js.br");
+
     private readonly ObjectRegistry<WebUiPageDefinition> pages = new();
     private readonly ObjectRegistry<IStringLocalizer> localizers = new();
 
@@ -53,9 +59,9 @@ public class WebUiPlugin : PluginBase {
         config.RegisterDynamicResource("/", ServeIndex, true);
 
         foreach (var pageDef in pages.Data.Values) {
-            config
-                .RegisterDynamicResource(pageDef.PathDocument, ServeIndex, true)
-                .RegisterEmbeddedResource(pageDef.PathJavaScript, pageDef.JsResourcePath, MIME_JS, pageDef.Source.Assembly);
+            config.RegisterDynamicResource(pageDef.PathDocument, ServeIndex, true);
+
+            config.RegisterEmbeddedResource(pageDef.PathJavaScript, pageDef.Js, MIME_JS, pageDef.Source.Assembly);
         }
 
         config.RegisterEmbeddedResource(
@@ -63,10 +69,7 @@ public class WebUiPlugin : PluginBase {
             "ThinkingHome.Plugins.WebUi.Resources.static.bootstrap.min.css",
             MIME_CSS);
 
-        config.RegisterEmbeddedResource(
-            "/static/webui/js/main.js",
-            "ThinkingHome.Plugins.WebUi.Resources.app.main.js",
-            MIME_JS);
+        config.RegisterEmbeddedResource("/static/webui/js/main.js", MAIN_BUNDLE, MIME_JS);
 
         config.RegisterDynamicResource("/api/webui/meta", GetMeta);
         config.RegisterDynamicResource("/api/webui/lang", GetLang, true);
@@ -78,7 +81,7 @@ public class WebUiPlugin : PluginBase {
         // imports — соответствие импортов файлам, files — сжатые варианты каждого файла.
         // Имена файлов берём только отсюда: собирать их самостоятельно нельзя, иначе
         // схема имён дублируется в двух репозиториях и может разъехаться.
-        var manifest = JsonSerializer.Deserialize<VendorManifest>(ReadTextResource(VENDOR_MANIFEST_RES))
+        var manifest = JsonSerializer.Deserialize<StaticManifest>(ReadTextResource(VENDOR_MANIFEST_RES))
             ?? throw new InvalidDataException($"invalid vendor manifest: {VENDOR_MANIFEST_RES}");
 
         // register each vendor module for serving (deduplicated by file name)
@@ -91,9 +94,10 @@ public class WebUiPlugin : PluginBase {
 
             config.RegisterEmbeddedResource(
                 VENDOR_URL_PREFIX + fileName,
-                VENDOR_RES_PREFIX + fileName,
-                VENDOR_RES_PREFIX + files["gzip"],
-                VENDOR_RES_PREFIX + files["br"],
+                new StaticResource(
+                    VENDOR_RES_PREFIX + fileName,
+                    VENDOR_RES_PREFIX + files["gzip"],
+                    VENDOR_RES_PREFIX + files["br"]),
                 MIME_JS);
         }
 

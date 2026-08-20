@@ -19,30 +19,13 @@ public class WebServerConfigurationBuilder : BaseConfigurationBuilder<BaseHandle
     }
 
     /// <summary>
-    /// Зарегистрировать статический HTTP ресурс (кэшируется)
+    /// Зарегистрировать статический HTTP ресурс (кэшируется). Если у ресурса есть
+    /// предсжатые копии, нужный вариант выбирается по заголовку Accept-Encoding.
     /// </summary>
     public WebServerConfigurationBuilder RegisterEmbeddedResource(
-        string url, string resourcePath, string contentType = "text/plain", Assembly assembly = null)
+        string url, StaticResource resource, string contentType = "text/plain", Assembly assembly = null)
     {
-        RegisterItem(url, new StaticResourceHandler(Source, resourcePath, contentType, assembly));
-
-        return this;
-    }
-
-    /// <summary>
-    /// Зарегистрировать статический HTTP ресурс, для которого при сборке созданы
-    /// предсжатые копии (кэшируется). Нужный вариант выбирается по Accept-Encoding.
-    /// </summary>
-    public WebServerConfigurationBuilder RegisterEmbeddedResource(
-        string url,
-        string resourcePath,
-        string gzipResourcePath,
-        string brotliResourcePath,
-        string contentType = "text/plain",
-        Assembly assembly = null)
-    {
-        RegisterItem(url, new StaticResourceHandler(
-            Source, resourcePath, gzipResourcePath, brotliResourcePath, contentType, assembly));
+        RegisterItem(url, new StaticResourceHandler(Source, resource, contentType, assembly));
 
         return this;
     }
