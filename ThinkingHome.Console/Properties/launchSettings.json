@@ -1,0 +1,10 @@
+{
+    "profiles": {
+        "ThinkingHome.Console": {
+            "commandName": "Project",
+            "environmentVariables": {
+                "THINKINGHOME_ENVIRONMENT": "Development"
+            }
+        }
+    }
+}

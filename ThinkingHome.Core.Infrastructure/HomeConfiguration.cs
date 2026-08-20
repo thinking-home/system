@@ -26,7 +26,7 @@ namespace ThinkingHome.Core.Infrastructure
                 .AddJsonFile("appsettings.json", true);
 
             if (!String.IsNullOrWhiteSpace(Environment)) {
-                builder.AddJsonFile($"appsettings.{Environment}.json", optional: false);
+                builder.AddJsonFile($"appsettings.{Environment}.json", optional: true);
             }
             
             builder.AddEnvironmentVariables("THINKINGHOME_");
