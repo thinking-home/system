@@ -12,9 +12,15 @@ using ThinkingHome.Plugins.Scripts.Model;
 namespace ThinkingHome.Plugins.Scripts
 {
     public class ScriptsPlugin(DatabasePlugin database) : PluginBase {
+        private const int DEFAULT_EXECUTION_TIMEOUT_SECONDS = 60;
+
         private object host;
 
         private readonly ObjectRegistry<Delegate> methods = new ObjectRegistry<Delegate>();
+
+        // максимальное время выполнения сценария; 0 или отрицательное значение отключает таймаут
+        private TimeSpan ExecutionTimeout => TimeSpan.FromSeconds(
+            Configuration["executionTimeout"].ParseInt() ?? DEFAULT_EXECUTION_TIMEOUT_SECONDS);
 
         public override void InitPlugin()
         {
@@ -86,7 +92,7 @@ namespace ThinkingHome.Plugins.Scripts
 
         private Func<object[], object> CreateScriptDelegate(string name, string body)
         {
-            return new ScriptContext(name, body, host, Logger).Execute;
+            return new ScriptContext(name, body, host, Logger, ExecutionTimeout).Execute;
         }
 
         private Func<object[], object> CreateScriptDelegateByName(string name)

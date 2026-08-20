@@ -8,18 +8,24 @@ namespace ThinkingHome.Plugins.Scripts.Internal
     public class ScriptContext
     {
         // create new engine for each script because engine isn't thread safe
-        private readonly Engine engine = new Engine();
-        
+        private readonly Engine engine;
+
         private readonly string name;
         private readonly string body;
         private readonly ILogger logger;
 
-        public ScriptContext(string name, string body, object host, ILogger logger)
+        public ScriptContext(string name, string body, object host, ILogger logger, TimeSpan timeout)
         {
             this.name = name;
             this.body = body;
             this.logger = logger;
-            
+
+            // таймаут прерывает зависший скрипт (например, с бесконечным циклом),
+            // который иначе навсегда занял бы поток из пула
+            engine = timeout > TimeSpan.Zero
+                ? new Engine(options => options.TimeoutInterval(timeout))
+                : new Engine();
+
             engine.SetValue("host", host);
         }
 

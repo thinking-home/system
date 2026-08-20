@@ -3,6 +3,7 @@ using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
+using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -30,6 +31,17 @@ namespace ThinkingHome.Core.Infrastructure
 
             logger = loggerFactory.CreateLogger<HomeApplication>();
             context = services.GetRequiredService<IServiceContext>();
+
+            // без этой подписки процесс при фатальной ошибке умирает без записи в лог
+            AppDomain.CurrentDomain.UnhandledException += (s, e) =>
+                logger.LogCritical(e.ExceptionObject as Exception, "unhandled exception");
+
+            // ошибки задач, завершения которых никто не ждет (fire-and-forget), иначе теряются
+            TaskScheduler.UnobservedTaskException += (s, e) =>
+            {
+                logger.LogError(e.Exception, "unobserved task exception");
+                e.SetObserved();
+            };
 
             InitLanguage(config);
 

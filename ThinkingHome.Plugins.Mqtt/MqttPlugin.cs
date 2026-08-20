@@ -116,11 +116,9 @@ public class MqttPlugin(ScriptsPlugin scripts) : PluginBase {
             .WithRetainFlag(retain)
             .Build();
 
-        var ex = client.PublishAsync(msg).Exception;
-
-        if (ex != null) {
-            throw ex;
-        }
+        // ждем подтверждения публикации, чтобы ошибка (например, нет соединения) долетела
+        // до вызывающего кода; у незавершенной задачи .Exception == null, и ошибка терялась бы
+        client.PublishAsync(msg).GetAwaiter().GetResult();
     }
 
     #region private
@@ -170,10 +168,9 @@ public class MqttPlugin(ScriptsPlugin scripts) : PluginBase {
                     try {
                         Logger.LogInformation("connect to MQTT broker");
 
-                        var task = client.ConnectAsync(options);
-                        task.Wait();
-
-                        if (task.Exception != null) throw task.Exception;
+                        // GetResult вместо Wait, чтобы в лог попадало исходное исключение,
+                        // а не бесполезная обертка AggregateException
+                        client.ConnectAsync(options).GetAwaiter().GetResult();
                     }
                     catch (Exception ex) {
                         Logger.LogWarning(ex.Message);

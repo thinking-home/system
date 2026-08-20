@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
@@ -118,6 +119,13 @@ namespace ThinkingHome.Core.Plugins.Utils {
 
             (TAttr Meta, TDelegate Method, PluginBase plugin) GetPluginMethodInfo(Tuple<MethodInfo, TAttr> obj)
             {
+                // исключение из async void обработчика невозможно поймать в EventContext —
+                // оно уронит процесс, поэтому запрещаем такие обработчики сразу при регистрации
+                if (obj.Item1.ReturnType == typeof(void) && obj.Item1.IsDefined(typeof(AsyncStateMachineAttribute))) {
+                    throw new InvalidOperationException(
+                        $"async void event handler is not supported: {plugin.GetType().FullName}.{obj.Item1.Name}");
+                }
+
                 var delegateType = typeof(TDelegate);
 
                 if (delegateType == typeof(Delegate)) {

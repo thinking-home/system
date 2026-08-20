@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
@@ -73,7 +74,9 @@ namespace ThinkingHome.Plugins.TelegramBot {
         public Task HandleUpdateAsync(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken)
         {
             if (update.Message is { } msg) {
-                OnMessageReceived?.Invoke(update.Message);
+                // каждый подписчик вызывается отдельно через SafeInvoke: его ошибка логируется
+                // и не мешает ни другим подписчикам, ни обработке команды ниже
+                SafeInvoke(OnMessageReceived?.GetInvocationList().Cast<Action<Message>>(), h => h(msg));
                 if (msg.Chat.Type == ChatType.Private) {
                     if (logins.Contains(msg.Chat.Username)) {
                         var command = ParseCommand(msg.Text);

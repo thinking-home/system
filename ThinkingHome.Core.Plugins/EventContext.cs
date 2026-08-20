@@ -31,7 +31,9 @@ namespace ThinkingHome.Core.Plugins
 
         public Task InvokeAsync()
         {
-            return Task.Factory.StartNew(Invoke);
+            // Task.Run вместо Task.Factory.StartNew: у StartNew без параметров неудачные
+            // умолчания (TaskScheduler.Current, attach to parent), которые здесь не нужны
+            return Task.Run(Invoke);
         }
     }
 }

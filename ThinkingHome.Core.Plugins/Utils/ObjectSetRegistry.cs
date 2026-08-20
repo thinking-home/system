@@ -11,8 +11,9 @@ namespace ThinkingHome.Core.Plugins.Utils
 
         protected override IList<T> Update(string key, IList<T> data, T value)
         {
-            data.Add(value);
-            return data;
+            // copy-on-write: опубликованный список никогда не мутируется, поэтому читатели
+            // видят консистентный снимок без блокировок (мутация List не потокобезопасна)
+            return new List<T>(data) { value };
         }
     }
 }
