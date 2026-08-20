@@ -1,9 +1,9 @@
 # BUILD .NET CORE APP
 
-FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 
 # install node
-RUN curl -sL https://deb.nodesource.com/setup_18.x | bash - 
+RUN curl -sL https://deb.nodesource.com/setup_24.x | bash -
 RUN apt-get install -y nodejs
 
 # copy csproj and restore as distinct layers
@@ -15,7 +15,7 @@ RUN dotnet restore
 RUN dotnet publish -c Release -o dist
 
 # PREPARE RUNTIME
-FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS runtime
+FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS runtime
 
 # install utils
 RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y locales tzdata wget iputils-ping
