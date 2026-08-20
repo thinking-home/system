@@ -2,7 +2,7 @@
     <Import Project="../Package.xml" />
     <PropertyGroup>
         <Description>ThinkingHome plugin which store TelegramBot chats data.</Description>
-        <TargetFramework>net9.0</TargetFramework>
+        <TargetFramework>net10.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
     </PropertyGroup>
@@ -14,7 +14,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="ThinkingHome.Migrator.Framework" Version="3.9.0" />
+      <PackageReference Include="ThinkingHome.Migrator.Framework" Version="3.10.0" />
     </ItemGroup>
 
 </Project>
