@@ -86,6 +86,9 @@ namespace ThinkingHome.Plugins.WebServer
 
         public override void StopPlugin()
         {
+            // generic host не останавливает hosted-сервисы при Dispose: без StopAsync
+            // соединения закрывались бы уже после освобождения контейнера
+            host.StopAsync().GetAwaiter().GetResult();
             host.Dispose();
         }
 
