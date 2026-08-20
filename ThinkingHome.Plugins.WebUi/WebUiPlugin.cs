@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -73,18 +74,31 @@ public class WebUiPlugin : PluginBase {
 
     private HttpHandlerResult BuildIndexDocument(WebServerConfigurationBuilder config)
     {
-        // shared.json: specifier -> vendor file name (single source of truth from th-ui)
-        var manifest = JsonSerializer.Deserialize<Dictionary<string, string>>(
-                ReadTextResource(VENDOR_MANIFEST_RES))
+        // shared.json: манифест, который сборка th-ui генерирует вместе с бандлами.
+        // imports — соответствие импортов файлам, files — сжатые варианты каждого файла.
+        // Имена файлов берём только отсюда: собирать их самостоятельно нельзя, иначе
+        // схема имён дублируется в двух репозиториях и может разъехаться.
+        var manifest = JsonSerializer.Deserialize<VendorManifest>(ReadTextResource(VENDOR_MANIFEST_RES))
             ?? throw new InvalidDataException($"invalid vendor manifest: {VENDOR_MANIFEST_RES}");
 
         // register each vendor module for serving (deduplicated by file name)
-        foreach (var fileName in manifest.Values.Distinct()) {
-            config.RegisterEmbeddedResource(VENDOR_URL_PREFIX + fileName, VENDOR_RES_PREFIX + fileName, MIME_JS);
+        foreach (var fileName in manifest.Imports.Values.Distinct()) {
+            // манифест перечисляет варианты, созданные при сборке: если заявленного
+            // варианта нет в ресурсах, это ошибка сборки, а не повод отдать несжатый файл
+            var files = manifest.Files[fileName];
+
+            Logger.LogInformation("register vendor module: {File}", fileName);
+
+            config.RegisterEmbeddedResource(
+                VENDOR_URL_PREFIX + fileName,
+                VENDOR_RES_PREFIX + fileName,
+                VENDOR_RES_PREFIX + files["gzip"],
+                VENDOR_RES_PREFIX + files["br"],
+                MIME_JS);
         }
 
         // build the import map { imports: { specifier: url } } and inject it
-        var imports = manifest.ToDictionary(pair => pair.Key, pair => VENDOR_URL_PREFIX + pair.Value);
+        var imports = manifest.Imports.ToDictionary(pair => pair.Key, pair => VENDOR_URL_PREFIX + pair.Value);
         var importMap = $"<script type=\"importmap\">{new { imports }.ToJson()}</script>";
 
         var html = ReadTextResource(HTML_RES_PATH).Replace(IMPORTMAP_PLACEHOLDER, importMap);

@@ -30,6 +30,24 @@ public class WebServerConfigurationBuilder : BaseConfigurationBuilder<BaseHandle
     }
 
     /// <summary>
+    /// Зарегистрировать статический HTTP ресурс, для которого при сборке созданы
+    /// предсжатые копии (кэшируется). Нужный вариант выбирается по Accept-Encoding.
+    /// </summary>
+    public WebServerConfigurationBuilder RegisterEmbeddedResource(
+        string url,
+        string resourcePath,
+        string gzipResourcePath,
+        string brotliResourcePath,
+        string contentType = "text/plain",
+        Assembly assembly = null)
+    {
+        RegisterItem(url, new StaticResourceHandler(
+            Source, resourcePath, gzipResourcePath, brotliResourcePath, contentType, assembly));
+
+        return this;
+    }
+
+    /// <summary>
     /// Зарегистрировать динамический HTTP ресурс (опционально кэшируется)
     /// </summary>
     public WebServerConfigurationBuilder RegisterDynamicResource(
