@@ -8,6 +8,8 @@
   },
   "dependencies": {
     "@bem-react/classname": "^1.6.0",
+    "@mantine/core": "^9.5.1",
+    "@mantine/hooks": "^9.5.1",
     "@microsoft/signalr": "^10.0.0",
     "@thinking-home/ui": "^0.10.0",
     "axios": "^1.7.9",

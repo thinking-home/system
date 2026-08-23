@@ -2,7 +2,7 @@ import React, {useMemo} from "react";
 import {FC} from "react";
 import {Routes, Route} from "react-router";
 import {Link, useLocation} from "react-router-dom";
-import {cn} from '@bem-react/classname';
+import {AppShell, Anchor, List, Text, Title} from "@mantine/core";
 import {LoggerProvider, useLogger} from "@thinking-home/ui";
 
 import {PageDefinition, NS_FIELD} from "../utils";
@@ -10,32 +10,29 @@ import {PageDefinition, NS_FIELD} from "../utils";
 import {ErrorScreen} from "./ErrorScreen";
 import {Page} from "./Page";
 
-import './Application.css';
-
-const cls = cn('Application');
+// Навигация вертикальная: на горизонтальных экранах высота дороже ширины.
+const NAVBAR_WIDTH = 220;
 
 export interface ApplicationProps {
     pages: Record<string, PageDefinition>;
 }
 
 const Home: React.FC = () => (
-    <div>
-        <h1>Home</h1>
-        <p className="muted">
-            This is demo pages.
-        </p>
-        <ul>
-            <li>
-                <Link to="/page1">Error handling example</Link>
-            </li>
-            <li>
-                <Link to="/page2">Data loading example</Link>
-            </li>
-            <li>
-                <Link to="/page3">Message hub and notifications example</Link>
-            </li>
-        </ul>
-    </div>
+    <>
+        <Title order={1}>Home</Title>
+        <Text c="dimmed" my="sm">This is demo pages.</Text>
+        <List>
+            <List.Item>
+                <Anchor component={Link} to="/page1">Error handling example</Anchor>
+            </List.Item>
+            <List.Item>
+                <Anchor component={Link} to="/page2">Data loading example</Anchor>
+            </List.Item>
+            <List.Item>
+                <Anchor component={Link} to="/page3">Message hub and notifications example</Anchor>
+            </List.Item>
+        </List>
+    </>
 );
 
 export const Content: React.FC<{ pages: Record<string, PageDefinition> }> = ({pages}) => {
@@ -44,7 +41,7 @@ export const Content: React.FC<{ pages: Record<string, PageDefinition> }> = ({pa
     const def = pages[pathname];
 
     const logger = useMemo(() => rootLogger.child({[NS_FIELD]: pathname}), [rootLogger, pathname]);
-    
+
     if (def) {
         return (
             <LoggerProvider value={logger}>
@@ -58,18 +55,18 @@ export const Content: React.FC<{ pages: Record<string, PageDefinition> }> = ({pa
 
 export const Application: FC<ApplicationProps> = ({pages}) => {
     return (
-        <div className={cls()}>
-            <nav className="navbar navbar-expand-sm bg-light">
-                <div className="container-fluid">
-                    <Link className="navbar-brand" to="/">My Home</Link>
-                </div>
-            </nav>
-            <div className={cls('Content', ['container-fluid'])}>
+        <AppShell navbar={{width: NAVBAR_WIDTH, breakpoint: 0}} padding="md">
+            <AppShell.Navbar p="md">
+                <Anchor component={Link} to="/" fw={700} size="lg" underline="never">
+                    My Home
+                </Anchor>
+            </AppShell.Navbar>
+            <AppShell.Main>
                 <Routes>
                     <Route path="/" element={<Home/>}/>
                     <Route path="*" element={<Content pages={pages}/>}/>
                 </Routes>
-            </div>
-        </div>
+            </AppShell.Main>
+        </AppShell>
     );
 }
