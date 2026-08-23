@@ -28,6 +28,9 @@ const Home: React.FC = () => (
         <Text c="dimmed" my="sm">This is demo pages.</Text>
         <List>
             <List.Item>
+                <Anchor component={Link} to="/scripts">Scripts</Anchor>
+            </List.Item>
+            <List.Item>
                 <Anchor component={Link} to="/page1">Error handling example</Anchor>
             </List.Item>
             <List.Item>

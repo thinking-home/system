@@ -58,28 +58,61 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="hello" xml:space="preserve">
-    <value>Hello!</value>
+  <data name="title" xml:space="preserve">
+    <value>Сценарии</value>
   </data>
-  <data name="bye" xml:space="preserve">
-    <value>Bye!</value>
+  <data name="newScript" xml:space="preserve">
+    <value>Новый сценарий</value>
   </data>
-  <data name="test" xml:space="preserve">
-    <value>Test string</value>
+  <data name="emptyList" xml:space="preserve">
+    <value>Сценариев пока нет</value>
   </data>
-  <data name="web-test" xml:space="preserve">
-    <value>Web-test.</value>
+  <data name="name" xml:space="preserve">
+    <value>Название</value>
   </data>
-  <data name="web-test-2" xml:space="preserve">
-    <value>Web-test-2.</value>
+  <data name="nameRequired" xml:space="preserve">
+    <value>Введите название сценария</value>
   </data>
-  <data name="web-test-3" xml:space="preserve">
-    <value>Web-test-3.</value>
+  <data name="code" xml:space="preserve">
+    <value>Текст сценария</value>
   </data>
-  <data name="incement" xml:space="preserve">
-    <value>Incement</value>
+  <data name="save" xml:space="preserve">
+    <value>Сохранить</value>
   </data>
-  <data name="sendPigMessage" xml:space="preserve">
-    <value />
+  <data name="run" xml:space="preserve">
+    <value>Выполнить</value>
+  </data>
+  <data name="runHint" xml:space="preserve">
+    <value>Сохраните сценарий, чтобы выполнить его</value>
+  </data>
+  <data name="delete" xml:space="preserve">
+    <value>Удалить</value>
+  </data>
+  <data name="deleteConfirm" xml:space="preserve">
+    <value>Удалить сценарий «{name}»?</value>
+  </data>
+  <data name="backToList" xml:space="preserve">
+    <value>К списку сценариев</value>
+  </data>
+  <data name="saved" xml:space="preserve">
+    <value>Сценарий сохранён</value>
+  </data>
+  <data name="deleted" xml:space="preserve">
+    <value>Сценарий удалён</value>
+  </data>
+  <data name="result" xml:space="preserve">
+    <value>Результат</value>
+  </data>
+  <data name="errorLoad" xml:space="preserve">
+    <value>Не удалось загрузить данные</value>
+  </data>
+  <data name="errorSave" xml:space="preserve">
+    <value>Не удалось сохранить сценарий</value>
+  </data>
+  <data name="errorDelete" xml:space="preserve">
+    <value>Не удалось удалить сценарий</value>
+  </data>
+  <data name="errorRun" xml:space="preserve">
+    <value>Не удалось выполнить сценарий</value>
   </data>
 </root>
