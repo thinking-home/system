@@ -49,7 +49,7 @@ public void RegisterHttpHandlers(WebServerConfigurationBuilder config)
 #### Параметры
 
 - `string url` — URL относительно корневого адреса
-- `string resourcePath` — путь к файлу в ресурсах DLL
+- `StaticResource resource` — файл в ресурсах DLL. Строка с путем к файлу приводится к этому типу автоматически, поэтому для обычного файла достаточно указать путь
 - `string contentType` — content type (по умолчанию "text/plain")
 - `Assembly assembly` — DLL, из которой нужно брать файл ресурсов (по умолчанию — из текущей)
 
@@ -62,6 +62,30 @@ public void RegisterHttpHandlers(WebServerConfigurationBuilder config)
     config.RegisterEmbeddedResource("/favicon.ico", "MyPlugin.favicon.ico", "image/x-icon");
 }
 ```
+
+### Предсжатые ресурсы
+
+Ответы веб-сервера сжимаются при отдаче. Если файл не меняется между запросами (например, клиентский бандл), его выгоднее сжать один раз при сборке и положить в ресурсы DLL рядом с исходным — тогда сервер отдаст готовую копию.
+
+Структура `ThinkingHome.Plugins.WebServer.Handlers.StaticResource` описывает такой набор: путь к исходному файлу и пути к его сжатым копиям — gzip и brotli.
+
+```csharp
+[ConfigureWebServer]
+public void RegisterHttpHandlers(WebServerConfigurationBuilder config)
+{
+    config.RegisterEmbeddedResource(
+        "/static/myplugin/app.js",
+        new StaticResource(
+            "MyPlugin.Resources.app.js",
+            "MyPlugin.Resources.app.js.gz",
+            "MyPlugin.Resources.app.js.br"),
+        "application/javascript");
+}
+```
+
+Пути к сжатым копиям указываются целиком — сервер не достраивает их имена. Нужно указать оба варианта: если задан только один, регистрация ресурса завершится ошибкой.
+
+Подходящий вариант сервер выберет сам, по заголовку `Accept-Encoding` запроса. Если клиент не принимает ни одну из кодировок, он получит исходный файл.
 
 ### Динамические ресурсы
 
