@@ -3,7 +3,7 @@ import * as ReactDOM from 'react-dom/client';
 import {BrowserRouter} from "react-router-dom";
 import {AppContext, AppContextProvider, LoggerProvider, LogLevel} from "@thinking-home/ui";
 import {MantineProvider} from "@mantine/core";
-import {ToastContainer} from 'react-toastify';
+import {Notifications} from "@mantine/notifications";
 
 import {Application} from "./components/Application";
 import {
@@ -12,31 +12,18 @@ import {
     ConsoleLogDestination,
     MessageHubConnection,
     MetaResponseSchema,
-    Theme,
     toaster,
     NS_FIELD,
 } from "./utils";
 
-import 'react-toastify/dist/ReactToastify.css';
-
-// Схему задаёт настройка плагина на сервере, переключателя в интерфейсе нет.
-// Оформление внутри схемы — дело клиента: здесь появятся палитры и акцентные
-// цвета, когда тем станет больше.
-const getThemeProps = (theme: Theme) => {
-    switch (theme) {
-        case 'dark':
-            return {forceColorScheme: 'dark'} as const;
-        case 'light':
-            return {forceColorScheme: 'light'} as const;
-    }
-};
+import '@mantine/notifications/styles.css';
 
 const init = async () => {
     const api = new ApiClient();
 
     const {
         pages,
-        config: {lang, theme, messageHub: messageHubConfig}
+        config: {lang, messageHub: messageHubConfig}
     } = await api.get(MetaResponseSchema, {url: '/api/webui/meta'});
 
     // logger
@@ -51,12 +38,13 @@ const init = async () => {
 
     const app = (
         <React.StrictMode>
-            <MantineProvider {...getThemeProps(theme)}>
+            {/* тему выбирает пользователь, кит сам хранит выбор в localStorage */}
+            <MantineProvider defaultColorScheme="light">
                 <BrowserRouter>
                     <AppContextProvider value={context}>
                         <LoggerProvider value={logger}>
+                            <Notifications/>
                             <Application pages={pages}/>
-                            <ToastContainer theme='colored' hideProgressBar/>
                         </LoggerProvider>
                     </AppContextProvider>
                 </BrowserRouter>

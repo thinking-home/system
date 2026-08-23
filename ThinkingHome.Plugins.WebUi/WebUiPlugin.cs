@@ -6,7 +6,6 @@ using System.Linq;
 using System.Resources;
 using System.Text;
 using System.Text.Json;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
 using ThinkingHome.Core.Plugins;
@@ -33,9 +32,9 @@ public class WebUiPlugin : PluginBase {
     const string VENDOR_URL_PREFIX = "/static/webui/vendor/";
     const string IMPORTMAP_PLACEHOLDER = "<!--th:importmap-->";
 
-    const string STYLES_PLACEHOLDER = "<!--th:styles-->";
-
-    const WebUiTheme DEFAULT_THEME = WebUiTheme.Light;
+    const string STYLES_PLACEHOLDER = "<!--th:styles-->";
+
+
 
     // Клиент веб-интерфейса и его предсжатые копии, созданные сборкой.
     static readonly StaticResource MAIN_BUNDLE = new(
@@ -43,42 +42,8 @@ public class WebUiPlugin : PluginBase {
         "ThinkingHome.Plugins.WebUi.Resources.app.main.js.gz",
         "ThinkingHome.Plugins.WebUi.Resources.app.main.js.br");
 
-    // Тема задается настройкой и не меняется во время работы, поэтому читается один раз.
-    private WebUiTheme theme;
-
     private readonly ObjectRegistry<WebUiPageDefinition> pages = new();
     private readonly ObjectRegistry<IStringLocalizer> localizers = new();
-
-    public override void InitPlugin()
-    {
-        theme = ReadTheme();
-
-        Logger.LogInformation("web ui theme: {Theme}", theme);
-    }
-
-    /// <summary>
-    /// Читает тему из настроек плагина. Неизвестное значение — не повод не запускать
-    /// интерфейс: пишем в лог доступные варианты и берем тему по умолчанию.
-    /// </summary>
-    private WebUiTheme ReadTheme()
-    {
-        var value = Configuration["theme"];
-
-        if (string.IsNullOrWhiteSpace(value)) {
-            return DEFAULT_THEME;
-        }
-
-        if (Enum.TryParse<WebUiTheme>(value, true, out var result)) {
-            return result;
-        }
-
-        Logger.LogWarning("unknown web ui theme: {Theme}; available: {Available}; using {Default}",
-            value,
-            string.Join(", ", Enum.GetNames<WebUiTheme>().Select(name => name.ToLowerInvariant())),
-            DEFAULT_THEME);
-
-        return DEFAULT_THEME;
-    }
 
     [ConfigureWebServer]
     public void RegisterHttpHandlers(WebServerConfigurationBuilder config)
@@ -230,7 +195,7 @@ public class WebUiPlugin : PluginBase {
             reconnectionTimeout = MessageHub.RECONNECTION_TIMEOUT_MS,
         };
 
-        var config = new { lang, theme, messageHub };
+        var config = new { lang, messageHub };
 
         return HttpHandlerResult.Json(new { pages, config });
     }

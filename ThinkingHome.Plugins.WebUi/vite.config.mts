@@ -31,6 +31,12 @@ export default defineConfig(({ mode }) => {
   const isProduction = mode === "production";
 
   return {
+    // Зависимости, попадающие в бандл, могут проверять process.env.NODE_ENV —
+    // в браузере такого объекта нет, поэтому значение подставляется при сборке.
+    // th-build делает то же самое для бандлов плагинов.
+    define: {
+      "process.env.NODE_ENV": JSON.stringify(mode),
+    },
     esbuild: {
       jsx: "transform",
       jsxFactory: "React.createElement",
