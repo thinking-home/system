@@ -2,7 +2,8 @@ import * as React from 'react';
 import * as ReactDOM from 'react-dom/client';
 import {BrowserRouter} from "react-router-dom";
 import {AppContext, AppContextProvider, LoggerProvider, LogLevel} from "@thinking-home/ui";
-import {ToastContainer} from 'react-toastify';
+import {MantineProvider} from "@mantine/core";
+import {Notifications} from "@mantine/notifications";
 
 import {Application} from "./components/Application";
 import {
@@ -15,7 +16,7 @@ import {
     NS_FIELD,
 } from "./utils";
 
-import 'react-toastify/dist/ReactToastify.css';
+import '@mantine/notifications/styles.css';
 
 const init = async () => {
     const api = new ApiClient();
@@ -37,14 +38,17 @@ const init = async () => {
 
     const app = (
         <React.StrictMode>
-            <BrowserRouter>
-                <AppContextProvider value={context}>
-                    <LoggerProvider value={logger}>
-                        <Application pages={pages}/>
-                        <ToastContainer theme='colored' hideProgressBar/>
-                    </LoggerProvider>
-                </AppContextProvider>
-            </BrowserRouter>
+            {/* тему выбирает пользователь, кит сам хранит выбор в localStorage */}
+            <MantineProvider defaultColorScheme="light">
+                <BrowserRouter>
+                    <AppContextProvider value={context}>
+                        <LoggerProvider value={logger}>
+                            <Notifications/>
+                            <Application pages={pages}/>
+                        </LoggerProvider>
+                    </AppContextProvider>
+                </BrowserRouter>
+            </MantineProvider>
         </React.StrictMode>
     );
 

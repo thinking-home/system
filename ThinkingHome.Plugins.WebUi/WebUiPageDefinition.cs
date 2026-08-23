@@ -1,4 +1,5 @@
 using ThinkingHome.Core.Plugins.Utils;
+using ThinkingHome.Plugins.WebServer.Handlers;
 
 namespace ThinkingHome.Plugins.WebUi;
 
@@ -8,16 +9,16 @@ public class WebUiPageDefinition
     public readonly string PathJavaScript;
 
     public readonly Type Source;
-    public readonly string JsResourcePath;
+    public readonly StaticResource Js;
     public readonly string LangId;
 
     public WebUiPageDefinition(Type source,
         string url,
-        string jsResourcePath, 
+        StaticResource js, 
         string langId)
     {
         Source = source;
-        JsResourcePath = jsResourcePath;
+        Js = js;
         LangId = langId;
 
         PathDocument = url;

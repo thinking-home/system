@@ -1,9 +1,5 @@
 import React from "react";
-import {cn} from '@bem-react/classname';
-
-import './ErrorScreen.css';
-
-const cls = cn('ErrorScreen');
+import {Center, Group, Text, Title} from "@mantine/core";
 
 export interface ErrorScreenProps {
     message: string;
@@ -11,12 +7,12 @@ export interface ErrorScreenProps {
 
 export const ErrorScreen: React.FC<ErrorScreenProps> = ({message}) => {
 
-    return (// TMP:
-        <div className={cls()}>
-            <div className={cls('Content', ['h1'])}>
-                <span className={cls('Title')}>Error</span>
-                <small className={cls('Message', ['text-muted'])}> {message}</small>
-            </div>
-        </div>
+    return (
+        <Center h="100%">
+            <Group gap="xs" align="baseline">
+                <Title order={1} c="red">Error</Title>
+                <Text c="dimmed" size="xl" style={{whiteSpace: 'nowrap'}}>{message}</Text>
+            </Group>
+        </Center>
     );
 }

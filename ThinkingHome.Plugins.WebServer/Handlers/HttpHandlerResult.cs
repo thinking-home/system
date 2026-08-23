@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Text;
 using ThinkingHome.Core.Plugins.Utils;
 
@@ -7,6 +8,12 @@ namespace ThinkingHome.Plugins.WebServer.Handlers
     {
         public string ContentType { get; init; }
         public byte[] Content { get; init; }
+
+        /// <summary>
+        /// Дополнительные заголовки ответа. Записываются после остальных, поэтому
+        /// могут переопределить заголовки, которые выставляет сервер.
+        /// </summary>
+        public IDictionary<string, string> Headers { get; init; }
 
         public static HttpHandlerResult Json(object obj)
         {

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -31,6 +32,16 @@ public class WebUiPlugin : PluginBase {
     const string VENDOR_URL_PREFIX = "/static/webui/vendor/";
     const string IMPORTMAP_PLACEHOLDER = "<!--th:importmap-->";
 
+    const string STYLES_PLACEHOLDER = "<!--th:styles-->";
+
+
+
+    // Клиент веб-интерфейса и его предсжатые копии, созданные сборкой.
+    static readonly StaticResource MAIN_BUNDLE = new(
+        "ThinkingHome.Plugins.WebUi.Resources.app.main.js",
+        "ThinkingHome.Plugins.WebUi.Resources.app.main.js.gz",
+        "ThinkingHome.Plugins.WebUi.Resources.app.main.js.br");
+
     private readonly ObjectRegistry<WebUiPageDefinition> pages = new();
     private readonly ObjectRegistry<IStringLocalizer> localizers = new();
 
@@ -52,20 +63,12 @@ public class WebUiPlugin : PluginBase {
         config.RegisterDynamicResource("/", ServeIndex, true);
 
         foreach (var pageDef in pages.Data.Values) {
-            config
-                .RegisterDynamicResource(pageDef.PathDocument, ServeIndex, true)
-                .RegisterEmbeddedResource(pageDef.PathJavaScript, pageDef.JsResourcePath, MIME_JS, pageDef.Source.Assembly);
+            config.RegisterDynamicResource(pageDef.PathDocument, ServeIndex, true);
+
+            config.RegisterEmbeddedResource(pageDef.PathJavaScript, pageDef.Js, MIME_JS, pageDef.Source.Assembly);
         }
 
-        config.RegisterEmbeddedResource(
-            "/static/webui/css/bootstrap.min.css",
-            "ThinkingHome.Plugins.WebUi.Resources.static.bootstrap.min.css",
-            MIME_CSS);
-
-        config.RegisterEmbeddedResource(
-            "/static/webui/js/main.js",
-            "ThinkingHome.Plugins.WebUi.Resources.app.main.js",
-            MIME_JS);
+        config.RegisterEmbeddedResource("/static/webui/js/main.js", MAIN_BUNDLE, MIME_JS);
 
         config.RegisterDynamicResource("/api/webui/meta", GetMeta);
         config.RegisterDynamicResource("/api/webui/lang", GetLang, true);
@@ -73,23 +76,58 @@ public class WebUiPlugin : PluginBase {
 
     private HttpHandlerResult BuildIndexDocument(WebServerConfigurationBuilder config)
     {
-        // shared.json: specifier -> vendor file name (single source of truth from th-ui)
-        var manifest = JsonSerializer.Deserialize<Dictionary<string, string>>(
-                ReadTextResource(VENDOR_MANIFEST_RES))
+        // shared.json: манифест, который сборка th-ui генерирует вместе с бандлами.
+        // imports — соответствие импортов файлам, files — сжатые варианты каждого файла.
+        // Имена файлов берём только отсюда: собирать их самостоятельно нельзя, иначе
+        // схема имён дублируется в двух репозиториях и может разъехаться.
+        var manifest = JsonSerializer.Deserialize<StaticManifest>(ReadTextResource(VENDOR_MANIFEST_RES))
             ?? throw new InvalidDataException($"invalid vendor manifest: {VENDOR_MANIFEST_RES}");
 
         // register each vendor module for serving (deduplicated by file name)
-        foreach (var fileName in manifest.Values.Distinct()) {
-            config.RegisterEmbeddedResource(VENDOR_URL_PREFIX + fileName, VENDOR_RES_PREFIX + fileName, MIME_JS);
+        foreach (var fileName in manifest.Imports.Values.Distinct()) {
+            RegisterVendorFile(config, manifest, fileName, MIME_JS);
+        }
+
+        // Стили приезжают вместе с вендорными модулями, и их список определяет сборка
+        // @thinking-home/ui. Берём его из манифеста, чтобы при обновлении пакета
+        // не приходилось править список файлов здесь.
+        foreach (var fileName in manifest.Styles) {
+            RegisterVendorFile(config, manifest, fileName, MIME_CSS);
         }
 
         // build the import map { imports: { specifier: url } } and inject it
-        var imports = manifest.ToDictionary(pair => pair.Key, pair => VENDOR_URL_PREFIX + pair.Value);
+        var imports = manifest.Imports.ToDictionary(pair => pair.Key, pair => VENDOR_URL_PREFIX + pair.Value);
         var importMap = $"<script type=\"importmap\">{new { imports }.ToJson()}</script>";
 
-        var html = ReadTextResource(HTML_RES_PATH).Replace(IMPORTMAP_PLACEHOLDER, importMap);
+        var styles = string.Concat(manifest.Styles.Select(
+            fileName => $"<link rel=\"stylesheet\" href=\"{VENDOR_URL_PREFIX}{fileName}\">"));
+
+        var html = ReadTextResource(HTML_RES_PATH)
+            .Replace(IMPORTMAP_PLACEHOLDER, importMap)
+            .Replace(STYLES_PLACEHOLDER, styles);
 
         return HttpHandlerResult.Binary(Encoding.UTF8.GetBytes(html), MIME_HTML);
+    }
+
+    /// <summary>
+    /// Регистрирует файл, приехавший в составе @thinking-home/ui. Манифест перечисляет
+    /// варианты, созданные при сборке: если заявленного варианта нет среди ресурсов,
+    /// это ошибка сборки, а не повод отдать несжатый файл.
+    /// </summary>
+    private void RegisterVendorFile(
+        WebServerConfigurationBuilder config, StaticManifest manifest, string fileName, string contentType)
+    {
+        var files = manifest.Files[fileName];
+
+        Logger.LogInformation("register vendor file: {File}", fileName);
+
+        config.RegisterEmbeddedResource(
+            VENDOR_URL_PREFIX + fileName,
+            new StaticResource(
+                VENDOR_RES_PREFIX + fileName,
+                VENDOR_RES_PREFIX + files["gzip"],
+                VENDOR_RES_PREFIX + files["br"]),
+            contentType);
     }
 
     private string ReadTextResource(string resourcePath)

@@ -1,4 +1,5 @@
 using ThinkingHome.Core.Plugins.Utils;
+using ThinkingHome.Plugins.WebServer.Handlers;
 
 namespace ThinkingHome.Plugins.WebUi;
 
@@ -11,9 +12,13 @@ public class WebUiConfigurationBuilder : BaseConfigurationBuilder<WebUiPageDefin
         LangId = langId;
     }
 
-    public WebUiConfigurationBuilder RegisterPage(string url, string jsEmbeddedResourcePath)
+    /// <summary>
+    /// Зарегистрировать раздел веб-интерфейса. Если сборка плагина создала для бандла
+    /// предсжатые копии, их пути указываются вместе с исходным (см. <see cref="StaticResource"/>).
+    /// </summary>
+    public WebUiConfigurationBuilder RegisterPage(string url, StaticResource js)
     {
-        RegisterItem(url, new WebUiPageDefinition(Source, url, jsEmbeddedResourcePath, LangId));
+        RegisterItem(url, new WebUiPageDefinition(Source, url, js, LangId));
 
         HasPages = true;
 

@@ -37,7 +37,10 @@ namespace ThinkingHome.Plugins.WebServer {
                     HttpHandlerResult data;
 
                     if (handler.IsCached) {
-                        var cacheKey = $"B746CB6C-D767-4AD8-B3F5-CD7FADEAD51A:{path}";
+                        // ответ может зависеть от Accept-Encoding (предсжатые ресурсы),
+                        // поэтому кэшируем варианты по отдельности
+                        var acceptEncoding = context.Request.Headers.AcceptEncoding.ToString();
+                        var cacheKey = $"B746CB6C-D767-4AD8-B3F5-CD7FADEAD51A:{path}:{acceptEncoding}";
 
                         data = await cache.GetOrCreateAsync(cacheKey, e => {
                             e.SetAbsoluteExpiration(TimeSpan.FromSeconds(CACHE_EXPIRATION));
@@ -54,6 +57,12 @@ namespace ThinkingHome.Plugins.WebServer {
                     if (data != null) {
                         context.Response.ContentType = data.ContentType;
                         context.Response.ContentLength = data.Content.Length;
+
+                        if (data.Headers != null) {
+                            foreach (var header in data.Headers) {
+                                context.Response.Headers[header.Key] = header.Value;
+                            }
+                        }
 
                         await context.Response.Body.WriteAsync(data.Content, 0, data.Content.Length);
                     }

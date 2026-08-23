@@ -1,7 +1,7 @@
 import { resolve } from "node:path";
 import { cpSync, mkdirSync } from "node:fs";
 import { defineConfig, type Plugin } from "vite";
-import { cssInject, SHARED_EXTERNALS } from "@thinking-home/ui/build";
+import { cssInject, precompress, SHARED_EXTERNALS } from "@thinking-home/ui/build";
 
 // The WebUi host client is built as an ESM bundle (Resources/app/main.js),
 // loaded via <script type="module">. The shared libraries (react, react-router,
@@ -31,12 +31,20 @@ export default defineConfig(({ mode }) => {
   const isProduction = mode === "production";
 
   return {
+    // Зависимости, попадающие в бандл, могут проверять process.env.NODE_ENV —
+    // в браузере такого объекта нет, поэтому значение подставляется при сборке.
+    // th-build делает то же самое для бандлов плагинов.
+    define: {
+      "process.env.NODE_ENV": JSON.stringify(mode),
+    },
     esbuild: {
       jsx: "transform",
       jsxFactory: "React.createElement",
       jsxFragment: "React.Fragment",
     },
-    plugins: [cssInject(), copyVendor()],
+    // precompress сжимает только то, что выдала сборка (main.js): у вендорных
+    // модулей свои предсжатые копии и свой манифест, их копирует copyVendor
+    plugins: [cssInject(), precompress(), copyVendor()],
     build: {
       target: "es2020",
       outDir,
