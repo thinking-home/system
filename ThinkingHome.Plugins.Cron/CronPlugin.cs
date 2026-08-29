@@ -9,11 +9,18 @@ using ThinkingHome.Core.Plugins.Utils;
 using ThinkingHome.Plugins.Cron.Model;
 using ThinkingHome.Plugins.Database;
 using ThinkingHome.Plugins.Scripts;
+using ThinkingHome.Plugins.Scripts.Events;
 using ThinkingHome.Plugins.Timer;
 
 namespace ThinkingHome.Plugins.Cron
 {
     public class CronPlugin(DatabasePlugin database, ScriptsPlugin scripts) : PluginBase {
+        /// <summary>Название события, которое генерируется при запуске записи расписания</summary>
+        public const string TaskStartedEventName = "cron:task:started";
+
+        /// <summary>Ключ словаря meta, в котором передается id записи расписания</summary>
+        public const string TaskIdMetaKey = "taskId";
+
         private const int CHECK_INTERVAL = 20000; // ms
 
         private const int ACTIVE_PERIOD = 5; // minutes
@@ -26,11 +33,19 @@ namespace ThinkingHome.Plugins.Cron
 
         private List<CronHandlerDelegate> handlers;
 
+        private ScriptEventEmitter taskStarted;
+
         public override void InitPlugin()
         {
             base.InitPlugin();
 
             handlers = RegisterHandlers();
+        }
+
+        [ConfigureScriptEvents]
+        public void RegisterScriptEvents(ScriptEventsConfigurationBuilder config)
+        {
+            taskStarted = config.RegisterEvent(TaskStartedEventName);
         }
 
         [DbModelBuilder]
@@ -90,20 +105,18 @@ namespace ThinkingHome.Plugins.Cron
                 {
                     lastEventTime = now;
 
-                    using var session = database.OpenSession();
-                    
                     foreach (var task in active)
                     {
                         Logger.LogInformation("cron task started: {TaskId}", task.TaskId);
 
                         if (!string.IsNullOrEmpty(task.EventAlias))
                         {
-                            scripts.EmitScriptEvent(session, task.EventAlias);
+                            scripts.EmitUserEvent(task.EventAlias);
                         }
 
                         _ = SafeInvokeAsync(handlers, h => h(task.TaskId));
 
-                        scripts.EmitScriptEvent(session, "cron:task:started", task.TaskId);
+                        taskStarted(new Dictionary<string, string> { [TaskIdMetaKey] = task.TaskId.ToString() });
                     }
                 }
             }
