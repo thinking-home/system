@@ -2,6 +2,7 @@
 using System.Linq;
 using ThinkingHome.Core.Plugins;
 using ThinkingHome.Plugins.Database;
+using ThinkingHome.Plugins.Scripts.Events;
 using ThinkingHome.Plugins.Scripts.Model;
 using ThinkingHome.Plugins.WebServer;
 using ThinkingHome.Plugins.WebServer.Attributes;
@@ -113,7 +114,8 @@ namespace ThinkingHome.Plugins.Scripts.WebApi
                     id = x.Id,
                     scriptId = x.UserScript.Id,
                     scriptName = x.UserScript.Name,
-                    eventAlias = x.EventAlias
+                    eventName = x.EventName,
+                    metaFilter = x.MetaFilter
                 })
                 .ToList();
 
@@ -123,7 +125,11 @@ namespace ThinkingHome.Plugins.Scripts.WebApi
         private HttpHandlerResult AddSubscription(HttpRequestParams request)
         {
             var scriptId = request.GetRequiredGuid("scriptId");
-            var eventAlias = request.GetRequiredString("eventAlias");
+            var eventName = request.GetRequiredString("eventName");
+
+            // фильтр приводится к каноническому виду, чтобы одинаковые
+            // фильтры совпадали как строки
+            var metaFilter = MetaFilter.Serialize(MetaFilter.Parse(request.GetString("metaFilter")));
 
             using var session = database.OpenSession();
             var subscriptionId = Guid.NewGuid();
@@ -131,7 +137,8 @@ namespace ThinkingHome.Plugins.Scripts.WebApi
             var subscription = new ScriptEventHandler
             {
                 Id = subscriptionId,
-                EventAlias = eventAlias,
+                EventName = eventName,
+                MetaFilter = string.IsNullOrEmpty(metaFilter) ? null : metaFilter,
                 UserScriptId = scriptId
             };
 
