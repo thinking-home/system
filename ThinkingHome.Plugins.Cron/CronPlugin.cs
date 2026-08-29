@@ -109,9 +109,9 @@ namespace ThinkingHome.Plugins.Cron
                     {
                         Logger.LogInformation("cron task started: {TaskId}", task.TaskId);
 
-                        if (!string.IsNullOrEmpty(task.EventAlias))
+                        if (!string.IsNullOrEmpty(task.EventName))
                         {
-                            scripts.EmitUserEvent(task.EventAlias);
+                            scripts.EmitUserEvent(task.EventName);
                         }
 
                         _ = SafeInvokeAsync(handlers, h => h(task.TaskId));
@@ -132,10 +132,23 @@ namespace ThinkingHome.Plugins.Cron
             {
                 using (var session = database.OpenSession())
                 {
-                    schedule = session.Set<CronTask>()
-                        .Where(t => t.Enabled).AsEnumerable()
-                        .Select(CronScheduleItem.FromTask)
-                        .ToList();
+                    var loaded = new List<CronScheduleItem>();
+
+                    foreach (var task in session.Set<CronTask>().Where(t => t.Enabled))
+                    {
+                        try
+                        {
+                            loaded.Add(CronScheduleItem.FromTask(task));
+                        }
+                        catch (Exception ex)
+                        {
+                            // некорректное выражение (например, отредактированное в БД
+                            // напрямую) не должно валить загрузку всего расписания
+                            Logger.LogError(ex, "invalid cron expression in task {TaskId}", task.Id);
+                        }
+                    }
+
+                    schedule = loaded;
 
                     Logger.LogInformation("{Count} cron tasks are loaded", schedule.Count);
                 }
