@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 18
-VisualStudioVersion = 18.9.12112.369 stable
+VisualStudioVersion = 18.9.12112.369
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ThinkingHome.Core.Plugins", "ThinkingHome.Core.Plugins\ThinkingHome.Core.Plugins.csproj", "{B96DEFE5-71D4-44D0-88EB-A296C04A151D}"
 EndProject
@@ -53,6 +53,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ThinkingHome.Plugins.TelegramChatList", "ThinkingHome.Plugins.TelegramChatList\ThinkingHome.Plugins.TelegramChatList.csproj", "{0599B53C-C02C-4B37-8A08-76A7B810E06D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ThinkingHome.Plugins.TelegramChatList.WebApi", "ThinkingHome.Plugins.TelegramChatList.WebApi\ThinkingHome.Plugins.TelegramChatList.WebApi.csproj", "{662B40D6-236E-4E5B-A1E9-51099C5DA6B9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ThinkingHome.Plugins.Scripts.WebUi", "ThinkingHome.Plugins.Scripts.WebUi\ThinkingHome.Plugins.Scripts.WebUi.csproj", "{A9E0C1EE-A793-42A8-AF2B-C672E33FDA9F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -304,6 +306,18 @@ Global
 		{662B40D6-236E-4E5B-A1E9-51099C5DA6B9}.Release|x64.Build.0 = Release|Any CPU
 		{662B40D6-236E-4E5B-A1E9-51099C5DA6B9}.Release|x86.ActiveCfg = Release|Any CPU
 		{662B40D6-236E-4E5B-A1E9-51099C5DA6B9}.Release|x86.Build.0 = Release|Any CPU
+		{A9E0C1EE-A793-42A8-AF2B-C672E33FDA9F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A9E0C1EE-A793-42A8-AF2B-C672E33FDA9F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A9E0C1EE-A793-42A8-AF2B-C672E33FDA9F}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{A9E0C1EE-A793-42A8-AF2B-C672E33FDA9F}.Debug|x64.Build.0 = Debug|Any CPU
+		{A9E0C1EE-A793-42A8-AF2B-C672E33FDA9F}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{A9E0C1EE-A793-42A8-AF2B-C672E33FDA9F}.Debug|x86.Build.0 = Debug|Any CPU
+		{A9E0C1EE-A793-42A8-AF2B-C672E33FDA9F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A9E0C1EE-A793-42A8-AF2B-C672E33FDA9F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A9E0C1EE-A793-42A8-AF2B-C672E33FDA9F}.Release|x64.ActiveCfg = Release|Any CPU
+		{A9E0C1EE-A793-42A8-AF2B-C672E33FDA9F}.Release|x64.Build.0 = Release|Any CPU
+		{A9E0C1EE-A793-42A8-AF2B-C672E33FDA9F}.Release|x86.ActiveCfg = Release|Any CPU
+		{A9E0C1EE-A793-42A8-AF2B-C672E33FDA9F}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -327,6 +341,7 @@ Global
 		{003AE996-5F8D-414E-A084-CB93B91D10B1} = {5DF04DCB-BC26-42FA-B7D6-CFC24963F1A8}
 		{0599B53C-C02C-4B37-8A08-76A7B810E06D} = {5DF04DCB-BC26-42FA-B7D6-CFC24963F1A8}
 		{662B40D6-236E-4E5B-A1E9-51099C5DA6B9} = {5DF04DCB-BC26-42FA-B7D6-CFC24963F1A8}
+		{A9E0C1EE-A793-42A8-AF2B-C672E33FDA9F} = {5DF04DCB-BC26-42FA-B7D6-CFC24963F1A8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {AD4DA176-741B-47E6-9561-225BB535B628}

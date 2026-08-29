@@ -14,6 +14,7 @@ ThinkingHome - кроссплатформенное приложение, поз
 - [ThinkingHome.Plugins.NooLite](./ThinkingHome.Plugins.NooLite) - управление освещением/электроприборами с помощью устройств [nooLite](https://www.noo.com.by/sistema-noolite.html)
 - [ThinkingHome.Plugins.Scripts](./ThinkingHome.Plugins.Scripts) - выполнение сценариев автоматизации
 - [ThinkingHome.Plugins.Scripts.WebApi](./ThinkingHome.Plugins.Scripts.WebApi) - web API для управления сценариями
+- [ThinkingHome.Plugins.Scripts.WebUi](./ThinkingHome.Plugins.Scripts.WebUi) - разделы веб-интерфейса для работы со сценариями
 - [ThinkingHome.Plugins.TelegramBot](./ThinkingHome.Plugins.TelegramBot) - Telegram бот
 - [ThinkingHome.Plugins.TelegramChatList](./ThinkingHome.Plugins.TelegramChatList) - сохранение информации о чатах с Telegram ботом
 - [ThinkingHome.Plugins.TelegramChatList.WebApi](./ThinkingHome.Plugins.TelegramChatList.WebApi) - web API для просмотра списка сохраненных чатов
