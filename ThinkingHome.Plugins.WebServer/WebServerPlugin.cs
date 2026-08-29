@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -48,6 +49,7 @@ namespace ThinkingHome.Plugins.WebServer
                     .ConfigureServices(services => services
                         .AddResponseCompression()
                         .AddMemoryCache()
+                        .AddSingleton<IHostLifetime, NullHostLifetime>()
                         .AddSignalR())
                     .ConfigureLogging(builder =>
                         builder.AddProxy(Logger)))
@@ -95,6 +97,17 @@ namespace ThinkingHome.Plugins.WebServer
         public Task Send(string topic, object data)
         {
             return hubContext.Send(topic, data);
+        }
+
+        // Хосту по умолчанию достается ConsoleLifetime, который перехватывает Ctrl+C:
+        // отменяет завершение процесса и вместо него останавливает хост — из-за этого
+        // приложение не закрывалось по первому Ctrl+C. Завершением процесса управляет
+        // хост-приложение (Program), поэтому веб-хосту оставляем пустой lifetime.
+        private class NullHostLifetime : IHostLifetime
+        {
+            public Task WaitForStartAsync(CancellationToken cancellationToken) => Task.CompletedTask;
+
+            public Task StopAsync(CancellationToken cancellationToken) => Task.CompletedTask;
         }
     }
 }

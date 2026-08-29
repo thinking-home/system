@@ -15,8 +15,14 @@ namespace ThinkingHome.Console
             app.StartServices(config);
 
             // finalize
+            var shutdownStarted = 0;
+
             void Shutdown()
             {
+                // Shutdown подписан на несколько событий (Ctrl+C и выгрузка сборок),
+                // а останавливать плагины нужно не больше одного раза
+                if (Interlocked.Exchange(ref shutdownStarted, 1) != 0) return;
+
                 System.Console.WriteLine("\nApplication is shutting down...");
                 app.StopServices();
                 System.Console.WriteLine("Done");
