@@ -115,4 +115,73 @@
   <data name="errorRun" xml:space="preserve">
     <value>Не удалось выполнить сценарий</value>
   </data>
+  <data name="subscriptions" xml:space="preserve">
+    <value>Подписки</value>
+  </data>
+  <data name="subscriptionsTitle" xml:space="preserve">
+    <value>Подписки на события</value>
+  </data>
+  <data name="newSubscription" xml:space="preserve">
+    <value>Новая подписка</value>
+  </data>
+  <data name="emptySubscriptionList" xml:space="preserve">
+    <value>Подписок пока нет</value>
+  </data>
+  <data name="script" xml:space="preserve">
+    <value>Сценарий</value>
+  </data>
+  <data name="event" xml:space="preserve">
+    <value>Событие</value>
+  </data>
+  <data name="eventNotRegistered" xml:space="preserve">
+    <value>не зарегистрировано</value>
+  </data>
+  <data name="metaFilter" xml:space="preserve">
+    <value>Фильтр по meta</value>
+  </data>
+  <data name="metaKey" xml:space="preserve">
+    <value>Ключ</value>
+  </data>
+  <data name="metaValue" xml:space="preserve">
+    <value>Значение</value>
+  </data>
+  <data name="addRow" xml:space="preserve">
+    <value>Добавить строку</value>
+  </data>
+  <data name="add" xml:space="preserve">
+    <value>Добавить</value>
+  </data>
+  <data name="cancel" xml:space="preserve">
+    <value>Отмена</value>
+  </data>
+  <data name="scriptRequired" xml:space="preserve">
+    <value>Выберите сценарий</value>
+  </data>
+  <data name="eventRequired" xml:space="preserve">
+    <value>Выберите событие</value>
+  </data>
+  <data name="customNameRequired" xml:space="preserve">
+    <value>Введите имя события</value>
+  </data>
+  <data name="metaKeyRequired" xml:space="preserve">
+    <value>Заполните ключи фильтра</value>
+  </data>
+  <data name="metaKeyDuplicated" xml:space="preserve">
+    <value>Ключи фильтра не должны повторяться</value>
+  </data>
+  <data name="subscriptionAdded" xml:space="preserve">
+    <value>Подписка добавлена</value>
+  </data>
+  <data name="subscriptionDeleted" xml:space="preserve">
+    <value>Подписка удалена</value>
+  </data>
+  <data name="subscriptionDeleteConfirm" xml:space="preserve">
+    <value>Удалить подписку сценария «{script}» на событие «{event}»?</value>
+  </data>
+  <data name="errorAddSubscription" xml:space="preserve">
+    <value>Не удалось добавить подписку</value>
+  </data>
+  <data name="errorDeleteSubscription" xml:space="preserve">
+    <value>Не удалось удалить подписку</value>
+  </data>
 </root>

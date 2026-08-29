@@ -119,6 +119,33 @@ curl 'http://localhost:8080/api/scripts/web-api/list'
 curl 'http://localhost:8080/api/scripts/web-api/execute?id=c91f45c6-2da1-4cc6-a2b8-8190adf5144f'
 ```
 
+### `/api/scripts/web-api/events/list`
+
+Возвращает список зарегистрированных сценарных событий, а также константы [пользовательского события](../ThinkingHome.Plugins.Scripts/README.md#пользовательские-события): название события (`userEvent.name`) и ключ словаря meta, в котором передается имя пользовательского события (`userEvent.metaKey`).
+
+#### Параметры и возвращаемое значение
+
+Для этого запроса не нужно передавать никаких параметров.
+
+```js
+{
+    "events": [
+        {"name":"noolite:data:received"},
+        {"name":"scripts:user-event"}
+    ],
+    "userEvent": {
+        "name":"scripts:user-event",
+        "metaKey":"name"
+    }
+}
+```
+
+#### Пример
+
+```bash
+curl 'http://localhost:8080/api/scripts/web-api/events/list'
+```
+
 ### `/api/scripts/web-api/subscription/list`
 
 Возвращает список сценариев, подписанных на сценарные события.

@@ -20,6 +20,7 @@ namespace ThinkingHome.Plugins.Scripts.WebApi
                 .RegisterDynamicResource("/api/scripts/web-api/save", SaveScript)
                 .RegisterDynamicResource("/api/scripts/web-api/delete", DeleteScript)
                 .RegisterDynamicResource("/api/scripts/web-api/execute", RunScript)
+                .RegisterDynamicResource("/api/scripts/web-api/events/list", GetEventList)
                 .RegisterDynamicResource("/api/scripts/web-api/subscription/list",GetSubscriptionList)
                 .RegisterDynamicResource("/api/scripts/web-api/subscription/add", AddSubscription)
                 .RegisterDynamicResource("/api/scripts/web-api/subscription/delete", DeleteSubscription);
@@ -104,6 +105,23 @@ namespace ThinkingHome.Plugins.Scripts.WebApi
         #endregion
 
         #region script event
+
+        private HttpHandlerResult GetEventList(HttpRequestParams request)
+        {
+            var events = scripts.GetRegisteredEvents()
+                .Select(x => new { name = x.Name })
+                .ToArray();
+
+            return HttpHandlerResult.Json(new
+            {
+                events,
+                userEvent = new
+                {
+                    name = ScriptsPlugin.UserEventName,
+                    metaKey = ScriptsPlugin.UserEventNameMetaKey
+                }
+            });
+        }
 
         private HttpHandlerResult GetSubscriptionList(HttpRequestParams request)
         {
