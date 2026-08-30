@@ -4,7 +4,8 @@
   "thPlugin": {
     "entries": {
       "list": "frontend/list.tsx",
-      "editor": "frontend/editor.tsx"
+      "editor": "frontend/editor.tsx",
+      "subscriptions": "frontend/subscriptions.tsx"
     }
   },
   "scripts": {

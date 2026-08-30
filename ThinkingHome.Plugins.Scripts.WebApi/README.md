@@ -18,16 +18,16 @@
 - `name` (string, required) - название сценария, по которому к нему можно будет обращаться из других сценариев и плагинов.
 - `body` (string, required) - текст сценария на языке JavaScript.
 
-В ответ на клиент возвращается строка, содержащая id сохраненного сценария.
+В ответ на клиент возвращается id сохраненного сценария.
 
 ```js
-"21222eed-5a92-42ad-b7c9-23f548482024"
+{"scriptId":"21222eed-5a92-42ad-b7c9-23f548482024"}
 ```
 
 #### Пример
 
 ```bash
-curl 'http://localhost:8080/api/scripts/web-api/save?name=say-hello&body=host.log.fatal(%22hello%20world%22);'
+curl 'http://localhost:8080/api/scripts/web-api/save' -d 'name=say-hello' -d 'body=host.log.fatal(%22hello%20world%22);'
 ```
 
 ### `/api/scripts/web-api/get`
@@ -38,7 +38,7 @@ curl 'http://localhost:8080/api/scripts/web-api/save?name=say-hello&body=host.lo
 
 - `id` (guid, required) - id сценария.
 
-В ответ на клиент возвражается объект, содержащий id, название и текст заданного сценария.
+В ответ на клиент возвращается объект, содержащий id, название и текст заданного сценария. Если сценарий с заданным id не удалось найти, будет возвращен код ошибки 500.
 
 ```js
 {
@@ -62,7 +62,7 @@ curl 'http://localhost:8080/api/scripts/web-api/get?id=21222eed-5a92-42ad-b7c9-2
 
 - `id` (guid, required) - id сценария.
 
-В ответ на клиент возвражается `null`. Если сценарий с заданным id не удалось найти, будет возвращен код ошибки 500. 
+В ответ на клиент возвращается `null`. Если сценарий с заданным id не удалось найти, будет возвращен код ошибки 500. 
 
 ```js
 null
@@ -71,7 +71,7 @@ null
 #### Пример
 
 ```bash
-curl 'http://localhost:8080/api/scripts/web-api/delete?id=21222eed-5a92-42ad-b7c9-23f548482024'
+curl 'http://localhost:8080/api/scripts/web-api/delete' -d 'id=21222eed-5a92-42ad-b7c9-23f548482024'
 ```
 
 ### `/api/scripts/web-api/list`
@@ -82,7 +82,7 @@ curl 'http://localhost:8080/api/scripts/web-api/delete?id=21222eed-5a92-42ad-b7c
 
 Для этого запроса не нужно передавать никаких параметров.
 
-В ответ на клиент возвражается список сценариев, содержащий их id и названия.
+В ответ на клиент возвращается список сценариев, содержащий их id и названия.
 
 ```js
 [
@@ -111,12 +111,39 @@ curl 'http://localhost:8080/api/scripts/web-api/list'
 
 - `id` (guid, required) - id сценария.
 
-В ответ на клиент возвражается значение, которое было возвращено из сценария через `return`. Если сценарий не имеет возвращаемого значения, на клиент будет возвращен `null`. 
+В ответ на клиент возвращается значение, которое было возвращено из сценария через `return`. Если сценарий не имеет возвращаемого значения, на клиент будет возвращен `null`. Ошибка выполнения сценария на клиент не возвращается: в этом случае ответ — тоже `null`, а информация об ошибке записывается в лог системы.
 
 #### Пример
 
 ```bash
-curl 'http://localhost:8080/api/scripts/web-api/execute?id=c91f45c6-2da1-4cc6-a2b8-8190adf5144f'
+curl 'http://localhost:8080/api/scripts/web-api/execute' -d 'id=c91f45c6-2da1-4cc6-a2b8-8190adf5144f'
+```
+
+### `/api/scripts/web-api/events/list`
+
+Возвращает список зарегистрированных сценарных событий, а также константы [пользовательского события](../ThinkingHome.Plugins.Scripts/README.md#пользовательские-события): название события (`userEvent.name`) и ключ словаря meta, в котором передается имя пользовательского события (`userEvent.metaKey`).
+
+#### Параметры и возвращаемое значение
+
+Для этого запроса не нужно передавать никаких параметров.
+
+```js
+{
+    "events": [
+        {"name":"noolite:data:received"},
+        {"name":"scripts:user-event"}
+    ],
+    "userEvent": {
+        "name":"scripts:user-event",
+        "metaKey":"name"
+    }
+}
+```
+
+#### Пример
+
+```bash
+curl 'http://localhost:8080/api/scripts/web-api/events/list'
 ```
 
 ### `/api/scripts/web-api/subscription/list`
@@ -127,7 +154,7 @@ curl 'http://localhost:8080/api/scripts/web-api/execute?id=c91f45c6-2da1-4cc6-a2
 
 Для этого запроса не нужно передавать никаких параметров.
 
-В ответ на клиент возвражается список, содержащий id *подписки на событие*, название события, а также id и название сценария.
+В ответ на клиент возвращается список, содержащий id *подписки на событие*, название события, фильтр по значениям meta события (`null` — без фильтра, см. [фильтры подписок](../ThinkingHome.Plugins.Scripts/README.md#фильтры-подписок)), а также id и название сценария.
 
 ```js
 [
@@ -135,13 +162,15 @@ curl 'http://localhost:8080/api/scripts/web-api/execute?id=c91f45c6-2da1-4cc6-a2
         "id":"b308f0e7-7f0c-4599-ba89-65cff22ae043",
         "scriptId":"a634a269-d250-40bc-a9ca-0e76b19d84b5",
         "scriptName":"say-hello",
-        "eventAlias":"я дома"
+        "eventName":"scripts:user-event",
+        "metaFilter":"name=%D1%8F%20%D0%B4%D0%BE%D0%BC%D0%B0"
     },
     {
         "id":"ab4ef0e7-7f0c-4599-ba89-65cff22ae756",
         "scriptId":"57a79a81-3045-46f0-a76c-6f0f2fafde24",
         "scriptName":"debug-tool",
-        "eventAlias":"my-event"
+        "eventName":"noolite:data:received",
+        "metaFilter":null
     }
 ]
 ```
@@ -153,18 +182,21 @@ curl 'http://localhost:8080/api/scripts/web-api/execute?id=c91f45c6-2da1-4cc6-a2
 #### Параметры и возвращаемое значение
 
 - `scriptId` (guid, required) - id сценария.
-- `eventAlias` (string, required) - название события.
+- `eventName` (string, required) - название события.
+- `metaFilter` (string, optional) - фильтр по значениям meta события в формате query string (см. [фильтры подписок](../ThinkingHome.Plugins.Scripts/README.md#фильтры-подписок)); перед сохранением фильтр приводится к каноническому виду.
 
-В ответ на клиент возвращается строка, содержащая id добавленной подписки.
+Например, чтобы подписать сценарий на пользовательское событие с именем `my-event`, нужно передать `eventName=scripts:user-event` и `metaFilter=name%3Dmy-event` (значение `name=my-event`, закодированное по правилам URL).
+
+В ответ на клиент возвращается id добавленной подписки.
 
 ```js
-"fa170f1a-4665-40df-884b-307f0731fa86"
+{"subscriptionId":"fa170f1a-4665-40df-884b-307f0731fa86"}
 ```
 
 #### Пример
 
 ```bash
-curl 'http://localhost:8080/api/scripts/web-api/subscription/add?scriptId=a634a269-d250-40bc-a9ca-0e76b19d84b5&eventAlias=my-event'
+curl 'http://localhost:8080/api/scripts/web-api/subscription/add' -d 'scriptId=a634a269-d250-40bc-a9ca-0e76b19d84b5' -d 'eventName=scripts:user-event' -d 'metaFilter=name%3Dmy-event'
 ```
 
 ### `/api/scripts/web-api/subscription/delete`
@@ -175,7 +207,7 @@ curl 'http://localhost:8080/api/scripts/web-api/subscription/add?scriptId=a634a2
 
 - `subscriptionId` (guid, required) - id удаляемой подписки.
 
-В ответ на клиент возвражается `null`. Если подписка с заданным id не найдена, будет возвращен код ошибки 500. 
+В ответ на клиент возвращается `null`. Если подписка с заданным id не найдена, будет возвращен код ошибки 500. 
 
 ```js
 null
@@ -184,5 +216,5 @@ null
 #### Пример
 
 ```bash
-curl 'http://localhost:8080/api/scripts/web-api/subscription/delete?subscriptionId=fa170f1a-4665-40df-884b-307f0731fa86'
+curl 'http://localhost:8080/api/scripts/web-api/subscription/delete' -d 'subscriptionId=fa170f1a-4665-40df-884b-307f0731fa86'
 ```

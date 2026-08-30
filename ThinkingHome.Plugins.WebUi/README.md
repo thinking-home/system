@@ -326,7 +326,7 @@ const ExampleSection: FC = () => {
 
 ### Нотификация
 
-Контекст приложения, полученный через хук `useAppContext`, содержит также API для показа всплывающих сообщений пользователю. Сообщения показывает кит — [@mantine/notifications](https://mantine.dev/x/notifications/); в разделе достаточно вызвать нужный метод.
+Контекст приложения, полученный через хук `useAppContext`, содержит также API для показа всплывающих сообщений пользователю: методы `show`, `showInfo`, `showSuccess`, `showWarning` и `showError`. Сообщения показывает кит — [@mantine/notifications](https://mantine.dev/x/notifications/); в разделе достаточно вызвать нужный метод.
 
 ```tsx
 import {useAppContext} from '@thinking-home/ui';

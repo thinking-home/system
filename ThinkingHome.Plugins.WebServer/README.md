@@ -13,7 +13,7 @@
 
 ## Конфигурация
 
-Вы можете настроить порт, на котором будут слушаться HTTP запросы. Для этого укажите параметр `port` в настройках плагина в файле appsettings.json.
+Вы можете настроить порт, на котором будут слушаться HTTP запросы. Для этого укажите параметр `port` в настройках плагина в файле appsettings.json. Если параметр не указан, используется порт `41831`.
 
 ```js
 {
@@ -105,9 +105,9 @@ public void RegisterHttpHandlers(WebServerConfigurationBuilder config)
 delegate HttpHandlerResult HttpHandlerDelegate(HttpRequestParams requestParams)
 ```
 
-Входной параметр `requestParams` содержит информацию о параметрах HTTP запроса.
+Входной параметр `requestParams` содержит информацию о параметрах HTTP запроса. Значения параметров читаются и из query string, и из тела запроса (формы) методами `GetString`, `GetInt32`, `GetGuid`, `GetBool` — они возвращают `null`, если параметр не передан, — и `GetRequiredString`, `GetRequiredInt32`, `GetRequiredGuid`, `GetRequiredBool`, которые в этом случае отвечают клиенту кодом ошибки 400.
 
-Метод должен возвращать экземпляр класса `HttpHandlerResult`, на основе которого будет сформирован ответ для клиента. Вы можете использовать статические методы класса `HttpHandlerResult`, чтобы вренуть результ нужного типа: `Text`, `Json`, `Binary`. Если вернуть из метода значение `null`, то на клиент уйдет ответ с пустым содержимым.
+Метод должен возвращать экземпляр класса `HttpHandlerResult`, на основе которого будет сформирован ответ для клиента. Вы можете использовать статические методы класса `HttpHandlerResult`, чтобы вернуть результат нужного типа: `Text`, `Json`, `Binary`. Если вернуть из метода значение `null`, то на клиент уйдет ответ с пустым содержимым.
 
 Если внутри динамического обработчика будет сгенерировано исключение, то сервер отдаст на клиент ответ с кодом 500 (внутренняя ошибка сервера). Если вы хотите отдать ответ с кодом 400 (bad request), то сгенерируйте исключение `ThinkingHome.Plugins.WebServer.Handlers.HttpHandlerException` и передайте нужный параметр `statusCode`.
 
@@ -153,7 +153,7 @@ public class MyPlugin : PluginBase
 
    private void MyMethod()
    {
-      server.Send(topic, new { msg = "Hello!", count = 42 });
+      server.Send("my-topic", new { msg = "Hello!", count = 42 });
    }
 }
 ```

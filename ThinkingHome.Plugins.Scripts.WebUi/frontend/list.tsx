@@ -1,7 +1,7 @@
 import * as React from 'react';
 import {FC, useCallback, useEffect, useState} from 'react';
 import {Link} from 'react-router-dom';
-import {Anchor, Button, Table, Text, Title} from '@mantine/core';
+import {Anchor, Button, Group, Table, Text, Title} from '@mantine/core';
 import {createModule, LogLevel, useAppContext, useKeyset, useLogger} from '@thinking-home/ui';
 
 import {deleteScript, getScriptList, ScriptListItem} from './api';
@@ -52,7 +52,10 @@ const ScriptList: FC = () => {
         <>
             <Title>{t('title')}</Title>
 
-            <Button component={Link} to="/scripts/edit" my="md">{t('newScript')}</Button>
+            <Group my="md">
+                <Button component={Link} to="/scripts/edit">{t('newScript')}</Button>
+                <Button component={Link} to="/scripts/subscriptions" variant="default">{t('subscriptions')}</Button>
+            </Group>
 
             {list.length ? (
                 <Table>

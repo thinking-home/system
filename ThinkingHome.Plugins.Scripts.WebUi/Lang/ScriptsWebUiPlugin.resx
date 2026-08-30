@@ -115,4 +115,73 @@
   <data name="errorRun" xml:space="preserve">
     <value>Failed to run the script</value>
   </data>
+  <data name="subscriptions" xml:space="preserve">
+    <value>Subscriptions</value>
+  </data>
+  <data name="subscriptionsTitle" xml:space="preserve">
+    <value>Event subscriptions</value>
+  </data>
+  <data name="newSubscription" xml:space="preserve">
+    <value>New subscription</value>
+  </data>
+  <data name="emptySubscriptionList" xml:space="preserve">
+    <value>There are no subscriptions yet</value>
+  </data>
+  <data name="script" xml:space="preserve">
+    <value>Script</value>
+  </data>
+  <data name="event" xml:space="preserve">
+    <value>Event</value>
+  </data>
+  <data name="eventNotRegistered" xml:space="preserve">
+    <value>not registered</value>
+  </data>
+  <data name="metaFilter" xml:space="preserve">
+    <value>Meta filter</value>
+  </data>
+  <data name="metaKey" xml:space="preserve">
+    <value>Key</value>
+  </data>
+  <data name="metaValue" xml:space="preserve">
+    <value>Value</value>
+  </data>
+  <data name="addRow" xml:space="preserve">
+    <value>Add row</value>
+  </data>
+  <data name="add" xml:space="preserve">
+    <value>Add</value>
+  </data>
+  <data name="cancel" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="scriptRequired" xml:space="preserve">
+    <value>Select a script</value>
+  </data>
+  <data name="eventRequired" xml:space="preserve">
+    <value>Select an event</value>
+  </data>
+  <data name="customNameRequired" xml:space="preserve">
+    <value>Enter the event name</value>
+  </data>
+  <data name="metaKeyRequired" xml:space="preserve">
+    <value>Fill in the filter keys</value>
+  </data>
+  <data name="metaKeyDuplicated" xml:space="preserve">
+    <value>Filter keys must be unique</value>
+  </data>
+  <data name="subscriptionAdded" xml:space="preserve">
+    <value>Subscription added</value>
+  </data>
+  <data name="subscriptionDeleted" xml:space="preserve">
+    <value>Subscription deleted</value>
+  </data>
+  <data name="subscriptionDeleteConfirm" xml:space="preserve">
+    <value>Delete subscription of script "{script}" to event "{event}"?</value>
+  </data>
+  <data name="errorAddSubscription" xml:space="preserve">
+    <value>Failed to add the subscription</value>
+  </data>
+  <data name="errorDeleteSubscription" xml:space="preserve">
+    <value>Failed to delete the subscription</value>
+  </data>
 </root>

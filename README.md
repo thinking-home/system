@@ -8,6 +8,7 @@ ThinkingHome - кроссплатформенное приложение, поз
 
 - [ThinkingHome.Plugins.Cron](./ThinkingHome.Plugins.Cron) - запуск действий по расписанию
 - [ThinkingHome.Plugins.Cron.WebApi](./ThinkingHome.Plugins.Cron.WebApi) - web API для [cron](./ThinkingHome.Plugins.Cron)
+- [ThinkingHome.Plugins.Cron.WebUi](./ThinkingHome.Plugins.Cron.WebUi) - раздел веб-интерфейса для управления расписанием
 - [ThinkingHome.Plugins.Database](./ThinkingHome.Plugins.Database) - API для хранения информации плагинов в БД
 - [ThinkingHome.Plugins.Mail](./ThinkingHome.Plugins.Mail) - отправка email
 - [ThinkingHome.Plugins.Mqtt](./ThinkingHome.Plugins.Mqtt) - отправка/получение сообщений MQTT

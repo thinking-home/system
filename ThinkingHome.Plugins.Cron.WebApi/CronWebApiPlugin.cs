@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Globalization;
 using System.Linq;
+using CronExpressionDescriptor;
+using NCrontab;
 using ThinkingHome.Core.Plugins;
 using ThinkingHome.Plugins.Cron.Model;
 using ThinkingHome.Plugins.Database;
@@ -16,13 +19,36 @@ namespace ThinkingHome.Plugins.Cron.WebApi
             {
                 id = task.Id,
                 name = task.Name,
-                eventAlias = task.EventAlias,
+                eventName = task.EventName,
                 enabled = task.Enabled,
-                month = task.Month,
-                day = task.Day,
-                hour = task.Hour,
-                minute = task.Minute
+                expression = task.Expression,
+                description = Describe(task.Expression)
             };
+        }
+
+        /// <summary>
+        /// Человекочитаемое описание выражения cron на языке системы (переводы —
+        /// стандартные satellite assemblies пакета CronExpressionDescriptor).
+        /// null — выражение некорректно или описание построить не удалось.
+        /// </summary>
+        private static string Describe(string expression)
+        {
+            // описание строится только для выражений, которые понимает
+            // исполняющий парсер (NCrontab)
+            if (expression == null || CrontabSchedule.TryParse(expression) == null) return null;
+
+            try
+            {
+                return ExpressionDescriptor.GetDescription(expression, new Options
+                {
+                    Locale = CultureInfo.CurrentUICulture.Name,
+                    Use24HourTimeFormat = true
+                });
+            }
+            catch (Exception)
+            {
+                return null;
+            }
         }
         
         [ConfigureWebServer]
@@ -32,17 +58,27 @@ namespace ThinkingHome.Plugins.Cron.WebApi
                 .RegisterDynamicResource("/api/cron/web-api/list", GetTaskList)
                 .RegisterDynamicResource("/api/cron/web-api/get", LoadTask)
                 .RegisterDynamicResource("/api/cron/web-api/save", SaveTask)
-                .RegisterDynamicResource("/api/cron/web-api/delete", DeleteTask);
+                .RegisterDynamicResource("/api/cron/web-api/delete", DeleteTask)
+                .RegisterDynamicResource("/api/cron/web-api/describe", DescribeExpression);
+        }
+
+        private HttpHandlerResult DescribeExpression(HttpRequestParams request)
+        {
+            var expression = request.GetRequiredString("expression").Trim();
+            var valid = CrontabSchedule.TryParse(expression) != null;
+
+            return HttpHandlerResult.Json(new
+            {
+                valid,
+                description = valid ? Describe(expression) : null
+            });
         }
 
         private HttpHandlerResult GetTaskList(HttpRequestParams request)
         {
             using var session = database.OpenSession();
             var list = session.Set<CronTask>()
-                .OrderBy(e => e.Month)
-                .ThenBy(e => e.Day)
-                .ThenBy(e => e.Hour)
-                .ThenBy(e => e.Minute)
+                .OrderBy(e => e.Name)
                 .Select(ToApiModel)
                 .ToArray();
 
@@ -63,12 +99,16 @@ namespace ThinkingHome.Plugins.Cron.WebApi
         {
             var id = request.GetGuid("id");
             var name = request.GetRequiredString("name");
-            var eventAlias = request.GetString("eventAlias");
-            var month = request.GetInt32("month");
-            var day = request.GetInt32("day");
-            var hour = request.GetInt32("hour");
-            var minute = request.GetInt32("minute");
+            var eventName = request.GetString("eventName");
+            var expression = request.GetRequiredString("expression").Trim();
             var enabled = request.GetRequiredBool("enabled");
+
+            // формат проверяется тем же парсером, который исполняет расписание;
+            // некорректное выражение не должно попасть в БД
+            if (CrontabSchedule.TryParse(expression) == null)
+            {
+                throw new HttpHandlerException(StatusCode.BadRequest, "invalid cron expression");
+            }
 
             using var session = database.OpenSession();
             
@@ -85,12 +125,9 @@ namespace ThinkingHome.Plugins.Cron.WebApi
             }
 
             task.Name = name;
-            task.EventAlias = eventAlias;
+            task.EventName = eventName;
             task.Enabled = enabled;
-            task.Month = month;
-            task.Day = day;
-            task.Hour = hour;
-            task.Minute = minute;
+            task.Expression = expression;
             session.SaveChanges();
 
             // reset cron event cache

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Jint;
 using Microsoft.Extensions.Logging;
 using ThinkingHome.Core.Plugins.Utils;
@@ -29,17 +30,18 @@ namespace ThinkingHome.Plugins.Scripts.Internal
             engine.SetValue("host", host);
         }
 
-        public object Execute(params object[] args)
+        public object Execute(params object[] args) => Execute(null, args);
+
+        internal object Execute(IReadOnlyDictionary<string, string> meta, object args)
         {
             lock (engine)
             {
                 try
                 {
-                    var argumentsVariable = $"args_{Guid.NewGuid():N}";
-                    
-                    engine.SetValue(argumentsVariable, args);
-                    
-                    string code =  $"(function(){{{body}}}).apply(this,{argumentsVariable});";
+                    var metaScriptValue = SetVariable("meta", meta);
+                    var argsScriptValue = SetVariable("args", args);
+
+                    string code = $"(function(){{const meta={metaScriptValue};const args={argsScriptValue};{body}}}).call(this);";
 
                     return engine.Evaluate(code).ToObject();
                 }
@@ -51,6 +53,18 @@ namespace ThinkingHome.Plugins.Scripts.Internal
                     return null;
                 }
             }
+        }
+
+        // помещает значение в переменную engine со случайным именем и возвращает
+        // выражение для чтения этого значения из кода сценария
+        private string SetVariable(string prefix, object value)
+        {
+            if (value == null) return "undefined";
+
+            var variable = $"{prefix}_{Guid.NewGuid():N}";
+            engine.SetValue(variable, value);
+
+            return variable;
         }
     }
 }

@@ -30,6 +30,7 @@ namespace ThinkingHome.Plugins.Scripts.WebUi
         {
             config.RegisterPage("/scripts", Bundle("list.js"));
             config.RegisterPage("/scripts/edit", Bundle("editor.js"));
+            config.RegisterPage("/scripts/subscriptions", Bundle("subscriptions.js"));
         }
 
         [ConfigureWebServer]

@@ -1,4 +1,5 @@
-﻿using System;
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -6,17 +7,30 @@ using ThinkingHome.Core.Plugins;
 using ThinkingHome.Core.Plugins.Utils;
 using ThinkingHome.Plugins.Database;
 using ThinkingHome.Plugins.Scripts.Attributes;
+using ThinkingHome.Plugins.Scripts.Events;
 using ThinkingHome.Plugins.Scripts.Internal;
 using ThinkingHome.Plugins.Scripts.Model;
 
 namespace ThinkingHome.Plugins.Scripts
 {
     public class ScriptsPlugin(DatabasePlugin database) : PluginBase {
+        /// <summary>Название пользовательского события (события с динамическим именем в meta)</summary>
+        public const string UserEventName = "scripts:user-event";
+
+        /// <summary>Ключ словаря meta, в котором передается имя пользовательского события</summary>
+        public const string UserEventNameMetaKey = "name";
+
         private const int DEFAULT_EXECUTION_TIMEOUT_SECONDS = 60;
+
+        private static readonly IReadOnlyDictionary<string, string> emptyMeta = new Dictionary<string, string>();
 
         private object host;
 
         private readonly ObjectRegistry<Delegate> methods = new ObjectRegistry<Delegate>();
+
+        private readonly ObjectRegistry<ScriptEventDefinition> events = new ObjectRegistry<ScriptEventDefinition>();
+
+        private ScriptEventEmitter<object[]> userEventEmitter;
 
         // максимальное время выполнения сценария; 0 или отрицательное значение отключает таймаут
         private TimeSpan ExecutionTimeout => TimeSpan.FromSeconds(
@@ -31,13 +45,19 @@ namespace ThinkingHome.Plugins.Scripts
 
             methods.ForEach((name, method) => Logger.LogInformation("register script method: {Name}", name));
 
+            // регистрируем события плагинов
+            RegisterEvents();
+
+            events.ForEach((name, definition) => Logger.LogInformation(
+                "register script event: {Name} ({PluginType})", name, definition.Source.FullName));
+
             // создаем объект host
             host = new
             {
                 scripts = new ScriptMethodContainer<Func<object[], object>>(CreateScriptDelegateByName),
                 api = new ScriptMethodContainer<Delegate>(GetMethodDelegate),
                 log = new ScriptLogger(Logger),
-                emit = new Action<string, object[]>(EmitScriptEvent)
+                emit = new Action<string, object[]>(EmitUserEvent)
             };
         }
 
@@ -46,6 +66,12 @@ namespace ThinkingHome.Plugins.Scripts
         {
             modelBuilder.Entity<UserScript>(cfg => cfg.ToTable("Scripts_UserScript"));
             modelBuilder.Entity<ScriptEventHandler>(cfg => cfg.ToTable("Scripts_EventHandler"));
+        }
+
+        [ConfigureScriptEvents]
+        public void RegisterUserEvent(ScriptEventsConfigurationBuilder config)
+        {
+            userEventEmitter = config.RegisterEvent<object[]>(UserEventName);
         }
 
         #region public API
@@ -65,34 +91,86 @@ namespace ThinkingHome.Plugins.Scripts
             return CreateScriptDelegateByName(name)(args);
         }
 
-        public void EmitScriptEvent(string eventAlias, params object[] args)
+        /// <summary>
+        /// Инициировать пользовательское событие. Имя события попадает
+        /// в meta (ключ "name"), аргументы передаются в обработчики как есть.
+        /// </summary>
+        public void EmitUserEvent(string name, params object[] args)
         {
-            using var session = database.OpenSession();
-            
-            EmitScriptEvent(session, eventAlias, args);
+            EmitUserEvent(name, null, args);
         }
 
-        public void EmitScriptEvent(DbContext session, string eventAlias, params object[] args)
+        /// <summary>
+        /// Инициировать пользовательское событие с дополнительными значениями meta.
+        /// Значение с ключом "name" перезаписывается именем события.
+        /// </summary>
+        public void EmitUserEvent(string name, IReadOnlyDictionary<string, string> meta, params object[] args)
         {
-            Logger.LogDebug("execute script event handlers ({EventAlias})", eventAlias);
+            if (string.IsNullOrWhiteSpace(name))
+            {
+                throw new ArgumentException("User event name must be a non-empty string", nameof(name));
+            }
 
-            // find all subscribed scripts
-            var scripts = session.Set<ScriptEventHandler>()
-                .Where(s => s.EventAlias == eventAlias)
-                .Select(x => x.UserScript)
-                .ToList();
+            var fullMeta = meta == null
+                ? new Dictionary<string, string>()
+                : meta.ToDictionary(pair => pair.Key, pair => pair.Value);
 
-            // execute scripts async
-            SafeInvokeAsync(scripts, s => ExecuteScript(s, args));
+            fullMeta[UserEventNameMetaKey] = name;
+
+            userEventEmitter(args ?? [], fullMeta);
+        }
+
+        public ScriptEventDefinition[] GetRegisteredEvents()
+        {
+            return events.Data.Values.OrderBy(definition => definition.Name, StringComparer.Ordinal).ToArray();
         }
 
         #endregion
 
         #region private
 
+        private void RegisterEvents()
+        {
+            var inits = Context.GetAllPlugins()
+                .SelectMany(plugin => plugin.FindMethods<ConfigureScriptEventsAttribute, ConfigureScriptEventsDelegate>());
+
+            foreach (var (_, fn, plugin) in inits)
+            {
+                using var configBuilder = new ScriptEventsConfigurationBuilder(plugin.GetType(), events, EmitScriptEvent);
+                fn(configBuilder);
+            }
+        }
+
+        private void EmitScriptEvent(ScriptEventDefinition definition, object args, IReadOnlyDictionary<string, string> meta)
+        {
+            Logger.LogDebug("execute script event handlers ({EventName})", definition.Name);
+
+            var eventMeta = meta ?? emptyMeta;
+
+            using var session = database.OpenSession();
+
+            // фильтрация по meta выполняется в памяти: фильтр хранится сериализованным
+            var handlers = session.Set<ScriptEventHandler>()
+                .Where(h => h.EventName == definition.Name)
+                .Select(h => new { h.MetaFilter, h.UserScript })
+                .ToList();
+
+            var subscribed = handlers
+                .Where(h => MetaFilter.IsMatch(h.MetaFilter, eventMeta))
+                .Select(h => h.UserScript)
+                .ToList();
+
+            _ = SafeInvokeAsync(subscribed, s => CreateScriptContext(s.Name, s.Body).Execute(eventMeta, args));
+        }
+
+        private ScriptContext CreateScriptContext(string name, string body)
+        {
+            return new ScriptContext(name, body, host, Logger, ExecutionTimeout);
+        }
+
         private Func<object[], object> CreateScriptDelegate(string name, string body)
         {
-            return new ScriptContext(name, body, host, Logger, ExecutionTimeout).Execute;
+            return CreateScriptContext(name, body).Execute;
         }
 
         private Func<object[], object> CreateScriptDelegateByName(string name)

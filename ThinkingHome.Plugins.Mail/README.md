@@ -8,7 +8,7 @@
 
 ## Конфигурация
 
-Вы можете настраивать параметры SMTP сервера, параметры аутентификации и информацию об отправителе сообщений.
+Вы можете настраивать параметры SMTP сервера, параметры аутентификации и информацию об отправителе сообщений. Раздел `auth` необязателен: если логин и пароль не заданы, подключение к SMTP серверу выполняется без аутентификации.
 
 
 ```js
@@ -35,7 +35,7 @@
 
 ## API
 
-### `void SendEmail(string email, string subject, string message)`
+### `void SendMail(string email, string subject, string body)`
 
 Отправляет письмо с указанными темой и текстом на указанный адрес.
 
@@ -48,12 +48,12 @@ public class MyPlugin : PluginBase
     
     private void MyMethod()
     {
-        mail.SendEmail("test@example.com", "My subject", "My message body.");
+        mail.SendMail("test@example.com", "My subject", "My message body.");
     }
 }
 ```
 
-### `void SendEmail(string email, string subject, string message, string fileName, byte[] fileContent)`
+### `void SendMail(string email, string subject, string body, string fileName, byte[] fileContent)`
 
 Отправляет письмо с прикрепленным файлом.
 
@@ -68,12 +68,12 @@ public class MyPlugin : PluginBase
     {
         var bytes = File.ReadAllBytes("image.jpg");
         
-        mail.SendEmail("test@example.com", "My subject", "My message body.", "image.jpg", bytes);
+        mail.SendMail("test@example.com", "My subject", "My message body.", "image.jpg", bytes);
     }
 }
 ```
 
-### `void SendEmail(string email, string subject, string message, string fileName, Buffer fileContent)`
+### `void SendMail(string email, string subject, string body, string fileName, Buffer fileContent)`
 
 Отправляет письмо с прикрепленным файлом. Этот метод принимает содержимое файла в виде 
 экземпляра класса `ThinkingHome.Plugins.Scripts.Buffer` (нужен для использования в сценариях).
@@ -90,7 +90,7 @@ public class MyPlugin : PluginBase
         var bytes = File.ReadAllBytes("image.jpg");
         var buffer = new Buffer(bytes);
         
-        mail.SendEmail("test@example.com", "My subject", "My message body.", "image.jpg", buffer);
+        mail.SendMail("test@example.com", "My subject", "My message body.", "image.jpg", buffer);
     }
 }
 ```

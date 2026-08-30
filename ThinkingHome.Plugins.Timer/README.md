@@ -20,8 +20,8 @@ public delegate void TimerCallbackDelegate(DateTime now);
 
 #### Параметры
 
-- `int interval` - интервал в милисекундах между вызовами метода.
-- `int delay` - задержка в милисекундах перед первым вызовом метода (не обязательный). Если параметр `delay` не указан, будет использоваться случайное значение, не превышающее `interval` (для того, чтобы все таймеры не срабатывали одновременно при старте приложения).
+- `int interval` - интервал в миллисекундах между вызовами метода.
+- `int delay` - задержка в миллисекундах перед первым вызовом метода (не обязательный). Если параметр `delay` не указан, будет использоваться случайное значение, не превышающее `interval` (для того, чтобы все таймеры не срабатывали одновременно при старте приложения).
 
 #### Пример
 
@@ -29,6 +29,6 @@ public delegate void TimerCallbackDelegate(DateTime now);
 [TimerCallback(30000)]
 public void MyTimerHandler(DateTime now)
 {
-    Logger.LogInformation(now);
+    Logger.LogInformation("tick: {Now}", now);
 }
 ```

@@ -47,9 +47,19 @@ namespace ThinkingHome.Tests.Plugins.TelegramBot
         [Fact]
         public void CommandCanContainsProperSymbols()
         {
-            var command = ThinkingHome.Plugins.TelegramBot.TelegramBotPlugin.ParseCommand("/qw_er-t12_абв_ёё");
+            var command = ThinkingHome.Plugins.TelegramBot.TelegramBotPlugin.ParseCommand("/qw_er-t12");
 
-            Assert.Equal("qw_er-t12_абв_ёё", command);
+            Assert.Equal("qw_er-t12", command);
+        }
+
+        [Fact]
+        public void CommandEndsAtUnsupportedSymbol()
+        {
+            // команды содержат только латиницу, цифры, дефис и подчеркивание;
+            // остальные символы (например, кириллица) завершают команду
+            var command = ThinkingHome.Plugins.TelegramBot.TelegramBotPlugin.ParseCommand("/qwe-1_абв");
+
+            Assert.Equal("qwe-1_", command);
         }
 
         [Fact]

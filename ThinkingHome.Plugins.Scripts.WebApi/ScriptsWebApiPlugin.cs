@@ -2,6 +2,7 @@
 using System.Linq;
 using ThinkingHome.Core.Plugins;
 using ThinkingHome.Plugins.Database;
+using ThinkingHome.Plugins.Scripts.Events;
 using ThinkingHome.Plugins.Scripts.Model;
 using ThinkingHome.Plugins.WebServer;
 using ThinkingHome.Plugins.WebServer.Attributes;
@@ -19,6 +20,7 @@ namespace ThinkingHome.Plugins.Scripts.WebApi
                 .RegisterDynamicResource("/api/scripts/web-api/save", SaveScript)
                 .RegisterDynamicResource("/api/scripts/web-api/delete", DeleteScript)
                 .RegisterDynamicResource("/api/scripts/web-api/execute", RunScript)
+                .RegisterDynamicResource("/api/scripts/web-api/events/list", GetEventList)
                 .RegisterDynamicResource("/api/scripts/web-api/subscription/list",GetSubscriptionList)
                 .RegisterDynamicResource("/api/scripts/web-api/subscription/add", AddSubscription)
                 .RegisterDynamicResource("/api/scripts/web-api/subscription/delete", DeleteSubscription);
@@ -104,6 +106,23 @@ namespace ThinkingHome.Plugins.Scripts.WebApi
 
         #region script event
 
+        private HttpHandlerResult GetEventList(HttpRequestParams request)
+        {
+            var events = scripts.GetRegisteredEvents()
+                .Select(x => new { name = x.Name })
+                .ToArray();
+
+            return HttpHandlerResult.Json(new
+            {
+                events,
+                userEvent = new
+                {
+                    name = ScriptsPlugin.UserEventName,
+                    metaKey = ScriptsPlugin.UserEventNameMetaKey
+                }
+            });
+        }
+
         private HttpHandlerResult GetSubscriptionList(HttpRequestParams request)
         {
             using var session = database.OpenSession();
@@ -113,7 +132,8 @@ namespace ThinkingHome.Plugins.Scripts.WebApi
                     id = x.Id,
                     scriptId = x.UserScript.Id,
                     scriptName = x.UserScript.Name,
-                    eventAlias = x.EventAlias
+                    eventName = x.EventName,
+                    metaFilter = x.MetaFilter
                 })
                 .ToList();
 
@@ -123,7 +143,11 @@ namespace ThinkingHome.Plugins.Scripts.WebApi
         private HttpHandlerResult AddSubscription(HttpRequestParams request)
         {
             var scriptId = request.GetRequiredGuid("scriptId");
-            var eventAlias = request.GetRequiredString("eventAlias");
+            var eventName = request.GetRequiredString("eventName");
+
+            // фильтр приводится к каноническому виду, чтобы одинаковые
+            // фильтры совпадали как строки
+            var metaFilter = MetaFilter.Serialize(MetaFilter.Parse(request.GetString("metaFilter")));
 
             using var session = database.OpenSession();
             var subscriptionId = Guid.NewGuid();
@@ -131,7 +155,8 @@ namespace ThinkingHome.Plugins.Scripts.WebApi
             var subscription = new ScriptEventHandler
             {
                 Id = subscriptionId,
-                EventAlias = eventAlias,
+                EventName = eventName,
+                MetaFilter = string.IsNullOrEmpty(metaFilter) ? null : metaFilter,
                 UserScriptId = scriptId
             };
 

@@ -4,8 +4,8 @@ using Microsoft.Extensions.Logging;
 using ThinkingHome.Core.Plugins;
 using ThinkingHome.Core.Plugins.Utils;
 using ThinkingHome.NooLite;
-using ThinkingHome.Plugins.Scripts;
 using ThinkingHome.Plugins.Scripts.Attributes;
+using ThinkingHome.Plugins.Scripts.Events;
 using ThinkingHome.Plugins.Timer;
 
 namespace ThinkingHome.Plugins.NooLite
@@ -15,13 +15,28 @@ namespace ThinkingHome.Plugins.NooLite
     using MicroclimateAttribute = NooLiteMicroclimateDataHandlerAttribute;
     using MicroclimateDelegate = NooLiteMicroclimateDataHandlerDelegate;
 
-    public class NooLitePlugin(ScriptsPlugin scripts) : PluginBase {
+    public class NooLitePlugin : PluginBase {
+        /// <summary>Название события, которое генерируется при получении данных от адаптера</summary>
+        public const string DataReceivedEventName = "noolite:data:received";
+
+        /// <summary>Название события, которое генерируется при получении данных о микроклимате</summary>
+        public const string MicroclimateDataReceivedEventName = "noolite:microclimate-data:received";
+
+        /// <summary>Ключ словаря meta, в котором передается номер канала</summary>
+        public const string ChannelMetaKey = "channel";
+
+        /// <summary>Ключ словаря meta, в котором передается код команды</summary>
+        public const string CommandMetaKey = "command";
+
         private MTRFXXAdapter device;
         private AdapterWrapper wrapper;
         private AdapterWrapper wrapperF;
 
         private readonly List<CommandDelegate> cmdHandlers = new List<CommandDelegate>();
         private readonly List<MicroclimateDelegate> microclimateHandlers = new List<MicroclimateDelegate>();
+
+        private ScriptEventEmitter<NooLiteDataEventArgs> dataReceived;
+        private ScriptEventEmitter<NooLiteMicroclimateEventArgs> microclimateDataReceived;
 
         public override void InitPlugin()
         {
@@ -71,6 +86,13 @@ namespace ThinkingHome.Plugins.NooLite
             #endregion
         }
 
+        [ConfigureScriptEvents]
+        public void RegisterScriptEvents(ScriptEventsConfigurationBuilder config)
+        {
+            dataReceived = config.RegisterEvent<NooLiteDataEventArgs>(DataReceivedEventName);
+            microclimateDataReceived = config.RegisterEvent<NooLiteMicroclimateEventArgs>(MicroclimateDataReceivedEventName);
+        }
+
         #region events
 
         private void OnError(object obj, Exception ex)
@@ -90,19 +112,45 @@ namespace ThinkingHome.Plugins.NooLite
 
         private void OnReceiveData(object obj, ReceivedData cmd)
         {
-            SafeInvokeAsync(cmdHandlers, h => h((byte)cmd.Command, cmd.Channel, cmd.DataFormat,
+            _ = SafeInvokeAsync(cmdHandlers, h => h((byte)cmd.Command, cmd.Channel, cmd.DataFormat,
                 cmd.Data1, cmd.Data2, cmd.Data3, cmd.Data4));
 
-            scripts.EmitScriptEvent(
-                "noolite:data:received", (byte)cmd.Command, cmd.Channel,
-                cmd.DataFormat, cmd.Data1, cmd.Data2, cmd.Data3, cmd.Data4);
+            var args = new NooLiteDataEventArgs
+            {
+                Command = (byte)cmd.Command,
+                Channel = cmd.Channel,
+                Format = cmd.DataFormat,
+                Data1 = cmd.Data1,
+                Data2 = cmd.Data2,
+                Data3 = cmd.Data3,
+                Data4 = cmd.Data4
+            };
+
+            // если плагина сценариев нет в системе, события не зарегистрированы
+            dataReceived?.Invoke(args, new Dictionary<string, string>
+            {
+                [ChannelMetaKey] = args.Channel.ToString(),
+                [CommandMetaKey] = args.Command.ToString()
+            });
         }
 
         private void OnReceiveMicroclimateData(object obj, MicroclimateData data)
         {
-            SafeInvokeAsync(microclimateHandlers, h => h(data.Channel, data.Temperature, data.Humidity, data.LowBattery));
+            _ = SafeInvokeAsync(microclimateHandlers, h => h(data.Channel, data.Temperature, data.Humidity, data.LowBattery));
 
-            scripts.EmitScriptEvent("noolite:microclimate-data:received", data.Channel, data.Temperature, data.Humidity, data.LowBattery);
+            var args = new NooLiteMicroclimateEventArgs
+            {
+                Channel = data.Channel,
+                Temperature = data.Temperature,
+                Humidity = data.Humidity,
+                LowBattery = data.LowBattery
+            };
+
+            // если плагина сценариев нет в системе, события не зарегистрированы
+            microclimateDataReceived?.Invoke(args, new Dictionary<string, string>
+            {
+                [ChannelMetaKey] = args.Channel.ToString()
+            });
         }
 
         #endregion
