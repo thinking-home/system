@@ -79,6 +79,28 @@ public class MyPlugin : PluginBase
 }
 ```
 
+### `object ExecuteScript(UserScript script, params object[] args)`
+
+Запускает сценарий, сохраненный в системе, — экземпляр [UserScript](#thinkinghomepluginsscriptsmodeluserscript). Параметры, начиная со второго, передаются в качестве аргументов в запускаемый сценарий.
+
+#### Пример
+
+```csharp
+public class MyPlugin : PluginBase
+{
+    private readonly DatabasePlugin database;
+    private readonly ScriptsPlugin scripts;
+
+    private void MyMethod()
+    {
+        using var session = database.OpenSession();
+        var script = session.Set<UserScript>().Single(s => s.Name == "wakeup");
+
+        scripts.ExecuteScript(script, 42);
+    }
+}
+```
+
 ### `object ExecuteScriptByName(string name, params object[] args)`
 
 Запускает сценарий, который был ранее сохранен в системе под именем, указанным первым параметром. Параметры, начиная со второго, передаются в качестве аргументов в запускаемый сценарий. 

@@ -4,7 +4,7 @@
 
 # UrlValidationPlugin
 
-Проверяет соответствие URL http-ресурсов подключенных плагинов правилам формирования URL. Список найденных ошибок доступен в веб-интерфейсе по адресу `/dynamic/web-server/url-validation/errors.txt`. 
+Проверяет соответствие URL http-ресурсов подключенных плагинов правилам формирования URL. Список найденных ошибок доступен в веб-интерфейсе по адресу `/dynamic/web-server/url-validation/errors.txt`. Адреса `/` и `/favicon.ico` не проверяются.
 
 ## Правила формирования URL
 
@@ -24,7 +24,7 @@
 
 `/api/{pluginAlias}/{methodAlias}`
 
-`/api/{pluginAlias}/{entityALias}/{methodAlias}`
+`/api/{pluginAlias}/{entityAlias}/{methodAlias}`
 
 #### Генерируемые файлы
 
