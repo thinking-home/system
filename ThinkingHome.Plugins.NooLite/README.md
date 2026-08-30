@@ -253,3 +253,46 @@ adapter.setLedColor(20, 0, 255, 0); // r: 0, g: 255, b: 0
 adapter.loadPreset(50);
 
 ```
+
+## Сценарные события
+
+Подписки могут фильтровать события по значениям словаря meta (см. [фильтры подписок](../ThinkingHome.Plugins.Scripts/README.md#фильтры-подписок)) — например, реагировать на данные только одного канала.
+
+### `noolite:data:received`
+
+Генерируется при получении данных от адаптера. В словаре meta передаются значения:
+
+- `channel` - номер канала;
+- `command` - код команды.
+
+Параметры события (поля `args`):
+
+- `byte Command` - код команды;
+- `int Channel` - номер канала;
+- `byte Format` - формат данных;
+- `byte Data1`, `byte Data2`, `byte Data3`, `byte Data4` - данные команды.
+
+#### Пример обработчика
+
+```js
+host.log.info('nooLite: команда {0} в канале {1}', args.Command, args.Channel);
+```
+
+### `noolite:microclimate-data:received`
+
+Генерируется при получении данных от датчиков микроклимата. В словаре meta передается значение:
+
+- `channel` - номер канала.
+
+Параметры события (поля `args`):
+
+- `int Channel` - номер канала;
+- `decimal Temperature` - температура (°C);
+- `int? Humidity` - влажность (%); `null`, если датчик не измеряет влажность;
+- `bool LowBattery` - признак разряженной батареи.
+
+#### Пример обработчика
+
+```js
+host.log.info('температура в канале {0}: {1}', meta.channel, args.Temperature);
+```

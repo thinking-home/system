@@ -146,6 +146,8 @@ public int SayMoo(int count)
 
 Названия событий не различают регистр и должны быть уникальны в масштабе системы — рекомендуется использовать префикс с названием плагина (например, `noolite:data:received`). Повторная регистрация имени приводит к ошибке при старте приложения.
 
+Configure-методы вызывает плагин сценариев. Если плагин `ThinkingHome.Plugins.Scripts` не подключен к системе, регистрация не происходит и поля с emitter'ами остаются `null`. Если ваш плагин должен работать и без плагина сценариев, вызывайте emitter условно: `motionDetected?.Invoke(...)`. Плагину, который получает `ScriptsPlugin` через конструктор, это не обязательно — без плагина сценариев он и сам не загрузится.
+
 #### Пример
 
 ```csharp
@@ -166,7 +168,7 @@ public class MyPlugin : PluginBase
 
     private void OnMotionDetected(string roomName)
     {
-        motionDetected(new MotionEventArgs { RoomName = roomName });
+        motionDetected?.Invoke(new MotionEventArgs { RoomName = roomName });
     }
 }
 ```

@@ -116,7 +116,7 @@ namespace ThinkingHome.Plugins.Cron
 
                         _ = SafeInvokeAsync(handlers, h => h(task.TaskId));
 
-                        taskStarted(new Dictionary<string, string> { [TaskIdMetaKey] = task.TaskId.ToString() });
+                        taskStarted?.Invoke(new Dictionary<string, string> { [TaskIdMetaKey] = task.TaskId.ToString() });
                     }
                 }
             }
