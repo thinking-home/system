@@ -19,6 +19,9 @@ using Buffer = ThinkingHome.Plugins.Scripts.Buffer;
 namespace ThinkingHome.Plugins.Mqtt;
 
 public class MqttPlugin(ScriptsPlugin scripts) : PluginBase {
+    /// <summary>Ключ словаря meta, в котором передается топик полученного сообщения</summary>
+    public const string TopicMetaKey = "topic";
+
     #region settings
 
     private const string DEFAULT_HOST = "localhost";
@@ -144,14 +147,18 @@ public class MqttPlugin(ScriptsPlugin scripts) : PluginBase {
             
             foreach (var e in ScriptEvents) {
                 var topicFilter = e.Key.Trim();
-                var scriptEvent = e.Value.Trim();
+                var eventName = e.Value.Trim();
 
-                if (string.IsNullOrWhiteSpace(topicFilter) || string.IsNullOrWhiteSpace(scriptEvent)) continue;
+                if (string.IsNullOrWhiteSpace(topicFilter) || string.IsNullOrWhiteSpace(eventName)) continue;
 
-                Logger.LogInformation("Register \"{ScriptEvent}\" script event for \"{TopicFilter}\" MQTT topic filter", scriptEvent, topicFilter);
+                Logger.LogInformation("Register \"{EventName}\" user event for \"{TopicFilter}\" MQTT topic filter", eventName, topicFilter);
 
                 scriptEventsConfigBuilder.RegisterListener(topicFilter,
-                    (topic, payloadBytes) => { scripts.EmitScriptEvent(scriptEvent, topic, new Buffer(payloadBytes)); });
+                    (topic, payloadBytes) => scripts.EmitUserEvent(
+                        eventName,
+                        new Dictionary<string, string> { [TopicMetaKey] = topic },
+                        topic,
+                        new Buffer(payloadBytes)));
             }
         }
 

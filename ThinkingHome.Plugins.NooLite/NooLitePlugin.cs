@@ -112,7 +112,7 @@ namespace ThinkingHome.Plugins.NooLite
 
         private void OnReceiveData(object obj, ReceivedData cmd)
         {
-            SafeInvokeAsync(cmdHandlers, h => h((byte)cmd.Command, cmd.Channel, cmd.DataFormat,
+            _ = SafeInvokeAsync(cmdHandlers, h => h((byte)cmd.Command, cmd.Channel, cmd.DataFormat,
                 cmd.Data1, cmd.Data2, cmd.Data3, cmd.Data4));
 
             var args = new NooLiteDataEventArgs
@@ -136,7 +136,7 @@ namespace ThinkingHome.Plugins.NooLite
 
         private void OnReceiveMicroclimateData(object obj, MicroclimateData data)
         {
-            SafeInvokeAsync(microclimateHandlers, h => h(data.Channel, data.Temperature, data.Humidity, data.LowBattery));
+            _ = SafeInvokeAsync(microclimateHandlers, h => h(data.Channel, data.Temperature, data.Humidity, data.LowBattery));
 
             var args = new NooLiteMicroclimateEventArgs
             {

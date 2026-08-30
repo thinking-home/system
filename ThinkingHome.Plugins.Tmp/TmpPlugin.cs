@@ -123,7 +123,7 @@ namespace ThinkingHome.Plugins.Tmp {
 
         private HttpHandlerResult TmpHandlerMethod(HttpRequestParams requestParams)
         {
-            scripts.EmitScriptEvent("mimi", 1, 2, 3, "GUID-111");
+            scripts.EmitUserEvent("mimi", 1, 2, 3, "GUID-111");
             return null;
         }
 
