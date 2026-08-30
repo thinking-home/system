@@ -30,7 +30,7 @@
 #### Пример
 
 ```bash
-curl 'http://localhost:8080/api/cron/web-api/save?id=66f3015b-bd10-4962-9698-764f05372d00&name=mimi&enabled=true&expression=0%2013%20*%20*%20*'
+curl 'http://localhost:8080/api/cron/web-api/save' -d 'id=66f3015b-bd10-4962-9698-764f05372d00' -d 'name=mimi' -d 'enabled=true' -d 'expression=0%2013%20*%20*%20*'
 ```
 
 ### `/api/cron/web-api/get`
@@ -79,7 +79,7 @@ null
 #### Пример
 
 ```bash
-curl 'http://localhost:8080/api/cron/web-api/delete?id=8c976936-1312-4aed-9939-b7b5140ac4b6'
+curl 'http://localhost:8080/api/cron/web-api/delete' -d 'id=8c976936-1312-4aed-9939-b7b5140ac4b6'
 ```
 
 ### `/api/cron/web-api/list`

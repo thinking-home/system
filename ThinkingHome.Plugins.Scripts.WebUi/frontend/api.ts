@@ -44,6 +44,19 @@ export const addedSubscriptionSchema = v.object({
 // либо то, что вернул сценарий (execute)
 const anySchema = v.unknown();
 
+// изменяющие запросы отправляются POST-ом с параметрами в теле запроса
+// (сервер читает параметры и из query string, и из формы); значения
+// undefined пропускаются
+const toFormData = (params: Record<string, string | undefined>): FormData => {
+    const data = new FormData();
+
+    for (const [key, value] of Object.entries(params)) {
+        if (value !== undefined) data.append(key, value);
+    }
+
+    return data;
+};
+
 export type ScriptListItem = v.InferOutput<typeof scriptListSchema>[number];
 export type SubscriptionListItem = v.InferOutput<typeof subscriptionListSchema>[number];
 export type EventList = v.InferOutput<typeof eventListSchema>;
@@ -55,10 +68,10 @@ export const getScript = (api: ApiClient, id: string, signal?: AbortSignal) =>
     api.get(scriptSchema, {url: `${API}/get`, params: {id}, signal});
 
 export const deleteScript = (api: ApiClient, id: string) =>
-    api.get(anySchema, {url: `${API}/delete`, params: {id}});
+    api.post(anySchema, {url: `${API}/delete`, data: toFormData({id})});
 
 export const runScript = (api: ApiClient, id: string) =>
-    api.get(anySchema, {url: `${API}/execute`, params: {id}});
+    api.post(anySchema, {url: `${API}/execute`, data: toFormData({id})});
 
 export const getEventList = (api: ApiClient, signal?: AbortSignal) =>
     api.get(eventListSchema, {url: `${API}/events/list`, signal});
@@ -66,33 +79,27 @@ export const getEventList = (api: ApiClient, signal?: AbortSignal) =>
 export const getSubscriptionList = (api: ApiClient, signal?: AbortSignal) =>
     api.get(subscriptionListSchema, {url: `${API}/subscription/list`, signal});
 
-export const addSubscription = (api: ApiClient, subscription: {scriptId: string, eventName: string, metaFilter?: string}) => {
-    const params: Record<string, string> = {
-        scriptId: subscription.scriptId,
-        eventName: subscription.eventName,
-    };
-
-    if (subscription.metaFilter) {
-        params.metaFilter = subscription.metaFilter;
-    }
-
-    return api.get(addedSubscriptionSchema, {url: `${API}/subscription/add`, params});
-};
+export const addSubscription = (api: ApiClient, subscription: {scriptId: string, eventName: string, metaFilter?: string}) =>
+    api.post(addedSubscriptionSchema, {
+        url: `${API}/subscription/add`,
+        data: toFormData({
+            scriptId: subscription.scriptId,
+            eventName: subscription.eventName,
+            metaFilter: subscription.metaFilter || undefined,
+        }),
+    });
 
 export const deleteSubscription = (api: ApiClient, subscriptionId: string) =>
-    api.get(anySchema, {url: `${API}/subscription/delete`, params: {subscriptionId}});
+    api.post(anySchema, {url: `${API}/subscription/delete`, data: toFormData({subscriptionId})});
 
-export const saveScript = (api: ApiClient, script: {id?: string, name: string, body: string}) => {
-    // текст сценария отправляем в теле запроса, а не в query string: он может быть
-    // длиннее, чем допустимая длина url. Сервер читает параметры из обоих источников.
-    const data = new FormData();
-
-    if (script.id) {
-        data.append('id', script.id);
-    }
-
-    data.append('name', script.name);
-    data.append('body', script.body);
-
-    return api.post(savedScriptSchema, {url: `${API}/save`, data});
-};
+export const saveScript = (api: ApiClient, script: {id?: string, name: string, body: string}) =>
+    // текст сценария в том числе поэтому передается в теле запроса:
+    // он может быть длиннее, чем допустимая длина url
+    api.post(savedScriptSchema, {
+        url: `${API}/save`,
+        data: toFormData({
+            id: script.id || undefined,
+            name: script.name,
+            body: script.body,
+        }),
+    });

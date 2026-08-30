@@ -1,0 +1,29 @@
+{
+  "name": "@thinking-home/plugins-cron-web-ui",
+  "version": "1.0.0",
+  "thPlugin": {
+    "entries": {
+      "tasks": "frontend/tasks.tsx"
+    }
+  },
+  "scripts": {
+    "build": "npm run build:development",
+    "build:development": "th-build --mode development --outDir Resources/app",
+    "build:production": "th-build --outDir Resources/app"
+  },
+  "dependencies": {
+    "@mantine/core": "^9.5.1",
+    "@mantine/hooks": "^9.5.1",
+    "@thinking-home/i18n": "^0.4.0",
+    "@thinking-home/ui": "^0.11.0",
+    "react": "^19.0.0",
+    "react-router": "^7.1.0",
+    "react-router-dom": "^7.1.0",
+    "valibot": "^1.4.2"
+  },
+  "devDependencies": {
+    "@types/node": "^20.17.16",
+    "@types/react": "^19.0.8",
+    "typescript": "^7.0.2"
+  }
+}

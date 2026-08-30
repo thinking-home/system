@@ -27,7 +27,7 @@
 #### Пример
 
 ```bash
-curl 'http://localhost:8080/api/scripts/web-api/save?name=say-hello&body=host.log.fatal(%22hello%20world%22);'
+curl 'http://localhost:8080/api/scripts/web-api/save' -d 'name=say-hello' -d 'body=host.log.fatal(%22hello%20world%22);'
 ```
 
 ### `/api/scripts/web-api/get`
@@ -71,7 +71,7 @@ null
 #### Пример
 
 ```bash
-curl 'http://localhost:8080/api/scripts/web-api/delete?id=21222eed-5a92-42ad-b7c9-23f548482024'
+curl 'http://localhost:8080/api/scripts/web-api/delete' -d 'id=21222eed-5a92-42ad-b7c9-23f548482024'
 ```
 
 ### `/api/scripts/web-api/list`
@@ -116,7 +116,7 @@ curl 'http://localhost:8080/api/scripts/web-api/list'
 #### Пример
 
 ```bash
-curl 'http://localhost:8080/api/scripts/web-api/execute?id=c91f45c6-2da1-4cc6-a2b8-8190adf5144f'
+curl 'http://localhost:8080/api/scripts/web-api/execute' -d 'id=c91f45c6-2da1-4cc6-a2b8-8190adf5144f'
 ```
 
 ### `/api/scripts/web-api/events/list`
@@ -196,7 +196,7 @@ curl 'http://localhost:8080/api/scripts/web-api/events/list'
 #### Пример
 
 ```bash
-curl 'http://localhost:8080/api/scripts/web-api/subscription/add?scriptId=a634a269-d250-40bc-a9ca-0e76b19d84b5&eventName=scripts:user-event&metaFilter=name%3Dmy-event'
+curl 'http://localhost:8080/api/scripts/web-api/subscription/add' -d 'scriptId=a634a269-d250-40bc-a9ca-0e76b19d84b5' -d 'eventName=scripts:user-event' -d 'metaFilter=name%3Dmy-event'
 ```
 
 ### `/api/scripts/web-api/subscription/delete`
@@ -216,5 +216,5 @@ null
 #### Пример
 
 ```bash
-curl 'http://localhost:8080/api/scripts/web-api/subscription/delete?subscriptionId=fa170f1a-4665-40df-884b-307f0731fa86'
+curl 'http://localhost:8080/api/scripts/web-api/subscription/delete' -d 'subscriptionId=fa170f1a-4665-40df-884b-307f0731fa86'
 ```

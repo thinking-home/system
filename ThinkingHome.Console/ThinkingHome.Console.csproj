@@ -32,8 +32,9 @@
         <ProjectReference Include="..\ThinkingHome.Plugins.Scripts.WebUi\ThinkingHome.Plugins.Scripts.WebUi.csproj" />
         <ProjectReference Include="..\ThinkingHome.Plugins.WebServer\ThinkingHome.Plugins.WebServer.csproj" />
         <ProjectReference Include="..\ThinkingHome.Plugins.WebServer.UrlValidation\ThinkingHome.Plugins.WebServer.UrlValidation.csproj" />
-        <ProjectReference Include="..\ThinkingHome.Plugins.Cron\ThinkingHome.Plugins.Cron.csproj" />
         <ProjectReference Include="..\ThinkingHome.Plugins.Cron.WebApi\ThinkingHome.Plugins.Cron.WebApi.csproj" />
+        <ProjectReference Include="..\ThinkingHome.Plugins.Cron.WebUi\ThinkingHome.Plugins.Cron.WebUi.csproj" />
+        <ProjectReference Include="..\ThinkingHome.Plugins.Cron\ThinkingHome.Plugins.Cron.csproj" />
         <ProjectReference Include="..\ThinkingHome.Plugins.TelegramBot\ThinkingHome.Plugins.TelegramBot.csproj" />
         <ProjectReference Include="..\ThinkingHome.Plugins.WebUi\ThinkingHome.Plugins.WebUi.csproj" />
     </ItemGroup>
