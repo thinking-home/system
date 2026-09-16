@@ -1,0 +1,61 @@
+version: 1
+spec:
+  adapter: openspec
+  spec-box:
+    config: .tms.json
+    newFile: specs/{code}.spec-box.yml
+  openspec:
+    root: openspec
+autonomy: supervised
+gates:
+  channels:
+    - cli
+runner:
+  default: claude
+  models: {}
+  stateDir: ~/.cow/runs
+  timeoutMinutes: 120
+  idleTimeoutMinutes: 20
+  claude:
+    permissionMode: acceptEdits
+    allowedTools:
+      - Read
+      - Grep
+      - Glob
+      - Bash
+      - Edit
+      - Write
+      - MultiEdit
+      - NotebookEdit
+    readOnlyTools:
+      - Read
+      - Grep
+      - Glob
+      - Bash
+  codex:
+    executable: codex
+    sandboxWrite: workspace-write
+    sandboxRead: read-only
+    approvalPolicy: on-request
+    extraConfig: []
+repo:
+  adapter: local
+  baseBranch: master
+  branchPrefix: cow/
+  github:
+    apiUrl: https://api.github.com
+    tokenEnv: GITHUB_TOKEN
+changeset: {}
+changes:
+  dir: openspec/changes
+project:
+  docs: .cow/project
+testing:
+  manualPlan: when-needed
+  protectedGlobs: []
+limits:
+  returnsPerPhase: 3
+  rejectionsPerPhase: 2
+  maxRunsPerInvocation: 20
+  packetFileChars: 4000
+rules: {}
