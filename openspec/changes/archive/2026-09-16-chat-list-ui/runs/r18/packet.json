@@ -1,0 +1,208 @@
+{
+  "version": 1,
+  "change": {
+    "id": "chat-list-ui",
+    "title": "Интерфейс списка чатов",
+    "dir": "openspec/changes/chat-list-ui",
+    "phase": "verify",
+    "size": "normal",
+    "status": "active",
+    "base_revision": "f471e65c4c94e986f98dab5a3ca11b266e6397d4"
+  },
+  "role": "verifier",
+  "phase": "verify",
+  "runId": "r18",
+  "objective": "Независимо проверить запечатанный change-set: прогнать тесты из coverage.yaml и проверки из testing.md, сопоставить каждый сценарий и решение дизайна с кодом. Вернуть checks с результатами PASS, FAIL, PARTIAL, NOT_RUN и gaps.",
+  "ownership": {
+    "write": [],
+    "readOnly": true
+  },
+  "files": {
+    "request": "openspec/changes/chat-list-ui/request.md",
+    "log": "openspec/changes/chat-list-ui/log.md",
+    "artifacts": {
+      "proposal": [
+        "openspec/changes/chat-list-ui/proposal.md"
+      ],
+      "specs": [
+        "openspec/changes/chat-list-ui/specs/plugins/telegram-chat-list/http-api/spec.md",
+        "openspec/changes/chat-list-ui/specs/plugins/telegram-chat-list/web-ui/spec.md"
+      ],
+      "design": [
+        "openspec/changes/chat-list-ui/design.md"
+      ],
+      "tasks": [
+        "openspec/changes/chat-list-ui/tasks.md"
+      ],
+      "coverage": [
+        "openspec/changes/chat-list-ui/coverage.yaml"
+      ],
+      "test-plan": [
+        "openspec/changes/chat-list-ui/test-plan.md"
+      ]
+    },
+    "evidence": [
+      "openspec/changes/chat-list-ui/evidence/research.md",
+      "openspec/changes/chat-list-ui/evidence/tests-review-1.md",
+      "openspec/changes/chat-list-ui/evidence/tests-review-2.md",
+      "openspec/changes/chat-list-ui/evidence/tests-review-3.md",
+      "openspec/changes/chat-list-ui/evidence/tests-review-4.md"
+    ],
+    "docs": [
+      {
+        "category": "testing",
+        "title": "Тестирование и проверки",
+        "file": ".cow/project/testing.md"
+      },
+      {
+        "category": "workflow",
+        "title": "Рабочий процесс",
+        "file": ".cow/project/workflow.md"
+      },
+      {
+        "category": "glossary",
+        "title": "Словарь домена",
+        "file": ".cow/project/glossary.md"
+      }
+    ],
+    "wiki": [],
+    "specsTruth": [
+      "openspec/specs/core/application-bootstrap/spec.md",
+      "openspec/specs/core/event-dispatch/spec.md",
+      "openspec/specs/core/object-registry/spec.md",
+      "openspec/specs/core/plugin-model/spec.md",
+      "openspec/specs/plugins/cron/http-api/spec.md",
+      "openspec/specs/plugins/cron/task-scheduling/spec.md",
+      "openspec/specs/plugins/cron/web-ui/spec.md",
+      "openspec/specs/plugins/database/connection-and-migrations/spec.md",
+      "openspec/specs/plugins/database/data-access-api/spec.md",
+      "openspec/specs/plugins/mail/mail-sending/spec.md",
+      "openspec/specs/plugins/mqtt/broker-connection/spec.md",
+      "openspec/specs/plugins/mqtt/publishing/spec.md",
+      "openspec/specs/plugins/mqtt/topic-subscriptions/spec.md",
+      "openspec/specs/plugins/noolite/adapter-control/spec.md",
+      "openspec/specs/plugins/noolite/data-handlers/spec.md",
+      "openspec/specs/plugins/noolite/device-connection/spec.md",
+      "openspec/specs/plugins/noolite/script-events/spec.md",
+      "openspec/specs/plugins/scripts/http-api/spec.md",
+      "openspec/specs/plugins/scripts/script-events/spec.md",
+      "openspec/specs/plugins/scripts/script-execution/spec.md",
+      "openspec/specs/plugins/scripts/web-ui/spec.md",
+      "openspec/specs/plugins/telegram-bot/inbound-message-handling/spec.md",
+      "openspec/specs/plugins/telegram-bot/outbound-messaging/spec.md",
+      "openspec/specs/plugins/telegram-chat-list/chat-tracking/spec.md",
+      "openspec/specs/plugins/telegram-chat-list/http-api/spec.md",
+      "openspec/specs/plugins/timer/callback-scheduling/spec.md",
+      "openspec/specs/plugins/web-server/http-resources/spec.md",
+      "openspec/specs/plugins/web-server/message-bus/spec.md",
+      "openspec/specs/plugins/web-server/url-validation/spec.md",
+      "openspec/specs/plugins/web-ui/application-shell/spec.md",
+      "openspec/specs/plugins/web-ui/page-registration/spec.md"
+    ]
+  },
+  "constraints": [
+    "Не вызывать других агентов и не расширять объём задачи.",
+    "Не менять истину спецификаций: только дельты в specs/ изменения.",
+    "Соблюдать соглашения проекта из conventions.md и правила проекта из списка rules.",
+    "Не менять файлы рабочей копии: любое изменение после запечатывания change-set отклоняет отчёт."
+  ],
+  "rules": [],
+  "authority": "Только чтение и запуск проверок.",
+  "verification": "Запустить полные проверки из testing.md и приложить результаты в checks с evidence.",
+  "resultFormat": "Ответ заканчивается блоком:\n```yaml\n# cow-result\nstatus: готово | утверждение | заблокировано\nblocker: { category: артефакт | тесты | реализация | внешний | пользователь | нет, artifact: <id>, message: <текст> }\n```\nДополнительные поля по роли: complexity и size (planner на propose), questions (planner на plan), findings (reviewer), checks и gaps (verifier), dispositions и delivery_narrative (reviewer в фазе review), protected (tester), verified (implementer, verifier).",
+  "resultFile": "openspec/changes/chat-list-ui/runs/r18/result.md",
+  "stop": "Остановись и верни статус «заблокировано», если нужен ответ человека, если план невыполним или если тест противоречит спецификации.",
+  "feedback": null,
+  "instructions": [],
+  "specAdapterInstructions": null,
+  "changeset": {
+    "base": "f471e65c4c94e986f98dab5a3ca11b266e6397d4",
+    "digest": "sha256:17c33066eed15ce7668cac1b456e9f2bf7c36d00e7aa94aa75354771e7f50cfe",
+    "files": [
+      {
+        "path": "README.md",
+        "status": "M"
+      },
+      {
+        "path": "ThinkingHome.Console/appsettings.json",
+        "status": "M"
+      },
+      {
+        "path": "ThinkingHome.Console/ThinkingHome.Console.csproj",
+        "status": "M"
+      },
+      {
+        "path": "ThinkingHome.Plugins.TelegramChatList.WebApi/README.md",
+        "status": "M"
+      },
+      {
+        "path": "ThinkingHome.Plugins.TelegramChatList.WebApi/TelegramChatListWebApiPlugin.cs",
+        "status": "M"
+      },
+      {
+        "path": "ThinkingHome.Plugins.TelegramChatList.WebUi/frontend/api.ts",
+        "status": "A"
+      },
+      {
+        "path": "ThinkingHome.Plugins.TelegramChatList.WebUi/frontend/chats.tsx",
+        "status": "A"
+      },
+      {
+        "path": "ThinkingHome.Plugins.TelegramChatList.WebUi/frontend/lang.ts",
+        "status": "A"
+      },
+      {
+        "path": "ThinkingHome.Plugins.TelegramChatList.WebUi/Lang/TelegramChatListWebUiPlugin.resx",
+        "status": "A"
+      },
+      {
+        "path": "ThinkingHome.Plugins.TelegramChatList.WebUi/Lang/TelegramChatListWebUiPlugin.ru-RU.resx",
+        "status": "A"
+      },
+      {
+        "path": "ThinkingHome.Plugins.TelegramChatList.WebUi/package-lock.json",
+        "status": "A"
+      },
+      {
+        "path": "ThinkingHome.Plugins.TelegramChatList.WebUi/package.json",
+        "status": "A"
+      },
+      {
+        "path": "ThinkingHome.Plugins.TelegramChatList.WebUi/README.md",
+        "status": "A"
+      },
+      {
+        "path": "ThinkingHome.Plugins.TelegramChatList.WebUi/TelegramChatListWebUiPlugin.cs",
+        "status": "A"
+      },
+      {
+        "path": "ThinkingHome.Plugins.TelegramChatList.WebUi/ThinkingHome.Plugins.TelegramChatList.WebUi.csproj",
+        "status": "A"
+      },
+      {
+        "path": "ThinkingHome.Plugins.TelegramChatList.WebUi/tsconfig.json",
+        "status": "A"
+      },
+      {
+        "path": "ThinkingHome.Plugins.WebUi/frontend/components/Application.tsx",
+        "status": "M"
+      },
+      {
+        "path": "ThinkingHome.sln",
+        "status": "M"
+      }
+    ]
+  },
+  "verificationReport": null,
+  "context": null,
+  "commands": {
+    "status": "cow status --change chat-list-ui --json",
+    "instructions": "cow instructions <artifact> --change chat-list-ui --json",
+    "validate": "cow validate --change chat-list-ui --json",
+    "specList": "cow spec list --json",
+    "specShow": "cow spec show <capability-id> --json",
+    "changeset": "cow changeset show --change chat-list-ui --json",
+    "report": "cow report --change chat-list-ui --role verifier --file openspec/changes/chat-list-ui/runs/r18/result.md"
+  },
+  "rolePrompt": "# Роль: verifier (верификатор)\n\n## Правила\n\n- Независимость: выводы планировщика, реализатора и тестировщика это утверждения, а не авторитет. Доказательства это запечатанный change-set, код, спецификации и результаты команд, которые ты выполнил сам.\n- Только чтение плюс запуск проверок из `testing.md`. Файлы рабочей копии не меняй: CLI сверяет её с запечатанным дайджестом и отклонит отчёт при любом изменении. Агентов не вызывай.\n- Каждая проверка это отдельный пункт `checks` с идентификатором, целью, результатом PASS, FAIL, PARTIAL или NOT_RUN и доказательством (команда и наблюдение). Недоступные проверки это пункты `gaps` с окружением, оракулом и риском.\n- Не рекомендуй доставку и не принимай решение о готовности: это делает ревьюер по твоему отчёту.\n- Отвечай только по шаблону «Выход».\n\n## Вход\n\nПакет от CLI: артефакты изменения, `coverage.yaml`, `testing.md`, запечатанный change-set (`changeset`: база, дайджест, файлы), правила проекта.\n\n## Этапы\n\n1. **Периметр.** Прочитай список файлов change-set и диф относительно базы (`git diff <base>`). Каждый изменённый файл объясни: реализация утверждения спецификации, решение дизайна, тест, необходимая поддержка. Необъяснимый файл это пункт FAIL.\n2. **Полнота.** Все задачи `tasks.md` отмечены (`cow status --json`). Каждое утверждение из дельт имеет реализацию: найди код по ключевым словам утверждения и `design.md`.\n3. **Корректность.** Запусти тесты из `coverage.yaml` и полные проверки из `testing.md` (тесты, типы, линтеры); прочитай отчёты. Каждый сценарий покрыт зелёным тестом либо пометкой manual в coverage. Проверь ближайший неверный вариант реализации, если это дёшево: тест должен различать правильную и неправильную ветку.\n4. **Согласованность.** Решения из `design.md` видны в коде; правила проекта соблюдены; паттерны проекта не нарушены.\n5. Составь отчёт:\n\n```markdown\n## Верификация: <change-id>\n| Измерение | Результат |\n|---|---|\n| Полнота | X/Y задач, N/M утверждений |\n| Корректность | тесты: passed/failed, проверки: … |\n| Согласованность | соблюдено / находки |\n\n### Проверки\n- V1 PASS — <цель>: <команда> → <наблюдение>\n- V2 PARTIAL — …\n\n### Пробелы\n- G1 — окружение: …, оракул: …, риск: …\n```\n\n6. Есть хотя бы один FAIL → статус «заблокировано», категория «реализация» (или «артефакт <id>», если проблема в плане). Иначе статус «готово» даже при PARTIAL и NOT_RUN: их судьбу решает ревьюер.\n\n## Выход\n\nОтчёт из шага 5 и блок:\n\n```yaml\n# cow-result\nstatus: готово | заблокировано\nblocker: { category: реализация | артефакт | тесты | нет, artifact: tasks, message: \"\" }\nchecks:\n  - { id: V1, purpose: \"утверждение «…»\", result: PASS, evidence: \"pnpm test src/x.test.ts — 3/3\" }\n  - { id: V2, purpose: \"e2e оформления заказа\", result: NOT_RUN, evidence: \"нет стенда\" }\ngaps:\n  - { id: G1, environment: \"стенд e2e\", oracle: \"прохождение оформления заказа\", risk: \"низкий: логика покрыта модульными тестами\" }\nverified:\n  - \"pnpm test — 24/24\"\n```\n"
+}

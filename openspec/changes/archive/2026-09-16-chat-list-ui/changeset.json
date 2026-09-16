@@ -1,0 +1,100 @@
+{
+  "version": 1,
+  "base": "f471e65c4c94e986f98dab5a3ca11b266e6397d4",
+  "digest": "sha256:17c33066eed15ce7668cac1b456e9f2bf7c36d00e7aa94aa75354771e7f50cfe",
+  "paths": 18,
+  "files": [
+    {
+      "path": "README.md",
+      "status": "M",
+      "sha256": "8a479c37b5c777679277643cd75d63847373184b5974f1c1cd763c40b4a032a5"
+    },
+    {
+      "path": "ThinkingHome.Console/appsettings.json",
+      "status": "M",
+      "sha256": "48c65695d03d2a1f6b0687c20a4661a0c176c4775c94cd28f3832f8d0b4ef924"
+    },
+    {
+      "path": "ThinkingHome.Console/ThinkingHome.Console.csproj",
+      "status": "M",
+      "sha256": "3188ee984c2aae280aca4862ec4ae96945bee3adafcf642ef85619eda0007a30"
+    },
+    {
+      "path": "ThinkingHome.Plugins.TelegramChatList.WebApi/README.md",
+      "status": "M",
+      "sha256": "19eb21dd9dfc6aa50b90475cec77b3d0f7ed4d0058f3da236996eb71744546ce"
+    },
+    {
+      "path": "ThinkingHome.Plugins.TelegramChatList.WebApi/TelegramChatListWebApiPlugin.cs",
+      "status": "M",
+      "sha256": "8c7969ad9f8d6264ec6715847bf38079303c0184c727ace8dc06e041b6e40eee"
+    },
+    {
+      "path": "ThinkingHome.Plugins.TelegramChatList.WebUi/frontend/api.ts",
+      "status": "A",
+      "sha256": "ba9fde3ecc34120cd6bedf68a74a8dca698e2f8c39aa9822f751d441b0d82e69"
+    },
+    {
+      "path": "ThinkingHome.Plugins.TelegramChatList.WebUi/frontend/chats.tsx",
+      "status": "A",
+      "sha256": "d5a14bb98563adc84edaf736f1cbe199f69beea6ccd6bfeacf8f4be0abaa6dd0"
+    },
+    {
+      "path": "ThinkingHome.Plugins.TelegramChatList.WebUi/frontend/lang.ts",
+      "status": "A",
+      "sha256": "c8a228c10e5a5f0ccb7e35b6a8ebc8907dac233e7b1e91ff915a3863af173e96"
+    },
+    {
+      "path": "ThinkingHome.Plugins.TelegramChatList.WebUi/Lang/TelegramChatListWebUiPlugin.resx",
+      "status": "A",
+      "sha256": "25df38f46d4227d5db789336688e2cf47ab5267a76f93bcdd1a977052cb36c37"
+    },
+    {
+      "path": "ThinkingHome.Plugins.TelegramChatList.WebUi/Lang/TelegramChatListWebUiPlugin.ru-RU.resx",
+      "status": "A",
+      "sha256": "0bdb7e4842ee3e1ecfc4d646318bcc132e704f3292f3bd06ad221f4a04131c8f"
+    },
+    {
+      "path": "ThinkingHome.Plugins.TelegramChatList.WebUi/package-lock.json",
+      "status": "A",
+      "sha256": "0f6244736ae780063655aa3c1656777a671837e428ca2c74657a21852907dbbe"
+    },
+    {
+      "path": "ThinkingHome.Plugins.TelegramChatList.WebUi/package.json",
+      "status": "A",
+      "sha256": "bde12c6ff012158148e1a318ab3e493a8ab86f57c1e2097b1750414d02cef432"
+    },
+    {
+      "path": "ThinkingHome.Plugins.TelegramChatList.WebUi/README.md",
+      "status": "A",
+      "sha256": "b44f113e05c788cc81bf88ef3334ad6bc90d697d897c1392ea09e570be1c185c"
+    },
+    {
+      "path": "ThinkingHome.Plugins.TelegramChatList.WebUi/TelegramChatListWebUiPlugin.cs",
+      "status": "A",
+      "sha256": "a47a7281252123d2f377b4e5222101b39264edc3512c8f4dbdf794ff967cd346"
+    },
+    {
+      "path": "ThinkingHome.Plugins.TelegramChatList.WebUi/ThinkingHome.Plugins.TelegramChatList.WebUi.csproj",
+      "status": "A",
+      "sha256": "19d8a5ac68532bd157b30d224b46e9a9e47997898bfc46f0cd55280817d7702d"
+    },
+    {
+      "path": "ThinkingHome.Plugins.TelegramChatList.WebUi/tsconfig.json",
+      "status": "A",
+      "sha256": "7926ba9bcb8df2e98b2746d4e35a43b2a23c0737a1edbe6e82e9288fb8dbc522"
+    },
+    {
+      "path": "ThinkingHome.Plugins.WebUi/frontend/components/Application.tsx",
+      "status": "M",
+      "sha256": "56acdb49023b62d1dde356a39ff53f64eeee98d5f905b76131a315204ae51518"
+    },
+    {
+      "path": "ThinkingHome.sln",
+      "status": "M",
+      "sha256": "b033c56b09448e3d31bc7d7170e6d254e9d595848a5b07753c104e67d8d65bd5"
+    }
+  ],
+  "sealed_at": "2026-09-16T17:43:19.750Z",
+  "sealed_after": "r17"
+}
