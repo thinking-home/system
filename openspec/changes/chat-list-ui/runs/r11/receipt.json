@@ -1,0 +1,21 @@
+{
+  "id": "r11",
+  "role": "reviewer",
+  "phase": "tests_review",
+  "attempt": 1,
+  "runner": null,
+  "model": null,
+  "session": null,
+  "started": null,
+  "finished": "2026-09-16T17:14:34.920Z",
+  "exit_code": null,
+  "cost_usd": null,
+  "packet_sha256": "1adab3ea683c852935d86fb6d38277edfa7f56cfcbcacf83cc87ce8f435c9707",
+  "prompt_sha256": null,
+  "result_sha256": "d17664620a324200a77641e04a2bd6748759189b5e99cfb0dbedb8acf5bf82e8",
+  "result_bytes": 13013,
+  "events_path": null,
+  "events_sha256": null,
+  "stderr_sha256": null,
+  "status": "done"
+}

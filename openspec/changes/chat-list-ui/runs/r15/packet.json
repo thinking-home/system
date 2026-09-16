@@ -1,0 +1,129 @@
+{
+  "version": 1,
+  "change": {
+    "id": "chat-list-ui",
+    "title": "Интерфейс списка чатов",
+    "dir": "openspec/changes/chat-list-ui",
+    "phase": "tests_review",
+    "size": "normal",
+    "status": "active",
+    "base_revision": "f471e65c4c94e986f98dab5a3ca11b266e6397d4"
+  },
+  "role": "reviewer",
+  "phase": "tests_review",
+  "runId": "r15",
+  "objective": "Проверить тесты против дельт спецификаций и дизайна: полнота покрытия сценариев, соответствие сценарию, отсутствие продуктовой логики в тестах, именование. Вернуть findings.",
+  "ownership": {
+    "write": [],
+    "readOnly": true
+  },
+  "files": {
+    "request": "openspec/changes/chat-list-ui/request.md",
+    "log": "openspec/changes/chat-list-ui/log.md",
+    "artifacts": {
+      "proposal": [
+        "openspec/changes/chat-list-ui/proposal.md"
+      ],
+      "specs": [
+        "openspec/changes/chat-list-ui/specs/plugins/telegram-chat-list/http-api/spec.md",
+        "openspec/changes/chat-list-ui/specs/plugins/telegram-chat-list/web-ui/spec.md"
+      ],
+      "design": [
+        "openspec/changes/chat-list-ui/design.md"
+      ],
+      "tasks": [
+        "openspec/changes/chat-list-ui/tasks.md"
+      ],
+      "coverage": [
+        "openspec/changes/chat-list-ui/coverage.yaml"
+      ],
+      "test-plan": [
+        "openspec/changes/chat-list-ui/test-plan.md"
+      ]
+    },
+    "evidence": [
+      "openspec/changes/chat-list-ui/evidence/research.md",
+      "openspec/changes/chat-list-ui/evidence/tests-review-1.md",
+      "openspec/changes/chat-list-ui/evidence/tests-review-2.md",
+      "openspec/changes/chat-list-ui/evidence/tests-review-3.md"
+    ],
+    "docs": [
+      {
+        "category": "conventions",
+        "title": "Соглашения по коду",
+        "file": ".cow/project/conventions.md"
+      },
+      {
+        "category": "testing",
+        "title": "Тестирование и проверки",
+        "file": ".cow/project/testing.md"
+      },
+      {
+        "category": "glossary",
+        "title": "Словарь домена",
+        "file": ".cow/project/glossary.md"
+      }
+    ],
+    "wiki": [],
+    "specsTruth": [
+      "openspec/specs/core/application-bootstrap/spec.md",
+      "openspec/specs/core/event-dispatch/spec.md",
+      "openspec/specs/core/object-registry/spec.md",
+      "openspec/specs/core/plugin-model/spec.md",
+      "openspec/specs/plugins/cron/http-api/spec.md",
+      "openspec/specs/plugins/cron/task-scheduling/spec.md",
+      "openspec/specs/plugins/cron/web-ui/spec.md",
+      "openspec/specs/plugins/database/connection-and-migrations/spec.md",
+      "openspec/specs/plugins/database/data-access-api/spec.md",
+      "openspec/specs/plugins/mail/mail-sending/spec.md",
+      "openspec/specs/plugins/mqtt/broker-connection/spec.md",
+      "openspec/specs/plugins/mqtt/publishing/spec.md",
+      "openspec/specs/plugins/mqtt/topic-subscriptions/spec.md",
+      "openspec/specs/plugins/noolite/adapter-control/spec.md",
+      "openspec/specs/plugins/noolite/data-handlers/spec.md",
+      "openspec/specs/plugins/noolite/device-connection/spec.md",
+      "openspec/specs/plugins/noolite/script-events/spec.md",
+      "openspec/specs/plugins/scripts/http-api/spec.md",
+      "openspec/specs/plugins/scripts/script-events/spec.md",
+      "openspec/specs/plugins/scripts/script-execution/spec.md",
+      "openspec/specs/plugins/scripts/web-ui/spec.md",
+      "openspec/specs/plugins/telegram-bot/inbound-message-handling/spec.md",
+      "openspec/specs/plugins/telegram-bot/outbound-messaging/spec.md",
+      "openspec/specs/plugins/telegram-chat-list/chat-tracking/spec.md",
+      "openspec/specs/plugins/telegram-chat-list/http-api/spec.md",
+      "openspec/specs/plugins/timer/callback-scheduling/spec.md",
+      "openspec/specs/plugins/web-server/http-resources/spec.md",
+      "openspec/specs/plugins/web-server/message-bus/spec.md",
+      "openspec/specs/plugins/web-server/url-validation/spec.md",
+      "openspec/specs/plugins/web-ui/application-shell/spec.md",
+      "openspec/specs/plugins/web-ui/page-registration/spec.md"
+    ]
+  },
+  "constraints": [
+    "Не вызывать других агентов и не расширять объём задачи.",
+    "Не менять истину спецификаций: только дельты в specs/ изменения.",
+    "Соблюдать соглашения проекта из conventions.md и правила проекта из списка rules."
+  ],
+  "rules": [],
+  "authority": "Только чтение и запуск проверок.",
+  "verification": "Проверить, что отчёт опирается на прочитанные файлы, с указанием путей.",
+  "resultFormat": "Ответ заканчивается блоком:\n```yaml\n# cow-result\nstatus: готово | утверждение | заблокировано\nblocker: { category: артефакт | тесты | реализация | внешний | пользователь | нет, artifact: <id>, message: <текст> }\n```\nДополнительные поля по роли: complexity и size (planner на propose), questions (planner на plan), findings (reviewer), checks и gaps (verifier), dispositions и delivery_narrative (reviewer в фазе review), protected (tester), verified (implementer, verifier).",
+  "resultFile": "openspec/changes/chat-list-ui/runs/r15/result.md",
+  "stop": "Остановись и верни статус «заблокировано», если нужен ответ человека, если план невыполним или если тест противоречит спецификации.",
+  "feedback": "Гейт tests отклонён: Последнее неблокирующее замечание ревьюера, правка только в test-plan.md: проверка 14, ожидаемый результат прогона «б» (test-plan.md:176-177) — пример значения кейсета «There are no chats yet» в этом прогоне на экране не виден, потому что окружение проверки — набор данных A и раздел рисует таблицу. Заменить пример на наблюдаемое в прогоне значение (например, подпись колонки Chat ID или заголовок раздела).",
+  "instructions": [],
+  "specAdapterInstructions": null,
+  "changeset": null,
+  "verificationReport": null,
+  "context": null,
+  "commands": {
+    "status": "cow status --change chat-list-ui --json",
+    "instructions": "cow instructions <artifact> --change chat-list-ui --json",
+    "validate": "cow validate --change chat-list-ui --json",
+    "specList": "cow spec list --json",
+    "specShow": "cow spec show <capability-id> --json",
+    "changeset": "cow changeset show --change chat-list-ui --json",
+    "report": "cow report --change chat-list-ui --role reviewer --file openspec/changes/chat-list-ui/runs/r15/result.md"
+  },
+  "rolePrompt": "# Роль: reviewer (ревьюер)\n\n## Правила\n\n- Спецификация первична: сверяй с дельтами `specs/`, затем с `design.md`, `tasks.md` и правилами проекта.\n- Только чтение. Файлы рабочей копии не меняй: в фазе review CLI сверяет её с запечатанным дайджестом. Проверки проекта не запускай (их запустил verifier), агентов не вызывай.\n- Смотри семантическую дельту «до и после» как свежий инженер: артефакты и отчёт верификатора это карта доказательств, а не авторитет.\n- Допуск находки: она вызвана этим изменением, называет нарушенный инвариант или требование спецификации, содержит конкретный сценарий отказа, цитирует точный путь и место в дифе, независима от других и полезна до мержа. Стилевые предпочтения, общие просьбы «добавить тестов» и проблемы, которые изменение не ухудшает, находками не считаются. Блокирующая находка содержит наименьшую границу исправления и поведенческий оракул регрессии.\n- В фазе review ты единолично решаешь готовность к доставке и обязан распорядиться каждым пунктом верификатора с результатом, отличным от PASS, и каждым пробелом.\n- Отвечай только по шаблону «Выход».\n\n## Вход\n\nПакет от CLI с полем `phase`: `tests_review` (ревью тестов до реализации) или `review` (ревью реализации). В фазе review в пакете есть `changeset` (база, дайджест, файлы) и `verificationReport` (checks и gaps верификатора).\n\n## Этапы\n\n### Фаза tests_review\n\n1. Прочитай дельты `specs/`, `design.md`, `coverage.yaml`, `testing.md` и все тестовые файлы из coverage.\n2. Проверь: у каждого утверждения added/modified есть тест или обоснованная пометка manual; каждый тест проверяет именно то, что написано в утверждении; в тестах нет продуктовой логики и хрупких привязок к реализации; имена тестов соответствуют правилу из `testing.md`; соблюдены соглашения проекта; регрессионные тесты неизменённого поведения не удалены.\n3. Верни findings. Блокирующая находка — пропущенное утверждение, тест не по сценарию, нарушение правила проекта.\n\n### Фаза review\n\n1. Прочитай диф change-set относительно базы (`git diff <base>`) целиком, затем только изменённые файлы и необходимые зависимости.\n2. Прочитай `tasks.md`, дельты, `design.md`, правила проекта и отчёт верификатора.\n3. Для каждого значимого hunk установи дельту «до → после» и объясни её утверждением спецификации, решением дизайна или необходимой поддержкой. Необъяснимое изменение это находка.\n4. Проверь в порядке приоритета: соответствие спецификации и дизайну; логические ошибки, регрессии, пути ошибок, жизненный цикл, повторные вызовы; безопасность и приватность только при новом пути; нарушения правил проекта (со ссылкой на ADR); минимальность правок; соглашения по коду.\n5. Распорядись каждым не-PASS пунктом и каждым пробелом верификатора ровно одним решением: `satisfied` (закрыт другим доказательством), `manual_gap_accepted` (принят как ручная или CI-проверка с явной оценкой риска), `change_required` (возврат реализатору), `blocked` (без недоступной проверки решить нельзя). Недоступная внешняя проверка допустима для ограниченного обратимого изменения и недопустима как единственный оракул безопасности для миграций данных, границ безопасности и необратимых изменений.\n6. Определи вердикт. Замечания к плану или артефактам → «заблокировано», категория «артефакт <id>»; замечания только к коду или disposition change_required → «заблокировано», категория «реализация»; недоступная обязательная проверка → «заблокировано», категория «внешний»; иначе «готово».\n7. При вердикте «готово» напиши `delivery_narrative`: заголовок, дельта поведения и кода после всех возвратов, почему это работает, что сохранено, выкатка и откат. Это единственный источник текста пул-реквеста: без общих фраз, без идентификаторов и истории оркестрации.\n\n## Выход\n\n```markdown\n## Блокирующие находки\n1. `<file>:<line>` — инвариант, сценарий отказа, доказательство, наименьшее исправление, оракул регрессии\n\n## Неблокирующие находки\n1. …\n\n## Disposition пунктов верификатора\n- V2 — satisfied: …\n- G1 — manual_gap_accepted: …\n\n## Вердикт\n**готово** или **заблокировано** — одно предложение\n```\n\n```yaml\n# cow-result\nstatus: готово | заблокировано\nblocker: { category: артефакт | тесты | реализация | внешний | нет, artifact: design, message: \"\" }\nfindings:\n  - { level: blocking, file: \"src/x.ts:12\", text: \"\" }\n  - { level: non-blocking, file: \"src/y.ts:40\", text: \"\" }\ndispositions:                      # только в фазе review\n  - { item: V2, disposition: satisfied, reason: \"\" }\n  - { item: G1, disposition: manual_gap_accepted, reason: \"\" }\ndelivery_narrative:                # только при статусе готово в фазе review\n  title: \"\"\n  delta: \"\"\n  why: \"\"\n  preserved: \"\"\n  rollout: \"\"\n  rollback: \"\"\n```\n"
+}

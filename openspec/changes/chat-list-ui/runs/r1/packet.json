@@ -1,0 +1,112 @@
+{
+  "version": 1,
+  "change": {
+    "id": "chat-list-ui",
+    "title": "Интерфейс списка чатов",
+    "dir": "openspec/changes/chat-list-ui",
+    "phase": "research",
+    "size": "normal",
+    "status": "active",
+    "base_revision": "f471e65c4c94e986f98dab5a3ca11b266e6397d4"
+  },
+  "role": "researcher",
+  "phase": "research",
+  "runId": "r1",
+  "objective": "Собрать Evidence Pack по запросу: текущее поведение, затронутые capability и код, границы, доказательства, пробелы. Записать в evidence/research.md.",
+  "ownership": {
+    "write": [
+      "evidence/research.md"
+    ],
+    "readOnly": false
+  },
+  "files": {
+    "request": "openspec/changes/chat-list-ui/request.md",
+    "log": "openspec/changes/chat-list-ui/log.md",
+    "artifacts": {
+      "proposal": [],
+      "specs": [],
+      "design": [],
+      "tasks": [],
+      "coverage": [],
+      "test-plan": []
+    },
+    "evidence": [],
+    "docs": [
+      {
+        "category": "product",
+        "title": "Продукт и границы",
+        "file": ".cow/project/overview.md"
+      },
+      {
+        "category": "architecture",
+        "title": "Архитектура и карта кода",
+        "file": ".cow/project/architecture.md"
+      },
+      {
+        "category": "glossary",
+        "title": "Словарь домена",
+        "file": ".cow/project/glossary.md"
+      }
+    ],
+    "specsTruth": [
+      "openspec/specs/core/application-bootstrap/spec.md",
+      "openspec/specs/core/event-dispatch/spec.md",
+      "openspec/specs/core/object-registry/spec.md",
+      "openspec/specs/core/plugin-model/spec.md",
+      "openspec/specs/plugins/cron/http-api/spec.md",
+      "openspec/specs/plugins/cron/task-scheduling/spec.md",
+      "openspec/specs/plugins/cron/web-ui/spec.md",
+      "openspec/specs/plugins/database/connection-and-migrations/spec.md",
+      "openspec/specs/plugins/database/data-access-api/spec.md",
+      "openspec/specs/plugins/mail/mail-sending/spec.md",
+      "openspec/specs/plugins/mqtt/broker-connection/spec.md",
+      "openspec/specs/plugins/mqtt/publishing/spec.md",
+      "openspec/specs/plugins/mqtt/topic-subscriptions/spec.md",
+      "openspec/specs/plugins/noolite/adapter-control/spec.md",
+      "openspec/specs/plugins/noolite/data-handlers/spec.md",
+      "openspec/specs/plugins/noolite/device-connection/spec.md",
+      "openspec/specs/plugins/noolite/script-events/spec.md",
+      "openspec/specs/plugins/scripts/http-api/spec.md",
+      "openspec/specs/plugins/scripts/script-events/spec.md",
+      "openspec/specs/plugins/scripts/script-execution/spec.md",
+      "openspec/specs/plugins/scripts/web-ui/spec.md",
+      "openspec/specs/plugins/telegram-bot/inbound-message-handling/spec.md",
+      "openspec/specs/plugins/telegram-bot/outbound-messaging/spec.md",
+      "openspec/specs/plugins/telegram-chat-list/chat-tracking/spec.md",
+      "openspec/specs/plugins/telegram-chat-list/http-api/spec.md",
+      "openspec/specs/plugins/timer/callback-scheduling/spec.md",
+      "openspec/specs/plugins/web-server/http-resources/spec.md",
+      "openspec/specs/plugins/web-server/message-bus/spec.md",
+      "openspec/specs/plugins/web-server/url-validation/spec.md",
+      "openspec/specs/plugins/web-ui/application-shell/spec.md",
+      "openspec/specs/plugins/web-ui/page-registration/spec.md"
+    ]
+  },
+  "constraints": [
+    "Не вызывать других агентов и не расширять объём задачи.",
+    "Не менять истину спецификаций: только дельты в specs/ изменения.",
+    "Соблюдать соглашения проекта из conventions.md и правила проекта из списка rules."
+  ],
+  "rules": [],
+  "authority": "Запись только в: evidence/research.md.",
+  "verification": "Проверить, что отчёт опирается на прочитанные файлы, с указанием путей.",
+  "resultFormat": "Ответ заканчивается блоком:\n```yaml\n# cow-result\nstatus: готово | утверждение | заблокировано\nblocker: { category: артефакт | тесты | реализация | внешний | пользователь | нет, artifact: <id>, message: <текст> }\n```\nДополнительные поля по роли: complexity и size (planner на propose), questions (planner на plan), findings (reviewer), checks и gaps (verifier), dispositions и delivery_narrative (reviewer в фазе review), protected (tester), verified (implementer, verifier).",
+  "resultFile": "openspec/changes/chat-list-ui/runs/r1/result.md",
+  "stop": "Остановись и верни статус «заблокировано», если нужен ответ человека, если план невыполним или если тест противоречит спецификации.",
+  "feedback": null,
+  "instructions": [],
+  "specAdapterInstructions": null,
+  "changeset": null,
+  "verificationReport": null,
+  "context": null,
+  "commands": {
+    "status": "cow status --change chat-list-ui --json",
+    "instructions": "cow instructions <artifact> --change chat-list-ui --json",
+    "validate": "cow validate --change chat-list-ui --json",
+    "specList": "cow spec list --json",
+    "specShow": "cow spec show <capability-id> --json",
+    "changeset": "cow changeset show --change chat-list-ui --json",
+    "report": "cow report --change chat-list-ui --role researcher --file openspec/changes/chat-list-ui/runs/r1/result.md"
+  },
+  "rolePrompt": "# Роль: researcher (исследователь)\n\n## Правила\n\n- Только чтение кода и документации. Разрешена запись единственного файла: `evidence/research.md`.\n- Разделяй проверенные факты, выводы и предположения; у каждого факта путь к файлу или символу.\n- Ищи ровно то, что нужно для следующего решения. Не перечисляй соседние модули ради полноты.\n- Истина о поведении — спецификации (`cow spec list`, `cow spec show`), истина о реализации — текущий код и тесты. Документация проекта — карта, а не доказательство.\n- Не вызывай других агентов, не меняй код и артефакты, не решай продуктовые вопросы.\n- Отвечай только по шаблону «Выход».\n\n## Вход\n\nПакет от CLI: `request.md`, документация категорий product, architecture, glossary, список файлов истины спецификаций, feedback при повторном вызове.\n\n## Этапы\n\n1. Прочитай `request.md` и документацию из пакета.\n2. Определи затронутые capability: `cow spec list --json`, затем `cow spec show <code> --json` для каждой релевантной.\n3. Проследи критический путь в коде: точка входа и вызывающий код, преобразование данных и состояния, границы и интерфейсы, побочные эффекты и ошибки, существующий паттерн, который нужно сохранить, тесты, которые покрывают текущее поведение.\n4. Запиши Evidence Pack в `evidence/research.md` с разделами:\n   - **Цель и критерий готовности** — нормализованная формулировка запроса;\n   - **Текущее поведение** — как работает сейчас, с путями;\n   - **Затронутые capability** — идентификаторы и требования, которые изменятся;\n   - **Границы и владение** — компоненты, интерфейсы, что нельзя трогать;\n   - **Доказательства** — точные пути, символы, тесты, конфиги;\n   - **Ограничения и паттерны** — правила проекта и решения, которые нужно сохранить;\n   - **Поверхности изменения и проверки** — где вероятно править и чем проверять, без выбора дизайна;\n   - **Допущения и пробелы** — что не удалось подтвердить.\n5. Если пробел меняет объём или контракт и не закрывается кодом, верни статус «заблокировано» с категорией «пользователь» и точным вопросом.\n\n## Выход\n\nКороткое резюме Evidence Pack (3–5 пунктов) и блок:\n\n```yaml\n# cow-result\nstatus: готово | заблокировано\nblocker: { category: пользователь | внешний | нет, message: \"\" }\n```\n"
+}

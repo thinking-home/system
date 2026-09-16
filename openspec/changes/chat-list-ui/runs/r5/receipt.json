@@ -1,0 +1,21 @@
+{
+  "id": "r5",
+  "role": "planner",
+  "phase": "plan",
+  "attempt": 1,
+  "runner": null,
+  "model": null,
+  "session": null,
+  "started": null,
+  "finished": "2026-09-16T16:29:59.626Z",
+  "exit_code": null,
+  "cost_usd": null,
+  "packet_sha256": "7a00eb64a9462aa637b6eaebebbbf314e2a6a21b6da85eba196e0d8c7f66f7bf",
+  "prompt_sha256": null,
+  "result_sha256": "0264fd0fe5908a507ed28068ad7fd38e155524fe4c8f752388e911de337bdd3d",
+  "result_bytes": 6734,
+  "events_path": null,
+  "events_sha256": null,
+  "stderr_sha256": null,
+  "status": "done"
+}

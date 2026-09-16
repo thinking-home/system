@@ -1,0 +1,171 @@
+{
+  "version": 1,
+  "change": {
+    "id": "chat-list-ui",
+    "title": "Интерфейс списка чатов",
+    "dir": "openspec/changes/chat-list-ui",
+    "phase": "cover",
+    "size": "normal",
+    "status": "active",
+    "base_revision": "f471e65c4c94e986f98dab5a3ca11b266e6397d4"
+  },
+  "role": "tester",
+  "phase": "cover",
+  "runId": "r6",
+  "objective": "Написать автотесты по сценариям дельт на уровнях из testing.md, заполнить coverage.yaml и при необходимости test-plan.md, запустить тесты и убедиться, что новые падают по ожидаемой причине.",
+  "ownership": {
+    "write": [
+      "coverage.yaml",
+      "test-plan.md",
+      "<тестовые файлы по testing.md>"
+    ],
+    "readOnly": false
+  },
+  "files": {
+    "request": "openspec/changes/chat-list-ui/request.md",
+    "log": "openspec/changes/chat-list-ui/log.md",
+    "artifacts": {
+      "proposal": [
+        "openspec/changes/chat-list-ui/proposal.md"
+      ],
+      "specs": [
+        "openspec/changes/chat-list-ui/specs/plugins/telegram-chat-list/web-ui/spec.md"
+      ],
+      "design": [
+        "openspec/changes/chat-list-ui/design.md"
+      ],
+      "tasks": [
+        "openspec/changes/chat-list-ui/tasks.md"
+      ],
+      "coverage": [],
+      "test-plan": []
+    },
+    "evidence": [
+      "openspec/changes/chat-list-ui/evidence/research.md"
+    ],
+    "docs": [
+      {
+        "category": "conventions",
+        "title": "Соглашения по коду",
+        "file": ".cow/project/conventions.md"
+      },
+      {
+        "category": "testing",
+        "title": "Тестирование и проверки",
+        "file": ".cow/project/testing.md"
+      },
+      {
+        "category": "workflow",
+        "title": "Рабочий процесс",
+        "file": ".cow/project/workflow.md"
+      },
+      {
+        "category": "glossary",
+        "title": "Словарь домена",
+        "file": ".cow/project/glossary.md"
+      },
+      {
+        "category": "contracts",
+        "title": "Интеграции и контракты",
+        "file": ".cow/project/contracts.md"
+      }
+    ],
+    "wiki": [],
+    "specsTruth": [
+      "openspec/specs/core/application-bootstrap/spec.md",
+      "openspec/specs/core/event-dispatch/spec.md",
+      "openspec/specs/core/object-registry/spec.md",
+      "openspec/specs/core/plugin-model/spec.md",
+      "openspec/specs/plugins/cron/http-api/spec.md",
+      "openspec/specs/plugins/cron/task-scheduling/spec.md",
+      "openspec/specs/plugins/cron/web-ui/spec.md",
+      "openspec/specs/plugins/database/connection-and-migrations/spec.md",
+      "openspec/specs/plugins/database/data-access-api/spec.md",
+      "openspec/specs/plugins/mail/mail-sending/spec.md",
+      "openspec/specs/plugins/mqtt/broker-connection/spec.md",
+      "openspec/specs/plugins/mqtt/publishing/spec.md",
+      "openspec/specs/plugins/mqtt/topic-subscriptions/spec.md",
+      "openspec/specs/plugins/noolite/adapter-control/spec.md",
+      "openspec/specs/plugins/noolite/data-handlers/spec.md",
+      "openspec/specs/plugins/noolite/device-connection/spec.md",
+      "openspec/specs/plugins/noolite/script-events/spec.md",
+      "openspec/specs/plugins/scripts/http-api/spec.md",
+      "openspec/specs/plugins/scripts/script-events/spec.md",
+      "openspec/specs/plugins/scripts/script-execution/spec.md",
+      "openspec/specs/plugins/scripts/web-ui/spec.md",
+      "openspec/specs/plugins/telegram-bot/inbound-message-handling/spec.md",
+      "openspec/specs/plugins/telegram-bot/outbound-messaging/spec.md",
+      "openspec/specs/plugins/telegram-chat-list/chat-tracking/spec.md",
+      "openspec/specs/plugins/telegram-chat-list/http-api/spec.md",
+      "openspec/specs/plugins/timer/callback-scheduling/spec.md",
+      "openspec/specs/plugins/web-server/http-resources/spec.md",
+      "openspec/specs/plugins/web-server/message-bus/spec.md",
+      "openspec/specs/plugins/web-server/url-validation/spec.md",
+      "openspec/specs/plugins/web-ui/application-shell/spec.md",
+      "openspec/specs/plugins/web-ui/page-registration/spec.md"
+    ]
+  },
+  "constraints": [
+    "Не вызывать других агентов и не расширять объём задачи.",
+    "Не менять истину спецификаций: только дельты в specs/ изменения.",
+    "Соблюдать соглашения проекта из conventions.md и правила проекта из списка rules."
+  ],
+  "rules": [],
+  "authority": "Запись только в: coverage.yaml, test-plan.md, <тестовые файлы по testing.md>.",
+  "verification": "Запустить написанные тесты командами из testing.md: новые падают по ожидаемой причине, регрессионные проходят.",
+  "resultFormat": "Ответ заканчивается блоком:\n```yaml\n# cow-result\nstatus: готово | утверждение | заблокировано\nblocker: { category: артефакт | тесты | реализация | внешний | пользователь | нет, artifact: <id>, message: <текст> }\n```\nДополнительные поля по роли: complexity и size (planner на propose), questions (planner на plan), findings (reviewer), checks и gaps (verifier), dispositions и delivery_narrative (reviewer в фазе review), protected (tester), verified (implementer, verifier).",
+  "resultFile": "openspec/changes/chat-list-ui/runs/r6/result.md",
+  "stop": "Остановись и верни статус «заблокировано», если нужен ответ человека, если план невыполним или если тест противоречит спецификации.",
+  "feedback": null,
+  "instructions": [
+    {
+      "artifact": "coverage",
+      "phase": "cover",
+      "status": "ready",
+      "description": "Связь сценариев с автотестами",
+      "instruction": "Заполни coverage.yaml: для каждого утверждения из дельт specs/ укажи тесты (путь, полное имя, уровень) либо manual с причиной.\n\n- имя теста строится по правилу из testing.md, чтобы отчёт тестов сопоставился с утверждением;\n- уровень выбирай по testing.md: unit, component, module, e2e;\n- утверждения без теста допустимы только с пометкой manual и причиной.\n",
+      "template": "# Связь утверждений спецификации с автотестами.\n# capability → группа → утверждение → тесты | manual\n# uncomment and fill:\n# checkout-page:\n#   \"Пользователь может выбрать адрес доставки\":\n#     \"При нажатии «Выбрать адрес» открывается диалог выбора адреса на карте\":\n#       tests:\n#         - level: e2e\n#           file: e2e/checkout/address.spec.ts\n#           name: \"Страница оформления заказа › Пользователь может выбрать адрес доставки › При нажатии «Выбрать адрес» открывается диалог выбора адреса на карте\"\n#     \"Адрес сохраняется в профиле\":\n#       manual: \"Требует реального аккаунта с историей заказов\"\n",
+      "resolvedOutputPath": "/Users/dima117a/RiderProjects/thinking-home-system/openspec/changes/chat-list-ui/coverage.yaml",
+      "existingOutputPaths": [],
+      "dependencies": {
+        "specs": [
+          "/Users/dima117a/RiderProjects/thinking-home-system/openspec/changes/chat-list-ui/specs/plugins/telegram-chat-list/web-ui/spec.md"
+        ],
+        "design": [
+          "/Users/dima117a/RiderProjects/thinking-home-system/openspec/changes/chat-list-ui/design.md"
+        ]
+      },
+      "context": null,
+      "rules": []
+    },
+    {
+      "artifact": "test-plan",
+      "phase": "cover",
+      "status": "blocked",
+      "description": "План ручного тестирования",
+      "instruction": "Создай план ручной проверки только для утверждений с пометкой manual в coverage.yaml и короткий чеклист для человека перед мержем.\n",
+      "template": "## Ручные проверки\n\n<!-- по одной на утверждение с пометкой manual: шаги, ожидаемый результат, окружение -->\n\n## Чеклист перед мержем\n\n- [ ] <!-- пункт для человека -->\n",
+      "resolvedOutputPath": "/Users/dima117a/RiderProjects/thinking-home-system/openspec/changes/chat-list-ui/test-plan.md",
+      "existingOutputPaths": [],
+      "dependencies": {
+        "coverage": []
+      },
+      "context": null,
+      "rules": []
+    }
+  ],
+  "specAdapterInstructions": null,
+  "changeset": null,
+  "verificationReport": null,
+  "context": null,
+  "commands": {
+    "status": "cow status --change chat-list-ui --json",
+    "instructions": "cow instructions <artifact> --change chat-list-ui --json",
+    "validate": "cow validate --change chat-list-ui --json",
+    "specList": "cow spec list --json",
+    "specShow": "cow spec show <capability-id> --json",
+    "changeset": "cow changeset show --change chat-list-ui --json",
+    "report": "cow report --change chat-list-ui --role tester --file openspec/changes/chat-list-ui/runs/r6/result.md"
+  },
+  "rolePrompt": "# Роль: tester (тестировщик)\n\n## Правила\n\n- Пиши автотесты по утверждениям дельт спецификаций до того, как написан код реализации.\n- Уровень теста и правило именования бери из `testing.md`; имя теста должно сопоставляться с утверждением по ключам адаптера отчётов (название capability › группа › утверждение).\n- Тест проверяет то, что написано в утверждении, а не реализацию. Не дублируй продуктовую логику в тесте.\n- Разрешена запись: тестовые файлы и тестовая инфраструктура (фикстуры, моки, page objects), `coverage.yaml`, `test-plan.md`. Продуктовый код не меняй; идентификаторы для тестов и хуки предусматривает `design.md`, их добавит реализатор.\n- Не вызывай других агентов, не меняй артефакты планирования и истину спецификаций.\n- Отвечай только по шаблону «Выход».\n\n## Вход\n\nПакет от CLI: дельты `specs/`, `design.md` (контракты, структура UI, идентификаторы), `testing.md`, `conventions.md`, существующие тесты проекта. При возврате — `feedback` с findings ревьюера или блокером реализатора.\n\n## Этапы\n\n1. Прочитай дельты, `design.md` и `testing.md`. Составь список всех утверждений из секций added и modified.\n2. Для каждого утверждения выбери уровень по `testing.md` и напиши тест. Если утверждение нельзя автоматизировать, зафиксируй причину.\n3. Заполни `coverage.yaml` по инструкции `cow instructions coverage --change <id> --json`.\n4. Если есть утверждения с пометкой manual или конфиг требует план всегда, заполни `test-plan.md`.\n5. Запусти написанные тесты командами из `testing.md`. Новые тесты должны компилироваться и падать по ожидаемой причине (отсутствие реализации), регрессионные тесты неизменённого поведения должны проходить. Зафиксируй результат в «Проверено».\n6. Перечисли в `protected` блока cow-result шаблоны путей всех тестовых файлов, которые ты создал или изменил: они станут защищёнными от реализатора.\n7. Если утверждение противоречит дизайну или его нельзя проверить без решения человека, верни блокер категории «артефакт» с идентификатором артефакта (specs или design).\n\n## Выход\n\n```yaml\n# cow-result\nstatus: готово | заблокировано\nblocker: { category: артефакт | пользователь | внешний | нет, artifact: specs, message: \"\" }\nprotected:\n  - \"tests/checkout/**\"\nverified:\n  - \"pnpm test tests/checkout — 4 новых теста падают с ожидаемой причиной, 12 регрессионных проходят\"\n```\n"
+}

@@ -1,0 +1,144 @@
+{
+  "version": 1,
+  "change": {
+    "id": "chat-list-ui",
+    "title": "Интерфейс списка чатов",
+    "dir": "openspec/changes/chat-list-ui",
+    "phase": "implement",
+    "size": "normal",
+    "status": "active",
+    "base_revision": "f471e65c4c94e986f98dab5a3ca11b266e6397d4"
+  },
+  "role": "implementer",
+  "phase": "implement",
+  "runId": "r16",
+  "objective": "Выполнить задачи из tasks.md, не изменяя защищённые файлы. Довести тесты из coverage.yaml до зелёных, отметить выполненные задачи.",
+  "ownership": {
+    "write": [
+      "<продуктовый код>",
+      "tasks.md (только отметки [x])"
+    ],
+    "readOnly": false
+  },
+  "files": {
+    "request": "openspec/changes/chat-list-ui/request.md",
+    "log": "openspec/changes/chat-list-ui/log.md",
+    "artifacts": {
+      "proposal": [
+        "openspec/changes/chat-list-ui/proposal.md"
+      ],
+      "specs": [
+        "openspec/changes/chat-list-ui/specs/plugins/telegram-chat-list/http-api/spec.md",
+        "openspec/changes/chat-list-ui/specs/plugins/telegram-chat-list/web-ui/spec.md"
+      ],
+      "design": [
+        "openspec/changes/chat-list-ui/design.md"
+      ],
+      "tasks": [
+        "openspec/changes/chat-list-ui/tasks.md"
+      ],
+      "coverage": [
+        "openspec/changes/chat-list-ui/coverage.yaml"
+      ],
+      "test-plan": [
+        "openspec/changes/chat-list-ui/test-plan.md"
+      ]
+    },
+    "evidence": [
+      "openspec/changes/chat-list-ui/evidence/research.md",
+      "openspec/changes/chat-list-ui/evidence/tests-review-1.md",
+      "openspec/changes/chat-list-ui/evidence/tests-review-2.md",
+      "openspec/changes/chat-list-ui/evidence/tests-review-3.md",
+      "openspec/changes/chat-list-ui/evidence/tests-review-4.md"
+    ],
+    "docs": [
+      {
+        "category": "architecture",
+        "title": "Архитектура и карта кода",
+        "file": ".cow/project/architecture.md"
+      },
+      {
+        "category": "conventions",
+        "title": "Соглашения по коду",
+        "file": ".cow/project/conventions.md"
+      },
+      {
+        "category": "testing",
+        "title": "Тестирование и проверки",
+        "file": ".cow/project/testing.md"
+      },
+      {
+        "category": "workflow",
+        "title": "Рабочий процесс",
+        "file": ".cow/project/workflow.md"
+      },
+      {
+        "category": "glossary",
+        "title": "Словарь домена",
+        "file": ".cow/project/glossary.md"
+      }
+    ],
+    "wiki": [],
+    "specsTruth": [
+      "openspec/specs/core/application-bootstrap/spec.md",
+      "openspec/specs/core/event-dispatch/spec.md",
+      "openspec/specs/core/object-registry/spec.md",
+      "openspec/specs/core/plugin-model/spec.md",
+      "openspec/specs/plugins/cron/http-api/spec.md",
+      "openspec/specs/plugins/cron/task-scheduling/spec.md",
+      "openspec/specs/plugins/cron/web-ui/spec.md",
+      "openspec/specs/plugins/database/connection-and-migrations/spec.md",
+      "openspec/specs/plugins/database/data-access-api/spec.md",
+      "openspec/specs/plugins/mail/mail-sending/spec.md",
+      "openspec/specs/plugins/mqtt/broker-connection/spec.md",
+      "openspec/specs/plugins/mqtt/publishing/spec.md",
+      "openspec/specs/plugins/mqtt/topic-subscriptions/spec.md",
+      "openspec/specs/plugins/noolite/adapter-control/spec.md",
+      "openspec/specs/plugins/noolite/data-handlers/spec.md",
+      "openspec/specs/plugins/noolite/device-connection/spec.md",
+      "openspec/specs/plugins/noolite/script-events/spec.md",
+      "openspec/specs/plugins/scripts/http-api/spec.md",
+      "openspec/specs/plugins/scripts/script-events/spec.md",
+      "openspec/specs/plugins/scripts/script-execution/spec.md",
+      "openspec/specs/plugins/scripts/web-ui/spec.md",
+      "openspec/specs/plugins/telegram-bot/inbound-message-handling/spec.md",
+      "openspec/specs/plugins/telegram-bot/outbound-messaging/spec.md",
+      "openspec/specs/plugins/telegram-chat-list/chat-tracking/spec.md",
+      "openspec/specs/plugins/telegram-chat-list/http-api/spec.md",
+      "openspec/specs/plugins/timer/callback-scheduling/spec.md",
+      "openspec/specs/plugins/web-server/http-resources/spec.md",
+      "openspec/specs/plugins/web-server/message-bus/spec.md",
+      "openspec/specs/plugins/web-server/url-validation/spec.md",
+      "openspec/specs/plugins/web-ui/application-shell/spec.md",
+      "openspec/specs/plugins/web-ui/page-registration/spec.md"
+    ]
+  },
+  "constraints": [
+    "Не вызывать других агентов и не расширять объём задачи.",
+    "Не менять истину спецификаций: только дельты в specs/ изменения.",
+    "Соблюдать соглашения проекта из conventions.md и правила проекта из списка rules.",
+    "Защищённые файлы, менять запрещено: openspec/changes/chat-list-ui/coverage.yaml, openspec/changes/chat-list-ui/test-plan.md"
+  ],
+  "rules": [],
+  "authority": "Запись только в: <продуктовый код>, tasks.md (только отметки [x]).",
+  "verification": "Прогнать тесты из coverage.yaml и проверки из testing.md; все задачи tasks.md отмечены.",
+  "resultFormat": "Ответ заканчивается блоком:\n```yaml\n# cow-result\nstatus: готово | утверждение | заблокировано\nblocker: { category: артефакт | тесты | реализация | внешний | пользователь | нет, artifact: <id>, message: <текст> }\n```\nДополнительные поля по роли: complexity и size (planner на propose), questions (planner на plan), findings (reviewer), checks и gaps (verifier), dispositions и delivery_narrative (reviewer в фазе review), protected (tester), verified (implementer, verifier).",
+  "resultFile": "openspec/changes/chat-list-ui/runs/r16/result.md",
+  "stop": "Остановись и верни статус «заблокировано», если нужен ответ человека, если план невыполним или если тест противоречит спецификации.",
+  "feedback": null,
+  "instructions": [],
+  "specAdapterInstructions": null,
+  "changeset": null,
+  "verificationReport": null,
+  "context": null,
+  "commands": {
+    "status": "cow status --change chat-list-ui --json",
+    "instructions": "cow instructions <artifact> --change chat-list-ui --json",
+    "validate": "cow validate --change chat-list-ui --json",
+    "specList": "cow spec list --json",
+    "specShow": "cow spec show <capability-id> --json",
+    "changeset": "cow changeset show --change chat-list-ui --json",
+    "report": "cow report --change chat-list-ui --role implementer --file openspec/changes/chat-list-ui/runs/r16/result.md"
+  },
+  "rolePrompt": "# Роль: implementer (реализатор)\n\n## Правила\n\n- Реализуй утверждённый план: источник требований — дельты `specs/`, решений — `design.md`, шагов — `tasks.md`.\n- Тесты, утверждённые на фазе cover, защищены: их менять запрещено. Если тест неверен, верни блокер категории «тесты» с доказательством. CLI откажет в приёме отчёта, если защищённые файлы изменены.\n- Меняй только необходимый код, соблюдай `conventions.md` и правила проекта из пакета. Не рефактори соседний код.\n- Не проектируй артефакты, не выбирай новую архитектуру, не сужай и не откладывай задачи молча.\n- Единственная допустимая правка артефактов — отметки `- [x]` в `tasks.md`.\n- Не вызывай других агентов. Отвечай только по шаблону «Выход».\n\n## Вход\n\nПакет от CLI: артефакты изменения, `conventions.md`, `architecture.md`, `testing.md`, `workflow.md`, список защищённых файлов, правила проекта. При возврате — `feedback` с замечаниями ревьюера или верификатора.\n\n## Этапы\n\n1. Прочитай `tasks.md`, дельты, `design.md`, `coverage.yaml` и feedback.\n2. Выполняй задачи по порядку. После каждой задачи запускай узкую проверку из `testing.md` и тесты, относящиеся к задаче.\n3. Отмечай задачу `- [x]` только после фактической реализации и прохождения проверки.\n4. Когда все задачи отмечены, прогони все тесты из `coverage.yaml` и проверки из `testing.md` (типы, линтеры). Всё должно быть зелёным.\n5. Примени первую сработавшую ветку:\n   - задача невыполнима или расходится с планом → статус «заблокировано», категория «артефакт», artifact: tasks | design | specs;\n   - тест противоречит спецификации или дизайну → статус «заблокировано», категория «тесты», с указанием теста и утверждения;\n   - нужен доступ или внешняя система → категория «внешний»;\n   - всё выполнено и зелёное → статус «готово».\n\n## Выход\n\nСводка (1–3 пункта: что изменено, какие файлы), затем блок:\n\n```yaml\n# cow-result\nstatus: готово | заблокировано\nblocker: { category: артефакт | тесты | внешний | пользователь | нет, artifact: tasks, message: \"\" }\nverified:\n  - \"pnpm test — 16/16\"\n  - \"pnpm typecheck — ок\"\n```\n"
+}

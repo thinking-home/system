@@ -1,0 +1,140 @@
+{
+  "version": 1,
+  "change": {
+    "id": "chat-list-ui",
+    "title": "Интерфейс списка чатов",
+    "dir": "openspec/changes/chat-list-ui",
+    "phase": "propose",
+    "size": "normal",
+    "status": "active",
+    "base_revision": "f471e65c4c94e986f98dab5a3ca11b266e6397d4"
+  },
+  "role": "planner",
+  "phase": "propose",
+  "runId": "r3",
+  "objective": "Написать proposal.md по запросу и evidence. Оценить размер изменения, сложность реализации и ревью.",
+  "ownership": {
+    "write": [
+      "proposal.md",
+      "specs/**",
+      "design.md",
+      "tasks.md"
+    ],
+    "readOnly": false
+  },
+  "files": {
+    "request": "openspec/changes/chat-list-ui/request.md",
+    "log": "openspec/changes/chat-list-ui/log.md",
+    "artifacts": {
+      "proposal": [
+        "openspec/changes/chat-list-ui/proposal.md"
+      ],
+      "specs": [],
+      "design": [],
+      "tasks": [],
+      "coverage": [],
+      "test-plan": []
+    },
+    "evidence": [
+      "openspec/changes/chat-list-ui/evidence/research.md"
+    ],
+    "docs": [
+      {
+        "category": "product",
+        "title": "Продукт и границы",
+        "file": ".cow/project/overview.md"
+      },
+      {
+        "category": "architecture",
+        "title": "Архитектура и карта кода",
+        "file": ".cow/project/architecture.md"
+      },
+      {
+        "category": "glossary",
+        "title": "Словарь домена",
+        "file": ".cow/project/glossary.md"
+      },
+      {
+        "category": "contracts",
+        "title": "Интеграции и контракты",
+        "file": ".cow/project/contracts.md"
+      }
+    ],
+    "specsTruth": [
+      "openspec/specs/core/application-bootstrap/spec.md",
+      "openspec/specs/core/event-dispatch/spec.md",
+      "openspec/specs/core/object-registry/spec.md",
+      "openspec/specs/core/plugin-model/spec.md",
+      "openspec/specs/plugins/cron/http-api/spec.md",
+      "openspec/specs/plugins/cron/task-scheduling/spec.md",
+      "openspec/specs/plugins/cron/web-ui/spec.md",
+      "openspec/specs/plugins/database/connection-and-migrations/spec.md",
+      "openspec/specs/plugins/database/data-access-api/spec.md",
+      "openspec/specs/plugins/mail/mail-sending/spec.md",
+      "openspec/specs/plugins/mqtt/broker-connection/spec.md",
+      "openspec/specs/plugins/mqtt/publishing/spec.md",
+      "openspec/specs/plugins/mqtt/topic-subscriptions/spec.md",
+      "openspec/specs/plugins/noolite/adapter-control/spec.md",
+      "openspec/specs/plugins/noolite/data-handlers/spec.md",
+      "openspec/specs/plugins/noolite/device-connection/spec.md",
+      "openspec/specs/plugins/noolite/script-events/spec.md",
+      "openspec/specs/plugins/scripts/http-api/spec.md",
+      "openspec/specs/plugins/scripts/script-events/spec.md",
+      "openspec/specs/plugins/scripts/script-execution/spec.md",
+      "openspec/specs/plugins/scripts/web-ui/spec.md",
+      "openspec/specs/plugins/telegram-bot/inbound-message-handling/spec.md",
+      "openspec/specs/plugins/telegram-bot/outbound-messaging/spec.md",
+      "openspec/specs/plugins/telegram-chat-list/chat-tracking/spec.md",
+      "openspec/specs/plugins/telegram-chat-list/http-api/spec.md",
+      "openspec/specs/plugins/timer/callback-scheduling/spec.md",
+      "openspec/specs/plugins/web-server/http-resources/spec.md",
+      "openspec/specs/plugins/web-server/message-bus/spec.md",
+      "openspec/specs/plugins/web-server/url-validation/spec.md",
+      "openspec/specs/plugins/web-ui/application-shell/spec.md",
+      "openspec/specs/plugins/web-ui/page-registration/spec.md"
+    ]
+  },
+  "constraints": [
+    "Не вызывать других агентов и не расширять объём задачи.",
+    "Не менять истину спецификаций: только дельты в specs/ изменения.",
+    "Соблюдать соглашения проекта из conventions.md и правила проекта из списка rules."
+  ],
+  "rules": [],
+  "authority": "Запись только в: proposal.md, specs/**, design.md, tasks.md.",
+  "verification": "После записи артефактов выполнить `cow validate --json` и добиться отсутствия ошибок.",
+  "resultFormat": "Ответ заканчивается блоком:\n```yaml\n# cow-result\nstatus: готово | утверждение | заблокировано\nblocker: { category: артефакт | тесты | реализация | внешний | пользователь | нет, artifact: <id>, message: <текст> }\n```\nДополнительные поля по роли: complexity и size (planner на propose), questions (planner на plan), findings (reviewer), checks и gaps (verifier), dispositions и delivery_narrative (reviewer в фазе review), protected (tester), verified (implementer, verifier).",
+  "resultFile": "openspec/changes/chat-list-ui/runs/r3/result.md",
+  "stop": "Остановись и верни статус «заблокировано», если нужен ответ человека, если план невыполним или если тест противоречит спецификации.",
+  "feedback": "Возврат (пользователь): Добавить сортировку списка по дате в обратном порядке: сверху самые новые чаты. Убрать сортировку из раздела «Не входит» в части сортировки по дате.\nГейт proposal отклонён: Добавить сортировку списка по дате в обратном порядке: сверху самые новые чаты. Убрать сортировку из раздела «Не входит» в части сортировки по дате.",
+  "instructions": [
+    {
+      "artifact": "proposal",
+      "phase": "propose",
+      "status": "done",
+      "description": "Предложение: зачем нужно изменение и его границы",
+      "instruction": "Создай предложение: объясни, ЗАЧЕМ нужно изменение, и определи его границы.\n\n- перед записью прочитай request.md и evidence/research.md и используй их как принятый контекст;\n- предложение — документ согласования проблемы, границ и состава изменения;\n- если к разделу нет применимой информации, укажи «—».\n\nНе включай: точные требования и сценарии; имена файлов, функций и модулей; технические решения; задачи реализации.\n\n## Зачем — 1–3 предложения о проблеме, какую проблему решает, почему сейчас.\n## Границы изменения — подразделы «Входит» и «Не входит».\n## Функциональности — новые и изменяемые capability с идентификаторами (`cow spec list --json`); для новой capability придумай code в kebab-case. Если поведение продукта не меняется, укажи skip_specs: true в блоке cow-result.\n## Внешнее влияние — затронутые потребители, контракты, зависимости; несовместимые изменения помечай **BREAKING**.\n\nВ блоке cow-result укажи size (small | normal | large) и complexity для реализации и ревью.\n",
+      "template": "## Зачем\n\n<!-- проблема или возможность, почему сейчас -->\n\n## Границы изменения\n\n### Входит\n\n<!-- результаты в границах изменения -->\n\n### Не входит\n\n<!-- смежные результаты, которые остаются за пределами -->\n\n## Функциональности\n\n### Новые\n\n<!-- - `<code>`: краткое описание -->\n\n### Изменяемые\n\n<!-- - `<code>`: что меняется в поведении -->\n\n## Внешнее влияние\n\n<!-- затронутые потребители, контракты, зависимости; **BREAKING** для несовместимых -->\n",
+      "resolvedOutputPath": "/Users/dima117a/RiderProjects/thinking-home-system/openspec/changes/chat-list-ui/proposal.md",
+      "existingOutputPaths": [
+        "/Users/dima117a/RiderProjects/thinking-home-system/openspec/changes/chat-list-ui/proposal.md"
+      ],
+      "dependencies": {},
+      "context": null,
+      "rules": []
+    }
+  ],
+  "specAdapterInstructions": null,
+  "changeset": null,
+  "verificationReport": null,
+  "context": null,
+  "commands": {
+    "status": "cow status --change chat-list-ui --json",
+    "instructions": "cow instructions <artifact> --change chat-list-ui --json",
+    "validate": "cow validate --change chat-list-ui --json",
+    "specList": "cow spec list --json",
+    "specShow": "cow spec show <capability-id> --json",
+    "changeset": "cow changeset show --change chat-list-ui --json",
+    "report": "cow report --change chat-list-ui --role planner --file openspec/changes/chat-list-ui/runs/r3/result.md"
+  },
+  "rolePrompt": "# Роль: planner (планировщик)\n\n## Правила\n\n- Проектируй решение и пиши артефакты активного изменения: `proposal.md`, дельты `specs/`, `design.md`, `tasks.md`.\n- При определении поведения предпочитай существующие спецификации коду; при определении реализации предпочитай код документации.\n- Инструкции к каждому артефакту получай от CLI: `cow instructions <artifact> --change <id> --json`. Не выдумывай формат дельты: он приложен в `specAdapterInstructions`.\n- Не пиши реализацию и тесты, не меняй истину спецификаций, не архивируй изменение, не вызывай других агентов.\n- Все развилки, которые нельзя решить без домыслов, выноси в раздел «Вопросы, требующие решения» с приоритетом P0, P1 или P2 и дублируй их в блоке cow-result.\n- Отвечай только по шаблону «Выход».\n\n## Вход\n\nПакет от CLI с полем `phase`: `propose` или `plan`. При возврате в пакете есть `feedback`: замечание человека с гейта или блокер от роли.\n\n## Этапы\n\n### Фаза propose\n\n1. Прочитай `request.md`, `evidence/research.md`, документацию из пакета.\n2. Получи инструкцию: `cow instructions proposal --change <id> --json`; используй `template` как структуру, `instruction`, `context` и `rules` как ограничения.\n3. Запиши `proposal.md` по `resolvedOutputPath`.\n4. Оцени размер (small: поведение не меняется; normal; large: несколько capability, контракты, миграции, безопасность) и сложность реализации и ревью (обычная | высокая).\n5. Верни статус «утверждение» с полями size, complexity и, если поведение не меняется, skip_specs: true.\n\n### Фаза plan\n\n1. Прочитай `proposal.md`, evidence и `feedback`, если есть.\n2. Для каждого артефакта в `instructions` пакета в порядке зависимостей: specs → design → tasks:\n   - получи свежую инструкцию `cow instructions <artifact> --change <id> --json`;\n   - прочитай файлы из `dependencies`;\n   - запиши артефакт по `resolvedOutputPath` (для specs — по одному файлу на capability в `specs/`).\n3. В `design.md` заполни решения с идентификаторами D1, D2… и таблицу вопросов с приоритетами. Если есть вопрос P0, остановись после записи артефактов: реализацию по нему планировать нельзя.\n4. Выполни `cow validate --change <id> --json` и исправь ошибки.\n5. Верни статус «готово». Если остались вопросы, перечисли их в `questions` блока cow-result.\n\n### Возврат по feedback\n\n1. Прочитай замечание и все существующие артефакты изменения.\n2. Исправь затронутые артефакты; изменение позднего артефакта может потребовать правки раннего.\n3. Если реализация уже началась, а план изменился, сними отметки `- [x]` с задач, которые нужно переделать, и добавь задачи на откат.\n4. Снова `cow validate` и «Выход».\n\n## Выход\n\nКраткая сводка (1–3 пункта) и блок:\n\n```yaml\n# cow-result\nstatus: готово | утверждение | заблокировано\nblocker: { category: пользователь | внешний | нет, message: \"\" }\nsize: small | normal | large          # только на фазе propose\ncomplexity: { implementation: обычная | высокая, review: обычная | высокая }   # только на фазе propose\nskip_specs: false                     # только на фазе propose\nquestions:                            # только на фазе plan\n  - { id: Q1, priority: P1, text: \"\" }\n```\n"
+}

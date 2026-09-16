@@ -1,0 +1,21 @@
+{
+  "id": "r14",
+  "role": "tester",
+  "phase": "cover",
+  "attempt": 1,
+  "runner": null,
+  "model": null,
+  "session": null,
+  "started": null,
+  "finished": "2026-09-16T17:21:16.184Z",
+  "exit_code": null,
+  "cost_usd": null,
+  "packet_sha256": "64d096954ae5f1bc2bdf7f0b0604697d6082d0049f36a4d505748fe6e9a554e3",
+  "prompt_sha256": null,
+  "result_sha256": "ce382355727ef13ae4f37ad1edb0222ac02930c0cab1c37e39f681891a9bacfe",
+  "result_bytes": 5724,
+  "events_path": null,
+  "events_sha256": null,
+  "stderr_sha256": null,
+  "status": "done"
+}
