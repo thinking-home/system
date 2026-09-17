@@ -1,13 +1,13 @@
 id: chat-list-ui
 title: Интерфейс списка чатов
 created: 2026-09-16
-revision: 31
+revision: 34
 source:
   kind: text
 size: normal
 skip_specs: false
 phase: archived
-status: archived
+status: done
 settled: true
 active_run: null
 stop_requested: false
@@ -155,8 +155,8 @@ accepted_gaps:
 delivery:
   intent_key: chat-list-ui:17c33066eed15ce7
   created_at: 2026-09-16T18:04:04.468Z
-  state: archived
-  commit: null
+  state: done
+  commit: 14ea3c81cb92a10e8ec95c8885cd50055dee8354
   pr: null
   error: null
 interventions:
