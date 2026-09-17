@@ -58,6 +58,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ThinkingHome.Plugins.Script
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ThinkingHome.Plugins.Cron.WebUi", "ThinkingHome.Plugins.Cron.WebUi\ThinkingHome.Plugins.Cron.WebUi.csproj", "{B0561A8C-3D0D-485E-8D95-E609A5544E74}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ThinkingHome.Plugins.TelegramChatList.WebUi", "ThinkingHome.Plugins.TelegramChatList.WebUi\ThinkingHome.Plugins.TelegramChatList.WebUi.csproj", "{34456DEB-64CB-4B77-AA24-BE99DE6B0D6A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -332,6 +334,18 @@ Global
 		{B0561A8C-3D0D-485E-8D95-E609A5544E74}.Release|x64.Build.0 = Release|Any CPU
 		{B0561A8C-3D0D-485E-8D95-E609A5544E74}.Release|x86.ActiveCfg = Release|Any CPU
 		{B0561A8C-3D0D-485E-8D95-E609A5544E74}.Release|x86.Build.0 = Release|Any CPU
+		{34456DEB-64CB-4B77-AA24-BE99DE6B0D6A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{34456DEB-64CB-4B77-AA24-BE99DE6B0D6A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{34456DEB-64CB-4B77-AA24-BE99DE6B0D6A}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{34456DEB-64CB-4B77-AA24-BE99DE6B0D6A}.Debug|x64.Build.0 = Debug|Any CPU
+		{34456DEB-64CB-4B77-AA24-BE99DE6B0D6A}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{34456DEB-64CB-4B77-AA24-BE99DE6B0D6A}.Debug|x86.Build.0 = Debug|Any CPU
+		{34456DEB-64CB-4B77-AA24-BE99DE6B0D6A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{34456DEB-64CB-4B77-AA24-BE99DE6B0D6A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{34456DEB-64CB-4B77-AA24-BE99DE6B0D6A}.Release|x64.ActiveCfg = Release|Any CPU
+		{34456DEB-64CB-4B77-AA24-BE99DE6B0D6A}.Release|x64.Build.0 = Release|Any CPU
+		{34456DEB-64CB-4B77-AA24-BE99DE6B0D6A}.Release|x86.ActiveCfg = Release|Any CPU
+		{34456DEB-64CB-4B77-AA24-BE99DE6B0D6A}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

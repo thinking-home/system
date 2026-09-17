@@ -22,3 +22,4 @@
 - Новый проект плагина веб-интерфейса (по аналогии с `ThinkingHome.Plugins.Cron.WebUi` / `ThinkingHome.Plugins.Scripts.WebUi`), использующий `plugins/web-ui/page-registration` для регистрации страницы и `plugins/telegram-chat-list/http-api` как источник данных.
 - Изменение конфигурации сборки/запуска (`ThinkingHome.Console/appsettings.json` и т. п.) для подключения нового плагина.
 - Изменение главной страницы веб-интерфейса (`ThinkingHome.Plugins.WebUi/frontend/components/Application.tsx`, компонент `Home`) — добавление ссылки на новый раздел.
+- Обновление списка плагинов в корневом `README.md` — добавление строки о новом плагине (по аналогии с уже перечисленными там `ThinkingHome.Plugins.Cron.WebUi`, `ThinkingHome.Plugins.Scripts.WebUi`, `ThinkingHome.Plugins.TelegramChatList.WebApi`).
