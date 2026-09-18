@@ -34,6 +34,9 @@ const Home: React.FC = () => (
                 <Anchor component={Link} to="/cron">Schedule</Anchor>
             </List.Item>
             <List.Item>
+                <Anchor component={Link} to="/telegram-chat-list">Telegram chats</Anchor>
+            </List.Item>
+            <List.Item>
                 <Anchor component={Link} to="/page1">Error handling example</Anchor>
             </List.Item>
             <List.Item>

@@ -1,10 +1,4 @@
-# plugins/telegram-chat-list/http-api Specification
-
-## Purpose
-
-Предоставляет HTTP API для просмотра списка чатов Telegram, сохранённых контрактом `plugins/telegram-chat-list/chat-tracking`, поверх контракта `plugins/web-server/http-resources`.
-
-## Requirements
+## MODIFIED Requirements
 
 ### Requirement: Список сохранённых чатов
 
