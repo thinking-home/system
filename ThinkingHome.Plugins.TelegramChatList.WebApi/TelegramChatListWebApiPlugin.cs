@@ -17,7 +17,9 @@ public class TelegramChatListWebApiPlugin(DatabasePlugin database) : PluginBase 
     private HttpHandlerResult GetChatList(HttpRequestParams request)
     {
         using var db = database.OpenSession();
-        var list = db.Set<Chat>().Select(x => new
+        var list = db.Set<Chat>()
+            .OrderByDescending(x => x.Date)
+            .Select(x => new
             { id = x.Id, login = x.Login, chatId = x.ChatId, firstName = x.FirstName, lastName = x.LastName, date = x.Date }).ToArray();
         return HttpHandlerResult.Json(list);
     }

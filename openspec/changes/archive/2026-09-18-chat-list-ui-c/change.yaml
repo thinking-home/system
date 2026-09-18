@@ -1,0 +1,171 @@
+id: chat-list-ui-c
+title: Список чатов
+created: 2026-09-18
+revision: 16
+source:
+  kind: text
+size: normal
+skip_specs: false
+phase: archived
+status: archived
+settled: true
+active_run: null
+stop_requested: false
+base_revision: 9d4c492091994d5bddd354c39dbd31bf86f1b578
+gates:
+  proposal:
+    state: approved
+    by: dima117a
+    at: 2026-09-18T09:58:03.108Z
+  plan:
+    state: approved
+    by: dima117a
+    at: 2026-09-18T10:05:36.113Z
+  tests:
+    state: approved
+    by: dima117a
+    at: 2026-09-18T10:16:54.902Z
+complexity:
+  implementation: обычная
+  review: обычная
+assumptions: []
+protected: []
+protected_snapshot: {}
+blocker: null
+returns: {}
+returns_limit: null
+changeset:
+  base: 9d4c492091994d5bddd354c39dbd31bf86f1b578
+  digest: sha256:470d95ec6f7dea99ebe03f9a04e588e6f3fa03c849b4a5c733d29af8e81d2196
+  paths: 21
+  sealed_after: null
+  sealed_at: 2026-09-18T10:31:43.255Z
+  rebound: []
+reviewed_digest: null
+verification:
+  run: r7
+  checks:
+    - id: V1
+      purpose: "периметр change-set: каждый файл объяснён"
+      result: PASS
+      evidence: git diff 9d4c492...HEAD --stat — все 18 файлов сопоставлены с задачами/дизайном/спеками
+    - id: V2
+      purpose: все задачи tasks.md выполнены
+      result: PASS
+      evidence: cow status --change chat-list-ui-c --json — tasks.done=19/19
+    - id: V3
+      purpose: сортировка списка чатов по Date убыв. в запросе к БД (D2)
+      result: PASS
+      evidence: чтение TelegramChatListWebApiPlugin.cs — OrderByDescending до Select/ToArray
+    - id: V4
+      purpose: регрессия unit-тестов
+      result: PASS
+      evidence: dotnet test ThinkingHome.Tests/ThinkingHome.Tests.csproj — 39/39 passed
+    - id: V5
+      purpose: типы клиентской части раздела
+      result: PASS
+      evidence: npx tsc -p tsconfig.json в ThinkingHome.Plugins.TelegramChatList.WebUi — 0 ошибок
+    - id: V6
+      purpose: сборка решения целиком
+      result: PASS
+      evidence: dotnet build ThinkingHome.sln — Build succeeded, 0 Warning(s), 0 Error(s)
+    - id: V7
+      purpose: раздел доступен в запущенном приложении, API возвращает данные с null-полями
+      result: PASS
+      evidence: dotnet run на порту 8090 + PostgreSQL (podman); curl /api/telegram-chat-list/web-api/list — 200 с login/firstName/lastName=null; curl /api/webui/meta — содержит /telegram-chat-list; chats.js и main.js содержат ожидаемые строки
+    - id: V8
+      purpose: структура проекта повторяет образец Cron.WebUi
+      result: PASS
+      evidence: diff .csproj образца и нового проекта — единственное отличие Description
+    - id: V9
+      purpose: локализация en/ru содержит все ключи lang.ts
+      result: PASS
+      evidence: чтение Lang/*.resx — все 9 ключей присутствуют в обоих файлах
+    - id: V10
+      purpose: "wiring: регистрация нового модуля во всех местах образца"
+      result: PASS
+      evidence: git diff — записи в ThinkingHome.sln, Console.csproj, appsettings.json присутствуют; packet.wiring.gaps пуст
+  gaps:
+    - id: G1
+      environment: component-тест с PostgreSQL и несколькими записями TelegramChatList_Chat разных дат
+      oracle: порядок записей в ответе /api/telegram-chat-list/web-api/list строго по убыванию date
+      risk: "низкий: запрос — один OrderByDescending перед Select/ToArray, проверен вручную на реальной БД с одной записью"
+    - id: G2
+      environment: "браузер с открытой страницей /telegram-chat-list и данными: пустой список, ошибка сети, записи с null-полями"
+      oracle: визуальное отображение таблицы/прочерков/сообщения о пустом списке/уведомления об ошибке из требований spec.md
+      risk: "низкий: код chats.tsx структурно идентичен проверенному образцу Cron.WebUi/frontend/tasks.tsx"
+accepted_gaps:
+  - item: G1
+    reason: Требует PostgreSQL с несколькими записями разных дат; testing.md фиксирует отсутствие component-тестов с реальной БД; риск низкий — единственный OrderByDescending перед материализацией, подтверждён чтением TelegramChatListWebApiPlugin.cs
+  - item: G2
+    reason: "Требует браузер; testing.md фиксирует отсутствие тест-раннера для frontend/**; минимальный дымовой прогон нового раздела уже выполнен верификатором (V7: /api/webui/meta, бандл, API с null-полями); остаточный риск низкий — chats.tsx структурно идентичен проверенному образцу Cron.WebUi/frontend/tasks.tsx"
+delivery:
+  intent_key: chat-list-ui-c:15dd6ee2278460bf
+  created_at: 2026-09-18T10:29:04.838Z
+  state: archived
+  commit: null
+  pr: null
+  error: null
+interventions:
+  resumes: 0
+  user_blockers: 0
+rating: null
+coordination: null
+branch: cow/chat-list-ui-c
+runs:
+  - id: r1
+    role: researcher
+    phase: research
+    attempt: 1
+    finished: 2026-09-18T09:55:23.697Z
+    status: done
+    dir: runs/r1
+  - id: r2
+    role: planner
+    phase: propose
+    attempt: 1
+    finished: 2026-09-18T09:56:26.474Z
+    status: done
+    dir: runs/r2
+  - id: r3
+    role: planner
+    phase: plan
+    attempt: 1
+    finished: 2026-09-18T10:00:55.859Z
+    status: done
+    dir: runs/r3
+  - id: r4
+    role: tester
+    phase: cover
+    attempt: 1
+    finished: 2026-09-18T10:07:51.420Z
+    status: done
+    dir: runs/r4
+  - id: r5
+    role: reviewer
+    phase: tests_review
+    attempt: 1
+    finished: 2026-09-18T10:08:54.337Z
+    status: done
+    dir: runs/r5
+  - id: r6
+    role: implementer
+    phase: implement
+    attempt: 1
+    finished: 2026-09-18T10:22:19.032Z
+    status: done
+    dir: runs/r6
+  - id: r7
+    role: verifier
+    phase: verify
+    attempt: 1
+    finished: 2026-09-18T10:26:31.667Z
+    status: done
+    dir: runs/r7
+  - id: r8
+    role: reviewer
+    phase: review
+    attempt: 1
+    finished: 2026-09-18T10:28:20.805Z
+    status: done
+    dir: runs/r8

@@ -265,3 +265,9 @@ paket-files/
 .cow/**/.stop
 .cow/**/*.tmp
 .cow/**/run.log
+
+**/.cow/**/.lock
+**/.stop
+**/change.yaml.*.tmp
+**/runs/run.log
+**/runs/r*/packet.json
