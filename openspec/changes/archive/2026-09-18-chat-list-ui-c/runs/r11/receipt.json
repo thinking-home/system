@@ -1,0 +1,21 @@
+{
+  "id": "r11",
+  "role": "verifier",
+  "phase": "verify",
+  "attempt": 1,
+  "runner": null,
+  "model": null,
+  "session": null,
+  "started": null,
+  "finished": "2026-09-18T06:15:18.024Z",
+  "exit_code": null,
+  "cost_usd": null,
+  "packet_sha256": "0c532419804c1fb4a7e3869205df49870b9c45a0d5cdf8262437b2323f6ab7ba",
+  "prompt_sha256": null,
+  "result_sha256": "a46860580f41d131a876c118aba48804c830b2014e3cf02537149e4fa13c335e",
+  "result_bytes": 12930,
+  "events_path": null,
+  "events_sha256": null,
+  "stderr_sha256": null,
+  "status": "done"
+}

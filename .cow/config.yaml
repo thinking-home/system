@@ -40,7 +40,7 @@ runner:
     extraConfig: []
 repo:
   adapter: local
-  baseBranch: master
+  baseBranch: resolver-exp-c
   branchPrefix: cow/
   github:
     apiUrl: https://api.github.com

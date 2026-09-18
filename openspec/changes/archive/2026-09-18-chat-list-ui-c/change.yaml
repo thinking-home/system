@@ -1,0 +1,220 @@
+id: chat-list-ui-c
+title: Список чатов
+created: 2026-09-18
+revision: 21
+source:
+  kind: text
+size: normal
+skip_specs: false
+phase: archived
+status: archived
+settled: true
+active_run: null
+stop_requested: false
+base_revision: f471e65c4c94e986f98dab5a3ca11b266e6397d4
+gates:
+  proposal:
+    state: approved
+    by: dima117a
+    at: 2026-09-18T05:45:54.285Z
+  plan:
+    state: approved
+    by: dima117a
+    at: 2026-09-18T05:50:32.788Z
+  tests:
+    state: approved
+    by: dima117a
+    at: 2026-09-18T05:53:23.553Z
+complexity:
+  implementation: обычная
+  review: обычная
+assumptions: []
+protected: []
+protected_snapshot: {}
+blocker: null
+returns: {}
+returns_limit: null
+changeset:
+  base: f471e65c4c94e986f98dab5a3ca11b266e6397d4
+  digest: sha256:c1f0f62c212fc1996decff1aefbf0e82f7a94656b8cb6db571b0e8654a489059
+  paths: 15
+  sealed_after: null
+  sealed_at: 2026-09-18T06:13:10.946Z
+reviewed_digest: sha256:c1f0f62c212fc1996decff1aefbf0e82f7a94656b8cb6db571b0e8654a489059
+verification:
+  run: r11
+  checks:
+    - id: V1
+      purpose: компиляция TypeScript нового проекта
+      result: PASS
+      evidence: cd ThinkingHome.Plugins.TelegramChatList.WebUi && npx tsc -p tsconfig.json — exit 0
+    - id: V2
+      purpose: регрессия unit-тестов C#
+      result: PASS
+      evidence: dotnet test ThinkingHome.Tests/ThinkingHome.Tests.csproj — 39/39 passed
+    - id: V3
+      purpose: сборка решения целиком с клиентским бандлом
+      result: PASS
+      evidence: dotnet build ThinkingHome.sln — Build succeeded, 0 Warning(s), 0 Error(s)
+    - id: V4
+      purpose: утверждение «Раздел использует HTTP API списка чатов»
+      result: PASS
+      evidence: "frontend/api.ts: единственный запрос api.get на /api/telegram-chat-list/web-api/list, обращений к БД нет"
+    - id: V5
+      purpose: утверждение «Открытие списка чатов» / «Запись с незаполненными полями»
+      result: PASS
+      evidence: "frontend/chats.tsx: таблица из 6 полей, null через ?? ''"
+    - id: V6
+      purpose: утверждение «Пустой список и ошибка загрузки»
+      result: PASS
+      evidence: "frontend/chats.tsx: list.length ? Table : Text(emptyList); fail() → toaster.showError(errorLoad), aborted не считается ошибкой"
+    - id: V7
+      purpose: утверждение «Локализация подписей раздела»
+      result: PASS
+      evidence: lang.ts ключи совпадают с ключами в обоих .resx, ru-RU переведён
+    - id: V8
+      purpose: утверждение «Переход в раздел с корневой страницы»
+      result: PASS
+      evidence: git diff Application.tsx — новый List.Item/Anchor to=/telegram-chat-list
+    - id: V9
+      purpose: полнота задач tasks.md
+      result: PASS
+      evidence: "cow status --json — tasks: {total:16, done:16, remaining:0}"
+    - id: V10
+      purpose: целостность запечатанного change-set во время верификации
+      result: PASS
+      evidence: git status --short неизменен до/после проверок; digest sha256:c1f0f62… и paths:15 совпадают с packet.json
+    - id: V11
+      purpose: объяснимость каждого файла change-set (периметр)
+      result: PARTIAL
+      evidence: 14/15 файлов объяснены; .gitignore не упомянут ни в одном артефакте изменения и повторно появился после устранения в run r9 (тот же диф, что и в r7)
+    - id: V12
+      purpose: "согласованность D2: маршрут проходит url-validation"
+      result: NOT_RUN
+      evidence: нужен запущенный экземпляр приложения с БД
+    - id: V13
+      purpose: браузерные сценарии из test-plan.md (5 шт.)
+      result: NOT_RUN
+      evidence: "testing.md: браузерных тестов и тест-раннера для frontend нет, отмечены manual в coverage.yaml"
+  gaps:
+    - id: G1
+      environment: локальное приложение + PostgreSQL + браузер
+      oracle: "чеклист test-plan.md: открытие/пустой список/ошибка загрузки/русская локаль/переход с главной"
+      risk: "низкий: статический разбор кода (V4–V8) подтверждает соответствие спецификации и паттерну Cron.WebUi"
+    - id: G2
+      environment: запущенное приложение
+      oracle: /dynamic/web-server/url-validation/errors.txt не содержит записей о /telegram-chat-list
+      risk: "низкий: схема маршрута идентична уже принятой в Cron.WebUi"
+    - id: G3
+      environment: доступ к внутренней логике запечатывания change-set в cow
+      oracle: .gitignore не входит в change-set фичи при повторном запечатывании после review
+      risk: низкий по содержанию (правила безопасны и не влияют на код), но затрудняет аудит стабильности периметра между запусками
+accepted_gaps:
+  - item: V11
+    reason: .gitignore не описан в артефактах фичи, но пользователь напрямую подтвердил намеренность включения; правка не касается кода фичи и не создаёт риска.
+  - item: V12
+    reason: Проверка url-validation требует запущенного приложения с БД; маршрут построен по уже принятой схеме /{plugin}, как /cron.
+  - item: V13
+    reason: Браузерных тестов и тест-раннера для frontend в проекте нет (testing.md); все сценарии помечены manual в coverage.yaml и подтверждены статическим разбором кода (V4-V8 PASS).
+  - item: G1
+    reason: Код chats.tsx дословно повторяет проверенный паттерн tasks.tsx из Cron.WebUi; ручная проверка по test-plan.md остаётся в чеклисте перед мержем.
+  - item: G2
+    reason: Маршрут /telegram-chat-list имеет ту же форму, что уже принятый /cron; ручная проверка url-validation остаётся в чеклисте перед мержем.
+delivery:
+  intent_key: chat-list-ui-c:c1f0f62c212fc199
+  created_at: 2026-09-18T06:21:12.950Z
+  state: archived
+  commit: null
+  pr: null
+  error: null
+interventions:
+  resumes: 0
+  user_blockers: 0
+rating: null
+coordination: null
+branch: cow/chat-list-ui-c
+runs:
+  - id: r1
+    role: researcher
+    phase: research
+    attempt: 1
+    finished: 2026-09-18T05:43:37.084Z
+    status: done
+    dir: runs/r1
+  - id: r2
+    role: planner
+    phase: propose
+    attempt: 1
+    finished: 2026-09-18T05:44:45.932Z
+    status: done
+    dir: runs/r2
+  - id: r3
+    role: planner
+    phase: plan
+    attempt: 1
+    finished: 2026-09-18T05:48:21.602Z
+    status: done
+    dir: runs/r3
+  - id: r4
+    role: tester
+    phase: cover
+    attempt: 1
+    finished: 2026-09-18T05:52:05.683Z
+    status: done
+    dir: runs/r4
+  - id: r5
+    role: reviewer
+    phase: tests_review
+    attempt: 1
+    finished: 2026-09-18T05:53:04.128Z
+    status: done
+    dir: runs/r5
+  - id: r6
+    role: implementer
+    phase: implement
+    attempt: 1
+    finished: 2026-09-18T05:58:10.147Z
+    status: done
+    dir: runs/r6
+  - id: r7
+    role: verifier
+    phase: verify
+    attempt: 1
+    finished: 2026-09-18T06:01:13.280Z
+    status: done
+    dir: runs/r7
+  - id: r8
+    role: reviewer
+    phase: review
+    attempt: 1
+    finished: 2026-09-18T06:03:04.290Z
+    status: done
+    dir: runs/r8
+  - id: r9
+    role: verifier
+    phase: verify
+    attempt: 1
+    finished: 2026-09-18T06:10:47.175Z
+    status: done
+    dir: runs/r9
+  - id: r10
+    role: reviewer
+    phase: review
+    attempt: 1
+    finished: 2026-09-18T06:11:49.710Z
+    status: done
+    dir: runs/r10
+  - id: r11
+    role: verifier
+    phase: verify
+    attempt: 1
+    finished: 2026-09-18T06:15:18.024Z
+    status: done
+    dir: runs/r11
+  - id: r12
+    role: reviewer
+    phase: review
+    attempt: 1
+    finished: 2026-09-18T06:16:34.021Z
+    status: done
+    dir: runs/r12

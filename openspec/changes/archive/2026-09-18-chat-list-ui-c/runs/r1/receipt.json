@@ -1,0 +1,21 @@
+{
+  "id": "r1",
+  "role": "researcher",
+  "phase": "research",
+  "attempt": 1,
+  "runner": null,
+  "model": null,
+  "session": null,
+  "started": null,
+  "finished": "2026-09-18T05:43:37.084Z",
+  "exit_code": null,
+  "cost_usd": null,
+  "packet_sha256": "5b0e2837d99735ee4940beefc883bff7f4f5aa61fbcdbf5df3cf9edd991e853b",
+  "prompt_sha256": null,
+  "result_sha256": "a537e27c8d8ecd626e8ecc3cfb616ed9657590065cc957e0aa58b67d4332e8b9",
+  "result_bytes": 2003,
+  "events_path": null,
+  "events_sha256": null,
+  "stderr_sha256": null,
+  "status": "done"
+}
