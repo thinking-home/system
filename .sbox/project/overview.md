@@ -50,15 +50,15 @@ ThinkingHome — кроссплатформенный управляющий ц�
 | `ThinkingHome.Plugins.*` | один проект на плагин; суффикс `.WebApi` — HTTP API плагина, `.WebUi` — разделы веб-интерфейса; у UI-проектов каталог `frontend` и `package.json` |
 | `ThinkingHome.Tests` | xunit-тесты |
 | `openspec` | спецификации и архив изменений OpenSpec |
-| `.cow` | конфиг и документация cow; `.claude` — агенты и скиллы cow для Claude Code |
+| `.sbox` | конфиг и документация @spec-box/sdd; `.claude` — агенты и скиллы sbox для Claude Code |
 | `Dockerfile`, `Package.xml` | сборка образа; общие свойства NuGet-пакетов и версия |
 
 
 ## Истина спецификаций
 
-- Формат OpenSpec, адаптер `openspec` (`.cow/config.yaml`), корень `openspec`.
+- Формат OpenSpec, адаптер `openspec` (`.sbox/config.yaml`), корень `openspec`.
 - Файлы `openspec/specs/{capability}/spec.md`; capability двухуровневые: `core/{name}` и `plugins/{plugin}/{name}`; всего 31 capability.
 - Структура файла: заголовок `# {capability} Specification`, разделы `## Purpose` и `## Requirements`, требования `### Requirement: …` с формулировкой SHALL, сценарии `#### Scenario: …` со строками WHEN и THEN (шаблон `openspec/schemas/agentic/templates/spec.md`).
-- Чтение: `cow spec list` — список capability со счётчиками групп и утверждений; `cow spec show {id}` — capability целиком, например `cow spec show plugins/scripts/script-events`.
-- Изменения: дельты в `openspec/changes/{id}/specs/`, после доставки — `openspec/changes/archive/`; активных изменений нет (`cow change list`).
+- Чтение: `sbox spec list` — список capability со счётчиками групп и утверждений; `sbox spec show {id}` — capability целиком, например `sbox spec show plugins/scripts/script-events`.
+- Изменения: дельты в `openspec/changes/{id}/specs/`, после доставки — `openspec/changes/archive/`; активных изменений нет (`sbox change list`).
 - Внешней системы выгрузки спецификаций нет.

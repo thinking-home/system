@@ -55,7 +55,7 @@
 - `ThinkingHome.Console/appsettings.json:17` — элемент `assemblies` → нужна запись (TelegramChatList и .WebApi уже
   в списке, строки 13, 22).
 - `README.md:11` — список плагинов репозитория → нужна строка про новый `.WebUi`.
-- `.cow/project/architecture.md`, `.cow/project/conventions.md` — карта проекта, не входит в объём researcher.
+- `.sbox/project/architecture.md`, `.sbox/project/conventions.md` — карта проекта, не входит в объём researcher.
 
 ## Ограничения и паттерны
 - URL: HTTP — `/api/{alias}/…`; раздел — короткий путь (`/cron`, `/scripts`); точное имя для чатов не выбрано.
@@ -70,7 +70,7 @@
 - Новый файл спецификации по образцу `openspec/specs/plugins/cron/web-ui/spec.md`.
 - Правка `Application.tsx` — пункт в `Home`-списке со ссылкой на новый раздел.
 - Регистрация: `ThinkingHome.sln`, `ThinkingHome.Console.csproj`, `appsettings.json` (`assemblies`), `README.md`.
-- Проверка: `dotnet build` дважды (порядок `EmbeddedResource`/`th-build`, см. `.cow/project/architecture.md`);
+- Проверка: `dotnet build` дважды (порядок `EmbeddedResource`/`th-build`, см. `.sbox/project/architecture.md`);
   автотестов для аналогичных разделов в проекте нет — паттерн проекта, ручная проверка.
 
 ## Допущения и пробелы

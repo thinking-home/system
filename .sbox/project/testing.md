@@ -40,7 +40,7 @@ verification: needs-review
 ## Отчёты
 
 - TRX: `dotnet test ThinkingHome.Tests/ThinkingHome.Tests.csproj --logger trx --results-directory TestResults`; файлы `TestResults/*.trx`, каталог игнорируется git (`[Tt]est[Rr]esult*/` в `.gitignore`).
-- JSON: не установлено, вопрос отложен до шага тестирования первого изменения. `cow coverage --report` принимает `jest=path` и `playwright=path`; логгера JSON для xunit и конвертера TRX в проекте нет. Тогда же решить, принимает ли установленный cow формат `trx` или JUnit XML (пакет `JunitXml.TestLogger`).
+- JSON: не установлено, вопрос отложен до шага тестирования первого изменения. `sbox coverage --report` принимает `jest=path` и `playwright=path`; логгера JSON для xunit и конвертера TRX в проекте нет. Тогда же решить, принимает ли установленный sdd формат `trx` или JUnit XML (пакет `JunitXml.TestLogger`).
 - CI нет, отчёты никуда не выгружаются.
 
 ## Именование тестов по сценариям

@@ -52,7 +52,7 @@ verification:
     - id: V2
       purpose: все задачи tasks.md выполнены
       result: PASS
-      evidence: cow status --change chat-list-ui-c --json — tasks.done=19/19
+      evidence: sbox status --change chat-list-ui-c --json — tasks.done=19/19
     - id: V3
       purpose: сортировка списка чатов по Date убыв. в запросе к БД (D2)
       result: PASS

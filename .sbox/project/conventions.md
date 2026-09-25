@@ -17,7 +17,7 @@ verification: needs-review
 | Идентификаторы, сообщения лога, ключи конфигурации, имена событий | английский | `Logger.LogInformation("register script event: {Name}")` |
 | Комментарии в коде | русский; объясняют «почему», а не «что» | `ThinkingHome.Core.Plugins/EventContext.cs` |
 | Сообщения коммитов | русский, строчная буква, без точки | `git log` |
-| README плагинов, спецификации, `.cow` | русский | `ThinkingHome.Plugins.Scripts/README.md` |
+| README плагинов, спецификации, `.sbox` | русский | `ThinkingHome.Plugins.Scripts/README.md` |
 | Тексты UI | по умолчанию английский в `Keyset('en', …)`, переводы в `Lang/{Plugin}.resx` (en) и `Lang/{Plugin}.ru-RU.resx` | `ThinkingHome.Plugins.Scripts.WebUi/frontend/lang.ts` |
 
 ## Стиль
@@ -61,7 +61,7 @@ verification: needs-review
 | Ресурсы локализации | `Lang/{PluginClass}.resx`, `Lang/{PluginClass}.ru-RU.resx` | `ThinkingHome.Plugins.Cron.WebUi/Lang` |
 | Тестовые файлы | `ThinkingHome.Tests/{Area}/{Class}Tests.cs`, пространство `ThinkingHome.Tests.{Area}` | `ThinkingHome.Tests/Plugins.Scripts/MetaFilterTests.cs` |
 | Тестовые методы | `Действие_Результат_WhenУсловие`; тесты по спецификации — см. `testing.md` | `RegisterEvent_ThrowsException_WhenNameIsEmpty` |
-| Ветки | kebab-case по теме без префикса; изменения cow — с префиксом cow/ (`branchPrefix` в `.cow/config.yaml`) | `script-events`, `ui-vite-build` |
+| Ветки | kebab-case по теме без префикса; изменения sdd — с префиксом sbox/ (`branchPrefix` в `.sbox/config.yaml`) | `script-events`, `ui-vite-build` |
 
 ## Коммиты
 

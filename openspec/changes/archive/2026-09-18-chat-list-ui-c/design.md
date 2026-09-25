@@ -15,7 +15,7 @@
 - Образец: `ThinkingHome.Plugins.Cron.WebUi`
 - Новый модуль: `ThinkingHome.Plugins.TelegramChatList.WebUi`
 - Места подключения образца: `ThinkingHome.sln` (запись проекта), `ThinkingHome.Console/ThinkingHome.Console.csproj` (`ProjectReference`), `ThinkingHome.Console/appsettings.json` (элемент `assemblies`), `README.md` (список плагинов репозитория), `ThinkingHome.Plugins.WebUi/frontend/components/Application.tsx` (ссылка в списке `Home`; у образца — пункт `/cron`). Каждому соответствует задача в tasks.md.
-- Исключения подключения: `ThinkingHome.Tests` — тест-проект не ссылается на UI-плагины (тестов для разделов в проекте нет, см. `testing.md`); `.cow/project/architecture.md` — карта проекта, обновляется отдельно от изменения.
+- Исключения подключения: `ThinkingHome.Tests` — тест-проект не ссылается на UI-плагины (тестов для разделов в проекте нет, см. `testing.md`); `.sbox/project/architecture.md` — карта проекта, обновляется отдельно от изменения.
 
 Структура повторяет образец: `*Plugin.cs` c `[ConfigureWebUi]` и `Bundle()` из embedded `{name}.js/.gz/.br`, `frontend/api.ts` (valibot + `ApiClient`), `frontend/chats.tsx` (`createModule`, `useAppContext`, `useKeyset`, загрузка в `useEffect` с `AbortController`), `frontend/lang.ts` (`Keyset('en', …)`), `Lang/TelegramChatListWebUiPlugin.resx` и `.ru-RU.resx`, `package.json` (`thPlugin.entries`), `tsconfig.json`, `.csproj` (копия csproj образца с заменой описания), `README.md`.
 
@@ -76,7 +76,7 @@
 
 ## Риски и компромиссы
 
-- Плагин не подключён в `appsettings.json`/`.csproj`/`.sln` → раздел не появляется при запуске, компиляция молчит → отдельные задачи на каждое место подключения, проверка через `cow wiring`.
+- Плагин не подключён в `appsettings.json`/`.csproj`/`.sln` → раздел не появляется при запуске, компиляция молчит → отдельные задачи на каждое место подключения, проверка через `sbox wiring`.
 - Чистая сборка падает или бандл не попадает в ресурсы из-за порядка `th-build` и `EmbeddedResource` → сборка решения дважды, как описано в `architecture.md`.
 - Порядок записей меняет поведение существующего API для других потребителей → изменение зафиксировано в дельте `plugins/telegram-chat-list/http-api`, состав полей прежний.
 

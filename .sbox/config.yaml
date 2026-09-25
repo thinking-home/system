@@ -13,7 +13,7 @@ gates:
 runner:
   default: claude
   models: {}
-  stateDir: ~/.cow/runs
+  stateDir: ~/.sbox/runs
   timeoutMinutes: 120
   idleTimeoutMinutes: 20
   claude:
@@ -41,7 +41,7 @@ runner:
 repo:
   adapter: local
   baseBranch: master
-  branchPrefix: cow/
+  branchPrefix: sbox/
   github:
     apiUrl: https://api.github.com
     tokenEnv: GITHUB_TOKEN
@@ -49,7 +49,7 @@ changeset: {}
 changes:
   dir: openspec/changes
 project:
-  docs: .cow/project
+  docs: .sbox/project
 testing:
   manualPlan: when-needed
   protectedGlobs: []

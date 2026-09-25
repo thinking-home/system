@@ -2,13 +2,13 @@
 
 | Измерение | Результат |
 |---|---|
-| Полнота | 19/19 задач (`cow status`), 8/8 утверждений дельт покрыты кодом |
+| Полнота | 19/19 задач (`sbox status`), 8/8 утверждений дельт покрыты кодом |
 | Корректность | тесты: 39/39 passed (`dotnet test`); проверки: `tsc` — 0 ошибок, `dotnet build` — успех, ручной прогон приложения — успех |
-| Согласованность | образец `Cron.WebUi` соблюдён; все места подключения (`sln`, `.csproj`, `appsettings.json`, `Application.tsx`, `README.md`) на месте; `.gitignore` — housekeeping правил `cow`, не влияет на поведение |
+| Согласованность | образец `Cron.WebUi` соблюдён; все места подключения (`sln`, `.csproj`, `appsettings.json`, `Application.tsx`, `README.md`) на месте; `.gitignore` — housekeeping правил `sbox`, не влияет на поведение |
 
 ### Периметр (git diff относительно base 9d4c492)
 
-- `.gitignore` — добавлены паттерны `**/.stop`, `**/change.yaml.*.tmp`, `**/runs/run.log`, `**/runs/r*/packet.json`. Ни в одном артефакте изменения (proposal/design/tasks/evidence) это не упомянуто явно, но по факту это необходимая поддержка самого workflow `cow`: каталог `openspec/changes/chat-list-ui-c/runs/**`, который это изменение и создаёт, содержит `packet.json`/`.stop` для каждого запуска, и без этих правил такие служебные файлы попали бы в git. Не влияет на код продукта, риска для функциональности нет. Отмечаю как PASS с оговоркой (см. V1).
+- `.gitignore` — добавлены паттерны `**/.stop`, `**/change.yaml.*.tmp`, `**/runs/run.log`, `**/runs/r*/packet.json`. Ни в одном артефакте изменения (proposal/design/tasks/evidence) это не упомянуто явно, но по факту это необходимая поддержка самого workflow `sbox`: каталог `openspec/changes/chat-list-ui-c/runs/**`, который это изменение и создаёт, содержит `packet.json`/`.stop` для каждого запуска, и без этих правил такие служебные файлы попали бы в git. Не влияет на код продукта, риска для функциональности нет. Отмечаю как PASS с оговоркой (см. V1).
 - `README.md` — добавлена строка про новый плагин, соответствует задаче 5.5.
 - `ThinkingHome.Console/ThinkingHome.Console.csproj`, `appsettings.json`, `ThinkingHome.sln` — регистрация нового модуля, соответствует задачам 5.1–5.3, месту подключения из `design.md`.
 - `ThinkingHome.Plugins.TelegramChatList.WebApi/TelegramChatListWebApiPlugin.cs` — добавлен `OrderByDescending(x => x.Date)` до `Select`/`ToArray`, реализует D2 и требование «Список сохранённых чатов» (сценарий «Порядок записей в ответе»).
@@ -19,8 +19,8 @@
 
 ### Проверки
 
-- V1 PASS — периметр изменения: `git diff 9d4c492...HEAD --stat` → все 18 файлов из `changeset.files` объяснены реализацией утверждений/дизайна/техническими задачами; `.gitignore` — необходимая поддержка запуска `cow` для этого изменения (каталог `runs/**` самого изменения), не влияет на продукт.
-- V2 PASS — задачи `tasks.md` завершены: `cow status --change chat-list-ui-c --json` → `"tasks": {"total": 19, "done": 19, "remaining": 0}`.
+- V1 PASS — периметр изменения: `git diff 9d4c492...HEAD --stat` → все 18 файлов из `changeset.files` объяснены реализацией утверждений/дизайна/техническими задачами; `.gitignore` — необходимая поддержка запуска `sbox` для этого изменения (каталог `runs/**` самого изменения), не влияет на продукт.
+- V2 PASS — задачи `tasks.md` завершены: `sbox status --change chat-list-ui-c --json` → `"tasks": {"total": 19, "done": 19, "remaining": 0}`.
 - V3 PASS — сортировка API реализована: чтение `TelegramChatListWebApiPlugin.cs` → `db.Set<Chat>().OrderByDescending(x => x.Date).Select(...)` до `ToArray()`; ближайший неверный вариант (сортировка после материализации в памяти или на клиенте) отсутствует — сортировка именно в LINQ-запросе к БД, как того требует D2.
 - V4 PASS — регрессия unit-тестов: `dotnet test ThinkingHome.Tests/ThinkingHome.Tests.csproj` → `Passed! Failed: 0, Passed: 39, Skipped: 0, Total: 39`.
 - V5 PASS — типы клиентской части: `cd ThinkingHome.Plugins.TelegramChatList.WebUi && npx tsc -p tsconfig.json` → завершилось без вывода и с кодом 0 (ошибок нет).
@@ -36,12 +36,12 @@
 - G2 — окружение: браузерный рендеринг раздела (пустой список, ошибка загрузки, прочерк для `null`, порядок строк, отсутствие действий изменения) не проверен визуально в браузере — только на уровне собранного бандла (строки в `chats.js`) и HTTP-ответа API; тест-раннера для `frontend/**` и e2e в проекте нет (`testing.md`); оракул: ручное открытие `/telegram-chat-list` в браузере с несколькими записями (включая `null`-поля и пустой список) и с симуляцией сетевой ошибки; риск: низкий — код `chats.tsx` структурно идентичен проверенному образцу `Cron.WebUi/frontend/tasks.tsx` (D3), логика прочерков и пустого списка проста и линейно читается из кода.
 
 ```yaml
-# cow-result
+# sbox-result
 status: готово
 blocker: { category: нет, artifact: "", message: "" }
 checks:
   - { id: V1, purpose: "периметр change-set: каждый файл объяснён", result: PASS, evidence: "git diff 9d4c492...HEAD --stat — все 18 файлов сопоставлены с задачами/дизайном/спеками" }
-  - { id: V2, purpose: "все задачи tasks.md выполнены", result: PASS, evidence: "cow status --change chat-list-ui-c --json — tasks.done=19/19" }
+  - { id: V2, purpose: "все задачи tasks.md выполнены", result: PASS, evidence: "sbox status --change chat-list-ui-c --json — tasks.done=19/19" }
   - { id: V3, purpose: "сортировка списка чатов по Date убыв. в запросе к БД (D2)", result: PASS, evidence: "чтение TelegramChatListWebApiPlugin.cs — OrderByDescending до Select/ToArray" }
   - { id: V4, purpose: "регрессия unit-тестов", result: PASS, evidence: "dotnet test ThinkingHome.Tests/ThinkingHome.Tests.csproj — 39/39 passed" }
   - { id: V5, purpose: "типы клиентской части раздела", result: PASS, evidence: "npx tsc -p tsconfig.json в ThinkingHome.Plugins.TelegramChatList.WebUi — 0 ошибок" }

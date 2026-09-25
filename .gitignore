@@ -260,13 +260,8 @@ paket-files/
 .codex
 .cursor
 
-# cow: служебные файлы запусков
-.cow/**/.lock
-.cow/**/.stop
-.cow/**/*.tmp
-.cow/**/run.log
-
-**/.cow/**/.lock
+# sbox: служебные файлы запусков
+**/.sbox/**/.lock
 **/.stop
 **/change.yaml.*.tmp
 **/runs/run.log

@@ -10,7 +10,7 @@
 **готово** — все ADDED/MODIFIED утверждения трёх дельт спецификаций покрыты обоснованными пометками `manual` в coverage.yaml, каждой соответствует конкретный ручной сценарий в test-plan.md, отражающий текст сценария, а не продуктовую логику или детали реализации, и это соответствует зафиксированному в testing.md отсутствию component- и frontend-тестовой инфраструктуры.
 
 ```yaml
-# cow-result
+# sbox-result
 status: готово
 blocker: { category: нет, artifact: "", message: "" }
 findings: []
