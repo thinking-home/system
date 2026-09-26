@@ -5,6 +5,7 @@ import {Keyset, text} from '@thinking-home/i18n';
 export const keyset = new Keyset('en', {
     title: text('Schedule'),
     newTask: text('New task'),
+    editTask: text('Edit task'),
     emptyList: text('There are no tasks yet'),
     name: text('Name'),
     nameRequired: text('Enter the task name'),

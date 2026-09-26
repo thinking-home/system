@@ -1,0 +1,49 @@
+# Связь утверждений спецификации с автотестами.
+# capability → группа → утверждение → тесты | manual
+
+plugins/web-server/http-resources:
+  "Динамический ресурс генерируется на каждый запрос":
+    "Запрос динамического ресурса вызывает обработчик":
+      tests:
+        - level: unit
+          file: ThinkingHome.Tests/Plugins.WebServer/HomePluginsMiddlewareTests.cs
+          name: "plugins/web-server/http-resources › Динамический ресурс генерируется на каждый запрос › Запрос динамического ресурса вызывает обработчик"
+    "Некэшируемый динамический ресурс":
+      tests:
+        - level: unit
+          file: ThinkingHome.Tests/Plugins.WebServer/HomePluginsMiddlewareTests.cs
+          name: "plugins/web-server/http-resources › Динамический ресурс генерируется на каждый запрос › Некэшируемый динамический ресурс"
+    "Кэшируемый ресурс с разными параметрами строки запроса":
+      tests:
+        - level: unit
+          file: ThinkingHome.Tests/Plugins.WebServer/HomePluginsMiddlewareTests.cs
+          name: "plugins/web-server/http-resources › Динамический ресурс генерируется на каждый запрос › Кэшируемый ресурс с разными параметрами строки запроса"
+    "Повторный запрос с той же строкой запроса":
+      tests:
+        - level: unit
+          file: ThinkingHome.Tests/Plugins.WebServer/HomePluginsMiddlewareTests.cs
+          name: "plugins/web-server/http-resources › Динамический ресурс генерируется на каждый запрос › Повторный запрос с той же строкой запроса"
+
+plugins/cron/web-ui:
+  "Форма записи расписания в шторке":
+    "Открытие формы новой записи":
+      manual: "Тест-раннера для TypeScript-разделов web-ui нет (testing.md: 'unit и component (TypeScript) — тест-раннера для каталогов ThinkingHome.Plugins.*/frontend/** нет, скриптов test в package.json нет'); поведение Drawer проверяется в браузере (design.md, «Стратегия проверки»: sbox-browser на /cron)."
+    "Открытие формы редактирования":
+      manual: "Тест-раннера для TypeScript-разделов web-ui нет; проверка в браузере (design.md, «Стратегия проверки»)."
+    "Успешное сохранение закрывает шторку":
+      manual: "Тест-раннера для TypeScript-разделов web-ui нет; проверка в браузере (design.md, «Стратегия проверки»)."
+    "Ошибка сохранения оставляет шторку открытой":
+      manual: "Тест-раннера для TypeScript-разделов web-ui нет; проверка в браузере (design.md, «Стратегия проверки»)."
+    "Закрытие шторки без сохранения":
+      manual: "Тест-раннера для TypeScript-разделов web-ui нет; проверка в браузере (design.md, «Стратегия проверки»)."
+
+plugins/scripts/web-ui:
+  "Форма подписки в шторке":
+    "Открытие формы новой подписки":
+      manual: "Тест-раннера для TypeScript-разделов web-ui нет (testing.md); поведение Drawer проверяется в браузере (design.md, «Стратегия проверки»: sbox-browser на /scripts/subscriptions)."
+    "Успешное добавление закрывает шторку":
+      manual: "Тест-раннера для TypeScript-разделов web-ui нет; проверка в браузере (design.md, «Стратегия проверки»)."
+    "Ошибка добавления оставляет шторку открытой":
+      manual: "Тест-раннера для TypeScript-разделов web-ui нет; проверка в браузере (design.md, «Стратегия проверки»)."
+    "Закрытие шторки подписки без сохранения":
+      manual: "Тест-раннера для TypeScript-разделов web-ui нет; проверка в браузере (design.md, «Стратегия проверки»)."
