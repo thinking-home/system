@@ -1,0 +1,241 @@
+id: drawer-for-editors
+title: открытие редакторов в шторке
+created: 2026-09-26
+revision: 22
+source:
+  kind: text
+size: normal
+skip_specs: false
+phase: archived
+status: done
+settled: true
+active_run: null
+stop_requested: false
+base_revision: eb643ff4e9ff977c063622e322c72ec0bac5858b
+gates:
+  proposal:
+    state: approved
+    by: dima117a
+    at: 2026-09-25T23:42:22.665Z
+  plan:
+    state: approved
+    by: dima117a
+    at: 2026-09-25T23:47:16.862Z
+    comment: с решениями по конфликтам согласен
+  tests:
+    state: approved
+    by: dima117a
+    at: 2026-09-26T00:00:42.819Z
+complexity:
+  implementation: обычная
+  review: обычная
+assumptions: []
+protected:
+  - ThinkingHome.Tests/Plugins.WebServer/HomePluginsMiddlewareTests.cs
+  - ThinkingHome.Tests/ThinkingHome.Tests.csproj
+protected_snapshot:
+  ThinkingHome.Tests/Plugins.WebServer/HomePluginsMiddlewareTests.cs: ea20069c650e380f83fe87e13f82440945dd996997e70204e269b980b412b690
+  ThinkingHome.Tests/ThinkingHome.Tests.csproj: 65a57e54ecd38449f32389c22b99a479dd0ff77e7ae8e4388adb59cf55e139b7
+blocker: null
+returns:
+  implement: 1
+returns_limit: null
+changeset:
+  base: eb643ff4e9ff977c063622e322c72ec0bac5858b
+  digest: sha256:b68f21cbbbed9393da0b19491709eb4b44252403150c0c58cedacc80ace8dee3
+  paths: 20
+  sealed_after: r9
+  sealed_at: 2026-09-26T00:20:17.033Z
+  rebound:
+    - from: sha256:63dbc139588450f7d2415599846e050291c226687fe20785370b9176f1dce297
+      to: sha256:b68f21cbbbed9393da0b19491709eb4b44252403150c0c58cedacc80ace8dee3
+      files:
+        - openspec/specs/plugins/telegram-chat-list/web-ui/spec.md
+        - openspec/specs/plugins/web-ui/application-shell/spec.md
+      at: 2026-09-26T00:35:27.140Z
+reviewed_digest: sha256:b68f21cbbbed9393da0b19491709eb4b44252403150c0c58cedacc80ace8dee3
+verification:
+  run: r10
+  checks:
+    - id: V1
+      purpose: утверждение «Динамический ресурс генерируется на каждый запрос» (4 сценария)
+      result: PASS
+      evidence: dotnet test ThinkingHome.Tests/ThinkingHome.Tests.csproj — 43/43 passed
+    - id: V2
+      purpose: проверка типов TS в пяти обновлённых UI-проектах
+      result: PASS
+      evidence: npx tsc -p tsconfig.json в WebUi, Cron.WebUi, Scripts.WebUi, TelegramChatList.WebUi, Tmp — без ошибок (r7, тот же дайджест)
+    - id: V3
+      purpose: чистая сборка решения дважды подряд
+      result: PASS
+      evidence: dotnet build ThinkingHome.sln x2 — Build succeeded, 0 Warning(s), 0 Error(s) (r7, тот же дайджест)
+    - id: V4
+      purpose: открытие формы новой записи и формы редактирования /cron
+      result: PASS
+      evidence: "sbox-browser: dialog «Новая запись» и dialog «Редактирование задачи» с заполненными полями, список виден"
+    - id: V5
+      purpose: успешное сохранение закрывает шторку /cron
+      result: PASS
+      evidence: "sbox-browser: submit → шторка закрылась, alert «Запись добавлена», запись в списке"
+    - id: V6
+      purpose: закрытие шторки без сохранения отбрасывает данные /cron
+      result: PASS
+      evidence: "sbox-browser: правка поля + «Отмена» → данные не изменились, следующее открытие пустое"
+    - id: V7
+      purpose: открытие формы новой подписки /scripts/subscriptions, ширина lg
+      result: PASS
+      evidence: "sbox-browser: dialog «Новая подписка» открылась справа, список виден"
+    - id: V8
+      purpose: успешное добавление подписки закрывает шторку и обновляет список
+      result: PASS
+      evidence: "sbox-browser: выбран test1/scripts:user-event, заполнен meta value, «Добавить» → шторка закрылась, строка в списке, alert «Подписка добавлена»"
+    - id: V9
+      purpose: закрытие шторки подписки без сохранения отбрасывает данные
+      result: PASS
+      evidence: "sbox-browser: выбран test1/cron:task:started, «Отмена» → список не изменился (3 строки), повторное открытие — пустые комбобоксы"
+    - id: V10
+      purpose: серверный кэш /api/webui/lang различает id в строке запроса
+      result: PASS
+      evidence: curl -i /api/webui/lang?id=<cron> и ?id=<scripts> — оба 200 с разным, корректным телом
+    - id: V11
+      purpose: беглый обход /telegram-chat-list после обновления th-ui
+      result: PASS
+      evidence: "sbox-browser: console --errors без ошибок приложения, requests без 4xx/5xx (кроме favicon.ico)"
+    - id: V12
+      purpose: веб-сервер работает независимо от недоступных внешних сервисов
+      result: PASS
+      evidence: "лог dotnet run: 'Now listening on: http://[::]:8080' сохраняется на всём протяжении проверки"
+  gaps:
+    - id: G1
+      environment: управляемый сбой сервера (валидация/дублирование) на /cron и /scripts/subscriptions
+      oracle: сценарии «Ошибка сохранения/добавления оставляет шторку открытой»
+      risk: "низкий: логика submit/fail и условие Drawer.opened=formVisible не менялись этим диффом (design.md, D1)"
+accepted_gaps:
+  - item: G1
+    reason: Логика submit/fail и условие Drawer.opened=formVisible не менялись этим диффом (git diff по tasks.tsx/subscriptions.tsx — только перенос JSX под Drawer); детерминированный триггер серверной ошибки через форму недоступен (клиентская валидация cron опережает отправку, Select subscriptions ограничивает значения корректными); риск не увеличен изменением.
+delivery_narrative:
+  title: Формы редактирования cron-задач и подписок на события открываются в выезжающей шторке
+  delta: На /cron и /scripts/subscriptions форма добавления/редактирования раньше подменяла список на странице; теперь она всегда переносится в Drawer (@mantine/core, position="right"), который выезжает справа поверх страницы, а таблица и кнопка добавления остаются на месте постоянно. Заголовок шторки cron различает добавление ("Новая запись") и редактирование ("Редактирование задачи", новый ключ editTask в lang.ts и обоих .resx); шторка подписки шире (size="lg") под таблицу фильтра по meta. Сохранение/добавление и его успех или ошибка обрабатываются тем же кодом submit/fail, что и раньше, поэтому шторка закрывается только при подтверждённом сохранении и остаётся открытой при ошибке с уже введёнными данными; закрытие любым способом (отмена, крестик, Escape, клик вне шторки) сбрасывает форму через тот же resetForm. Отдельно на сервере HomePluginsMiddleware.cs теперь включает строку запроса в ключ кэша, поэтому /api/webui/lang и другие кэшируемые ресурсы с разными query-параметрами (например, id разных разделов) больше не путают ответы друг друга. Для выезжающей шторки во всех пяти UI-проектах поднята зависимость @thinking-home/ui до ^0.13.0 (обновлённый Mantine с рабочими порталами Drawer/Modal).
+  why: Портал Drawer уже был доступен в используемой версии Mantine, вся смена — это перемещение существующей JSX-разметки формы под новый компонент-обёртку без изменения state-машины formVisible/editingId/resetForm/submit/fail, поэтому сохранённое и ранее протестированное поведение сохранения, ошибки и отмены работает без изменений логики. Уязвимость кэша устранена добавлением query string в существующий ключ — минимальное, локализованное изменение одной строки, не затрагивающее остальной алгоритм кэширования.
+  preserved: Состав полей и порядок действий в обеих формах не изменились; таблица списка и кнопка добавления остаются видимыми всё время, как и раньше при закрытой форме; формат HTTP-ответов и заголовки Cache-Control не изменились; поведение некэшируемых ресурсов и ресурсов без строки запроса не изменилось.
+  rollout: "Обычная выкладка сборки: dotnet build ThinkingHome.sln (два прохода, второй дособирает клиентские бандлы), миграций данных нет, серверный кэш в памяти сам заполнится заново после перезапуска процесса."
+  rollback: "Откат коммитом: возврат версий @thinking-home/ui в пяти package.json/package-lock.json, tasks.tsx, subscriptions.tsx, ключа кэша в HomePluginsMiddleware.cs и новых лексических ключей — без данных для миграции назад."
+delivery:
+  intent_key: drawer-for-editors:63dbc139588450f7
+  created_at: 2026-09-26T00:30:33.793Z
+  state: done
+  commit: 72f61d8aecf39c06a450e28402d450dc9d31a438
+  pr: null
+  error: null
+interventions:
+  resumes: 0
+  user_blockers: 0
+rating: null
+coordination: null
+branch: sbox/drawer-for-editors
+conflicts:
+  - id: C1
+    kind: отступление
+    subject: запрос
+    role: planner
+    run: r2
+    text: "«несколько форм: создание подписки, редактирование расписания cron и т.д.» — evidence находит ровно две формы на страницах списков"
+    decision: в объём входят только форма записи расписания (/cron) и форма добавления подписки (/scripts/subscriptions)
+    reason: других инлайн-форм на страницах списков нет; редактор сценария /scripts/edit — отдельная страница
+  - id: C2
+    kind: отступление
+    subject: evidence
+    role: planner
+    run: r2
+    text: связь версии th-ui 0.13.0 с исправлением порталов Drawer/Modal не подтверждена кодом или changelog
+    decision: обновить @thinking-home/ui до 0.13.0 во всех манифестах и lock-файлах и проверить шторку в браузере
+    reason: запрос требует обновления, 0.13.0 — последняя опубликованная версия и уже установлена в node_modules
+runs:
+  - id: r1
+    role: researcher
+    phase: research
+    attempt: 1
+    started: 2026-09-25T23:28:50.485Z
+    finished: 2026-09-25T23:33:55.249Z
+    status: done
+    dir: runs/r1
+  - id: r2
+    role: planner
+    phase: propose
+    attempt: 1
+    started: 2026-09-25T23:34:00.718Z
+    finished: 2026-09-25T23:34:53.451Z
+    status: done
+    dir: runs/r2
+  - id: r3
+    role: planner
+    phase: plan
+    attempt: 1
+    started: 2026-09-25T23:42:25.710Z
+    finished: 2026-09-25T23:44:41.191Z
+    status: done
+    dir: runs/r3
+  - id: r4
+    role: tester
+    phase: cover
+    attempt: 1
+    started: 2026-09-25T23:47:20.356Z
+    finished: 2026-09-25T23:49:56.377Z
+    status: done
+    dir: runs/r4
+  - id: r5
+    role: reviewer
+    phase: tests_review
+    attempt: 1
+    started: 2026-09-25T23:50:01.898Z
+    finished: 2026-09-25T23:51:37.133Z
+    status: done
+    dir: runs/r5
+  - id: r6
+    role: implementer
+    phase: implement
+    attempt: 1
+    started: 2026-09-26T00:00:46.739Z
+    finished: 2026-09-26T00:07:06.637Z
+    status: done
+    dir: runs/r6
+  - id: r7
+    role: verifier
+    phase: verify
+    attempt: 1
+    started: 2026-09-26T00:07:12.426Z
+    finished: 2026-09-26T00:12:35.772Z
+    status: done
+    dir: runs/r7
+  - id: r8
+    role: reviewer
+    phase: review
+    attempt: 1
+    started: 2026-09-26T00:12:41.256Z
+    finished: 2026-09-26T00:15:54.389Z
+    status: blocked
+    dir: runs/r8
+  - id: r9
+    role: implementer
+    phase: implement
+    attempt: 1
+    started: 2026-09-26T00:16:03.331Z
+    finished: 2026-09-26T00:20:16.920Z
+    status: done
+    dir: runs/r9
+  - id: r10
+    role: verifier
+    phase: verify
+    attempt: 1
+    started: 2026-09-26T00:20:23.780Z
+    finished: 2026-09-26T00:24:07.761Z
+    status: done
+    dir: runs/r10
+  - id: r11
+    role: reviewer
+    phase: review
+    attempt: 1
+    started: 2026-09-26T00:24:12.992Z
+    finished: 2026-09-26T00:25:13.390Z
+    status: done
+    dir: runs/r11

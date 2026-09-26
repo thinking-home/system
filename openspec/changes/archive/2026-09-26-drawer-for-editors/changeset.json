@@ -1,0 +1,110 @@
+{
+  "version": 1,
+  "base": "eb643ff4e9ff977c063622e322c72ec0bac5858b",
+  "digest": "sha256:b68f21cbbbed9393da0b19491709eb4b44252403150c0c58cedacc80ace8dee3",
+  "paths": 20,
+  "files": [
+    {
+      "path": "openspec/specs/plugins/telegram-chat-list/web-ui/spec.md",
+      "status": "M",
+      "sha256": "eedb00a8f7b31003fde40896cc98d250142fe6a898d4809cd060dd8279149162"
+    },
+    {
+      "path": "openspec/specs/plugins/web-ui/application-shell/spec.md",
+      "status": "M",
+      "sha256": "5499a515a10214d8cbb98590e7975acf1b279ae47935ebd2a4a4b44215a76a66"
+    },
+    {
+      "path": "ThinkingHome.Plugins.Cron.WebUi/frontend/lang.ts",
+      "status": "M",
+      "sha256": "816134c05d4958f194879488613ebbec2a7d4c0e58111d0fd63da63cf94caccb"
+    },
+    {
+      "path": "ThinkingHome.Plugins.Cron.WebUi/frontend/tasks.tsx",
+      "status": "M",
+      "sha256": "8a6a130fe104adb0e98b886a3e20a6bd22b50f7217cfe947e41c0cf272a18e7e"
+    },
+    {
+      "path": "ThinkingHome.Plugins.Cron.WebUi/Lang/CronWebUiPlugin.resx",
+      "status": "M",
+      "sha256": "1b2bca5872093227a1d02a2c91470f590b92787196bb6f0c2948e9836c51765b"
+    },
+    {
+      "path": "ThinkingHome.Plugins.Cron.WebUi/Lang/CronWebUiPlugin.ru-RU.resx",
+      "status": "M",
+      "sha256": "5816eee320cfd8c55c05c0f6e5ec0e285ab8fa03b409480baaa9b4e4e2df03da"
+    },
+    {
+      "path": "ThinkingHome.Plugins.Cron.WebUi/package-lock.json",
+      "status": "M",
+      "sha256": "ac95f2a211c81e375d0311ea21457ff315d375903c671d4b71fe43caa9fe5119"
+    },
+    {
+      "path": "ThinkingHome.Plugins.Cron.WebUi/package.json",
+      "status": "M",
+      "sha256": "2be1f1235d8e235c61562979a84d24a97b7336ee3566b2a8bf42e319ac296a57"
+    },
+    {
+      "path": "ThinkingHome.Plugins.Scripts.WebUi/frontend/subscriptions.tsx",
+      "status": "M",
+      "sha256": "7da1f3fe4001881262761e9523be0d7c57e41706a434c7ec4b7507f78425374f"
+    },
+    {
+      "path": "ThinkingHome.Plugins.Scripts.WebUi/package-lock.json",
+      "status": "M",
+      "sha256": "a5c1f4d413751294104168344096eac1a13e83f318dc56266edec90c651212b4"
+    },
+    {
+      "path": "ThinkingHome.Plugins.Scripts.WebUi/package.json",
+      "status": "M",
+      "sha256": "65ec5ea319bf56170efac839bf2984f06e10c81363bf483640ee342f383f5730"
+    },
+    {
+      "path": "ThinkingHome.Plugins.TelegramChatList.WebUi/package-lock.json",
+      "status": "M",
+      "sha256": "f8c1d2be70288e30e1d9072f68a4a5aa6e996eb4b9e7e372dd22cc4788f7bf28"
+    },
+    {
+      "path": "ThinkingHome.Plugins.TelegramChatList.WebUi/package.json",
+      "status": "M",
+      "sha256": "9636a6c7aa07527faf9ca6b4d3579f21618bcb919b458d4617c85f986d227fd5"
+    },
+    {
+      "path": "ThinkingHome.Plugins.Tmp/package-lock.json",
+      "status": "M",
+      "sha256": "a5b7c32ea14285a9add99f09c75db61ecf1bfed064fbb1112c474c2aeff46efc"
+    },
+    {
+      "path": "ThinkingHome.Plugins.Tmp/package.json",
+      "status": "M",
+      "sha256": "8d648d53af85bc1a6429c7b225b6b4fbc5e75b5bcb97c1d04863f5a4e084b36e"
+    },
+    {
+      "path": "ThinkingHome.Plugins.WebServer/HomePluginsMiddleware.cs",
+      "status": "M",
+      "sha256": "ae4a656f383acca10ad509a776e4d6eb6d190ecb3d30791e6f389608327023ba"
+    },
+    {
+      "path": "ThinkingHome.Plugins.WebUi/package-lock.json",
+      "status": "M",
+      "sha256": "b544607876d71d4ca64f54f74b1e37479da3cfab6b0158e370c40ef67f60f60d"
+    },
+    {
+      "path": "ThinkingHome.Plugins.WebUi/package.json",
+      "status": "M",
+      "sha256": "c4bcb548040a731bcaf7b7ce310935e22eb83388f45df80905e05dc5b3130100"
+    },
+    {
+      "path": "ThinkingHome.Tests/Plugins.WebServer/HomePluginsMiddlewareTests.cs",
+      "status": "A",
+      "sha256": "ea20069c650e380f83fe87e13f82440945dd996997e70204e269b980b412b690"
+    },
+    {
+      "path": "ThinkingHome.Tests/ThinkingHome.Tests.csproj",
+      "status": "M",
+      "sha256": "65a57e54ecd38449f32389c22b99a479dd0ff77e7ae8e4388adb59cf55e139b7"
+    }
+  ],
+  "sealed_at": "2026-09-26T00:20:17.033Z",
+  "sealed_after": "r9"
+}

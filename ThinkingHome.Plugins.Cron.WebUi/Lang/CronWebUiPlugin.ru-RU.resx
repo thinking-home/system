@@ -64,6 +64,9 @@
   <data name="newTask" xml:space="preserve">
     <value>Новая запись</value>
   </data>
+  <data name="editTask" xml:space="preserve">
+    <value>Редактирование задачи</value>
+  </data>
   <data name="emptyList" xml:space="preserve">
     <value>Записей пока нет</value>
   </data>

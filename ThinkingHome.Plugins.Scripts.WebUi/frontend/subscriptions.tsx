@@ -1,7 +1,7 @@
 import * as React from 'react';
 import {FC, useCallback, useEffect, useState} from 'react';
 import {Link} from 'react-router-dom';
-import {Anchor, Badge, Button, Code, Group, Input, Select, Stack, Table, Text, TextInput, Title} from '@mantine/core';
+import {Anchor, Badge, Button, Code, Drawer, Group, Input, Select, Stack, Table, Text, TextInput, Title} from '@mantine/core';
 import {createModule, LogLevel, useAppContext, useKeyset, useLogger} from '@thinking-home/ui';
 
 import {
@@ -157,90 +157,96 @@ const SubscriptionList: FC = () => {
             <Stack my="md" gap="md">
                 <Anchor component={Link} to={LIST_URL}>{t('backToList')}</Anchor>
 
-                {formVisible ? (
-                    <Stack gap="sm">
-                        <Select
-                            label={t('script')}
-                            data={scripts.map(script => ({value: script.id, label: script.name}))}
-                            value={scriptId}
-                            onChange={setScriptId}
-                            searchable
-                        />
-
-                        <Select
-                            label={t('event')}
-                            data={events.events.map(event => event.name)}
-                            value={eventName}
-                            onChange={setEventName}
-                            searchable
-                        />
-
-                        <Input.Wrapper label={t('metaFilter')}>
-                            {showFilterTable ? (
-                                <Table>
-                                    <Table.Thead>
-                                        <Table.Tr>
-                                            <Table.Th>{t('metaKey')}</Table.Th>
-                                            <Table.Th>{t('metaValue')}</Table.Th>
-                                            <Table.Th/>
-                                        </Table.Tr>
-                                    </Table.Thead>
-                                    <Table.Tbody>
-                                        {isUserEvent ? (
-                                            <Table.Tr>
-                                                <Table.Td>
-                                                    <TextInput value={events.userEvent.metaKey} disabled/>
-                                                </Table.Td>
-                                                <Table.Td>
-                                                    <TextInput
-                                                        value={customName}
-                                                        onChange={event => setCustomName(event.currentTarget.value)}
-                                                    />
-                                                </Table.Td>
-                                                <Table.Td/>
-                                            </Table.Tr>
-                                        ) : null}
-                                        {rows.map((row, index) => (
-                                            <Table.Tr key={index}>
-                                                <Table.Td>
-                                                    <TextInput
-                                                        value={row.key}
-                                                        onChange={event => setRow(index, {...row, key: event.currentTarget.value})}
-                                                    />
-                                                </Table.Td>
-                                                <Table.Td>
-                                                    <TextInput
-                                                        value={row.value}
-                                                        onChange={event => setRow(index, {...row, value: event.currentTarget.value})}
-                                                    />
-                                                </Table.Td>
-                                                <Table.Td>
-                                                    <Button variant="subtle" onClick={() => removeRow(index)}>
-                                                        {t('delete')}
-                                                    </Button>
-                                                </Table.Td>
-                                            </Table.Tr>
-                                        ))}
-                                    </Table.Tbody>
-                                </Table>
-                            ) : null}
-
-                            <Button variant="default" mt="xs" onClick={() => setRows(prev => [...prev, emptyRow()])}>
-                                {t('addRow')}
-                            </Button>
-                        </Input.Wrapper>
-
-                        <Group>
-                            <Button onClick={submit}>{t('add')}</Button>
-                            <Button variant="default" onClick={resetForm}>{t('cancel')}</Button>
-                        </Group>
-                    </Stack>
-                ) : (
-                    <Group>
-                        <Button onClick={() => setFormVisible(true)}>{t('newSubscription')}</Button>
-                    </Group>
-                )}
+                <Group>
+                    <Button onClick={() => setFormVisible(true)}>{t('newSubscription')}</Button>
+                </Group>
             </Stack>
+
+            <Drawer
+                position="right"
+                size="lg"
+                opened={formVisible}
+                onClose={resetForm}
+                title={t('newSubscription')}
+            >
+                <Stack gap="sm">
+                    <Select
+                        label={t('script')}
+                        data={scripts.map(script => ({value: script.id, label: script.name}))}
+                        value={scriptId}
+                        onChange={setScriptId}
+                        searchable
+                    />
+
+                    <Select
+                        label={t('event')}
+                        data={events.events.map(event => event.name)}
+                        value={eventName}
+                        onChange={setEventName}
+                        searchable
+                    />
+
+                    <Input.Wrapper label={t('metaFilter')}>
+                        {showFilterTable ? (
+                            <Table>
+                                <Table.Thead>
+                                    <Table.Tr>
+                                        <Table.Th>{t('metaKey')}</Table.Th>
+                                        <Table.Th>{t('metaValue')}</Table.Th>
+                                        <Table.Th/>
+                                    </Table.Tr>
+                                </Table.Thead>
+                                <Table.Tbody>
+                                    {isUserEvent ? (
+                                        <Table.Tr>
+                                            <Table.Td>
+                                                <TextInput value={events.userEvent.metaKey} disabled/>
+                                            </Table.Td>
+                                            <Table.Td>
+                                                <TextInput
+                                                    value={customName}
+                                                    onChange={event => setCustomName(event.currentTarget.value)}
+                                                />
+                                            </Table.Td>
+                                            <Table.Td/>
+                                        </Table.Tr>
+                                    ) : null}
+                                    {rows.map((row, index) => (
+                                        <Table.Tr key={index}>
+                                            <Table.Td>
+                                                <TextInput
+                                                    value={row.key}
+                                                    onChange={event => setRow(index, {...row, key: event.currentTarget.value})}
+                                                />
+                                            </Table.Td>
+                                            <Table.Td>
+                                                <TextInput
+                                                    value={row.value}
+                                                    onChange={event => setRow(index, {...row, value: event.currentTarget.value})}
+                                                />
+                                            </Table.Td>
+                                            <Table.Td>
+                                                <Button variant="subtle" onClick={() => removeRow(index)}>
+                                                    {t('delete')}
+                                                </Button>
+                                            </Table.Td>
+                                        </Table.Tr>
+                                    ))}
+                                </Table.Tbody>
+                            </Table>
+                        ) : null}
+
+                        <Button variant="default" mt="xs" onClick={() => setRows(prev => [...prev, emptyRow()])}>
+                            {t('addRow')}
+                        </Button>
+                    </Input.Wrapper>
+
+                    <Group>
+                        <Button onClick={submit}>{t('add')}</Button>
+                        <Button variant="default" onClick={resetForm}>{t('cancel')}</Button>
+                    </Group>
+                </Stack>
+            </Drawer>
 
             {subscriptions.length ? (
                 <Table>
