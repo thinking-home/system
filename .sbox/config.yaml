@@ -10,9 +10,12 @@ autonomy: supervised
 gates:
   channels:
     - cli
+  enabled:
+    - proposal
+    - plan
+    - tests
 runner:
-  default: claude
-  models: {}
+  default: codex
   stateDir: ~/.sbox/runs
   timeoutMinutes: 120
   idleTimeoutMinutes: 20
@@ -32,12 +35,36 @@ runner:
       - Grep
       - Glob
       - Bash
+    profiles:
+      simple:
+        model: claude-sonnet-5
+        effort: low
+      medium:
+        model: claude-sonnet-5
+        effort: medium
+      complex:
+        model: claude-opus-5
+        effort: high
   codex:
     executable: codex
     sandboxWrite: workspace-write
     sandboxRead: read-only
     approvalPolicy: on-request
     extraConfig: []
+    profiles:
+      simple:
+        model: gpt-5.6-terra
+        effort: low
+      medium:
+        model: gpt-5.6-terra
+        effort: medium
+      complex:
+        model: gpt-5.6-sol
+        effort: high
+  roleProfiles:
+    planner: complex
+    challenger: complex
+    reviewer: complex
 repo:
   adapter: local
   baseBranch: master

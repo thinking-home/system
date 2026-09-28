@@ -44,5 +44,5 @@ verification: needs-review
 - Чтение: `git status`, `git log`, `git diff`, `git branch -a`, `ls`, `cat`, `grep`, `find`.
 - Сборка и тесты: `dotnet build ThinkingHome.sln`, `dotnet build {project}.csproj`, `dotnet test ThinkingHome.Tests/ThinkingHome.Tests.csproj` с любыми `--filter` и `--logger trx`.
 - Клиент, в каталоге UI-проекта: `npm ci`, `npm run build`, `npm run build:development`, `npm run build:production`, `npx tsc -p tsconfig.json`.
-- sdd: `sbox doctor`, `sbox spec list`, `sbox spec show {id}`, `sbox status`, `sbox validate`, `sbox change list`.
+- sdd: `sbox doctor`, `sbox-contract index`, `sbox-contract show {id}`, `sbox status`, `sbox validate`, `sbox change list`.
 - Локальный запуск для проверки: `cd ThinkingHome.Console && dotnet run` при наличии `appsettings.Development.json` и локального PostgreSQL; порт переопределяется переменной `THINKINGHOME_plugins__ThinkingHome.Plugins.WebServer.WebServerPlugin__port`.
