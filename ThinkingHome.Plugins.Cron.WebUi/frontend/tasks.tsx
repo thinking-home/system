@@ -1,6 +1,6 @@
 import * as React from 'react';
 import {FC, useCallback, useEffect, useState} from 'react';
-import {Anchor, Badge, Button, Code, Group, Stack, Switch, Table, Text, TextInput, Title} from '@mantine/core';
+import {Anchor, Badge, Button, Code, Drawer, Group, Stack, Switch, Table, Text, TextInput, Title} from '@mantine/core';
 import {createModule, LogLevel, useAppContext, useKeyset, useLogger} from '@thinking-home/ui';
 
 import {CronTaskListItem, deleteTask, describeExpression, ExpressionInfo, getTaskList, saveTask} from './api';
@@ -144,50 +144,55 @@ const CronTaskList: FC = () => {
             <Title>{t('title')}</Title>
 
             <Stack my="md" gap="md">
-                {formVisible ? (
-                    <Stack gap="sm" maw={480}>
-                        <TextInput
-                            label={t('name')}
-                            value={name}
-                            onChange={event => setName(event.currentTarget.value)}
-                        />
-
-                        <div>
-                            <TextInput
-                                label={t('pattern')}
-                                description={t('patternHint')}
-                                value={expression}
-                                onChange={event => setExpression(event.currentTarget.value)}
-                                error={expressionInfo?.valid === false ? t('expressionInvalid') : undefined}
-                            />
-                            {expressionInfo?.description ? (
-                                <Text size="sm" c="dimmed" mt={4}>{expressionInfo.description}</Text>
-                            ) : null}
-                        </div>
-
-                        <TextInput
-                            label={t('event')}
-                            value={eventName}
-                            onChange={event => setEventName(event.currentTarget.value)}
-                        />
-
-                        <Switch
-                            label={t('enabled')}
-                            checked={enabled}
-                            onChange={event => setEnabled(event.currentTarget.checked)}
-                        />
-
-                        <Group>
-                            <Button onClick={submit}>{t(editingId ? 'save' : 'add')}</Button>
-                            <Button variant="default" onClick={resetForm}>{t('cancel')}</Button>
-                        </Group>
-                    </Stack>
-                ) : (
-                    <Group>
-                        <Button onClick={() => setFormVisible(true)}>{t('newTask')}</Button>
-                    </Group>
-                )}
+                <Group>
+                    <Button onClick={() => setFormVisible(true)}>{t('newTask')}</Button>
+                </Group>
             </Stack>
+
+            <Drawer
+                position="right"
+                opened={formVisible}
+                onClose={resetForm}
+                title={t(editingId ? 'editTask' : 'newTask')}
+            >
+                <Stack gap="sm">
+                    <TextInput
+                        label={t('name')}
+                        value={name}
+                        onChange={event => setName(event.currentTarget.value)}
+                    />
+
+                    <div>
+                        <TextInput
+                            label={t('pattern')}
+                            description={t('patternHint')}
+                            value={expression}
+                            onChange={event => setExpression(event.currentTarget.value)}
+                            error={expressionInfo?.valid === false ? t('expressionInvalid') : undefined}
+                        />
+                        {expressionInfo?.description ? (
+                            <Text size="sm" c="dimmed" mt={4}>{expressionInfo.description}</Text>
+                        ) : null}
+                    </div>
+
+                    <TextInput
+                        label={t('event')}
+                        value={eventName}
+                        onChange={event => setEventName(event.currentTarget.value)}
+                    />
+
+                    <Switch
+                        label={t('enabled')}
+                        checked={enabled}
+                        onChange={event => setEnabled(event.currentTarget.checked)}
+                    />
+
+                    <Group>
+                        <Button onClick={submit}>{t(editingId ? 'save' : 'add')}</Button>
+                        <Button variant="default" onClick={resetForm}>{t('cancel')}</Button>
+                    </Group>
+                </Stack>
+            </Drawer>
 
             {list.length ? (
                 <Table>

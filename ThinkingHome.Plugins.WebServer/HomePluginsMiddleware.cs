@@ -40,7 +40,8 @@ namespace ThinkingHome.Plugins.WebServer {
                         // ответ может зависеть от Accept-Encoding (предсжатые ресурсы),
                         // поэтому кэшируем варианты по отдельности
                         var acceptEncoding = context.Request.Headers.AcceptEncoding.ToString();
-                        var cacheKey = $"B746CB6C-D767-4AD8-B3F5-CD7FADEAD51A:{path}:{acceptEncoding}";
+                        var queryString = context.Request.QueryString.Value;
+                        var cacheKey = $"B746CB6C-D767-4AD8-B3F5-CD7FADEAD51A:{path}{queryString}:{acceptEncoding}";
 
                         data = await cache.GetOrCreateAsync(cacheKey, e => {
                             e.SetAbsoluteExpiration(TimeSpan.FromSeconds(CACHE_EXPIRATION));

@@ -64,6 +64,9 @@
   <data name="newTask" xml:space="preserve">
     <value>New task</value>
   </data>
+  <data name="editTask" xml:space="preserve">
+    <value>Edit task</value>
+  </data>
   <data name="emptyList" xml:space="preserve">
     <value>There are no tasks yet</value>
   </data>
