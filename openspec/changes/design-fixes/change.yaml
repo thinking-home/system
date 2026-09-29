@@ -1,18 +1,24 @@
 id: design-fixes
 title: правки по дизайну
 created: 2026-09-29
-revision: 1
+revision: 9
 source:
   kind: text
 size: normal
 skip_specs: false
-phase: research
-status: active
+phase: propose
+status: waiting_approval
 settled: true
 active_run: null
 stop_requested: false
 base_revision: b85ea73b747746704b514d869ff2f5a70b5ba805
-gates: {}
+gates:
+  proposal:
+    state: pending
+    rejected_times: 2
+complexity:
+  implementation: обычная
+  review: обычная
 assumptions: []
 protected: []
 protected_snapshot: {}
@@ -26,10 +32,78 @@ accepted_gaps: []
 delivery_narrative: null
 delivery: null
 interventions:
-  resumes: 0
-  user_blockers: 0
+  resumes: 1
+  user_blockers: 1
 rating: null
 coordination: null
 questions: []
-conflicts: []
-runs: []
+conflicts:
+  - id: C1
+    kind: противоречие
+    subject: запрос
+    role: researcher
+    run: r2
+    text: сделай общий компонент для заглушки с серым текстом по центру и двумя вариациями (ошибка/пусто).
+    evidence: "openspec/changes/design-fixes/runs/r2/packet.json, feedback: пользователь отменил общий компонент для этого изменения и предписал локальную сборку состояний из Mantine"
+  - kind: отступление
+    subject: запрос
+    role: planner
+    run: r5
+    text: Исходный запрос требовал общий компонент состояния списка.
+    decision: В текущем изменении состояния собираются отдельно в каждом месте из готовых компонентов Mantine; общий компонент в UI-пакете и его внедрение откладываются в отдельное изменение.
+    reason: Пользователь отменил это требование после исследования; исходники общего UI-пакета отсутствуют в репозитории, а его изменение потребовало бы отдельной поставки.
+    id: C2
+  - kind: отступление
+    subject: evidence
+    role: planner
+    run: r5
+    text: Ранний Evidence Pack перечислял четыре страницы со списками.
+    decision: В объём добавлен пятый асинхронный список на демонстрационной странице /page2.
+    reason: Повторная полная проверка по замечанию пользователя обнаружила список из /api/tmp/pigs, для которого также применимы состояния пустых данных и ошибки.
+    id: C3
+runs:
+  - id: r1
+    role: researcher
+    phase: research
+    attempt: 1
+    runner: codex
+    started: 2026-09-29T13:17:26.576Z
+    finished: 2026-09-29T13:20:52.292Z
+    status: blocked
+    dir: runs/r1
+  - id: r2
+    role: researcher
+    phase: research
+    attempt: 1
+    runner: codex
+    started: 2026-09-29T13:44:08.365Z
+    finished: 2026-09-29T13:45:37.427Z
+    status: done
+    dir: runs/r2
+  - id: r3
+    role: planner
+    phase: propose
+    attempt: 1
+    runner: codex
+    started: 2026-09-29T13:45:37.839Z
+    finished: 2026-09-29T13:47:25.438Z
+    status: done
+    dir: runs/r3
+  - id: r4
+    role: planner
+    phase: propose
+    attempt: 1
+    runner: codex
+    started: 2026-09-29T13:57:14.389Z
+    finished: 2026-09-29T14:00:48.022Z
+    status: done
+    dir: runs/r4
+  - id: r5
+    role: planner
+    phase: propose
+    attempt: 1
+    status: done
+    dir: runs/r5
+    finished: 2026-09-29T14:09:01.611Z
+    runner: codex
+    started: 2026-09-29T14:02:30.716Z

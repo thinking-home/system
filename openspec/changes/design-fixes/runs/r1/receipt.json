@@ -1,0 +1,30 @@
+{
+  "id": "r1",
+  "role": "researcher",
+  "phase": "research",
+  "attempt": 1,
+  "requested_execution": {
+    "runner": "codex",
+    "profile": "medium",
+    "model": "gpt-5.6-terra",
+    "effort": "medium",
+    "agent": "sbox-researcher-medium"
+  },
+  "runner": "codex",
+  "model": null,
+  "profile": null,
+  "effort": null,
+  "session": null,
+  "started": "2026-09-29T13:17:26.576Z",
+  "finished": "2026-09-29T13:20:52.292Z",
+  "exit_code": null,
+  "cost_usd": null,
+  "packet_sha256": "7708a70d2debc74d27c08886de495ff86fba34e761e8848099cbcbcfbdfa46c8",
+  "prompt_sha256": null,
+  "result_sha256": "027f8955f636286023364078e46f3a2769f5a8ba0ec02e47fd6f267d1e7cbb53",
+  "result_bytes": 3655,
+  "events_path": null,
+  "events_sha256": null,
+  "stderr_sha256": null,
+  "status": "blocked"
+}
