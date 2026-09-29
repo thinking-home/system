@@ -1,0 +1,35 @@
+id: design-fixes
+title: правки по дизайну
+created: 2026-09-29
+revision: 1
+source:
+  kind: text
+size: normal
+skip_specs: false
+phase: research
+status: active
+settled: true
+active_run: null
+stop_requested: false
+base_revision: b85ea73b747746704b514d869ff2f5a70b5ba805
+gates: {}
+assumptions: []
+protected: []
+protected_snapshot: {}
+blocker: null
+returns: {}
+returns_limit: null
+changeset: null
+reviewed_digest: null
+verification: null
+accepted_gaps: []
+delivery_narrative: null
+delivery: null
+interventions:
+  resumes: 0
+  user_blockers: 0
+rating: null
+coordination: null
+questions: []
+conflicts: []
+runs: []
