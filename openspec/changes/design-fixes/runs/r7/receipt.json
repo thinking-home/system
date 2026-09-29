@@ -1,0 +1,30 @@
+{
+  "id": "r7",
+  "role": "challenger",
+  "phase": "challenge",
+  "attempt": 1,
+  "requested_execution": {
+    "runner": "codex",
+    "profile": "complex",
+    "model": "gpt-5.6-sol",
+    "effort": "high",
+    "agent": "sbox-challenger-complex"
+  },
+  "runner": "codex",
+  "model": null,
+  "profile": null,
+  "effort": null,
+  "session": null,
+  "started": "2026-09-29T14:38:23.414Z",
+  "finished": "2026-09-29T14:43:42.949Z",
+  "exit_code": null,
+  "cost_usd": null,
+  "packet_sha256": "84707a9c3d4340ab5d54a492980f337ea9fc3de684e532c32a84a157101a73e7",
+  "prompt_sha256": null,
+  "result_sha256": "016e6bbf9cc0699e33a3f1f06cbcc75e46063e728767a93c7e657483cb5ed4dc",
+  "result_bytes": 9079,
+  "events_path": null,
+  "events_sha256": null,
+  "stderr_sha256": null,
+  "status": "blocked"
+}

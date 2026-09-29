@@ -33,6 +33,7 @@ export const keyset = new Keyset('en', {
     metaFilter: text('Meta filter'),
     metaKey: text('Key'),
     metaValue: text('Value'),
+    emptyMetaFilter: text('There are no filter rules yet'),
     addRow: text('Add row'),
     add: text('Add'),
     cancel: text('Cancel'),

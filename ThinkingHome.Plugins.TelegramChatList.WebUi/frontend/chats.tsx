@@ -12,6 +12,7 @@ const TelegramChatList: FC = () => {
     const logger = useLogger();
 
     const [list, setList] = useState<ChatListItem[]>();
+    const [status, setStatus] = useState<'loading' | 'ready' | 'error'>('loading');
 
     const fail = useCallback((message: string, signal?: AbortSignal) => (error: unknown) => {
         // отмена запроса при уходе со страницы — не ошибка
@@ -22,7 +23,19 @@ const TelegramChatList: FC = () => {
     }, [logger, toaster]);
 
     const load = useCallback((signal?: AbortSignal) => {
-        getChatList(api, signal).then(setList, fail(t('errorLoad'), signal));
+        setStatus('loading');
+        getChatList(api, signal).then(
+            list => {
+                setList(list);
+                setStatus('ready');
+            },
+            error => {
+                if (signal?.aborted) return;
+
+                setStatus('error');
+                fail(t('errorLoad'), signal)(error);
+            },
+        );
     }, [api, fail, t]);
 
     useEffect(() => {
@@ -33,13 +46,13 @@ const TelegramChatList: FC = () => {
         return () => controller.abort();
     }, [load]);
 
-    if (!list) return null;
-
     return (
         <>
             <Title>{t('title')}</Title>
 
-            {list.length ? (
+            {status === 'loading' ? null : status === 'error' ? (
+                <Text c="dimmed" ta="center" my="xl">{t('errorLoad')}</Text>
+            ) : list?.length ? (
                 <Table mt="md">
                     <Table.Thead>
                         <Table.Tr>
@@ -65,7 +78,7 @@ const TelegramChatList: FC = () => {
                     </Table.Tbody>
                 </Table>
             ) : (
-                <Text mt="md">{t('emptyList')}</Text>
+                <Text c="dimmed" ta="center" my="xl">{t('emptyList')}</Text>
             )}
         </>
     );

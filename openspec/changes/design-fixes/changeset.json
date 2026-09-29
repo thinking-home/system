@@ -1,0 +1,80 @@
+{
+  "version": 1,
+  "base": "b85ea73b747746704b514d869ff2f5a70b5ba805",
+  "digest": "sha256:3ba41ec20f234151e66c1634de533343f52a629b912756927fdacafd42327b60",
+  "paths": 14,
+  "files": [
+    {
+      "path": "evidence/research.md",
+      "status": "A",
+      "sha256": "c97799ad9e167ae855747ea260ce28e4161fd1adfdbdf2f89608f5781fde424e"
+    },
+    {
+      "path": "ThinkingHome.Plugins.Cron.WebUi/frontend/tasks.tsx",
+      "status": "M",
+      "sha256": "d936346ba30713cc5c0c0e7d0b397676f4592e0c96b6ca2fe526445f84c2c997"
+    },
+    {
+      "path": "ThinkingHome.Plugins.Scripts.WebUi/frontend/lang.ts",
+      "status": "M",
+      "sha256": "a47e89cc7172155986fbae6ae33763c4ed585fd9f331e4614cf0246f8f8ed9c1"
+    },
+    {
+      "path": "ThinkingHome.Plugins.Scripts.WebUi/frontend/list.tsx",
+      "status": "M",
+      "sha256": "ffad7c56d2916c294cf1952e0c35d85c3332addadead43752fb63ffe02ebda7b"
+    },
+    {
+      "path": "ThinkingHome.Plugins.Scripts.WebUi/frontend/subscriptions.tsx",
+      "status": "M",
+      "sha256": "f978c5f0f566661194d159a61ebd5d2d4845b23854848ce14d6f6cdc25eeaa79"
+    },
+    {
+      "path": "ThinkingHome.Plugins.Scripts.WebUi/Lang/ScriptsWebUiPlugin.resx",
+      "status": "M",
+      "sha256": "b189b2d169d16da004ee3317465c75de21d942ceec4d1d1f5be0f06bc101843f"
+    },
+    {
+      "path": "ThinkingHome.Plugins.Scripts.WebUi/Lang/ScriptsWebUiPlugin.ru-RU.resx",
+      "status": "M",
+      "sha256": "a3b2815b73c00af1310cdba3c9badd4ec2aa784a76cd7725754caf9fd88b14a1"
+    },
+    {
+      "path": "ThinkingHome.Plugins.TelegramChatList.WebUi/frontend/chats.tsx",
+      "status": "M",
+      "sha256": "09b3a7e5772f39f986bb2e50c1b6cf2d64d1c4cb36a527143d5c3b7e6e70a0d0"
+    },
+    {
+      "path": "ThinkingHome.Plugins.Tmp/frontend/lang.ts",
+      "status": "A",
+      "sha256": "047a32c41389e77908d656466def16db2b6486bd6c052dc7d7e21275ee12f005"
+    },
+    {
+      "path": "ThinkingHome.Plugins.Tmp/frontend/page2.tsx",
+      "status": "M",
+      "sha256": "089badc5d5d9a19216d6cb0853a2ce33298e203e836fe309df0a28d6e4c33eb0"
+    },
+    {
+      "path": "ThinkingHome.Plugins.Tmp/Lang/TmpPlugin.resx",
+      "status": "M",
+      "sha256": "13ecb508c24269ee317cc513fc2814cb4971e247fabbf76d39eee57af794efde"
+    },
+    {
+      "path": "ThinkingHome.Plugins.Tmp/Lang/TmpPlugin.ru-RU.resx",
+      "status": "M",
+      "sha256": "82bf1224e2d1381c7de0f48fbe7f27b5ed4bcf506a0f69b3ca6ca710fd2439a8"
+    },
+    {
+      "path": "ThinkingHome.Plugins.Tmp/package-lock.json",
+      "status": "M",
+      "sha256": "830cfe41261da1203658336314bb0a485217614b0e13bedbab0ee59a9d1dc151"
+    },
+    {
+      "path": "ThinkingHome.Plugins.Tmp/package.json",
+      "status": "M",
+      "sha256": "27bffa58face3d714c27195171d2615b3ea4905814459cbf9ee40433bec94039"
+    }
+  ],
+  "sealed_at": "2026-09-29T16:13:05.367Z",
+  "sealed_after": "r21"
+}

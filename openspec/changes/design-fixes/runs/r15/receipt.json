@@ -1,0 +1,30 @@
+{
+  "id": "r15",
+  "role": "verifier",
+  "phase": "verify",
+  "attempt": 1,
+  "requested_execution": {
+    "runner": "codex",
+    "profile": "medium",
+    "model": "gpt-5.6-terra",
+    "effort": "medium",
+    "agent": "sbox-verifier-medium"
+  },
+  "runner": "codex",
+  "model": null,
+  "profile": null,
+  "effort": null,
+  "session": null,
+  "started": "2026-09-29T15:35:03.200Z",
+  "finished": "2026-09-29T15:43:10.559Z",
+  "exit_code": null,
+  "cost_usd": null,
+  "packet_sha256": "538694d129d50451a0b3b3448951ecf404120ca5ceb05d1d43064ead0bd9d1f6",
+  "prompt_sha256": null,
+  "result_sha256": "8837350ed55347946a15b663ac19243fe0629605547980b131b97b124907a4fd",
+  "result_bytes": 8988,
+  "events_path": null,
+  "events_sha256": null,
+  "stderr_sha256": null,
+  "status": "blocked"
+}

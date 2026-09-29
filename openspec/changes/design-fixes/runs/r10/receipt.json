@@ -1,0 +1,30 @@
+{
+  "id": "r10",
+  "role": "tester",
+  "phase": "cover",
+  "attempt": 1,
+  "requested_execution": {
+    "runner": "codex",
+    "profile": "medium",
+    "model": "gpt-5.6-terra",
+    "effort": "medium",
+    "agent": "sbox-tester-medium"
+  },
+  "runner": "codex",
+  "model": null,
+  "profile": null,
+  "effort": null,
+  "session": null,
+  "started": "2026-09-29T14:51:18.485Z",
+  "finished": "2026-09-29T14:54:52.232Z",
+  "exit_code": null,
+  "cost_usd": null,
+  "packet_sha256": "0df70977a64045565a46c07a71a03301db48910eab85db2b2425429760509665",
+  "prompt_sha256": null,
+  "result_sha256": "611aa809dadab4bd1f099f8fa2179bc51549bc70d20df544d0787bb115bc7f25",
+  "result_bytes": 1176,
+  "events_path": null,
+  "events_sha256": null,
+  "stderr_sha256": null,
+  "status": "done"
+}

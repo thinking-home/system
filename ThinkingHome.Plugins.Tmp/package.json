@@ -14,6 +14,7 @@
     "build:production": "th-build --outDir Resources/app"
   },
   "dependencies": {
+    "@mantine/core": "^9.5.1",
     "@thinking-home/i18n": "^0.4.0",
     "@thinking-home/ui": "^0.13.0",
     "react": "^19.0.0",

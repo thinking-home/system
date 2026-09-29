@@ -1,0 +1,30 @@
+{
+  "id": "r8",
+  "role": "planner",
+  "phase": "plan",
+  "attempt": 1,
+  "requested_execution": {
+    "runner": "codex",
+    "profile": "complex",
+    "model": "gpt-5.6-sol",
+    "effort": "high",
+    "agent": "sbox-planner-complex"
+  },
+  "runner": "codex",
+  "model": null,
+  "profile": null,
+  "effort": null,
+  "session": null,
+  "started": "2026-09-29T14:43:43.367Z",
+  "finished": "2026-09-29T14:46:21.199Z",
+  "exit_code": null,
+  "cost_usd": null,
+  "packet_sha256": "c8042a4aa9e0c7ce5125ef03f1f5601f65a1a149b1cdba4af9e72ba65f4dfb79",
+  "prompt_sha256": null,
+  "result_sha256": "0f5a6ac7b0b14e8e0338fd8205f323a4123c8e074a1a235c0fcc9c76b6392455",
+  "result_bytes": 1023,
+  "events_path": null,
+  "events_sha256": null,
+  "stderr_sha256": null,
+  "status": "done"
+}

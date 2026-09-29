@@ -1,0 +1,30 @@
+{
+  "id": "r11",
+  "role": "reviewer",
+  "phase": "tests_review",
+  "attempt": 1,
+  "requested_execution": {
+    "runner": "codex",
+    "profile": "complex",
+    "model": "gpt-5.6-sol",
+    "effort": "high",
+    "agent": "sbox-reviewer-complex"
+  },
+  "runner": "codex",
+  "model": null,
+  "profile": null,
+  "effort": null,
+  "session": null,
+  "started": "2026-09-29T14:54:52.671Z",
+  "finished": "2026-09-29T14:57:49.379Z",
+  "exit_code": null,
+  "cost_usd": null,
+  "packet_sha256": "9b9a2f5d0e2c775bc09a89a187c39b58387fcf4efd25c8884a12f9bd9c8fb5a5",
+  "prompt_sha256": null,
+  "result_sha256": "14ad73d19cce37a7be42d64de41efd619e94b5a47fc6936ada0f20a2c72a4777",
+  "result_bytes": 5550,
+  "events_path": null,
+  "events_sha256": null,
+  "stderr_sha256": null,
+  "status": "blocked"
+}
