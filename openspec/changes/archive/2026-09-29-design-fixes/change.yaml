@@ -1,13 +1,13 @@
 id: design-fixes
 title: правки по дизайну
 created: 2026-09-29
-revision: 36
+revision: 39
 source:
   kind: text
 size: normal
 skip_specs: false
 phase: archived
-status: archived
+status: done
 settled: true
 active_run: null
 stop_requested: false
@@ -125,8 +125,8 @@ delivery_narrative:
 delivery:
   intent_key: design-fixes:3ba41ec20f234151
   created_at: 2026-09-29T16:32:35.505Z
-  state: archived
-  commit: null
+  state: done
+  commit: ec2ca1a9f1eb9c13194c887262482dbc3a2a55aa
   pr: null
   error: null
 interventions:
