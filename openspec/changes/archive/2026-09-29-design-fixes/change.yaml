@@ -1,13 +1,13 @@
 id: design-fixes
 title: правки по дизайну
 created: 2026-09-29
-revision: 33
+revision: 36
 source:
   kind: text
 size: normal
 skip_specs: false
-phase: deliver
-status: active
+phase: archived
+status: archived
 settled: true
 active_run: null
 stop_requested: false
@@ -122,12 +122,19 @@ delivery_narrative:
   preserved: Сохранены маршруты, API-контракты, модели данных, доступные действия, семантический h2 с aria-labelledby, уведомления об ошибках и отмена запросов при размонтировании.
   rollout: Изменение поставляется обычной сборкой клиентских приложений с обновлённой прямой зависимостью Mantine для Tmp Web UI. Миграции данных, серверная конфигурация и изменения API не требуются.
   rollback: Для отката достаточно вернуть изменения клиентских компонентов, локализаций, зависимости Tmp Web UI и проектных соглашений; восстановление данных не требуется.
-delivery: null
+delivery:
+  intent_key: design-fixes:3ba41ec20f234151
+  created_at: 2026-09-29T16:32:35.505Z
+  state: archived
+  commit: null
+  pr: null
+  error: null
 interventions:
   resumes: 1
   user_blockers: 1
 rating: null
 coordination: null
+branch: sbox/design-fixes
 questions: []
 conflicts:
   - id: C1
@@ -356,8 +363,8 @@ runs:
     role: reviewer
     phase: review
     attempt: 1
-    status: done
-    dir: runs/r23
-    finished: 2026-09-29T16:23:39.928Z
     runner: codex
     started: 2026-09-29T16:17:34.467Z
+    finished: 2026-09-29T16:23:39.928Z
+    status: done
+    dir: runs/r23
