@@ -145,6 +145,9 @@
   <data name="metaValue" xml:space="preserve">
     <value>Значение</value>
   </data>
+  <data name="emptyMetaFilter" xml:space="preserve">
+    <value>Правил фильтра пока нет</value>
+  </data>
   <data name="addRow" xml:space="preserve">
     <value>Добавить строку</value>
   </data>

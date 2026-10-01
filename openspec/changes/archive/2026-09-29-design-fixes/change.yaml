@@ -1,0 +1,370 @@
+id: design-fixes
+title: правки по дизайну
+created: 2026-09-29
+revision: 39
+source:
+  kind: text
+size: normal
+skip_specs: false
+phase: archived
+status: done
+settled: true
+active_run: null
+stop_requested: false
+base_revision: b85ea73b747746704b514d869ff2f5a70b5ba805
+gates:
+  proposal:
+    state: approved
+    by: user
+    at: 2026-09-29T14:12:29.236Z
+    rejected_times: 2
+  plan:
+    state: approved
+    by: user
+    at: 2026-09-29T16:05:17.754Z
+    comment: "Пользователь подтвердил: favicon не блокер. Существующий 404 /favicon.ico вне объёма design-fixes и не блокирует его приёмку."
+    answers:
+      Q1: При явной отмене загрузки на /page2 показывать error-вариант заглушки с отдельным локализованным текстом «Загрузка отменена».
+  tests:
+    state: approved
+    by: user
+    at: 2026-09-29T16:11:13.160Z
+    comment: "Сохранено ранее данное пользователем утверждение tests: reviewer r20 подтвердил, что функциональное покрытие 17/17 не изменилось. Единственное уточнение D7 отдельно утверждено пользователем: favicon не блокер."
+complexity:
+  implementation: обычная
+  review: обычная
+assumptions: []
+protected: []
+protected_snapshot: {}
+blocker: null
+returns:
+  plan: 2
+  cover: 1
+  implement: 1
+returns_limit: null
+changeset:
+  base: b85ea73b747746704b514d869ff2f5a70b5ba805
+  digest: sha256:3ba41ec20f234151e66c1634de533343f52a629b912756927fdacafd42327b60
+  paths: 14
+  sealed_after: r21
+  sealed_at: 2026-09-29T16:13:05.367Z
+  rebound: []
+reviewed_digest: sha256:3ba41ec20f234151e66c1634de533343f52a629b912756927fdacafd42327b60
+verification:
+  run: r22
+  checks:
+    - id: V1
+      purpose: периметр и целостность запечатанного change-set
+      result: PASS
+      evidence: "sbox changeset show — 14 файлов, drifted: false; git diff --check — без ошибок"
+    - id: V2
+      purpose: все задачи tasks.md отмечены
+      result: PASS
+      evidence: sbox status — 16/16, remaining 0
+    - id: V3
+      purpose: утверждения о состояниях пяти списков
+      result: PASS
+      evidence: код пяти UI-компонентов содержит взаимоисключающие loading/ready/error/empty ветки; Tmp содержит cancelled
+    - id: V4
+      purpose: единый исход загрузки подписок
+      result: PASS
+      evidence: subscriptions.tsx — Promise.all трёх начальных запросов и единый error-handler
+    - id: V5
+      purpose: пустой редактор meta-фильтра и шторка подписки
+      result: PASS
+      evidence: sbox-browser /scripts/subscriptions → 200; snapshot содержит h2, empty-текст и доступную кнопку добавления
+    - id: V6
+      purpose: заголовок шторки cron
+      result: PASS
+      evidence: sbox-browser /cron → 200; snapshot после click содержит один h2 «Новая запись»
+    - id: V7
+      purpose: TypeScript-проверка UI
+      result: PASS
+      evidence: npx tsc -p tsconfig.json — 4/4 успешных запуска
+    - id: V8
+      purpose: unit-тесты
+      result: PASS
+      evidence: dotnet test ThinkingHome.Tests/ThinkingHome.Tests.csproj — 43/43
+    - id: V9
+      purpose: полная сборка
+      result: PASS
+      evidence: dotnet build ThinkingHome.sln — 0 Warning(s), 0 Error(s)
+    - id: V10
+      purpose: валидность дельт и change-артефактов
+      result: PASS
+      evidence: "sbox-contract validate и sbox validate — diagnostics: []"
+    - id: V11
+      purpose: граница D7 для favicon
+      result: PASS
+      evidence: change-set не меняет общую WebUi-оболочку; 404 /favicon.ico принят пользователем как внешний шум вне объёма
+    - id: V12
+      purpose: ручные сценарии empty/error/cancel
+      result: NOT_RUN
+      evidence: нет proxy, request interception и e2e/TypeScript test runner для подмены API-ответов
+  gaps:
+    - id: G1
+      environment: browser request interception или локальный proxy
+      oracle: pending/empty/error/cancel всех пяти API-списков и одновременный отказ запросов подписок
+      risk: "средний: управляемые API-ветки не наблюдались"
+    - id: G2
+      environment: браузерная проверка светлой и тёмной темы
+      oracle: вычисленные стили h2 совпадают с переменными темы Mantine
+      risk: "низкий: DOM и использование --mantine-h2-* подтверждены"
+accepted_gaps:
+  - item: V12
+    reason: Управляемые сценарии пустого ответа, ошибки, явной отмены и одновременных ошибок подписок недоступны без перехвата запросов, прокси или E2E-раннера. Изменение ограничено обратимым клиентским UI; статические ветви проверены по коду, типизация, сборка и доступные браузерные сценарии прошли. Остаточный риск средний.
+  - item: G1
+    reason: Среда не предоставляет способ подменить ответы API для всех сценариев пяти списков. Отдельные ветви состояний и локализованные сообщения присутствуют, а загрузка подписок агрегирована одним обработчиком ошибки и одним уведомлением. Риск принят как средний для локального обратимого изменения.
+delivery_narrative:
+  title: Показать состояния списков и увеличить заголовки шторок
+  delta: Пять асинхронных списков теперь явно различают загрузку, данные, пустой результат, ошибку и предусмотренную отмену запроса, сохраняя заголовки и основные действия на экране. Редактор правил подписки показывает пустое состояние рядом с кнопкой добавления строки. Заголовки шторок заданий cron и подписок используют размер h2 из темы Mantine.
+  why: Явные состояния устраняют неоднозначность пустого экрана и не позволяют одновременно показывать устаревшую таблицу и сообщение об ошибке. Загрузка данных подписок агрегирована через Promise.all, поэтому общий отказ создаёт одно уведомление. Стили шторок используют переменные темы Mantine и сохраняют существующую семантическую разметку.
+  preserved: Сохранены маршруты, API-контракты, модели данных, доступные действия, семантический h2 с aria-labelledby, уведомления об ошибках и отмена запросов при размонтировании.
+  rollout: Изменение поставляется обычной сборкой клиентских приложений с обновлённой прямой зависимостью Mantine для Tmp Web UI. Миграции данных, серверная конфигурация и изменения API не требуются.
+  rollback: Для отката достаточно вернуть изменения клиентских компонентов, локализаций, зависимости Tmp Web UI и проектных соглашений; восстановление данных не требуется.
+delivery:
+  intent_key: design-fixes:3ba41ec20f234151
+  created_at: 2026-09-29T16:32:35.505Z
+  state: done
+  commit: ec2ca1a9f1eb9c13194c887262482dbc3a2a55aa
+  pr: null
+  error: null
+interventions:
+  resumes: 1
+  user_blockers: 1
+rating: null
+coordination: null
+branch: sbox/design-fixes
+questions: []
+conflicts:
+  - id: C1
+    kind: противоречие
+    subject: запрос
+    role: researcher
+    run: r2
+    text: сделай общий компонент для заглушки с серым текстом по центру и двумя вариациями (ошибка/пусто).
+    evidence: "openspec/changes/design-fixes/runs/r2/packet.json, feedback: пользователь отменил общий компонент для этого изменения и предписал локальную сборку состояний из Mantine"
+  - id: C2
+    kind: отступление
+    subject: запрос
+    role: planner
+    run: r5
+    text: Исходный запрос требовал общий компонент состояния списка.
+    decision: В текущем изменении состояния собираются отдельно в каждом месте из готовых компонентов Mantine; общий компонент в UI-пакете и его внедрение откладываются в отдельное изменение.
+    reason: Пользователь отменил это требование после исследования; исходники общего UI-пакета отсутствуют в репозитории, а его изменение потребовало бы отдельной поставки.
+  - id: C3
+    kind: отступление
+    subject: evidence
+    role: planner
+    run: r5
+    text: Ранний Evidence Pack перечислял четыре страницы со списками.
+    decision: В объём добавлен пятый асинхронный список на демонстрационной странице /page2.
+    reason: Повторная полная проверка по замечанию пользователя обнаружила список из /api/tmp/pigs, для которого также применимы состояния пустых данных и ошибки.
+runs:
+  - id: r1
+    role: researcher
+    phase: research
+    attempt: 1
+    runner: codex
+    started: 2026-09-29T13:17:26.576Z
+    finished: 2026-09-29T13:20:52.292Z
+    status: blocked
+    dir: runs/r1
+  - id: r2
+    role: researcher
+    phase: research
+    attempt: 1
+    runner: codex
+    started: 2026-09-29T13:44:08.365Z
+    finished: 2026-09-29T13:45:37.427Z
+    status: done
+    dir: runs/r2
+  - id: r3
+    role: planner
+    phase: propose
+    attempt: 1
+    runner: codex
+    started: 2026-09-29T13:45:37.839Z
+    finished: 2026-09-29T13:47:25.438Z
+    status: done
+    dir: runs/r3
+  - id: r4
+    role: planner
+    phase: propose
+    attempt: 1
+    runner: codex
+    started: 2026-09-29T13:57:14.389Z
+    finished: 2026-09-29T14:00:48.022Z
+    status: done
+    dir: runs/r4
+  - id: r5
+    role: planner
+    phase: propose
+    attempt: 1
+    runner: codex
+    started: 2026-09-29T14:02:30.716Z
+    finished: 2026-09-29T14:09:01.611Z
+    status: done
+    dir: runs/r5
+  - id: r6
+    role: planner
+    phase: plan
+    attempt: 1
+    runner: codex
+    started: 2026-09-29T14:12:29.645Z
+    finished: 2026-09-29T14:19:04.360Z
+    status: done
+    dir: runs/r6
+  - id: r7
+    role: challenger
+    phase: challenge
+    attempt: 1
+    runner: codex
+    started: 2026-09-29T14:38:23.414Z
+    finished: 2026-09-29T14:43:42.949Z
+    status: blocked
+    dir: runs/r7
+  - id: r8
+    role: planner
+    phase: plan
+    attempt: 1
+    runner: codex
+    started: 2026-09-29T14:43:43.367Z
+    finished: 2026-09-29T14:46:21.199Z
+    status: done
+    dir: runs/r8
+  - id: r9
+    role: challenger
+    phase: challenge
+    attempt: 1
+    runner: codex
+    started: 2026-09-29T14:49:10.690Z
+    finished: 2026-09-29T14:51:18.013Z
+    status: done
+    dir: runs/r9
+  - id: r10
+    role: tester
+    phase: cover
+    attempt: 1
+    runner: codex
+    started: 2026-09-29T14:51:18.485Z
+    finished: 2026-09-29T14:54:52.232Z
+    status: done
+    dir: runs/r10
+  - id: r11
+    role: reviewer
+    phase: tests_review
+    attempt: 1
+    runner: codex
+    started: 2026-09-29T14:54:52.671Z
+    finished: 2026-09-29T14:57:49.379Z
+    status: blocked
+    dir: runs/r11
+  - id: r12
+    role: tester
+    phase: cover
+    attempt: 1
+    runner: codex
+    started: 2026-09-29T14:57:49.816Z
+    finished: 2026-09-29T14:59:43.632Z
+    status: done
+    dir: runs/r12
+  - id: r13
+    role: reviewer
+    phase: tests_review
+    attempt: 1
+    runner: codex
+    started: 2026-09-29T14:59:44.121Z
+    finished: 2026-09-29T15:01:16.077Z
+    status: done
+    dir: runs/r13
+  - id: r14
+    role: implementer
+    phase: implement
+    attempt: 1
+    runner: codex
+    started: 2026-09-29T15:28:09.208Z
+    finished: 2026-09-29T15:35:02.650Z
+    status: done
+    dir: runs/r14
+  - id: r15
+    role: verifier
+    phase: verify
+    attempt: 1
+    runner: codex
+    started: 2026-09-29T15:35:03.200Z
+    finished: 2026-09-29T15:43:10.559Z
+    status: blocked
+    dir: runs/r15
+  - id: r16
+    role: implementer
+    phase: implement
+    attempt: 1
+    runner: codex
+    started: 2026-09-29T15:43:11.043Z
+    finished: 2026-09-29T15:44:20.881Z
+    status: blocked
+    dir: runs/r16
+  - id: r17
+    role: planner
+    phase: plan
+    attempt: 1
+    runner: codex
+    started: 2026-09-29T15:44:21.283Z
+    finished: 2026-09-29T15:47:46.629Z
+    status: done
+    dir: runs/r17
+  - id: r18
+    role: challenger
+    phase: challenge
+    attempt: 1
+    runner: codex
+    started: 2026-09-29T16:05:18.289Z
+    finished: 2026-09-29T16:08:26.472Z
+    status: done
+    dir: runs/r18
+  - id: r19
+    role: tester
+    phase: cover
+    attempt: 1
+    runner: codex
+    started: 2026-09-29T16:08:26.906Z
+    finished: 2026-09-29T16:09:41.982Z
+    status: done
+    dir: runs/r19
+  - id: r20
+    role: reviewer
+    phase: tests_review
+    attempt: 1
+    runner: codex
+    started: 2026-09-29T16:09:42.451Z
+    finished: 2026-09-29T16:11:00.259Z
+    status: done
+    dir: runs/r20
+  - id: r21
+    role: implementer
+    phase: implement
+    attempt: 1
+    runner: codex
+    started: 2026-09-29T16:11:13.580Z
+    finished: 2026-09-29T16:13:05.281Z
+    status: done
+    dir: runs/r21
+  - id: r22
+    role: verifier
+    phase: verify
+    attempt: 1
+    runner: codex
+    started: 2026-09-29T16:13:05.821Z
+    finished: 2026-09-29T16:17:33.927Z
+    status: done
+    dir: runs/r22
+  - id: r23
+    role: reviewer
+    phase: review
+    attempt: 1
+    runner: codex
+    started: 2026-09-29T16:17:34.467Z
+    finished: 2026-09-29T16:23:39.928Z
+    status: done
+    dir: runs/r23

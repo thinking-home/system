@@ -30,6 +30,7 @@ const SubscriptionList: FC = () => {
     const [subscriptions, setSubscriptions] = useState<SubscriptionListItem[]>();
     const [scripts, setScripts] = useState<ScriptListItem[]>();
     const [events, setEvents] = useState<EventList>();
+    const [status, setStatus] = useState<'loading' | 'ready' | 'error'>('loading');
 
     // форма добавления подписки
     const [formVisible, setFormVisible] = useState(false);
@@ -50,7 +51,25 @@ const SubscriptionList: FC = () => {
     }, [logger, toaster]);
 
     const load = useCallback((signal?: AbortSignal) => {
-        getSubscriptionList(api, signal).then(setSubscriptions, fail(t('errorLoad'), signal));
+        setStatus('loading');
+        Promise.all([
+            getSubscriptionList(api, signal),
+            getScriptList(api, signal),
+            getEventList(api, signal),
+        ]).then(
+            ([subscriptions, scripts, events]) => {
+                setSubscriptions(subscriptions);
+                setScripts(scripts);
+                setEvents(events);
+                setStatus('ready');
+            },
+            error => {
+                if (signal?.aborted) return;
+
+                setStatus('error');
+                fail(t('errorLoad'), signal)(error);
+            },
+        );
     }, [api, fail, t]);
 
     useEffect(() => {
@@ -58,8 +77,6 @@ const SubscriptionList: FC = () => {
         const {signal} = controller;
 
         load(signal);
-        getScriptList(api, signal).then(setScripts, fail(t('errorLoad'), signal));
-        getEventList(api, signal).then(setEvents, fail(t('errorLoad'), signal));
 
         return () => controller.abort();
     }, [api, load, fail, t]);
@@ -144,10 +161,8 @@ const SubscriptionList: FC = () => {
         );
     }, [api, t, toaster, load, fail]);
 
-    if (!subscriptions || !scripts || !events) return null;
-
-    const registeredNames = new Set(events.events.map(event => event.name));
-    const isUserEvent = eventName === events.userEvent.name;
+    const registeredNames = new Set(events?.events.map(event => event.name) ?? []);
+    const isUserEvent = eventName === events?.userEvent.name;
     const showFilterTable = isUserEvent || rows.length > 0;
 
     return (
@@ -168,11 +183,17 @@ const SubscriptionList: FC = () => {
                 opened={formVisible}
                 onClose={resetForm}
                 title={t('newSubscription')}
+                styles={{title: {
+                    fontFamily: 'var(--mantine-font-family-headings)',
+                    fontSize: 'var(--mantine-h2-font-size)',
+                    fontWeight: 'var(--mantine-h2-font-weight)',
+                    lineHeight: 'var(--mantine-h2-line-height)',
+                }}}
             >
                 <Stack gap="sm">
                     <Select
                         label={t('script')}
-                        data={scripts.map(script => ({value: script.id, label: script.name}))}
+                        data={scripts?.map(script => ({value: script.id, label: script.name})) ?? []}
                         value={scriptId}
                         onChange={setScriptId}
                         searchable
@@ -180,7 +201,7 @@ const SubscriptionList: FC = () => {
 
                     <Select
                         label={t('event')}
-                        data={events.events.map(event => event.name)}
+                        data={events?.events.map(event => event.name) ?? []}
                         value={eventName}
                         onChange={setEventName}
                         searchable
@@ -200,7 +221,7 @@ const SubscriptionList: FC = () => {
                                     {isUserEvent ? (
                                         <Table.Tr>
                                             <Table.Td>
-                                                <TextInput value={events.userEvent.metaKey} disabled/>
+                                                <TextInput value={events?.userEvent.metaKey ?? ''} disabled/>
                                             </Table.Td>
                                             <Table.Td>
                                                 <TextInput
@@ -234,7 +255,7 @@ const SubscriptionList: FC = () => {
                                     ))}
                                 </Table.Tbody>
                             </Table>
-                        ) : null}
+                        ) : <Text c="dimmed" ta="center" my="xl">{t('emptyMetaFilter')}</Text>}
 
                         <Button variant="default" mt="xs" onClick={() => setRows(prev => [...prev, emptyRow()])}>
                             {t('addRow')}
@@ -248,7 +269,9 @@ const SubscriptionList: FC = () => {
                 </Stack>
             </Drawer>
 
-            {subscriptions.length ? (
+            {status === 'loading' ? null : status === 'error' ? (
+                <Text c="dimmed" ta="center" my="xl">{t('errorLoad')}</Text>
+            ) : subscriptions?.length ? (
                 <Table>
                     <Table.Thead>
                         <Table.Tr>
@@ -289,7 +312,7 @@ const SubscriptionList: FC = () => {
                     </Table.Tbody>
                 </Table>
             ) : (
-                <Text>{t('emptySubscriptionList')}</Text>
+                <Text c="dimmed" ta="center" my="xl">{t('emptySubscriptionList')}</Text>
             )}
         </>
     );

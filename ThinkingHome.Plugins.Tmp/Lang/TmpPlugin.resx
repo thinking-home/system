@@ -82,4 +82,13 @@
   <data name="sendPigMessage" xml:space="preserve">
     <value />
   </data>
+  <data name="emptyList" xml:space="preserve">
+    <value>There is no data yet</value>
+  </data>
+  <data name="errorLoad" xml:space="preserve">
+    <value>Failed to load data</value>
+  </data>
+  <data name="loadCancelled" xml:space="preserve">
+    <value>Loading cancelled</value>
+  </data>
 </root>

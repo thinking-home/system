@@ -13,6 +13,7 @@ const ScriptList: FC = () => {
     const logger = useLogger();
 
     const [list, setList] = useState<ScriptListItem[]>();
+    const [status, setStatus] = useState<'loading' | 'ready' | 'error'>('loading');
 
     const fail = useCallback((message: string, signal?: AbortSignal) => (error: unknown) => {
         // отмена запроса при уходе со страницы — не ошибка
@@ -23,7 +24,19 @@ const ScriptList: FC = () => {
     }, [logger, toaster]);
 
     const load = useCallback((signal?: AbortSignal) => {
-        getScriptList(api, signal).then(setList, fail(t('errorLoad'), signal));
+        setStatus('loading');
+        getScriptList(api, signal).then(
+            list => {
+                setList(list);
+                setStatus('ready');
+            },
+            error => {
+                if (signal?.aborted) return;
+
+                setStatus('error');
+                fail(t('errorLoad'), signal)(error);
+            },
+        );
     }, [api, fail, t]);
 
     useEffect(() => {
@@ -46,8 +59,6 @@ const ScriptList: FC = () => {
         );
     }, [api, t, toaster, load, fail]);
 
-    if (!list) return null;
-
     return (
         <>
             <Title>{t('title')}</Title>
@@ -57,7 +68,9 @@ const ScriptList: FC = () => {
                 <Button component={Link} to="/scripts/subscriptions" variant="default">{t('subscriptions')}</Button>
             </Group>
 
-            {list.length ? (
+            {status === 'loading' ? null : status === 'error' ? (
+                <Text c="dimmed" ta="center" my="xl">{t('errorLoad')}</Text>
+            ) : list?.length ? (
                 <Table>
                     <Table.Tbody>
                         {list.map(script => (
@@ -75,7 +88,7 @@ const ScriptList: FC = () => {
                     </Table.Tbody>
                 </Table>
             ) : (
-                <Text>{t('emptyList')}</Text>
+                <Text c="dimmed" ta="center" my="xl">{t('emptyList')}</Text>
             )}
         </>
     );

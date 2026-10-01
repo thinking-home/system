@@ -18,6 +18,7 @@ const CronTaskList: FC = () => {
     const logger = useLogger();
 
     const [list, setList] = useState<CronTaskListItem[]>();
+    const [status, setStatus] = useState<'loading' | 'ready' | 'error'>('loading');
 
     // форма добавления и редактирования записи расписания;
     // editingId == null — добавление новой записи
@@ -41,7 +42,19 @@ const CronTaskList: FC = () => {
     }, [logger, toaster]);
 
     const load = useCallback((signal?: AbortSignal) => {
-        getTaskList(api, signal).then(setList, fail(t('errorLoad'), signal));
+        setStatus('loading');
+        getTaskList(api, signal).then(
+            list => {
+                setList(list);
+                setStatus('ready');
+            },
+            error => {
+                if (signal?.aborted) return;
+
+                setStatus('error');
+                fail(t('errorLoad'), signal)(error);
+            },
+        );
     }, [api, fail, t]);
 
     useEffect(() => {
@@ -137,8 +150,6 @@ const CronTaskList: FC = () => {
         );
     }, [api, t, toaster, load, fail]);
 
-    if (!list) return null;
-
     return (
         <>
             <Title>{t('title')}</Title>
@@ -154,6 +165,12 @@ const CronTaskList: FC = () => {
                 opened={formVisible}
                 onClose={resetForm}
                 title={t(editingId ? 'editTask' : 'newTask')}
+                styles={{title: {
+                    fontFamily: 'var(--mantine-font-family-headings)',
+                    fontSize: 'var(--mantine-h2-font-size)',
+                    fontWeight: 'var(--mantine-h2-font-weight)',
+                    lineHeight: 'var(--mantine-h2-line-height)',
+                }}}
             >
                 <Stack gap="sm">
                     <TextInput
@@ -194,7 +211,9 @@ const CronTaskList: FC = () => {
                 </Stack>
             </Drawer>
 
-            {list.length ? (
+            {status === 'loading' ? null : status === 'error' ? (
+                <Text c="dimmed" ta="center" my="xl">{t('errorLoad')}</Text>
+            ) : list?.length ? (
                 <Table>
                     <Table.Thead>
                         <Table.Tr>
@@ -232,7 +251,7 @@ const CronTaskList: FC = () => {
                     </Table.Tbody>
                 </Table>
             ) : (
-                <Text>{t('emptyList')}</Text>
+                <Text c="dimmed" ta="center" my="xl">{t('emptyList')}</Text>
             )}
         </>
     );

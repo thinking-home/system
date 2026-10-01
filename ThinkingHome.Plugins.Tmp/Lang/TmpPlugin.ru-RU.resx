@@ -76,4 +76,13 @@
   <data name="sendPigMessage" xml:space="preserve">
     <value>Отправить сообщение</value>
   </data>
+  <data name="emptyList" xml:space="preserve">
+    <value>Данных пока нет</value>
+  </data>
+  <data name="errorLoad" xml:space="preserve">
+    <value>Не удалось загрузить данные</value>
+  </data>
+  <data name="loadCancelled" xml:space="preserve">
+    <value>Загрузка отменена</value>
+  </data>
 </root>
