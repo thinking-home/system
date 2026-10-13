@@ -36,7 +36,14 @@ public static class PackageValidator {
             ?? throw new InvalidDataException($"Missing nuspec {key}");
         var framework = File.ReadAllText(Path.Combine(inputs, "framework.txt")).Trim();
         Require(framework == "net10.0", "Packaging v1 supports net10.0 only");
-        var dllEntries = zip.Entries.Where(x => x.FullName.EndsWith(".dll", StringComparison.OrdinalIgnoreCase)).ToArray();
+        var allDllEntries = zip.Entries.Where(x => x.FullName.EndsWith(".dll", StringComparison.OrdinalIgnoreCase)).ToArray();
+        foreach (var entry in allDllEntries.Where(x => x.FullName.StartsWith("runtimes/", StringComparison.Ordinal))) {
+            var parts = entry.FullName.Split('/');
+            Require(parts.Length >= 4 && (parts[2] == "native" || (parts.Length >= 5 && parts[2] == "lib" && parts[3] == framework)),
+                $"Unsupported runtime DLL asset location: {entry.FullName}");
+        }
+        // При упаковке проверяем базовый контракт; конкретные RID-варианты повторно проверяет планировщик.
+        var dllEntries = allDllEntries.Where(x => !x.FullName.StartsWith("runtimes/", StringComparison.Ordinal)).ToArray();
         Require(dllEntries.Length > 0, "No plugin DLL");
         var files = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
         foreach (var entry in dllEntries) {

@@ -2,6 +2,8 @@ using System.Diagnostics;
 using System.IO.Compression;
 using System.Xml.Linq;
 using ThinkingHome.Packaging;
+using ThinkingHome.PackagePlanning;
+using System.Reflection;
 using Xunit;
 
 [assembly: CollectionBehavior(DisableTestParallelization = true)]
@@ -16,6 +18,7 @@ public sealed class PackageFixture : IDisposable {
     public string Shared { get; }
     public string Embedded { get; }
     public string Transitive { get; }
+    public string Library { get; }
 
     public PackageFixture() {
         var directory = new DirectoryInfo(AppContext.BaseDirectory);
@@ -24,6 +27,7 @@ public sealed class PackageFixture : IDisposable {
         Work = Path.Combine(Root, "artifacts", "packaging-tests", Guid.NewGuid().ToString("N"));
         try {
             Good = Build("Good", "good");
+            Library = Build("Dependency", "dependency");
             Bad = Build("Bad", "bad");
             Shared = Build("Bad", "shared", "-p:DependencyKind=shared");
             Embedded = Build("Embedded", "embedded");
@@ -53,6 +57,17 @@ public sealed class PackageFixture : IDisposable {
     }
 
     public static string Inputs(string package) => Path.Combine(Path.GetDirectoryName(package)!, "inputs");
+
+    public PlatformCatalog Platform(string rid = "win-x64") {
+        var input = Inputs(Good);
+        var ids = File.ReadAllLines(Path.Combine(input, "platform.txt")).ToHashSet(StringComparer.OrdinalIgnoreCase);
+        var references = File.ReadAllLines(Path.Combine(input, "ownership.txt")).Select(x => x.Split('|'))
+            .Where(x => ids.Contains(x[1]) || x[2].Contains("ThinkingHome.Core.Plugins") || x[3].Length > 0).Select(x => x[0]);
+        var runtimeDirectory = Path.GetDirectoryName(typeof(object).Assembly.Location);
+        var runtime = ((string)AppContext.GetData("TRUSTED_PLATFORM_ASSEMBLIES")!).Split(Path.PathSeparator).Where(x => Path.GetDirectoryName(x) == runtimeDirectory);
+        var assemblies = references.Concat(runtime).GroupBy(x => AssemblyName.GetAssemblyName(x).Name).Select(x => x.Last()).ToArray();
+        return new("4.0.0-alpha34", "net10.0", rid, ids.ToDictionary(x => x, x => x == "ThinkingHome.Core.Plugins" ? "4.0.0-alpha34" : "10.0.11"), assemblies);
+    }
 
     public string Mutate(Action<ZipArchive> change) {
         var target = Path.Combine(Work, Guid.NewGuid().ToString("N") + ".nupkg");

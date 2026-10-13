@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <PackageId>Fixture.Graph</PackageId>
+    <Version>1.0.0</Version>
+    <Description>Dependency graph fixture</Description>
+    <ThinkingHomePlatformRange>[4.0.0-alpha34,5.0.0)</ThinkingHomePlatformRange>
+    <DependencyKind Condition="'$(DependencyKind)' == ''">private</DependencyKind>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../../../ThinkingHome.Core.Plugins/ThinkingHome.Core.Plugins.csproj" />
+    <ProjectReference Include="../Dependency/Dependency.csproj" />
+    <ThinkingHomeEntryPoint Include="Fixture.GraphPlugin" />
+    <ThinkingHomeDependency Include="Fixture.Dependency" Kind="$(DependencyKind)" />
+    <ThinkingHomeDependency Include="$(PeerId)" Kind="plugin" Condition="'$(PeerId)' != ''" />
+  </ItemGroup>
+  <Import Project="../../../ThinkingHome.Packaging/build/ThinkingHome.Plugin.targets" />
+</Project>

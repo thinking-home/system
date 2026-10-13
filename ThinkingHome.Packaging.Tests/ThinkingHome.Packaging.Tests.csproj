@@ -13,6 +13,8 @@
     <ProjectReference Include="../ThinkingHome.Packaging/ThinkingHome.Packaging.csproj" />
     <ProjectReference Include="../ThinkingHome.Repository/ThinkingHome.Repository.csproj" />
     <ProjectReference Include="../ThinkingHome.PackageSources/ThinkingHome.PackageSources.csproj" />
+    <ProjectReference Include="../ThinkingHome.PackagePlanning/ThinkingHome.PackagePlanning.csproj" />
+    <ProjectReference Include="../ThinkingHome.PackageManagement/ThinkingHome.PackageManagement.csproj" />
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
   </ItemGroup>
 </Project>

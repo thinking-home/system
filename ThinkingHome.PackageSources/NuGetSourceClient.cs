@@ -10,7 +10,22 @@ namespace ThinkingHome.PackageSources;
 public sealed record PackageListing(Uri Source, Uri ContentBase, IReadOnlyList<NuGetVersion> Versions);
 public sealed record PackageDownload(Uri Source, PackageMetadata Metadata, byte[] Bytes, string Sha512);
 
-public sealed class NuGetSourceClient(HttpClient http, SourceConfiguration configuration) {
+public interface IPackageSource {
+    Task<PackageListing> FindAsync(PackageKind kind, string id, CancellationToken cancellation = default);
+    Task<PackageDownload> DownloadAsync(PackageKind kind, string id, NuGetVersion version, CancellationToken cancellation = default);
+}
+
+public interface ILockedPackageSource : IPackageSource {
+    Task<PackageDownload> DownloadLockedAsync(Uri source, PackageKind kind, string id, NuGetVersion version, CancellationToken cancellation = default);
+}
+
+public sealed class NuGetSourceClient(HttpClient http, SourceConfiguration configuration) : ILockedPackageSource {
+    public Task<PackageDownload> DownloadLockedAsync(Uri source, PackageKind kind, string id, NuGetVersion version, CancellationToken cancellation = default) {
+        if (!configuration.GetSources(kind).Contains(source)) throw new InvalidDataException("Locked source is not configured: " + source);
+        var pinned = kind == PackageKind.Plugin ? new SourceConfiguration { PluginSources = [source.AbsoluteUri] }
+            : new SourceConfiguration { LibrarySources = [source.AbsoluteUri] };
+        return new NuGetSourceClient(http, pinned).DownloadAsync(kind, id, version, cancellation);
+    }
     public async Task<PackageListing> FindAsync(PackageKind kind, string id, CancellationToken cancellation = default) {
         ValidateId(id);
         foreach (var source in configuration.GetSources(kind)) {
