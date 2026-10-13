@@ -6,7 +6,7 @@
 - [Состав MVP и отложенная функциональность](ADR-0002-plugin-package-management-mvp.md)
 - [Порядок реализации](ADR-0003-plugin-package-management-stages.md)
 
-Результаты первых трёх этапов: [прототип загрузки](../plugin-package-loading-prototype.md), [упаковка и контракты](../plugin-package-packaging.md), [источники и репозиторий](../plugin-package-sources.md). Следующий этап — разрешение графа зависимостей и формирование lock-файла и карты загрузки.
+Результаты первых пяти этапов: [прототип загрузки](../plugin-package-loading-prototype.md), [упаковка и контракты](../plugin-package-packaging.md), [источники и репозиторий](../plugin-package-sources.md), [план установки](../plugin-package-planning.md), [установка и восстановление](../plugin-package-installation.md). Следующий этап — интеграция установленных пакетов с хостом.
 
 ## Формат правил
 

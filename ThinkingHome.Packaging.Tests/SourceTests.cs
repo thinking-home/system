@@ -157,6 +157,19 @@ public class SourceTests(PackageFixture fixture) : IClassFixture<PackageFixture>
         Assert.Throws<InvalidDataException>(() => new SourceConfiguration { PluginSources = ["file:///tmp/packages"] }.GetSources(PackageKind.Plugin));
     }
 
+    [Fact]
+    public async Task Client_LockedDownload_UsesRecordedSource_DespitePriorityChange() {
+        using var handler = new FeedHandler(File.ReadAllBytes(fixture.Good), OrdinaryPackage()) { FailFirst = true };
+        using var http = new HttpClient(handler);
+        var client = new NuGetSourceClient(http, new() { PluginSources = ["http://plugin.test/v3/index.json", "http://other.test/v3/index.json"] });
+        var selected = await client.DownloadLockedAsync(new Uri("http://other.test/v3/index.json"), PackageKind.Plugin, "Fixture.Good", NuGetVersion.Parse("1.2.3-beta.1"));
+        Assert.Equal("other.test", selected.Source.Host);
+        Assert.All(handler.Requests, x => Assert.Equal("other.test", x.Host));
+        handler.Requests.Clear();
+        await Assert.ThrowsAsync<InvalidDataException>(() => client.DownloadLockedAsync(new Uri("http://unknown.test/v3/index.json"), PackageKind.Plugin, "Fixture.Good", NuGetVersion.Parse("1.2.3-beta.1")));
+        Assert.Empty(handler.Requests);
+    }
+
     private static SourceConfiguration Configuration() => new() {
         PluginSources = ["http://plugin.test/v3/index.json"], LibrarySources = ["http://library.test/v3/index.json"]
     };

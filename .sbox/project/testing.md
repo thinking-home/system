@@ -1,6 +1,6 @@
 ---
 id: project.testing
-summary: Unit-тесты xunit в ThinkingHome.Tests, проверки упаковки и HTTP-источников в ThinkingHome.Packaging.Tests, прототип загрузки, команды dotnet test с фильтрами, TRX-отчёты и отсутствие JSON, правило именования тестов по цепочке capability › требование › сценарий, e2e нет, ручные проверки интеграций
+summary: Unit-тесты xunit в ThinkingHome.Tests, проверки упаковки, HTTP-источников, планирования, установки и восстановления в ThinkingHome.Packaging.Tests, прототип загрузки, команды dotnet test с фильтрами, TRX-отчёты и отсутствие JSON, правило именования тестов по цепочке capability › требование › сценарий, e2e нет, ручные проверки интеграций
 read_when: Перед написанием тестов, реализацией и верификацией
 updated: 2026-10-14
 verification: needs-review
@@ -13,7 +13,7 @@ verification: needs-review
 | Уровень | Когда применять | Где лежат | Чем запускаются |
 |---|---|---|---|
 | unit (C#) | чистая логика без БД, сети и устройств: реестры, `FindMethods`, `MetaFilter`, `ScriptContext`, разбор команд Telegram | `ThinkingHome.Tests/{Area}/*.cs`; области `Core.Plugins`, `Plugins.Scripts`, `Plugins.TelegramBot` | xunit 2.9, Moq 4.20, `dotnet test` |
-| component (C#) | настоящие nupkg, метаданные DLL, контракты, локальный Kestrel и HTTP-клиент без внешней сети | `ThinkingHome.Packaging.Tests` | `dotnet test` |
+| component (C#) | настоящие nupkg, метаданные DLL, контракты, графы версий, карта загрузки, установка, locked-восстановление, откат и блокировки, локальный Kestrel и HTTP-клиент без внешней сети | `ThinkingHome.Packaging.Tests` | `dotnet test` |
 | unit и component (TypeScript) | — : тест-раннера для каталогов `ThinkingHome.Plugins.*/frontend/**` нет, скриптов `test` в `package.json` нет | — | — |
 | e2e | — : см. «Среда e2e» | — | — |
 
@@ -49,6 +49,10 @@ dotnet run --project prototypes/PluginLoading/Harness/Harness.csproj -- . Debug
 В этой среде для последовательной сборки без сервера компилятора применяются `-m:1 -p:UseSharedCompilation=false`; `-p:NuGetAudit=false` отключает сетевой аудит пакетов, а не тесты.
 
 ## Отчёты
+
+Этап 5, 14 октября 2026 года, Windows x64 / .NET SDK 10.0.401: 85 тестов поставки пакетов (включая 20 сценариев установки/восстановления и проверку зафиксированного источника) и 43 теста ядра и плагинов — успешно. Полная сборка решения прошла без ошибок и предупреждений. Проверены смена версии с удерживаемым снимком, дедупликация, locked-копия без выбора версий, офлайн-валидация/ремонт, ошибки и отмена до commit, блокировки, обе ветви recovery и CLI через локальный HTTP. Отдельный запуск: `dotnet test ThinkingHome.Packaging.Tests/ThinkingHome.Packaging.Tests.csproj --filter FullyQualifiedName~ManagementTests`. Linux и отключение питания отдельно не проверялись.
+
+Этап 4, 14 октября 2026 года: 64 теста упаковки, источников и планирования, включая 22 новых сценария; 43 теста ядра и плагинов — успешно. Полная сборка решения прошла. Команда запуска тестов поставки остаётся той же; отдельный запуск планирования: `dotnet test ThinkingHome.Packaging.Tests/ThinkingHome.Packaging.Tests.csproj --filter FullyQualifiedName~PlanningTests`.
 
 Проверка 14 октября 2026 года, Windows x64 / .NET SDK 10.0.401: 43 теста ядра и плагинов, 42 теста упаковки и источников, 18 проверок прототипа загрузки — успешно. Linux отдельно не проверялся. Команда `sbox doctor` недоступна: CLI `sbox` не найден в PATH.
 

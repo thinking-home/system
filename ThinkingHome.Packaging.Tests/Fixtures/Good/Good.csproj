@@ -3,6 +3,7 @@
     <TargetFramework>net10.0</TargetFramework>
     <PackageId>Fixture.Good</PackageId>
     <Version>1.2.3-beta.1</Version>
+    <Version Condition="'$(FixtureVersion)' != ''">$(FixtureVersion)</Version>
     <Description>Packaging validation fixture</Description>
     <NoWarn>$(NoWarn);CA2255</NoWarn>
     <DefineConstants>$(DefineConstants);$(MetadataCase)</DefineConstants>
