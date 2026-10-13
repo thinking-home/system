@@ -6,6 +6,16 @@
 
 Предоставляет API для периодического выполнения действий по таймеру.
 
+## Упаковка
+
+Проект подключён к [упаковке и статической проверке плагинов](../ThinkingHome.Packaging/README.md). Из корня репозитория после сборки инструмента:
+
+```powershell
+dotnet run --project ThinkingHome.Packaging/ThinkingHome.Packaging.csproj --no-build -- pack ThinkingHome.Plugins.Timer/ThinkingHome.Plugins.Timer.csproj artifacts/plugin-packages
+```
+
+Готовый пакет создаётся только после проверки метаданных и публичного контракта. Рабочее поведение плагина не меняется.
+
 ## API
 
 ### `[TimerCallback]`

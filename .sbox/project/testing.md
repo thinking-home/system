@@ -1,8 +1,8 @@
 ---
 id: project.testing
-summary: Только unit-тесты xunit в ThinkingHome.Tests (39 зелёных), команды dotnet test с фильтрами, TRX-отчёты и отсутствие JSON, правило именования тестов по цепочке capability › требование › сценарий, e2e нет, ручные проверки интеграций
+summary: Unit-тесты xunit в ThinkingHome.Tests, проверки упаковки и HTTP-источников в ThinkingHome.Packaging.Tests, прототип загрузки, команды dotnet test с фильтрами, TRX-отчёты и отсутствие JSON, правило именования тестов по цепочке capability › требование › сценарий, e2e нет, ручные проверки интеграций
 read_when: Перед написанием тестов, реализацией и верификацией
-updated: 2026-09-15
+updated: 2026-10-14
 verification: needs-review
 ---
 
@@ -13,11 +13,11 @@ verification: needs-review
 | Уровень | Когда применять | Где лежат | Чем запускаются |
 |---|---|---|---|
 | unit (C#) | чистая логика без БД, сети и устройств: реестры, `FindMethods`, `MetaFilter`, `ScriptContext`, разбор команд Telegram | `ThinkingHome.Tests/{Area}/*.cs`; области `Core.Plugins`, `Plugins.Scripts`, `Plugins.TelegramBot` | xunit 2.9, Moq 4.20, `dotnet test` |
-| component (C#, плагин с зависимостями) | — : тестов с реальными плагинами-зависимостями, PostgreSQL или Kestrel нет, инфраструктуры для них в проекте нет | — | — |
+| component (C#) | настоящие nupkg, метаданные DLL, контракты, локальный Kestrel и HTTP-клиент без внешней сети | `ThinkingHome.Packaging.Tests` | `dotnet test` |
 | unit и component (TypeScript) | — : тест-раннера для каталогов `ThinkingHome.Plugins.*/frontend/**` нет, скриптов `test` в `package.json` нет | — | — |
 | e2e | — : см. «Среда e2e» | — | — |
 
-Тест-проект ссылается только на `ThinkingHome.Core.Plugins`, `ThinkingHome.Plugins.Scripts`, `ThinkingHome.Plugins.TelegramBot` (`ThinkingHome.Tests/ThinkingHome.Tests.csproj`); для тестов другого плагина добавьте `ProjectReference`.
+Проект ThinkingHome.Tests ссылается только на `ThinkingHome.Core.Plugins`, `ThinkingHome.Plugins.Scripts`, `ThinkingHome.Plugins.TelegramBot` (`ThinkingHome.Tests/ThinkingHome.Tests.csproj`); для тестов другого плагина добавьте `ProjectReference`.
 
 ## Команды
 
@@ -25,7 +25,7 @@ verification: needs-review
 
 | Задача | Команда |
 |---|---|
-| Все тесты (собирает только три проекта без npm, около 2 с) | `dotnet test ThinkingHome.Tests/ThinkingHome.Tests.csproj` |
+| Тесты ядра и плагинов (без npm) | `dotnet test ThinkingHome.Tests/ThinkingHome.Tests.csproj` |
 | Один класс | `dotnet test ThinkingHome.Tests/ThinkingHome.Tests.csproj --filter "FullyQualifiedName~ThinkingHome.Tests.Plugins.Scripts.MetaFilterTests"` |
 | Один тест | `dotnet test ThinkingHome.Tests/ThinkingHome.Tests.csproj --filter "FullyQualifiedName=ThinkingHome.Tests.Plugins.Scripts.MetaFilterTests.Serialize_SortsKeys"` |
 | Тесты одной capability | `dotnet test ThinkingHome.Tests/ThinkingHome.Tests.csproj --filter "DisplayName~plugins/scripts/script-events"` |
@@ -35,9 +35,24 @@ verification: needs-review
 | Линтер | — : не настроен |
 | Проверка схемы URL | запустить приложение и открыть `/dynamic/web-server/url-validation/errors.txt` |
 
-Полный прогон 2026-09-14: 39 тестов, все зелёные.
+Дополнительные проверки поставки плагинов:
+
+```shell
+dotnet test ThinkingHome.Packaging.Tests/ThinkingHome.Packaging.Tests.csproj -m:1 -p:UseSharedCompilation=false -p:NuGetAudit=false
+dotnet run --project prototypes/PluginLoading/Harness/Harness.csproj -- . Debug
+```
+
+Прототип проверяет изоляцию двух версий приватной библиотеки, типизированные ссылки между плагинами, DI, обработчики и построение модели EF без обращения к БД. Он не входит в решение.
+
+Тесты упаковки создают пакеты в собственных временных каталогах под `artifacts/packaging-tests` и удаляют их после завершения. Проверки не требуют работающего приложения или внешнего репозитория. `bin/obj` остаются обычными выходными каталогами сборки.
+
+В этой среде для последовательной сборки без сервера компилятора применяются `-m:1 -p:UseSharedCompilation=false`; `-p:NuGetAudit=false` отключает сетевой аудит пакетов, а не тесты.
 
 ## Отчёты
+
+Проверка 14 октября 2026 года, Windows x64 / .NET SDK 10.0.401: 43 теста ядра и плагинов, 42 теста упаковки и источников, 18 проверок прототипа загрузки — успешно. Linux отдельно не проверялся. Команда `sbox doctor` недоступна: CLI `sbox` не найден в PATH.
+
+Полная сборка решения прошла в два прохода для включения сгенерированных UI-ресурсов. Для восстановления npm-пакетов потребовалась сеть, для запуска frontend-сборщика — выполнение вне ограничений sandbox. npm сообщил об уязвимостях уровня high в существующих зависимостях UI; версии и lock-файлы в этой работе не менялись.
 
 - TRX: `dotnet test ThinkingHome.Tests/ThinkingHome.Tests.csproj --logger trx --results-directory TestResults`; файлы `TestResults/*.trx`, каталог игнорируется git (`[Tt]est[Rr]esult*/` в `.gitignore`).
 - JSON: не установлено, вопрос отложен до шага тестирования первого изменения. `sbox coverage --report` принимает `jest=path` и `playwright=path`; логгера JSON для xunit и конвертера TRX в проекте нет. Тогда же решить, принимает ли установленный sdd формат `trx` или JUnit XML (пакет `JunitXml.TestLogger`).
@@ -78,7 +93,7 @@ public class ScriptEventsSpecTests
 }
 ```
 
-Существующие 39 тестов написаны до этого правила и `DisplayName` не задают. Если в UI-проектах появится тест-раннер, цепочка ложится напрямую: `describe(capability)` → `describe(требование)` → `it(сценарий)`.
+Исторические тесты написаны до этого правила и `DisplayName` не задают. Если в UI-проектах появится тест-раннер, цепочка ложится напрямую: `describe(capability)` → `describe(требование)` → `it(сценарий)`.
 
 ## Среда e2e
 
