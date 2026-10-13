@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <PackageId>Fixture.Transitive</PackageId>
+    <Version>1.0.0</Version>
+    <Description>Transitive contract leak fixture</Description>
+    <ThinkingHomePlatformRange>[4.0.0-alpha34,5.0.0)</ThinkingHomePlatformRange>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../../../ThinkingHome.Core.Plugins/ThinkingHome.Core.Plugins.csproj" />
+    <ProjectReference Include="../Contract/Contract.csproj" />
+    <ThinkingHomeEntryPoint Include="Fixture.TransitivePlugin" />
+    <ThinkingHomeDependency Include="Fixture.Contract" Kind="shared" />
+  </ItemGroup>
+  <Import Project="../../../ThinkingHome.Packaging/build/ThinkingHome.Plugin.targets" />
+</Project>
