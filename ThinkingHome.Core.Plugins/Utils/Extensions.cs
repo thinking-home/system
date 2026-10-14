@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
@@ -8,13 +8,24 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
 
-namespace ThinkingHome.Core.Plugins.Utils {
-    public static class Extensions {
+namespace ThinkingHome.Core.Plugins.Utils
+{
+    /// <summary>
+    /// Вспомогательные операции сериализации, поиска обработчиков и построения реестров плагинов.
+    /// </summary>
+    public static class Extensions
+    {
+        /// <summary>
+        /// Возвращает MD5 содержимого в шестнадцатеричном виде; строки кодируются в UTF-8.
+        /// </summary>
         public static string GetHashString(this string value)
         {
             return GetHashString(Encoding.UTF8.GetBytes(value));
         }
 
+        /// <summary>
+        /// Возвращает MD5 содержимого в шестнадцатеричном виде; строки кодируются в UTF-8.
+        /// </summary>
         public static string GetHashString(this byte[] bytes)
         {
             var hashBytes = MD5.HashData(bytes);
@@ -32,28 +43,39 @@ namespace ThinkingHome.Core.Plugins.Utils {
         }
 
         #region parse
-
+        /// <summary>
+        /// Возвращает целое число или null, если строка не может быть преобразована.
+        /// </summary>
         public static int? ParseInt(this string stringValue)
         {
-            if (int.TryParse(stringValue, out var result)) {
+            if (int.TryParse(stringValue, out var result))
+            {
                 return result;
             }
 
             return null;
         }
 
+        /// <summary>
+        /// Возвращает GUID или null, если строка не может быть преобразована.
+        /// </summary>
         public static Guid? ParseGuid(this string stringValue)
         {
-            if (Guid.TryParse(stringValue, out var result)) {
+            if (Guid.TryParse(stringValue, out var result))
+            {
                 return result;
             }
 
             return null;
         }
 
+        /// <summary>
+        /// Возвращает логическое значение или null, если строка не может быть преобразована.
+        /// </summary>
         public static bool? ParseBool(this string stringValue)
         {
-            if (bool.TryParse(stringValue, out var result)) {
+            if (bool.TryParse(stringValue, out var result))
+            {
                 return result;
             }
 
@@ -61,58 +83,56 @@ namespace ThinkingHome.Core.Plugins.Utils {
         }
 
         #endregion
-
         #region find attrs
-
-        public static (TAttr Meta, TypeInfo Type, PluginBase Plugin)[] FindAttrs<TAttr>(this IEnumerable<PluginBase> plugins, Func<TAttr, bool> filter = null)
+        /// <summary>
+        /// Находит атрибуты типов плагинов, удовлетворяющие необязательному фильтру.
+        /// </summary>
+        public static (TAttr Meta, TypeInfo Type, PluginBase Plugin)[] FindAttrs<TAttr>(this IEnumerable<PluginBase> plugins,
+            Func<TAttr, bool> filter = null)
             where TAttr : Attribute
         {
-            return plugins
-                .SelectMany(p => p.FindAttrs<TAttr>(filter))
-                .ToArray();
+            return plugins.SelectMany(p => p.FindAttrs<TAttr>(filter)).ToArray();
         }
 
-        public static (TAttr Meta, TypeInfo Type, PluginBase Plugin)[] FindAttrs<TAttr>(this PluginBase plugin, Func<TAttr, bool> filter = null)
+        /// <summary>
+        /// Находит атрибуты типов плагинов, удовлетворяющие необязательному фильтру.
+        /// </summary>
+        public static (TAttr Meta, TypeInfo Type, PluginBase Plugin)[] FindAttrs<TAttr>(this PluginBase plugin, Func<TAttr,
+            bool> filter = null)
             where TAttr : Attribute
         {
             var fn = filter ?? (a => true);
-
             var type = plugin.GetType().GetTypeInfo();
 
-            return type
-                .GetCustomAttributes<TAttr>()
-                .Where(fn)
-                .Select(a => (Meta: a, Type: type, Plugin: plugin))
-                .ToArray();
+            return type.GetCustomAttributes<TAttr>().Where(fn).Select(a => (Meta: a, Type: type, Plugin: plugin)).ToArray();
         }
 
         #endregion
-
         #region find methods
-
-        public static (TAttr Meta, TDelegate Method, PluginBase plugin)[] FindMethods<TAttr, TDelegate>(
-            this IEnumerable<PluginBase> plugins) where TAttr : Attribute where TDelegate : class
+        /// <summary>
+        /// Находит методы с заданным атрибутом и создаёт совместимые делегаты; async void обработчики запрещены.
+        /// </summary>
+        public static (TAttr Meta, TDelegate Method, PluginBase plugin)[] FindMethods<TAttr,
+            TDelegate>(this IEnumerable<PluginBase> plugins)
+            where TAttr : Attribute where TDelegate : class
         {
-            return plugins
-                .SelectMany(p => p.FindMethods<TAttr, TDelegate>())
-                .ToArray();
+            return plugins.SelectMany(p => p.FindMethods<TAttr, TDelegate>()).ToArray();
         }
 
+        /// <summary>
+        /// Находит методы с заданным атрибутом и создаёт совместимые делегаты; async void обработчики запрещены.
+        /// </summary>
         public static (TAttr Meta, TDelegate Method, PluginBase plugin)[] FindMethods<TAttr, TDelegate>(this PluginBase plugin)
             where TAttr : Attribute where TDelegate : class
         {
             IEnumerable<Tuple<MethodInfo, TAttr>> GetMethodAttributes(MethodInfo method)
             {
-                return method
-                    .GetCustomAttributes<TAttr>()
-                    .Select(attr => new Tuple<MethodInfo, TAttr>(method, attr));
+                return method.GetCustomAttributes<TAttr>().Select(attr => new Tuple<MethodInfo, TAttr>(method, attr));
             }
 
             Type GetDelegateType(MethodInfo mi)
             {
-                var types2 = mi.GetParameters()
-                    .Select(p => p.ParameterType)
-                    .Concat(new[] { mi.ReturnType });
+                var types2 = mi.GetParameters().Select(p => p.ParameterType).Concat(new[] { mi.ReturnType });
 
                 return Expression.GetDelegateType(types2.ToArray());
             }
@@ -121,49 +141,57 @@ namespace ThinkingHome.Core.Plugins.Utils {
             {
                 // исключение из async void обработчика невозможно поймать в EventContext —
                 // оно уронит процесс, поэтому запрещаем такие обработчики сразу при регистрации
-                if (obj.Item1.ReturnType == typeof(void) && obj.Item1.IsDefined(typeof(AsyncStateMachineAttribute))) {
-                    throw new InvalidOperationException(
-                        $"async void event handler is not supported: {plugin.GetType().FullName}.{obj.Item1.Name}");
+                if (obj.Item1.ReturnType == typeof(void) && obj.Item1.IsDefined(typeof(AsyncStateMachineAttribute)))
+                {
+                    throw new InvalidOperationException($"async void event handler is not supported: {plugin.GetType().FullName}.{obj.Item1.Name}");
                 }
 
                 var delegateType = typeof(TDelegate);
 
-                if (delegateType == typeof(Delegate)) {
+                if (delegateType == typeof(Delegate))
+                {
                     delegateType = GetDelegateType(obj.Item1);
                 }
 
-                var mthodDelegate = obj.Item1.IsStatic
-                    ? obj.Item1.CreateDelegate(delegateType)
-                    : obj.Item1.CreateDelegate(delegateType, plugin);
+                Delegate methodDelegate;
 
-                return (obj.Item2, mthodDelegate as TDelegate, plugin);
+                try
+                {
+                    methodDelegate = obj.Item1.IsStatic ? obj.Item1.CreateDelegate(delegateType)
+                        : obj.Item1.CreateDelegate(delegateType, plugin);
+                }
+                catch (ArgumentException ex)
+                {
+                    throw new InvalidOperationException($"Incompatible handler {plugin.GetType().FullName}.{obj.Item1.Name}: {obj.Item1}; expected {delegateType.AssemblyQualifiedName}", ex);
+                }
+
+                return (obj.Item2, methodDelegate as TDelegate, plugin);
             }
 
-            return plugin
-                .GetType()
-                .GetTypeInfo()
-                .GetMethods()
-                .SelectMany(GetMethodAttributes)
-                .Select(GetPluginMethodInfo)
-                .ToArray();
+            return plugin.GetType().GetTypeInfo().GetMethods().SelectMany(GetMethodAttributes).Select(GetPluginMethodInfo).ToArray();
         }
 
         #endregion
-
         #region to object registry
-
-        public static ObjectRegistry<T> ToObjectRegistry<T, T2>(
-            this IEnumerable<T2> collection, Func<T2, string> getKey, Func<T2, T> getValue)
+        /// <summary>
+        /// Заполняет новый или переданный реестр значениями и ключами, полученными из коллекции.
+        /// </summary>
+        public static ObjectRegistry<T> ToObjectRegistry<T, T2>(this IEnumerable<T2> collection, Func<T2, string> getKey,
+            Func<T2, T> getValue)
         {
             var registry = new ObjectRegistry<T>();
 
             return collection.ToObjectRegistry(registry, getKey, getValue);
         }
 
-        public static ObjectRegistry<T> ToObjectRegistry<T, T2>(
-            this IEnumerable<T2> collection, ObjectRegistry<T> registry, Func<T2, string> getKey, Func<T2, T> getValue)
+        /// <summary>
+        /// Заполняет новый или переданный реестр значениями и ключами, полученными из коллекции.
+        /// </summary>
+        public static ObjectRegistry<T> ToObjectRegistry<T, T2>(this IEnumerable<T2> collection, ObjectRegistry<T> registry,
+            Func<T2, string> getKey, Func<T2, T> getValue)
         {
-            foreach (var item in collection) {
+            foreach (var item in collection)
+            {
                 var key = getKey(item);
                 var value = getValue(item);
                 registry.Register(key, value);
@@ -173,21 +201,26 @@ namespace ThinkingHome.Core.Plugins.Utils {
         }
 
         #endregion
-
         #region to object set registry
-
-        public static ObjectSetRegistry<T> ToObjectSetRegistry<T, T2>(
-            this IEnumerable<T2> collection, Func<T2, string> getKey, Func<T2, T> getValue)
+        /// <summary>
+        /// Заполняет новый или переданный реестр наборов значениями, сгруппированными по ключам.
+        /// </summary>
+        public static ObjectSetRegistry<T> ToObjectSetRegistry<T, T2>(this IEnumerable<T2> collection, Func<T2,
+            string> getKey, Func<T2, T> getValue)
         {
             var registry = new ObjectSetRegistry<T>();
 
             return collection.ToObjectSetRegistry(registry, getKey, getValue);
         }
 
-        public static ObjectSetRegistry<T> ToObjectSetRegistry<T, T2>(
-            this IEnumerable<T2> collection, ObjectSetRegistry<T> registry, Func<T2, string> getKey, Func<T2, T> getValue)
+        /// <summary>
+        /// Заполняет новый или переданный реестр наборов значениями, сгруппированными по ключам.
+        /// </summary>
+        public static ObjectSetRegistry<T> ToObjectSetRegistry<T, T2>(this IEnumerable<T2> collection,
+            ObjectSetRegistry<T> registry, Func<T2, string> getKey, Func<T2, T> getValue)
         {
-            foreach (var item in collection) {
+            foreach (var item in collection)
+            {
                 var key = getKey(item);
                 var value = getValue(item);
                 registry.Register(key, value);
@@ -195,7 +228,6 @@ namespace ThinkingHome.Core.Plugins.Utils {
 
             return registry;
         }
-
         #endregion
     }
 }

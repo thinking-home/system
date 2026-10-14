@@ -1,12 +1,15 @@
+using ThinkingHome.Platform;
 using ThinkingHome.PackagePlanning;
 using ThinkingHome.PackageSources;
 
-if (args.Length != 5 || args[0] != "plan") {
+if (args.Length != 5 || args[0] != "plan")
+{
     Console.Error.WriteLine("Usage: ThinkingHome.PackagePlanning plan <plugins.json> <platform.json> <sources.json> <new-output-directory>");
     return 2;
 }
 string? staging = null;
-try {
+try
+{
     var destination = Path.GetFullPath(args[4]);
     if (Directory.Exists(destination) || File.Exists(destination)) throw new IOException("Output already exists: " + destination);
     var request = PlanJson.Read<PlanRequest>(args[1]);
@@ -25,9 +28,13 @@ try {
     Directory.Move(staging, destination);
     Console.WriteLine($"Validated {result.Lock.Packages.Length} packages; plan written to {destination}");
     return 0;
-} catch (Exception ex) {
+}
+catch (Exception ex)
+{
     Console.Error.WriteLine(ex.Message);
     return 1;
-} finally {
+}
+finally
+{
     if (staging != null && Directory.Exists(staging)) Directory.Delete(staging, recursive: true);
 }

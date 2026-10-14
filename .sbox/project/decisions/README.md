@@ -5,8 +5,10 @@
 - [Архитектура](ADR-0001-plugin-package-management.md)
 - [Состав MVP и отложенная функциональность](ADR-0002-plugin-package-management-mvp.md)
 - [Порядок реализации](ADR-0003-plugin-package-management-stages.md)
+- [Автоматическое обнаружение точек входа](ADR-0004-plugin-entry-point-discovery.md)
+- [Совместимость через зависимость от ядра](ADR-0005-core-package-compatibility.md)
 
-Результаты первых пяти этапов: [прототип загрузки](../plugin-package-loading-prototype.md), [упаковка и контракты](../plugin-package-packaging.md), [источники и репозиторий](../plugin-package-sources.md), [план установки](../plugin-package-planning.md), [установка и восстановление](../plugin-package-installation.md). Следующий этап — интеграция установленных пакетов с хостом.
+Документация: [упаковка и контракты](../plugin-package-packaging.md), [источники и репозиторий](../plugin-package-sources.md), [план установки](../plugin-package-planning.md), [установка и восстановление](../plugin-package-installation.md), [интеграция с хостом и локальные подключения](../plugin-package-runtime.md).
 
 ## Формат правил
 

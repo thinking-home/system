@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <PackageId>Fixture.Runtime</PackageId>
+    <Version>1.0.0</Version>
+    <Version Condition="'$(RuntimeFixtureVersion)' != ''">$(RuntimeFixtureVersion)</Version>
+    <DefineConstants>$(DefineConstants);$(HandlerCase)</DefineConstants>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../../../ThinkingHome.Core.Plugins/ThinkingHome.Core.Plugins.csproj" />
+    <ProjectReference Include="../../../ThinkingHome.Plugins.Timer/ThinkingHome.Plugins.Timer.csproj" />
+    <ThinkingHomeDependency Include="ThinkingHome.Plugins.Timer" Kind="plugin" />
+  </ItemGroup>
+  <Import Project="../../../ThinkingHome.Packaging/build/ThinkingHome.Plugin.targets" />
+</Project>

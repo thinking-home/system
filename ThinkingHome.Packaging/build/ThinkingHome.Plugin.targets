@@ -1,7 +1,10 @@
 <Project>
+  <PropertyGroup>
+    <GenerateDependencyFile>true</GenerateDependencyFile>
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+  </PropertyGroup>
   <!-- Импортируется в конце проекта, после описания зависимостей и файлов. -->
   <ItemGroup>
-    <ThinkingHomePlatformPackage Include="ThinkingHome.Core.Plugins;Microsoft.Extensions.Configuration;Microsoft.Extensions.Configuration.Abstractions;Microsoft.Extensions.Configuration.Binder;Microsoft.Extensions.Logging;Microsoft.Extensions.Logging.Abstractions;Microsoft.Extensions.Localization;Microsoft.Extensions.Localization.Abstractions;Microsoft.Extensions.DependencyInjection;Microsoft.Extensions.DependencyInjection.Abstractions;Microsoft.Extensions.Options;Microsoft.Extensions.Primitives;Microsoft.Extensions.Diagnostics;Microsoft.Extensions.Diagnostics.Abstractions" />
     <Reference Include="@(ThinkingHomeEmbedded)">
       <HintPath>%(ThinkingHomeEmbedded.FullPath)</HintPath>
     </Reference>
@@ -9,8 +12,6 @@
   </ItemGroup>
   <Target Name="ThinkingHomeGenerateMetadata" BeforeTargets="GetAssemblyAttributes">
     <Error Condition="'$(TargetFramework)' != 'net10.0'" Text="Plugin packaging v1 requires net10.0." />
-    <Error Condition="'$(ThinkingHomePlatformRange)' == ''" Text="ThinkingHomePlatformRange is required." />
-    <Error Condition="'@(ThinkingHomeEntryPoint)' == ''" Text="ThinkingHomeEntryPoint is required." />
     <ItemGroup>
       <AssemblyAttribute Include="System.Reflection.AssemblyMetadataAttribute">
         <_Parameter1>ThinkingHome.Plugin.ManifestVersion</_Parameter1><_Parameter2>1</_Parameter2>
@@ -20,12 +21,6 @@
       </AssemblyAttribute>
       <AssemblyAttribute Include="System.Reflection.AssemblyMetadataAttribute">
         <_Parameter1>ThinkingHome.Plugin.PackageVersion</_Parameter1><_Parameter2>$(PackageVersion)</_Parameter2>
-      </AssemblyAttribute>
-      <AssemblyAttribute Include="System.Reflection.AssemblyMetadataAttribute">
-        <_Parameter1>ThinkingHome.Plugin.PlatformRange</_Parameter1><_Parameter2>$(ThinkingHomePlatformRange)</_Parameter2>
-      </AssemblyAttribute>
-      <AssemblyAttribute Include="System.Reflection.AssemblyMetadataAttribute">
-        <_Parameter1>ThinkingHome.Plugin.EntryPoint.%(ThinkingHomeEntryPoint.Identity)</_Parameter1><_Parameter2>plugin</_Parameter2>
       </AssemblyAttribute>
       <AssemblyAttribute Include="System.Reflection.AssemblyMetadataAttribute" Condition="'@(ThinkingHomeDependency)' != ''">
         <_Parameter1>ThinkingHome.Plugin.Dependency.%(ThinkingHomeDependency.Identity)</_Parameter1><_Parameter2>%(ThinkingHomeDependency.Kind)</_Parameter2>
@@ -42,7 +37,6 @@
     <MakeDir Directories="$(ThinkingHomeValidationDirectory)" />
     <WriteLinesToFile File="$(ThinkingHomeValidationDirectory)/references.txt" Lines="@(ReferencePath->'%(FullPath)')" Overwrite="true" />
     <WriteLinesToFile File="$(ThinkingHomeValidationDirectory)/ownership.txt" Lines="@(ReferencePath->'%(FullPath)|%(NuGetPackageId)|%(MSBuildSourceProjectFile)|%(FrameworkReferenceName)')" Overwrite="true" />
-    <WriteLinesToFile File="$(ThinkingHomeValidationDirectory)/platform.txt" Lines="@(ThinkingHomePlatformPackage)" Overwrite="true" />
     <WriteLinesToFile File="$(ThinkingHomeValidationDirectory)/framework.txt" Lines="$(TargetFramework)" Overwrite="true" />
     <WriteLinesToFile File="$(ThinkingHomeValidationDirectory)/assets.txt" Lines="$(ProjectAssetsFile)" Overwrite="true" />
   </Target>

@@ -1,5 +1,4 @@
 using System.IO.Compression;
-using System.Reflection;
 using System.Reflection.Metadata;
 using System.Reflection.PortableExecutable;
 using System.Xml.Linq;
@@ -7,15 +6,18 @@ using NuGet.Versioning;
 
 namespace ThinkingHome.Packaging;
 
-public sealed record PackageMetadata(string Id, NuGetVersion Version, byte[] Nuspec, PluginManifest? Plugin) {
+public sealed record PackageMetadata(string Id, NuGetVersion Version, byte[] Nuspec, PluginManifest? Plugin)
+{
     public static string NormalizeVersion(NuGetVersion version) => version.ToNormalizedString().Split('+')[0].ToLowerInvariant();
 
-    public static PackageMetadata Read(byte[] bytes, bool requirePlugin) {
+    public static PackageMetadata Read(byte[] bytes, bool requirePlugin)
+    {
         using var input = new MemoryStream(bytes, writable: false);
         using var zip = new ZipArchive(input, ZipArchiveMode.Read);
         var paths = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
         long total = 0;
-        foreach (var entry in zip.Entries) {
+        foreach (var entry in zip.Entries)
+        {
             var path = entry.FullName.Replace('\\', '/');
             PluginManifest.Require(!Path.IsPathRooted(path) && !path.Contains(':') &&
                 !path.Split('/').Any(x => x is "." or "..") && paths.Add(path), "Invalid or duplicate archive path: " + path);
@@ -24,7 +26,8 @@ public sealed record PackageMetadata(string Id, NuGetVersion Version, byte[] Nus
         }
         var specs = zip.Entries.Where(x => !x.FullName.Contains('/') && x.FullName.EndsWith(".nuspec", StringComparison.OrdinalIgnoreCase)).ToArray();
         PluginManifest.Require(specs.Length == 1, "Expected one root nuspec");
-        byte[] ReadEntry(ZipArchiveEntry entry) {
+        byte[] ReadEntry(ZipArchiveEntry entry)
+        {
             using var stream = entry.Open();
             using var buffer = new MemoryStream();
             stream.CopyTo(buffer);
@@ -39,16 +42,19 @@ public sealed record PackageMetadata(string Id, NuGetVersion Version, byte[] Nus
         PluginManifest.Require(System.Text.RegularExpressions.Regex.IsMatch(id, @"^[A-Za-z0-9_][A-Za-z0-9_.-]*$"), "Invalid package ID");
         var version = NuGetVersion.Parse(Field("version"));
         PluginManifest? plugin = null;
-        if (requirePlugin) {
+        if (requirePlugin)
+        {
             foreach (var entry in zip.Entries.Where(x => x.FullName.StartsWith("lib/net10.0/", StringComparison.Ordinal)
-                && x.FullName.Split('/').Length == 3 && x.FullName.EndsWith(".dll", StringComparison.OrdinalIgnoreCase))) {
+                && x.FullName.Split('/').Length == 3 && x.FullName.EndsWith(".dll", StringComparison.OrdinalIgnoreCase)))
+            {
                 using var dll = new MemoryStream(ReadEntry(entry));
                 using var pe = new PEReader(dll);
                 if (!pe.HasMetadata) continue;
                 var reader = pe.GetMetadataReader();
                 if (!reader.IsAssembly) continue;
                 var fields = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-                foreach (var handle in reader.GetAssemblyDefinition().GetCustomAttributes()) {
+                foreach (var handle in reader.GetAssemblyDefinition().GetCustomAttributes())
+                {
                     var attribute = reader.GetCustomAttribute(handle);
                     if (attribute.Constructor.Kind != HandleKind.MemberReference) continue;
                     var constructor = reader.GetMemberReference((MemberReferenceHandle)attribute.Constructor);
@@ -69,25 +75,6 @@ public sealed record PackageMetadata(string Id, NuGetVersion Version, byte[] Nus
                 plugin = PluginManifest.FromFields(fields);
                 PluginManifest.Require(string.Equals(id, plugin.PackageId, StringComparison.OrdinalIgnoreCase) && version == plugin.Version,
                     "DLL and nuspec identity mismatch");
-                string TypeName(TypeDefinitionHandle handle) {
-                    var type = reader.GetTypeDefinition(handle);
-                    var parent = type.GetDeclaringType();
-                    return parent.IsNil ? (reader.GetString(type.Namespace) is { Length: > 0 } ns ? ns + "." : "") + reader.GetString(type.Name)
-                        : TypeName(parent) + "+" + reader.GetString(type.Name);
-                }
-                bool Visible(TypeDefinitionHandle handle) {
-                    var type = reader.GetTypeDefinition(handle);
-                    var visibility = type.Attributes & TypeAttributes.VisibilityMask;
-                    return type.GetDeclaringType().IsNil ? visibility == TypeAttributes.Public
-                        : visibility == TypeAttributes.NestedPublic && Visible(type.GetDeclaringType());
-                }
-                var declaredTypes = reader.TypeDefinitions.ToDictionary(TypeName);
-                foreach (var entryPoint in plugin.EntryPoints) {
-                    PluginManifest.Require(declaredTypes.TryGetValue(entryPoint, out var handle), "Entry point missing from DLL: " + entryPoint);
-                    var type = reader.GetTypeDefinition(handle);
-                    PluginManifest.Require(Visible(handle) && (type.Attributes & (TypeAttributes.Abstract | TypeAttributes.Interface)) == 0
-                        && type.GetGenericParameters().Count == 0, "Entry point must be visible and concrete: " + entryPoint);
-                }
                 var dependencies = metadata.Descendants().Where(x => x.Name.LocalName == "dependency")
                     .Select(x => x.Attribute("id")?.Value ?? "").ToHashSet(StringComparer.OrdinalIgnoreCase);
                 PluginManifest.Require(plugin.Dependencies.Keys.All(dependencies.Contains), "Manifest dependency missing from nuspec");

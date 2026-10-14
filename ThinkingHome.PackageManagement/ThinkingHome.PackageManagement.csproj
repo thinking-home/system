@@ -7,6 +7,8 @@
     <IsPackable>false</IsPackable>
   </PropertyGroup>
   <ItemGroup>
+    <ProjectReference Include="../ThinkingHome.Platform/ThinkingHome.Platform.csproj" />
     <ProjectReference Include="../ThinkingHome.PackagePlanning/ThinkingHome.PackagePlanning.csproj" />
+    <PackageReference Include="System.CommandLine" Version="2.0.12" />
   </ItemGroup>
 </Project>

@@ -4,5 +4,6 @@
     <PackageId>Fixture.Dependency</PackageId>
     <AssemblyName>Vendor.Dependency</AssemblyName>
     <Version>1.0.0</Version>
+    <Version Condition="'$(FixtureDependencyVersion)' != ''">$(FixtureDependencyVersion)</Version>
   </PropertyGroup>
 </Project>

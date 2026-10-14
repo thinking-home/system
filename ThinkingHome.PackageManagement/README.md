@@ -1,19 +1,21 @@
 # Установка пакетов плагинов
 
-`ThinkingHome.PackageManagement` — CLI и библиотечный API пятого этапа MVP. Использует [планировщик](../ThinkingHome.PackagePlanning/README.md), [источники NuGet V3](../ThinkingHome.PackageSources/README.md) и статическую валидацию DLL. Код устанавливаемых плагинов не исполняется.
+`ThinkingHome.PackageManagement` — CLI и библиотечный API установки, locked-восстановления и проверки пакетов плагинов. Использует [планировщик](../ThinkingHome.PackagePlanning/README.md), [источники NuGet V3](../ThinkingHome.PackageSources/README.md) и статическую валидацию DLL. Код устанавливаемых плагинов не исполняется.
 
 ## Команды
 
 Из корня репозитория:
 
 ```powershell
-dotnet run --project ThinkingHome.PackageManagement -- install ./application Example.Plugin "[1.0.0]" ./platform.json ./sources.json
-dotnet run --project ThinkingHome.PackageManagement -- ci ./application ./deployment/plugins.json ./deployment ./platform.json ./sources.json
-dotnet run --project ThinkingHome.PackageManagement -- validate ./application ./platform.json
-dotnet run --project ThinkingHome.PackageManagement -- recover ./application ./platform.json
+dotnet run --project ThinkingHome.PackageManagement -- install ./application Example.Plugin "[1.0.0]" ./sources.json
+dotnet run --project ThinkingHome.PackageManagement -- ci ./application ./deployment/plugins.json ./deployment ./sources.json
+dotnet run --project ThinkingHome.PackageManagement -- validate ./application
+dotnet run --project ThinkingHome.PackageManagement -- recover ./application
 ```
 
-`platform.json` и `sources.json` имеют форматы предыдущих этапов. Пути сборок платформы разрешаются относительно `platform.json`. Каталог приложения может ещё не существовать. Код возврата: 0 — успех, 1 — ошибка операции, 2 — неверные аргументы.
+Платформа определяется автоматически через общий `ThinkingHome.Platform.HostPlatform.Current()`: экспорт и передача `platform.json` не нужны. `sources.json` сохраняет [формат источников](../ThinkingHome.PackageSources/README.md). Каталог приложения может ещё не существовать. Код возврата: 0 — успех или справка, 1 — ошибка операции, 2 — неверные аргументы. Разбор аргументов и `--help` предоставляет System.CommandLine.
+
+Хост и менеджер поставляются и обновляются вместе, используют одинаковые runtime, ядро и платформенные библиотеки. Менеджер обслуживает установку своего комплекта, а не произвольную другую версию хоста. [Полный контракт совместной поставки](../ThinkingHome.Platform/README.md).
 
 - `install` добавляет корневой плагин или меняет его диапазон версии, пересчитывает весь граф и устанавливает проверенный результат. Остальные корни сохраняются; их зависимости могут обновиться в пределах деклараций. Обычная библиотека не может стать корнем.
 - `ci` принимает декларацию и каталог с `plugins.lock.json` и `load-map.json`. Восстанавливает точные версии, источники и SHA-512 из lock без поиска нового решения. Заново проверяет зависимости, контракты, платформу и карту. Изменение декларации, целевой среды, платформы или содержимого пакета — ошибка.
@@ -31,6 +33,7 @@ application/.thinkinghome/
     plugins.json                # декларация корневых плагинов
     plugins.lock.json
     load-map.json
+    appsettings.plugins.json    # генерируемая регистрация entry points
   packages/<lowercase-id>/<normalized-version>/
     package.nupkg
     receipt.json                # identity и хеш архива
@@ -43,7 +46,7 @@ application/.thinkinghome/
 
 Одинаковые ID/версия/содержимое хранятся один раз для всех областей графа. Разные версии приватной библиотеки занимают разные каталоги. Платформенные сборки предоставляет каталог платформы; менеджер их не копирует.
 
-CLI выводит путь к созданному `states/<generation>`. Для поставки или контроля версий скопируйте из него все три JSON-документа в свой каталог `deployment`; тот же комплект принимает `ci`. Можно также применить план четвёртого этапа вместе с его исходной декларацией. Вручную документы установленного состояния не редактируются.
+CLI выводит путь к созданному `states/<generation>`. Для поставки или контроля версий скопируйте из него `plugins.json`, `plugins.lock.json` и `load-map.json` в свой каталог `deployment`; тот же комплект принимает `ci`. Можно также применить результат планировщика вместе с его исходной декларацией. Вручную документы установленного состояния не редактируются.
 
 Все скачивания, распаковка и проверки происходят до переключения `current.json`. Документы поколения неизменяемы; единая точка фиксации — переименование нового указателя на той же файловой системе. Поэтому читатель получает согласованный комплект документов. Вторая операция менеджера завершается ошибкой блокировки.
 
@@ -53,11 +56,13 @@ CLI выводит путь к созданному `states/<generation>`. Дл�
 
 ## API и удержание файлов
 
+При встраивании передайте `HostPlatform.Current()` из общего API. Явный параметр `platform` позволяет задавать платформу в тестах и инструментах.
+
 `PackageManager(applicationDirectory, platform, source)` предоставляет `InstallAsync`, `RestoreLockedAsync`, `Validate`, `Recover`, `OpenSnapshot`. Для офлайн-проверки и восстановления из целого кеша `source` можно не передавать.
 
 `OpenSnapshot()` возвращает `IDisposable` с `State` и `PackageDirectory(key)`. Потребитель должен держать его весь срок использования DLL. Новые версии устанавливаются рядом и не меняют удерживаемый снимок. Ремонт существующих каталогов требует эксклюзивного доступа: при активном потребителе операция завершается ошибкой до изменения файлов. После `Dispose` пользоваться путями этого снимка нельзя. `OpenSnapshot` проверяет документы; полную проверку содержимого выполняет `Validate`.
 
-Рабочий хост пока не использует этот API. Его загрузчик, удержание снимка на время работы, DI и генерируемая конфигурация относятся к этапу 6. `appsettings.json` и `appsettings.plugins.json` на этапе 5 не меняются. Удаление пакетов относится к этапу 7; автоматическая очистка старого кеша не реализована.
+[Хост](../ThinkingHome.PackageRuntime/README.md) использует этот API для доступа к установленным пакетам. Менеджер генерирует `appsettings.plugins.json` внутри поколения; пользовательский `appsettings.json` не меняется. Для `ci` достаточно трёх документов плана: генерируемый файл создаётся заново из lock. Удаление пакетов и автоматическая очистка старого кеша не поддерживаются.
 
 ## Проверки
 
@@ -65,4 +70,4 @@ CLI выводит путь к созданному `states/<generation>`. Дл�
 dotnet test ThinkingHome.Packaging.Tests/ThinkingHome.Packaging.Tests.csproj -m:1 -p:UseSharedCompilation=false -p:NuGetAudit=false
 ```
 
-`ManagementTests` проверяет чистую установку и locked-копию, смену версии с удерживаемым снимком, дедупликацию, офлайн-проверку и ремонт, ошибки и отмену до commit, конкурентную операцию, обе ветви recovery, неизменяемость identity, расхождения документов/платформы/источника/хешей и CLI через локальный HTTP-репозиторий. `SourceTests` проверяет скачивание из зафиксированного источника при изменившемся приоритете.
+`ManagementTests` проверяет чистую установку и locked-копию, смену версии с удерживаемым снимком, дедупликацию, офлайн-проверку и ремонт, ошибки и отмену до commit, конкурентную операцию, обе ветви recovery, неизменяемость identity, расхождения документов/платформы/источника/хешей и CLI через локальный HTTP-репозиторий. Сквозной тест публикует общий комплект, устанавливает и восстанавливает пакет без файла платформы и проверяет обе установки отдельным процессом хоста. `SourceTests` проверяет скачивание из зафиксированного источника при изменившемся приоритете.

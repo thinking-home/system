@@ -29,60 +29,41 @@ ThinkingHome - кроссплатформенное приложение, поз
 
 ## Установка с помощью Docker
 
-### 1. Установите Docker
+Dockerfile создаёт комплект хоста и менеджера пакетов без предустановленных плагинов. Соберите образ из текущих исходников:
 
-Прежде, чем вы попробуете запустить образ ThinkingHome для Docker, вы должны установить Docker. Прочитайте инструкции для [Windows](http://www.docker.com/products/docker#/windows), [MacOS](http://www.docker.com/products/docker#/mac) и [Linux](http://www.docker.com/products/docker#/linux), чтобы узнать подробнее про установку Docker.
-
-### 2. Запустите контейнер базы данных
-
-Многие плагины сохраняют своё состояние в базе данных. Для их корректной работы необходимо предоставить доступ к БД. ThinkingHome поддерживает работу с СУБД PostgreSQL.
-
-С помошью следующей команды вы можете подключить образ PostgreSQL из [Docker Store](https://store.docker.com/images/postgres).
-
-```
-$ docker run --name postgres -e POSTGRES_PASSWORD=123 -p 5432:5432 -d postgres
+```shell
+docker build -t thinkinghome:local .
 ```
 
-- Параметр `--name` задает имя, используя которое вы можете давать доступ к контейнеру БД для других контейнеров.
-- Переменная окружения `POSTGRES_PASSWORD` задает пароль для подключнения к БД с логином `postgres`. Важно указать значение `123`, т.к. этот пароль установлен по умолчанию в контейнере ThinkingHome.
-- Параметр `-p` задает соответствие портов вашего компьютера и портов контейнера БД.
+Подготовьте каталог `application` с пользовательским `appsettings.json` и файлом [источников пакетов](ThinkingHome.PackageSources/README.md) `sources.json`. Адреса репозиториев должны быть доступны из контейнера. Установите нужный плагин через менеджер из того же образа; замените `Example.Plugin` и диапазон версии на опубликованный пакет:
 
-После того, как контейнер будет запущен, вы сможете подключаться к БД со своего компьютера, используся строку подключения `host=localhost;port=5431;database=postgres;user name=postgres;password=123`.
-
-### 3. Запустите контейнер ThinkingHome
-
-Образ в docker registry: https://hub.docker.com/repository/docker/dima117a/thinking-home.
-
-```
-$ docker run \
-    --name thinking-home \
-    --link postgres:postgres \
-    -e THINKINGHOME_plugins__ThinkingHome.Plugins.Database.DatabasePlugin__connectionString='host=postgres;port=5432;database=postgres;user name=postgres;password=123' \
-    -p 8080:8080 -t dima117a/thinking-home:4.0.0-alpha34
+```shell
+docker run --rm --entrypoint dotnet -v "./application:/data" thinkinghome:local ThinkingHome.PackageManagement.dll install /data Example.Plugin "[1.0.0]" /data/sources.json
 ```
 
-После запуска в консоль начнет выодиться лог приложения, а в браузере по адресу http://localhost:8080 будет доступен веб-интерфейс.
+Проверьте установленный набор и запустите хост с тем же каталогом данных:
+
+```shell
+docker run --rm -v "./application:/data" thinkinghome:local --app /data --check
+docker run --name thinking-home -v "./application:/data" -p 8080:8080 thinkinghome:local --app /data
+```
+
+Доступность веб-интерфейса, БД и других сервисов зависит от установленных плагинов и их настроек. Подключение PostgreSQL описано в [документации плагина базы данных](ThinkingHome.Plugins.Database/README.md). После изменения состава плагинов хост нужно перезапустить. При обновлении образа учитывайте [контракт совместной поставки и проверки платформы](ThinkingHome.Platform/README.md).
 
 ## Для разработчиков
 
 ### Поставка плагинов через NuGet
 
-Реализованы первые пять этапов MVP: прототип изолированной загрузки, упаковка с проверкой контрактов, HTTP-репозиторий, клиент источников, планировщик зависимостей, установка, locked-восстановление и валидация состояния.
+Пакетная система поддерживает планирование, установку, locked-восстановление и загрузку пакетов в хост. Установленные пакеты и локальные DLL запускаются одним хостом, без упаковки перед отладкой.
 
 - [Упаковка плагинов и статическая валидация](ThinkingHome.Packaging/README.md)
 - [Сервер репозитория для локальной папки](ThinkingHome.Repository/README.md)
 - [Поиск версий и скачивание пакетов](ThinkingHome.PackageSources/README.md)
 - [Разрешение зависимостей и план установки](ThinkingHome.PackagePlanning/README.md)
 - [Установка, locked-восстановление и валидация](ThinkingHome.PackageManagement/README.md)
+- [Общий API платформы и контракт совместной поставки](ThinkingHome.Platform/README.md)
+- [Сервер, отладка плагина и монорепозитория](ThinkingHome.PackageRuntime/README.md)
 - [Архитектурные решения и план MVP](.sbox/project/decisions/README.md)
 - [Команды сборки и тестирования](.sbox/project/testing.md)
 
-Подключение установленных пакетов к хосту и удаление относятся к следующим этапам. Текущее приложение по-прежнему использует связанные проекты.
-
-### Docker
-
-Сборка docker-образа:
-
-```shell
-docker build -t dima117a/thinking-home:4.0.0-alpha34 .
-```
+Хост ThinkingHome.Console использует установленный набор и необязательный plugins.local.json. Для сборки всех локальных плагинов и генерации подключений используйте ThinkingHome.Local.proj.

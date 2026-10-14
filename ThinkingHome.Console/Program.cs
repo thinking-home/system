@@ -1,58 +1,111 @@
-﻿using System;
+using System;
+using System.CommandLine;
+using System.IO;
 using System.Runtime.Loader;
 using System.Threading;
 using ThinkingHome.Core.Infrastructure;
+using ThinkingHome.PackageManagement;
+using ThinkingHome.PackageRuntime;
+using ThinkingHome.Platform;
+using Terminal = System.Console;
 
-namespace ThinkingHome.Console
+namespace ThinkingHome.Console;
+
+internal static class Program
 {
-    internal class Program
+    public static int Main(string[] args)
     {
-        public static void Main(string[] args)
+        var app = new Option<string>("--app")
         {
-            // init and start
-            var config = new HomeConfiguration();
-            var app = new HomeApplication();
+            Description = "Application directory; defaults to the host directory.",
+            Arity = ArgumentArity.ExactlyOne
+        };
 
-            app.StartServices(config);
+        var check = new Option<bool>("--check")
+        {
+            Description = "Validate plugins without starting their lifecycle."
+        };
 
-            // finalize
-            var shutdownStarted = 0;
+        // Библиотека проверяет аргументы и обрабатывает --help/--version до запуска хоста.
+        var command = new RootCommand("ThinkingHome plugin host") { Options = { app, check } };
+        command.SetAction(result => Run(result.GetValue(app), result.GetValue(check)));
 
-            void Shutdown()
+        return command.Parse(args).Invoke();
+    }
+
+    private static int Run(string applicationDirectory, bool check)
+    {
+        PluginRuntime runtime = null;
+        var app = new HomeApplication();
+        var shutdownStarted = 0;
+
+        void Shutdown()
+        {
+            // Main, finally и Unloading могут вызвать остановку повторно, в том числе после Environment.Exit.
+            // Жизненный цикл плагинов завершаем только один раз.
+            if (Interlocked.Exchange(ref shutdownStarted, 1) == 0)
             {
-                // Shutdown вызывается из Main и из обработчика Unloading, который
-                // срабатывает при любом завершении процесса — в том числе после
-                // Environment.Exit в конце Main. Останавливать плагины нужно
-                // не больше одного раза.
-                if (Interlocked.Exchange(ref shutdownStarted, 1) != 0) return;
-
-                System.Console.WriteLine("\nApplication is shutting down...");
                 app.StopServices();
-                System.Console.WriteLine("Done");
+            }
+        }
+
+        Action<AssemblyLoadContext> unloading = _ => Shutdown();
+        using var done = new ManualResetEvent(false);
+
+        ConsoleCancelEventHandler cancel = (_, e) =>
+        {
+            // Останавливаем плагины в основном потоке: длительная работа в обработчике Ctrl+C
+            // и последующее принудительное завершение средствами Windows могут подвесить процесс.
+            e.Cancel = true;
+            done.Set();
+        };
+
+        try
+        {
+            var directory = Path.GetFullPath(applicationDirectory ?? AppContext.BaseDirectory);
+            var platform = HostPlatform.Current();
+
+            // Один путь запуска для установленных пакетов и локальных сборок.
+            runtime = PluginRuntime.Open(directory, platform);
+            var config = new HomeConfiguration(directory,
+                PackageManager.GeneratedConfiguration(runtime.Plan.Lock));
+
+            if (check)
+            {
+                Terminal.WriteLine("Plugin preflight succeeded; lifecycle not started");
+
+                return 0;
             }
 
-            AssemblyLoadContext.Default.Unloading += context => { Shutdown(); };
-
-            // wait
-            var done = new AutoResetEvent(false);
-
-            System.Console.CancelKeyPress += (sender, eventArgs) => {
-                // Работа выносится из обработчика в основной поток: долгая остановка
-                // на потоке консольного обработчика и силовое завершение процесса
-                // после него (ExitProcess из default-обработчика ОС) ненадежны на
-                // Windows — процесс мог остаться висеть. Отменяем силовое завершение
-                // и выходим сами.
-                eventArgs.Cancel = true;
-                done.Set();
-            };
-
-            System.Console.WriteLine("Service is available. Press Ctrl+C to exit.");
+            // Подписки живут столько же, сколько запущенное приложение.
+            AssemblyLoadContext.Default.Unloading += unloading;
+            Terminal.CancelKeyPress += cancel;
+            app.StartServices(config, runtime.PluginTypes);
+            Terminal.WriteLine("Service is available. Press Ctrl+C to exit.");
             done.WaitOne();
 
             Shutdown();
 
-            // не ждем оставшиеся потоки: все плагины уже остановлены
+            runtime.Dispose();
+            runtime = null;
+
+            // Все плагины остановлены; не ждём оставшиеся foreground-потоки.
             Environment.Exit(0);
+
+            return 0;
+        }
+        catch (Exception ex)
+        {
+            Terminal.Error.WriteLine(ex);
+
+            return 1;
+        }
+        finally
+        {
+            Shutdown();
+            Terminal.CancelKeyPress -= cancel;
+            AssemblyLoadContext.Default.Unloading -= unloading;
+            runtime?.Dispose();
         }
     }
 }
