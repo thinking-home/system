@@ -1,6 +1,4 @@
 using System.IO.Compression;
-using System.Reflection.Metadata;
-using System.Reflection.PortableExecutable;
 using System.Xml.Linq;
 using NuGet.Versioning;
 
@@ -48,31 +46,10 @@ public sealed record PackageMetadata(string Id, NuGetVersion Version, byte[] Nus
                 && x.FullName.Split('/').Length == 3 && x.FullName.EndsWith(".dll", StringComparison.OrdinalIgnoreCase)))
             {
                 using var dll = new MemoryStream(ReadEntry(entry));
-                using var pe = new PEReader(dll);
-                if (!pe.HasMetadata) continue;
-                var reader = pe.GetMetadataReader();
-                if (!reader.IsAssembly) continue;
-                var fields = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-                foreach (var handle in reader.GetAssemblyDefinition().GetCustomAttributes())
-                {
-                    var attribute = reader.GetCustomAttribute(handle);
-                    if (attribute.Constructor.Kind != HandleKind.MemberReference) continue;
-                    var constructor = reader.GetMemberReference((MemberReferenceHandle)attribute.Constructor);
-                    if (constructor.Parent.Kind != HandleKind.TypeReference) continue;
-                    var type = reader.GetTypeReference((TypeReferenceHandle)constructor.Parent);
-                    if (reader.GetString(type.Namespace) != "System.Reflection" || reader.GetString(type.Name) != "AssemblyMetadataAttribute") continue;
-                    var blob = reader.GetBlobReader(attribute.Value);
-                    PluginManifest.Require(blob.ReadUInt16() == 1, "Invalid attribute encoding");
-                    var key = blob.ReadSerializedString();
-                    var value = blob.ReadSerializedString();
-                    if (key?.StartsWith(PluginManifest.Prefix, StringComparison.Ordinal) != true) continue;
-                    PluginManifest.Require(blob.ReadUInt16() == 0 && blob.RemainingBytes == 0, "Unexpected plugin attribute payload");
-                    PluginManifest.Require(!string.IsNullOrWhiteSpace(value), "Empty plugin metadata: " + key);
-                    PluginManifest.Require(fields.TryAdd(key[PluginManifest.Prefix.Length..], value!), "Duplicate plugin metadata: " + key);
-                }
-                if (fields.Count == 0) continue;
+                var manifest = PluginManifest.TryRead(dll);
+                if (manifest == null) continue;
                 PluginManifest.Require(plugin == null, "Multiple plugin manifests");
-                plugin = PluginManifest.FromFields(fields);
+                plugin = manifest;
                 PluginManifest.Require(string.Equals(id, plugin.PackageId, StringComparison.OrdinalIgnoreCase) && version == plugin.Version,
                     "DLL and nuspec identity mismatch");
                 var dependencies = metadata.Descendants().Where(x => x.Name.LocalName == "dependency")

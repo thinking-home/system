@@ -1,5 +1,4 @@
 using ThinkingHome.Platform;
-using System.Reflection;
 using System.Text.Json;
 using NuGet.Versioning;
 using ThinkingHome.Packaging;
@@ -45,16 +44,27 @@ public static class ExecutionPlanner
 
         // DLL даёт идентичность плагина, а deps.json — файлы и версии его обычной сборки.
         var local = new Dictionary<string, LocalBuild>(StringComparer.OrdinalIgnoreCase);
+        var pluginIds = (installed?.Lock.Packages.Where(x => x.Kind == "plugin").Select(x => x.Id) ?? [])
+            .ToHashSet(StringComparer.OrdinalIgnoreCase);
 
         foreach (var path in pluginPaths)
         {
-            var build = LocalBuild.Read(Path.GetFullPath(path), platform);
+            var manifest = PluginManifest.TryRead(Path.GetFullPath(path))
+                ?? throw new InvalidDataException("Assembly is not a ThinkingHome plugin: " + path);
+            pluginIds.Add(manifest.PackageId);
+        }
+
+        foreach (var path in pluginPaths)
+        {
+            var build = LocalBuild.Read(Path.GetFullPath(path), platform, pluginIds);
 
             if (!local.TryAdd(build.Main.Metadata.Id, build))
             {
                 throw new ResolutionException("Duplicate local plugin: " + build.Main.Metadata.Id);
             }
         }
+
+        pluginIds.UnionWith(local.Values.SelectMany(x => x.PluginDependencies));
 
         // Приводим установленный источник к тому же представлению выбранных файлов.
         var stored = new Dictionary<string, Candidate>(StringComparer.Ordinal);
@@ -106,7 +116,7 @@ public static class ExecutionPlanner
         // а не вызывает скрытый переход на установленную сборку.
         while (true)
         {
-            graph = PackagePlanner.ExpandGraph(roots, provided, assignments);
+            graph = PackagePlanner.ExpandGraph(roots, provided, assignments, pluginIds);
             var needed = graph.Edges.FirstOrDefault(x => x.Kind != "platform" && !graph.Nodes.ContainsKey(x.Key));
 
             if (needed == null)
@@ -204,13 +214,12 @@ public static class ExecutionPlanner
         return new(metadata, source, hash, dependencies, null, paths);
     }
 
-    private sealed record LocalBuild(Candidate Main, Dictionary<string, Candidate> Libraries)
+    private sealed record LocalBuild(Candidate Main, Dictionary<string, Candidate> Libraries, HashSet<string> PluginDependencies)
     {
-        public static LocalBuild Read(string path, PlatformCatalog platform)
+        public static LocalBuild Read(string path, PlatformCatalog platform, IReadOnlySet<string> connectedPlugins)
         {
-            using var context = new MetadataLoadContext(new PathAssemblyResolver(platform.Assemblies.Append(path)),
-                "System.Private.CoreLib");
-            var manifest = PluginManifest.Read(context.LoadFromAssemblyPath(path));
+            var manifest = PluginManifest.TryRead(path)
+                ?? throw new InvalidDataException("Assembly is not a ThinkingHome plugin: " + path);
             var depsPath = Path.ChangeExtension(path, ".deps.json");
             using var document = JsonDocument.Parse(File.ReadAllBytes(depsPath));
             var targetName = document.RootElement.GetProperty("runtimeTarget").GetProperty("name").GetString()!;
@@ -247,6 +256,7 @@ public static class ExecutionPlanner
                 && runtime.EnumerateObject().Any(a => a.Name == Path.GetFileName(path)));
             var directory = Path.GetDirectoryName(path)!;
             var libraries = new Dictionary<string, Candidate>(StringComparer.OrdinalIgnoreCase);
+            var plugins = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
             Candidate ReadCandidate(JsonProperty entry, PluginManifest? plugin)
             {
@@ -367,7 +377,7 @@ public static class ExecutionPlanner
             while (pending.TryDequeue(out var id))
             {
                 if (libraries.ContainsKey(id) || platform.Packages.Keys.Contains(id, StringComparer.OrdinalIgnoreCase)
-                    || manifest.Dependencies.GetValueOrDefault(id) == "plugin")
+                    || connectedPlugins.Contains(id) || plugins.Contains(id))
                 {
                     continue;
                 }
@@ -378,6 +388,20 @@ public static class ExecutionPlanner
                 }
 
                 var library = ReadCandidate(entry, null);
+                var selected = PackageAssets.Select(library.LocalFiles!.Keys, platform.Framework, platform.Rid);
+                var markers = selected.Managed.Where(x => !x.EndsWith(".resources.dll", StringComparison.OrdinalIgnoreCase))
+                    .Select(x => PluginManifest.TryRead(library.LocalFiles[x]))
+                    .Where(x => x != null).ToArray();
+
+                if (markers.Length > 0)
+                {
+                    if (markers.Length != 1 || !markers[0]!.PackageId.Equals(id, StringComparison.OrdinalIgnoreCase)
+                        || markers[0]!.Version != library.Metadata.Version)
+                        throw new ResolutionException("Plugin dependency identity differs from deps.json: " + id);
+                    plugins.Add(id);
+                    continue;
+                }
+
                 libraries.Add(id, library);
 
                 foreach (var dependency in library.Dependencies)
@@ -386,7 +410,7 @@ public static class ExecutionPlanner
                 }
             }
 
-            return new(main, libraries);
+            return new(main, libraries, plugins);
         }
     }
 }

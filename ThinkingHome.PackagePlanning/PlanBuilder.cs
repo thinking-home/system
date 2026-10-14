@@ -268,7 +268,7 @@ internal static class PlanBuilder
                     && x.ConstructorArguments.Count == 2 && x.ConstructorArguments[0].Value is string key
                     && key.StartsWith(PluginManifest.Prefix, StringComparison.Ordinal)))
                 {
-                    throw new ResolutionException("Plugin assembly must be declared as a plugin dependency: " + value.Asset.Package);
+                    throw new ResolutionException("Plugin assembly cannot be loaded as a library: " + value.Asset.Package);
                 }
 
                 foreach (var reference in assembly.GetReferencedAssemblies())

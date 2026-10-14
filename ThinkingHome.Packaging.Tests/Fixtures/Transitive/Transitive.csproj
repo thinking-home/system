@@ -7,8 +7,7 @@
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="../../../ThinkingHome.Core.Plugins/ThinkingHome.Core.Plugins.csproj" />
-    <ProjectReference Include="../Contract/Contract.csproj" />
-    <ThinkingHomeDependency Include="Fixture.Contract" Kind="shared" />
+    <ProjectReference Include="../Contract/Contract.csproj" ThinkingHomeShared="true" />
   </ItemGroup>
   <Import Project="../../../ThinkingHome.Packaging/build/ThinkingHome.Plugin.targets" />
 </Project>

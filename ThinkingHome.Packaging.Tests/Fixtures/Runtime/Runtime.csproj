@@ -8,8 +8,7 @@
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="../../../ThinkingHome.Core.Plugins/ThinkingHome.Core.Plugins.csproj" />
-    <ProjectReference Include="../../../ThinkingHome.Plugins.Timer/ThinkingHome.Plugins.Timer.csproj" />
-    <ThinkingHomeDependency Include="ThinkingHome.Plugins.Timer" Kind="plugin" />
+    <ProjectReference Include="../../../ThinkingHome.Plugins.Timer/ThinkingHome.Plugins.Timer.csproj" ThinkingHomeShared="$(SharedTimer)" />
   </ItemGroup>
   <Import Project="../../../ThinkingHome.Packaging/build/ThinkingHome.Plugin.targets" />
 </Project>

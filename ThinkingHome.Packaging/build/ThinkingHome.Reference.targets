@@ -1,0 +1,11 @@
+<Project>
+  <!-- Сохраняем пользовательское расширение при запросе identity проекта. -->
+  <Import Project="$(ThinkingHomeOriginalAfterCommonTargets)" Condition="Exists('$(ThinkingHomeOriginalAfterCommonTargets)')" />
+  <!-- Только чтение вычисленного SDK PackageId; сборка проекта здесь не запускается. -->
+  <Target Name="ThinkingHomeGetReferenceIdentity" Returns="@(_ThinkingHomeReferenceIdentity)">
+    <ItemGroup>
+      <_ThinkingHomeReferenceIdentity Include="$(PackageId)" />
+    </ItemGroup>
+    <Error Condition="'$(PackageId)' == ''" Text="Shared project reference must have a package identity." />
+  </Target>
+</Project>

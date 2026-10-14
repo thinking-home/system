@@ -128,7 +128,7 @@ public class PlanningTests(PackageFixture fixture) : IClassFixture<PackageFixtur
     [Fact]
     public async Task Plan_ReportsSharedVersionConflict_WithBothChains()
     {
-        var graph = fixture.Build("Graph", "graph-shared", "-p:DependencyKind=shared");
+        var graph = fixture.Build("Graph", "graph-shared", "-p:SharedDependency=true");
         var source = new MemorySource(ChangeDependencies(File.ReadAllBytes(fixture.Shared), ("Fixture.Dependency", "[1.0.0]")),
             ChangeDependencies(File.ReadAllBytes(graph), ("Fixture.Dependency", "[2.0.0]")), Dependency(), Dependency("2.0.0"));
         var error = await Assert.ThrowsAsync<ResolutionException>(() => new PackagePlanner(source)
@@ -149,21 +149,61 @@ public class PlanningTests(PackageFixture fixture) : IClassFixture<PackageFixtur
     [Fact]
     public async Task Plan_ImportsPluginFromItsOwner_AndOrdersDependenciesFirst()
     {
-        var graph = fixture.Build("Graph", "graph-peer", "-p:PeerId=Fixture.Good");
+        var graph = fixture.Build("Graph", "graph-peer");
         var source = new MemorySource(ChangeDependencies(File.ReadAllBytes(graph), ("Fixture.Good", "[1.2.3-beta.1]")),
             File.ReadAllBytes(fixture.Good), Dependency());
         var result = await new PackagePlanner(source).PlanAsync(Request(("Fixture.Graph", "[1.0.0]")), Platform());
         Assert.Equal(new[] { "plugin:fixture.good", "plugin:fixture.graph" }, result.Lock.PluginOrder);
         Assert.Contains(result.LoadMap.Assets, x => x.Scope == "plugin:fixture.graph" && x.Name == "Good" && x.Owner == "plugin:fixture.good");
         Assert.DoesNotContain(result.LoadMap.Assets, x => x.Scope == "plugin:fixture.graph" && x.Name == "Vendor.Dependency" && x.Owner == "plugin:fixture.good");
+        LockedPlanVerifier.Verify(Request(("Fixture.Graph", "[1.0.0]")), result, Platform(),
+            result.Lock.Packages.ToDictionary(x => x.Key, x => source.Bytes(x.Key)));
+    }
+
+    [Fact]
+    public async Task Plan_DoesNotFallBackToLibrary_WhenPluginRepositoryContainsInvalidPackage()
+    {
+        var source = new MemorySource(File.ReadAllBytes(fixture.Good), Dependency()) { MisplacedLibrary = true };
+        var error = await Assert.ThrowsAsync<InvalidDataException>(() => new PackagePlanner(source)
+            .PlanAsync(Request(("Fixture.Good", "[1.2.3-beta.1]")), Platform()));
+        Assert.Contains("not a ThinkingHome plugin", error.Message);
+        Assert.Equal(0, source.LibraryLookups);
+    }
+
+    [Fact]
+    public async Task Plan_DoesNotFallBackToLibrary_WhenPluginRepositoryFails()
+    {
+        var source = new MemorySource(File.ReadAllBytes(fixture.Good), Dependency()) { FailDependencyLookup = true };
+        await Assert.ThrowsAsync<HttpRequestException>(() => new PackagePlanner(source)
+            .PlanAsync(Request(("Fixture.Good", "[1.2.3-beta.1]")), Platform()));
+        Assert.Equal(0, source.LibraryLookups);
     }
 
     [Fact]
     public async Task Plan_RejectsPluginCycles()
     {
-        var graph = fixture.Build("Graph", "graph-cycle", "-p:PeerId=Fixture.Graph");
+        var graph = fixture.Build("Graph", "graph-cycle");
         var source = new MemorySource(ChangeDependencies(File.ReadAllBytes(graph), ("Fixture.Graph", "[1.0.0]")), Dependency());
         var error = await Assert.ThrowsAsync<ResolutionException>(() => new PackagePlanner(source).PlanAsync(Request(("Fixture.Graph", "[1.0.0]")), Platform()));
+        Assert.Contains("cycle", error.Message);
+    }
+
+    [Fact]
+    public async Task Plan_DiscoversPluginThroughLibrary_AndOrdersItBeforeConsumer()
+    {
+        var source = new MemorySource(File.ReadAllBytes(fixture.Good), File.ReadAllBytes(fixture.Embedded),
+            Dependency("1.0.0", ("Fixture.Embedded", "[1.0.0]")));
+        var plan = await new PackagePlanner(source).PlanAsync(Request(("Fixture.Good", "[1.2.3-beta.1]")), Platform());
+        Assert.Equal(new[] { "plugin:fixture.embedded", "plugin:fixture.good" }, plan.Lock.PluginOrder);
+    }
+
+    [Fact]
+    public async Task Plan_RejectsPluginCycleThroughLibrary()
+    {
+        var source = new MemorySource(File.ReadAllBytes(fixture.Good),
+            Dependency("1.0.0", ("Fixture.Good", "[1.2.3-beta.1]")));
+        var error = await Assert.ThrowsAsync<ResolutionException>(() => new PackagePlanner(source)
+            .PlanAsync(Request(("Fixture.Good", "[1.2.3-beta.1]")), Platform()));
         Assert.Contains("cycle", error.Message);
     }
 
@@ -182,7 +222,7 @@ public class PlanningTests(PackageFixture fixture) : IClassFixture<PackageFixtur
     public async Task Plan_RejectsLibraryRoot_AndIncompatibleCoreDependency()
     {
         var source = new MemorySource(File.ReadAllBytes(fixture.Good), Dependency());
-        await Assert.ThrowsAsync<InvalidDataException>(() => new PackagePlanner(source).PlanAsync(Request(("Fixture.Dependency", "[1.0.0]")), Platform()));
+        await Assert.ThrowsAsync<ResolutionException>(() => new PackagePlanner(source).PlanAsync(Request(("Fixture.Dependency", "[1.0.0]")), Platform()));
         var error = await Assert.ThrowsAsync<ResolutionException>(() => new PackagePlanner(source).PlanAsync(Request(("Fixture.Good", "[1.2.3-beta.1]")), Platform(coreVersion: "3.0.0")));
         Assert.Contains("thinkinghome.core.plugins", error.Message);
         var floating = ChangeDependencies(File.ReadAllBytes(fixture.Good), ("ThinkingHome.Core.Plugins", "3.*"));
@@ -254,7 +294,7 @@ public class PlanningTests(PackageFixture fixture) : IClassFixture<PackageFixtur
     [Fact]
     public async Task Plan_RejectsConflictingRootAndTransitivePluginVersions()
     {
-        var graph = fixture.Build("Graph", "graph-conflicting-peer", "-p:PeerId=Fixture.Good");
+        var graph = fixture.Build("Graph", "graph-conflicting-peer");
         var source = new MemorySource(ChangeDependencies(File.ReadAllBytes(graph), ("Fixture.Good", "[9.0.0]")), File.ReadAllBytes(fixture.Good), Dependency());
         var error = await Assert.ThrowsAsync<ResolutionException>(() => new PackagePlanner(source)
             .PlanAsync(Request(("Fixture.Graph", "[1.0.0]"), ("Fixture.Good", "[1.2.3-beta.1]")), Platform()));
@@ -353,15 +393,23 @@ public class PlanningTests(PackageFixture fixture) : IClassFixture<PackageFixtur
 
     private sealed class MemorySource(params byte[][] packages) : IPackageSource
     {
+        public bool MisplacedLibrary { get; init; }
+        public bool FailDependencyLookup { get; init; }
+        public int LibraryLookups { get; private set; }
         private readonly Dictionary<string, byte[]> data = packages.ToDictionary(x =>
         {
             var metadata = PackageMetadata.Read(x, false);
             return metadata.Id.ToLowerInvariant() + "/" + PackageMetadata.NormalizeVersion(metadata.Version);
         });
         private readonly Uri source = new("https://fixtures.invalid/v3/index.json");
+        public byte[] Bytes(string key) => data[key];
         public Task<PackageListing> FindAsync(PackageKind kind, string id, CancellationToken cancellation = default)
         {
+            if (kind == PackageKind.Library) LibraryLookups++;
+            if (kind == PackageKind.Plugin && id == "fixture.dependency" && FailDependencyLookup)
+                throw new HttpRequestException("Plugin repository unavailable");
             var versions = data.Keys.Where(x => x.StartsWith(id.ToLowerInvariant() + "/", StringComparison.Ordinal))
+                .Where(x => MisplacedLibrary || PackageFixture.IsPlugin(data[x]) == (kind == PackageKind.Plugin))
                 .Select(x => NuGetVersion.Parse(x.Split('/')[1])).ToArray();
             if (versions.Length == 0) throw new KeyNotFoundException(id);
             return Task.FromResult(new PackageListing(source, source, versions));

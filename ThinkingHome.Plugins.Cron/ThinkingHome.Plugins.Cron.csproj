@@ -11,17 +11,10 @@
     <ProjectReference Include="../ThinkingHome.Plugins.Scripts/ThinkingHome.Plugins.Scripts.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="ncrontab" Version="3.4.0" />
+    <PackageReference Include="ncrontab" Version="3.4.0" ThinkingHomeShared="true" />
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="10.0.11" />
     <PackageReference Include="Microsoft.Extensions.Logging" Version="10.0.11" />
-    <PackageReference Include="ThinkingHome.Migrator.Framework" Version="3.10.0" />
-  </ItemGroup>
-  <ItemGroup>
-    <ThinkingHomeDependency Include="ThinkingHome.Plugins.Database" Kind="plugin" />
-    <ThinkingHomeDependency Include="ThinkingHome.Plugins.Timer" Kind="plugin" />
-    <ThinkingHomeDependency Include="ThinkingHome.Plugins.Scripts" Kind="plugin" />
-    <ThinkingHomeDependency Include="ncrontab" Kind="shared" />
-    <ThinkingHomeDependency Include="ThinkingHome.Migrator.Framework" Kind="shared" />
+    <PackageReference Include="ThinkingHome.Migrator.Framework" Version="3.10.0" ThinkingHomeShared="true" />
   </ItemGroup>
   <Import Project="../ThinkingHome.Packaging/build/ThinkingHome.Plugin.targets" />
 </Project>

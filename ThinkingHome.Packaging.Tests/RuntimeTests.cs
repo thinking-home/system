@@ -282,7 +282,8 @@ public class RuntimeTests(PackageFixture fixture) : IClassFixture<PackageFixture
 
         public Task<PackageListing> FindAsync(PackageKind kind, string id, CancellationToken cancellation = default) =>
             Task.FromResult(new PackageListing(address, address, packages.Where(x => x.Metadata.Id.Equals(id,
-            StringComparison.OrdinalIgnoreCase)).Select(x => x.Metadata.Version).ToArray()));
+            StringComparison.OrdinalIgnoreCase) && PackageFixture.IsPlugin(x.Bytes) == (kind == PackageKind.Plugin))
+                .Select(x => x.Metadata.Version).ToArray()));
 
         public Task<PackageDownload> DownloadAsync(PackageKind kind, string id, NuGetVersion version,
             CancellationToken cancellation = default) => Task.FromResult(packages.Single(x => x.Metadata.Id.Equals(id,
@@ -404,6 +405,17 @@ public class RuntimeTests(PackageFixture fixture) : IClassFixture<PackageFixture
     }
 
     [Fact]
+    public void Local_RejectsSharedAnnotationOnPluginReference()
+    {
+        var folder = Folder();
+        var dll = BuildLocal("Runtime", "-p:SharedTimer=true");
+        var timer = Path.Combine(Path.GetDirectoryName(dll)!, "ThinkingHome.Plugins.Timer.dll");
+        Connect(folder, [dll, timer], [new("Fixture.Runtime", "[1.0.0]")]);
+        Assert.Contains("Plugin cannot be marked shared", Assert.Throws<ResolutionException>(() =>
+            PluginRuntime.Open(folder, HostPlatform.Current())).Message);
+    }
+
+    [Fact]
     public void Local_ResolvesPrivateLibraryAndSatellite_DirectlyFromBuildDirectory()
     {
         var folder = Folder();
@@ -454,8 +466,8 @@ public class RuntimeTests(PackageFixture fixture) : IClassFixture<PackageFixture
     public void Local_SharedContractHasOneAssemblyIdentityAcrossPlugins()
     {
         var folder = Folder();
-        var graph = BuildLocal("Graph", "-p:DependencyKind=shared");
-        var other = BuildLocal("Bad", "-p:DependencyKind=shared");
+        var graph = BuildLocal("Graph", "-p:SharedDependency=true");
+        var other = BuildLocal("Bad", "-p:SharedDependency=true");
         Connect(folder, [graph, other], [new("Fixture.Graph", "[1.0.0]"), new("Fixture.Bad", "[1.0.0]")]);
         using var runtime = PluginRuntime.Open(folder, HostPlatform.Current());
         var dependencies = runtime.PluginTypes.Select(x =>
@@ -468,8 +480,8 @@ public class RuntimeTests(PackageFixture fixture) : IClassFixture<PackageFixture
     public void Local_RejectsDifferentSharedContentEvenAtSameVersion()
     {
         var folder = Folder();
-        var graph = BuildLocal("Graph", "-p:DependencyKind=shared");
-        var other = BuildLocal("Bad", "-p:DependencyKind=shared");
+        var graph = BuildLocal("Graph", "-p:SharedDependency=true");
+        var other = BuildLocal("Bad", "-p:SharedDependency=true");
         var library = Path.Combine(Path.GetDirectoryName(other)!, "Vendor.Dependency.dll");
         File.WriteAllBytes(library, File.ReadAllBytes(library).Concat(new byte[] { 0 }).ToArray());
         Connect(folder, [graph, other], [new("Fixture.Graph", "[1.0.0]"), new("Fixture.Bad", "[1.0.0]")]);
