@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
     <Import Project="../Package.xml"/>
     <PropertyGroup>
         <Description>Tmp plugin.</Description>
@@ -45,4 +45,19 @@
         <PackageReference Include="ThinkingHome.Migrator.Framework" Version="3.10.0"/>
         <PackageReference Include="Telegram.Bot" Version="22.10.2.1" />
     </ItemGroup>
+  <ItemGroup>
+    <ThinkingHomeDependency Include="ThinkingHome.Plugins.Database" Kind="plugin" />
+    <ThinkingHomeDependency Include="ThinkingHome.Plugins.Scripts" Kind="plugin" />
+    <ThinkingHomeDependency Include="ThinkingHome.Plugins.WebServer" Kind="plugin" />
+    <ThinkingHomeDependency Include="ThinkingHome.Plugins.Timer" Kind="plugin" />
+    <ThinkingHomeDependency Include="ThinkingHome.Plugins.Mail" Kind="plugin" />
+    <ThinkingHomeDependency Include="ThinkingHome.Plugins.Mqtt" Kind="plugin" />
+    <ThinkingHomeDependency Include="ThinkingHome.Plugins.Cron" Kind="plugin" />
+    <ThinkingHomeDependency Include="ThinkingHome.Plugins.TelegramBot" Kind="plugin" />
+    <ThinkingHomeDependency Include="ThinkingHome.Plugins.WebUi" Kind="plugin" />
+    <ThinkingHomeDependency Include="Microsoft.EntityFrameworkCore" Kind="shared" />
+    <ThinkingHomeDependency Include="ThinkingHome.Migrator.Framework" Kind="shared" />
+    <ThinkingHomeDependency Include="Telegram.Bot" Kind="shared" />
+  </ItemGroup>
+  <Import Project="../ThinkingHome.Packaging/build/ThinkingHome.Plugin.targets" />
 </Project>

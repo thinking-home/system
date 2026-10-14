@@ -1,0 +1,48 @@
+<Project DefaultTargets="Build">
+  <Import Project="Package.xml" />
+
+  <PropertyGroup>
+    <Configuration Condition="'$(Configuration)' == ''">Debug</Configuration>
+    <LocalPluginVersion>$(VersionPrefix)</LocalPluginVersion>
+    <LocalPluginVersion Condition="'$(VersionSuffix)' != ''">$(VersionPrefix)-$(VersionSuffix)</LocalPluginVersion>
+    <HostProject>$(MSBuildThisFileDirectory)ThinkingHome.Console/ThinkingHome.Console.csproj</HostProject>
+  </PropertyGroup>
+
+  <!-- Состав исходников задаёт только список подключений, а не отдельный режим хоста. -->
+  <ItemGroup>
+    <LocalPlugin Include="$(MSBuildThisFileDirectory)ThinkingHome.Plugins.*/*.csproj" />
+  </ItemGroup>
+
+  <Target Name="Build" DependsOnTargets="BuildProjects;WriteConnections" />
+
+  <!-- Обычная сборка создаёт DLL, deps.json и зависимости без упаковки плагинов. -->
+  <Target Name="BuildProjects">
+    <MSBuild Projects="@(LocalPlugin);$(HostProject)" Targets="Restore;Build"
+             Properties="Configuration=$(Configuration)" BuildInParallel="false" />
+  </Target>
+
+  <!-- Этот шаг можно выполнить отдельно после сборки решения в IDE. -->
+  <Target Name="WriteConnections">
+    <MSBuild Projects="@(LocalPlugin)" Targets="GetTargetPath" Properties="Configuration=$(Configuration)">
+      <Output TaskParameter="TargetOutputs" ItemName="PluginOutput" />
+    </MSBuild>
+
+    <MSBuild Projects="$(HostProject)" Targets="GetTargetPath" Properties="Configuration=$(Configuration)">
+      <Output TaskParameter="TargetOutputs" ItemName="HostOutput" />
+    </MSBuild>
+
+    <!-- JSON использует прямые слеши, чтобы пути Windows не стали escape-последовательностями. -->
+    <ItemGroup>
+      <PluginOutput Update="@(PluginOutput)">
+        <JsonPath>$([System.String]::Copy('%(FullPath)').Replace('\','/'))</JsonPath>
+      </PluginOutput>
+    </ItemGroup>
+
+    <PropertyGroup>
+      <Connections>{ &quot;pluginPaths&quot;: [@(PluginOutput->'&quot;%(JsonPath)&quot;', ',')], &quot;plugins&quot;: [@(LocalPlugin->'{ &quot;id&quot;: &quot;%(Filename)&quot;, &quot;version&quot;: &quot;[$(LocalPluginVersion)]&quot; }', ',')] }</Connections>
+    </PropertyGroup>
+
+    <WriteLinesToFile File="@(HostOutput->'%(RootDir)%(Directory)plugins.local.json')"
+                      Lines="$(Connections)" Overwrite="true" Encoding="UTF-8" />
+  </Target>
+</Project>

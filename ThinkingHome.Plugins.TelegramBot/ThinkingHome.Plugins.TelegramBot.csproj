@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <Import Project="../Package.xml" />
   <PropertyGroup>
     <Description>ThinkingHome plugin which implements a telegram bot.</Description>
@@ -13,4 +13,8 @@
     <PackageReference Include="Microsoft.Extensions.Logging" Version="10.0.11" />
     <PackageReference Include="Telegram.Bot" Version="22.10.2.1" />
   </ItemGroup>
+  <ItemGroup>
+    <ThinkingHomeDependency Include="Telegram.Bot" Kind="shared" />
+  </ItemGroup>
+  <Import Project="../ThinkingHome.Packaging/build/ThinkingHome.Plugin.targets" />
 </Project>

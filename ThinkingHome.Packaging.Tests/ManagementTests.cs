@@ -10,21 +10,30 @@ using Xunit;
 
 namespace ThinkingHome.Packaging.Tests;
 
-public class ManagementTests(PackageFixture fixture) : IClassFixture<PackageFixture> {
+public class ManagementTests(PackageFixture fixture) : IClassFixture<PackageFixture>
+{
     private string App() => Path.Combine(fixture.Work, "apps", Guid.NewGuid().ToString("N"));
-    private TestSource Source() => new(File.ReadAllBytes(fixture.Good), File.ReadAllBytes(fixture.Embedded), File.ReadAllBytes(fixture.Library));
+
+    private TestSource Source() => new(File.ReadAllBytes(fixture.Good), File.ReadAllBytes(fixture.Embedded),
+        File.ReadAllBytes(fixture.Library));
+
     private PackageManager Manager(string app, TestSource? source = null) => new(app, fixture.Platform(), source);
-    private static string Store(string app, string key) => Path.Combine(app, ".thinkinghome", "packages", key.Replace('/', Path.DirectorySeparatorChar));
+
+    private static string Store(string app, string key) => Path.Combine(app, ".thinkinghome", "packages", key.Replace('/',
+        Path.DirectorySeparatorChar));
+
     private static string Pointer(string app) => Path.Combine(app, ".thinkinghome", "current.json");
 
     [Fact]
-    public async Task Install_WritesCompleteSnapshot_AndValidatesOffline() {
+    public async Task Install_WritesCompleteSnapshot_AndValidatesOffline()
+    {
         var app = App();
         var source = Source();
         var manager = Manager(app, source);
         var state = await manager.InstallAsync("Fixture.Good", "[1.2.3-beta.1]");
         Assert.Equal(2, state.Plan.Lock.Packages.Length);
         Assert.Single(state.Request.Plugins);
+
         Assert.Equal(state.Generation, Manager(app).Validate().Generation);
         Assert.Equal(2, source.Downloads);
         Assert.False(File.Exists(Path.Combine(app, "appsettings.json")));
@@ -34,13 +43,15 @@ public class ManagementTests(PackageFixture fixture) : IClassFixture<PackageFixt
     }
 
     [Fact]
-    public async Task Ci_ReproducesFreshInstallation_WithoutVersionSelection() {
+    public async Task Ci_ReproducesFreshInstallation_WithoutVersionSelection()
+    {
         var source = Source();
         var original = await Manager(App(), source).InstallAsync("Fixture.Good", "[1.2.3-beta.1]");
         source.ForbidListing = true;
         var app = App();
         var copy = await Manager(app, source).RestoreLockedAsync(original.Request, original.Plan);
         Assert.Equal(PlanJson.Bytes(original.Plan), PlanJson.Bytes(copy.Plan));
+
         Assert.Equal(2, source.LockedDownloads);
         Assert.Equal(copy.Generation, Manager(app).Validate().Generation);
         var second = await Manager(app).RestoreLockedAsync(copy.Request, copy.Plan);
@@ -48,19 +59,22 @@ public class ManagementTests(PackageFixture fixture) : IClassFixture<PackageFixt
     }
 
     [Fact]
-    public async Task Install_ChangesVersion_AndRetainsRunningSnapshotAndOldFiles() {
+    public async Task Install_ChangesVersion_AndRetainsRunningSnapshotAndOldFiles()
+    {
         var source = Source();
         var nextPackage = fixture.Build("Good", "next-version", "-p:FixtureVersion=1.2.4");
         source.Add(File.ReadAllBytes(nextPackage));
         var app = App();
         var manager = Manager(app, source);
         var first = await manager.InstallAsync("Fixture.Good", "[1.2.3-beta.1]");
+
         using var running = manager.OpenSnapshot();
         var second = await manager.InstallAsync("Fixture.Good", "[1.2.4]");
         Assert.Equal(first.Generation, running.State.Generation);
         Assert.NotEqual(first.Generation, second.Generation);
         Assert.True(Directory.Exists(Store(app, "fixture.good/1.2.3-beta.1")));
         Assert.True(Directory.Exists(Store(app, "fixture.good/1.2.4")));
+
         Assert.Single(Directory.GetDirectories(Path.Combine(app, ".thinkinghome/packages/fixture.dependency")));
         Assert.Single(second.Request.Plugins);
         Assert.Equal(VersionRange.Parse("[1.2.4]"), VersionRange.Parse(second.Request.Plugins[0].Version));
@@ -71,12 +85,24 @@ public class ManagementTests(PackageFixture fixture) : IClassFixture<PackageFixt
     [InlineData("staged")]
     [InlineData("package-published")]
     [InlineData("state-published")]
-    public async Task Install_FailureBeforeCommit_PreservesActiveState(string checkpoint) {
+    public async Task Install_FailureBeforeCommit_PreservesActiveState(string checkpoint)
+    {
         var app = App();
         var source = Source();
         await Manager(app, source).InstallAsync("Fixture.Good", "[1.2.3-beta.1]");
         var original = File.ReadAllBytes(Pointer(app));
-        var failing = new PackageManager(app, fixture.Platform(), source) { Checkpoint = value => { if (value == checkpoint) throw new IOException("injected failure"); } };
+
+        var failing = new PackageManager(app, fixture.Platform(), source)
+        {
+            Checkpoint = value =>
+            {
+                if (value == checkpoint)
+                {
+                    throw new IOException("injected failure");
+                }
+            }
+        };
+
         await Assert.ThrowsAsync<IOException>(() => failing.InstallAsync("Fixture.Embedded", "[1.0.0]"));
         Assert.Equal(original, File.ReadAllBytes(Pointer(app)));
         Manager(app).Validate();
@@ -85,26 +111,41 @@ public class ManagementTests(PackageFixture fixture) : IClassFixture<PackageFixt
     }
 
     [Fact]
-    public async Task Install_CancellationAfterPublishingPackages_PreservesState() {
+    public async Task Install_CancellationAfterPublishingPackages_PreservesState()
+    {
         var app = App();
         var source = Source();
         await Manager(app, source).InstallAsync("Fixture.Good", "[1.2.3-beta.1]");
         var original = File.ReadAllBytes(Pointer(app));
         using var cancellation = new CancellationTokenSource();
-        var manager = new PackageManager(app, fixture.Platform(), source) { Checkpoint = value => { if (value == "package-published") cancellation.Cancel(); } };
-        await Assert.ThrowsAnyAsync<OperationCanceledException>(() => manager.InstallAsync("Fixture.Embedded", "[1.0.0]", cancellation.Token));
+
+        var manager = new PackageManager(app, fixture.Platform(), source)
+        {
+            Checkpoint = value =>
+            {
+                if (value == "package-published")
+                {
+                    cancellation.Cancel();
+                }
+            }
+        };
+
+        await Assert.ThrowsAnyAsync<OperationCanceledException>(() => manager.InstallAsync("Fixture.Embedded", "[1.0.0]",
+            cancellation.Token));
         Assert.Equal(original, File.ReadAllBytes(Pointer(app)));
         Manager(app).Validate();
     }
 
     [Fact]
-    public async Task Ci_RepairsMissingAndModifiedFiles_FromLocalArchive_WhenNotInUse() {
+    public async Task Ci_RepairsMissingAndModifiedFiles_FromLocalArchive_WhenNotInUse()
+    {
         var app = App();
         var state = await Manager(app, Source()).InstallAsync("Fixture.Good", "[1.2.3-beta.1]");
         var file = Path.Combine(Store(app, "fixture.good/1.2.3-beta.1"), "files/lib/net10.0/Good.dll");
         var original = File.ReadAllBytes(file);
         File.WriteAllText(file, "corrupt");
         Assert.Throws<InvalidDataException>(() => Manager(app).Validate());
+
         await Manager(app).RestoreLockedAsync(state.Request, state.Plan);
         Assert.Equal(original, File.ReadAllBytes(file));
         File.Delete(file);
@@ -113,13 +154,15 @@ public class ManagementTests(PackageFixture fixture) : IClassFixture<PackageFixt
     }
 
     [Fact]
-    public async Task Ci_DoesNotRepairFilesHeldByRunningSnapshot() {
+    public async Task Ci_DoesNotRepairFilesHeldByRunningSnapshot()
+    {
         var app = App();
         var manager = Manager(app, Source());
         var state = await manager.InstallAsync("Fixture.Good", "[1.2.3-beta.1]");
         using var running = manager.OpenSnapshot();
         var file = Path.Combine(running.PackageDirectory("fixture.good/1.2.3-beta.1"), "content/asset.txt");
         File.WriteAllText(file, "corrupt");
+
         var pointer = File.ReadAllBytes(Pointer(app));
         var error = await Assert.ThrowsAsync<IOException>(() => manager.RestoreLockedAsync(state.Request, state.Plan));
         Assert.Contains("in use", error.Message);
@@ -128,12 +171,24 @@ public class ManagementTests(PackageFixture fixture) : IClassFixture<PackageFixt
     }
 
     [Fact]
-    public async Task Ci_RollsBackRepair_WhenCommitFails() {
+    public async Task Ci_RollsBackRepair_WhenCommitFails()
+    {
         var app = App();
         var state = await Manager(app, Source()).InstallAsync("Fixture.Good", "[1.2.3-beta.1]");
         var file = Path.Combine(Store(app, "fixture.good/1.2.3-beta.1"), "files/content/asset.txt");
         File.WriteAllText(file, "old damaged content");
-        var manager = new PackageManager(app, fixture.Platform()) { Checkpoint = value => { if (value == "state-published") throw new IOException("injected failure"); } };
+
+        var manager = new PackageManager(app, fixture.Platform())
+        {
+            Checkpoint = value =>
+            {
+                if (value == "state-published")
+                {
+                    throw new IOException("injected failure");
+                }
+            }
+        };
+
         var pointer = File.ReadAllBytes(Pointer(app));
         await Assert.ThrowsAsync<IOException>(() => manager.RestoreLockedAsync(state.Request, state.Plan));
         Assert.Equal(pointer, File.ReadAllBytes(Pointer(app)));
@@ -141,37 +196,57 @@ public class ManagementTests(PackageFixture fixture) : IClassFixture<PackageFixt
     }
 
     [Fact]
-    public async Task Operations_AreSerialized() {
+    public async Task Operations_AreSerialized()
+    {
         var app = App();
         Directory.CreateDirectory(Path.Combine(app, ".thinkinghome"));
-        using var busy = new FileStream(Path.Combine(app, ".thinkinghome/operation.lock"), FileMode.Create, FileAccess.ReadWrite, FileShare.None);
+        using var busy = new FileStream(Path.Combine(app, ".thinkinghome/operation.lock"), FileMode.Create,
+            FileAccess.ReadWrite, FileShare.None);
         var error = await Assert.ThrowsAsync<IOException>(() => Manager(app, Source()).InstallAsync("Fixture.Good", "[1.2.3-beta.1]"));
         Assert.Contains("Another package operation", error.Message);
         Assert.False(File.Exists(Pointer(app)));
     }
 
     [Fact]
-    public async Task Ci_RejectsDeclarationTargetMapAndPlatformDrift() {
+    public async Task Ci_RejectsDeclarationTargetMapAndPlatformDrift()
+    {
         var original = await Manager(App(), Source()).InstallAsync("Fixture.Good", "[1.2.3-beta.1]");
         var app = App();
         var manager = Manager(app, Source());
-        await Assert.ThrowsAsync<InvalidDataException>(() => manager.RestoreLockedAsync(original.Request with { Plugins = [new("Fixture.Good", "[9.0.0]")] }, original.Plan));
-        await Assert.ThrowsAsync<InvalidDataException>(() => manager.RestoreLockedAsync(original.Request with { Rid = "linux-x64" }, original.Plan));
-        var tampered = original.Plan with { LoadMap = original.Plan.LoadMap with { Assets = [] } };
+        await Assert.ThrowsAsync<InvalidDataException>(() =>
+            manager.RestoreLockedAsync(original.Request with { Plugins = [new("Fixture.Good", "[9.0.0]")] }, original.Plan));
+        await Assert.ThrowsAsync<InvalidDataException>(() =>
+            manager.RestoreLockedAsync(original.Request with { Rid = "linux-x64" }, original.Plan));
+
+        var tampered = original.Plan with
+        {
+            LoadMap = original.Plan.LoadMap with
+            {
+                Assets = []
+            }
+        };
+
         await Assert.ThrowsAsync<InvalidDataException>(() => manager.RestoreLockedAsync(original.Request, tampered));
-        var platform = fixture.Platform() with { Version = "4.0.0-alpha35" };
-        await Assert.ThrowsAsync<InvalidDataException>(() => new PackageManager(app, platform, Source()).RestoreLockedAsync(original.Request, original.Plan));
+        var platform = fixture.Platform() with
+        {
+            Version = "4.0.0-alpha35"
+        };
+        await Assert.ThrowsAsync<InvalidDataException>(() => new PackageManager(app, platform,
+            Source()).RestoreLockedAsync(original.Request, original.Plan));
+
         Assert.False(File.Exists(Pointer(app)));
     }
 
     [Fact]
-    public async Task Ci_RejectsChangedArchiveAndPinnedSource_WithoutInstalling() {
+    public async Task Ci_RejectsChangedArchiveAndPinnedSource_WithoutInstalling()
+    {
         var source = Source();
         var original = await Manager(App(), source).InstallAsync("Fixture.Good", "[1.2.3-beta.1]");
         source.ChangeBytes = true;
         var app = App();
         await Assert.ThrowsAsync<InvalidDataException>(() => Manager(app, source).RestoreLockedAsync(original.Request, original.Plan));
         Assert.False(File.Exists(Pointer(app)));
+
         source.ChangeBytes = false;
         source.ChangeSource = true;
         await Assert.ThrowsAsync<InvalidDataException>(() => Manager(app, source).RestoreLockedAsync(original.Request, original.Plan));
@@ -182,110 +257,223 @@ public class ManagementTests(PackageFixture fixture) : IClassFixture<PackageFixt
     [InlineData("extra-file")]
     [InlineData("archive")]
     [InlineData("document")]
-    public async Task Validate_RejectsTamperedInstalledState(string kind) {
+    [InlineData("generated-configuration")]
+    public async Task Validate_RejectsTamperedInstalledState(string kind)
+    {
         var app = App();
         var state = await Manager(app, Source()).InstallAsync("Fixture.Good", "[1.2.3-beta.1]");
-        if (kind == "extra-file") File.WriteAllText(Path.Combine(Store(app, "fixture.good/1.2.3-beta.1"), "files/unexpected.dll"), "unexpected");
-        else if (kind == "archive") File.WriteAllText(Path.Combine(Store(app, "fixture.good/1.2.3-beta.1"), "package.nupkg"), "changed");
-        else File.AppendAllText(Path.Combine(state.Directory, "plugins.json"), " ");
+
+        if (kind == "extra-file")
+        {
+            File.WriteAllText(Path.Combine(Store(app, "fixture.good/1.2.3-beta.1"), "files/unexpected.dll"), "unexpected");
+        }
+        else if (kind == "archive")
+        {
+            File.WriteAllText(Path.Combine(Store(app, "fixture.good/1.2.3-beta.1"), "package.nupkg"), "changed");
+        }
+        else if (kind == "generated-configuration")
+        {
+            File.AppendAllText(Path.Combine(state.Directory, "appsettings.plugins.json"), " ");
+        }
+        else
+        {
+            File.AppendAllText(Path.Combine(state.Directory, "plugins.json"), " ");
+        }
+
         Assert.Throws<InvalidDataException>(() => Manager(app).Validate());
     }
 
     [Fact]
-    public async Task Recover_RollsBackInterruptedRepair_BeforeAllowingSnapshot() {
+    public async Task Recover_RollsBackInterruptedRepair_BeforeAllowingSnapshot()
+    {
         var app = App();
         var manager = Manager(app, Source());
         var state = await manager.InstallAsync("Fixture.Good", "[1.2.3-beta.1]");
         var generation = Guid.NewGuid().ToString("N");
         var key = "fixture.good/1.2.3-beta.1";
         var backup = Path.Combine(app, ".thinkinghome/staging", generation, "backups", key);
+
         Directory.CreateDirectory(Path.GetDirectoryName(backup)!);
-        File.WriteAllBytes(Path.Combine(app, ".thinkinghome/transaction.json"), PlanJson.Bytes(new TransactionJournal(1, generation, state.Generation, [key])));
+        File.WriteAllBytes(Path.Combine(app, ".thinkinghome/transaction.json"), PlanJson.Bytes(new TransactionJournal(1,
+            generation, state.Generation, [key])));
         Directory.Move(Store(app, key), backup);
         Assert.Throws<IOException>(() => manager.OpenSnapshot());
         manager.Recover();
         Assert.Equal(state.Generation, manager.Validate().Generation);
+
         Assert.False(Directory.Exists(Path.Combine(app, ".thinkinghome/staging", generation)));
     }
 
     [Fact]
-    public async Task Recover_KeepsCommittedState_AndRemovesBackup() {
+    public async Task Recover_KeepsCommittedState_AndRemovesBackup()
+    {
         var app = App();
         var manager = Manager(app, Source());
         var state = await manager.InstallAsync("Fixture.Embedded", "[1.0.0]");
         var backup = Path.Combine(app, ".thinkinghome/staging", state.Generation, "backups/fixture.embedded/1.0.0");
         Directory.CreateDirectory(backup);
         File.WriteAllText(Path.Combine(backup, "old.txt"), "old damaged content");
-        File.WriteAllBytes(Path.Combine(app, ".thinkinghome/transaction.json"), PlanJson.Bytes(new TransactionJournal(1, state.Generation, null, ["fixture.embedded/1.0.0"])));
+
+        File.WriteAllBytes(Path.Combine(app, ".thinkinghome/transaction.json"), PlanJson.Bytes(new TransactionJournal(1,
+            state.Generation, null, ["fixture.embedded/1.0.0"])));
         manager.Recover();
         Assert.Equal(state.Generation, manager.Validate().Generation);
         Assert.False(Directory.Exists(backup));
     }
 
     [Fact]
-    public async Task Install_RejectsRepublishedIdentity_EvenWhenStoreDirectoryIsMissing() {
+    public async Task Install_RejectsRepublishedIdentity_EvenWhenStoreDirectoryIsMissing()
+    {
         var app = App();
         var source = Source();
         var state = await Manager(app, source).InstallAsync("Fixture.Good", "[1.2.3-beta.1]");
         source.Add(File.ReadAllBytes(fixture.Mutate(zip => zip.CreateEntry("new-content.txt"))));
         Directory.Move(Store(app, "fixture.good/1.2.3-beta.1"), Path.Combine(app, "saved-package"));
-        var error = await Assert.ThrowsAsync<InvalidDataException>(() => Manager(app, source).InstallAsync("Fixture.Good", "[1.2.3-beta.1]"));
+        var error = await Assert.ThrowsAsync<InvalidDataException>(() => Manager(app, source).InstallAsync("Fixture.Good",
+            "[1.2.3-beta.1]"));
+
         Assert.Contains("Immutable package identity", error.Message);
         using var snapshot = Manager(app).OpenSnapshot();
         Assert.Equal(state.Generation, snapshot.State.Generation);
     }
 
     [Fact]
-    public async Task Cli_InstallsValidatesAndRestoresThroughLocalHttp() {
+    public async Task Cli_UsesBundledPlatform_AndHostAcceptsInstalledAndRestoredPackages()
+    {
         var folder = Path.Combine(fixture.Work, "cli-repository");
         Directory.CreateDirectory(folder);
         File.Copy(fixture.Embedded, Path.Combine(folder, "embedded.nupkg"));
         await using var server = RepositoryServer.Create(folder, "http://127.0.0.1:0");
         await server.StartAsync();
-        try {
-            var platform = Path.Combine(folder, "platform.json");
+
+        try
+        {
+            // Проверяем реальную поставку двух программ, а не платформу процесса тестов.
+            var bundle = Path.Combine(fixture.Work, "cli-bundle");
+            var publish = PackageFixture.Run("dotnet", "publish",
+                Path.Combine(fixture.Root, "ThinkingHome.Console/ThinkingHome.Console.csproj"),
+                "-c", "Release", "-o", bundle, "-m:1", "-p:UseSharedCompilation=false", "-p:NuGetAudit=false");
+            Assert.True(publish.Code == 0, publish.Output);
+            var tool = Path.Combine(bundle, "ThinkingHome.PackageManagement.dll");
+            var host = Path.Combine(bundle, "ThinkingHome.Console.dll");
+
             var sources = Path.Combine(folder, "sources.json");
-            File.WriteAllBytes(platform, PlanJson.Bytes(fixture.Platform()));
-            File.WriteAllBytes(sources, PlanJson.Bytes(new SourceConfiguration { PluginSources = [server.Urls.Single() + "/v3/index.json"] }));
+            File.WriteAllBytes(sources,
+                PlanJson.Bytes(new SourceConfiguration { PluginSources = [server.Urls.Single() + "/v3/index.json"] }));
             var app = App();
-            var tool = typeof(PackageManager).Assembly.Location;
-            var install = await Task.Run(() => PackageFixture.Run("dotnet", tool, "install", app, "Fixture.Embedded", "[1.0.0]", platform, sources));
+            var install = await Task.Run(() => PackageFixture.Run("dotnet", tool, "install", app,
+                "Fixture.Embedded", "[1.0.0]", sources));
             Assert.True(install.Code == 0, install.Output);
-            var state = Manager(app).Validate();
+
+            var check = PackageFixture.Run("dotnet", host, "--app", app, "--check");
+            Assert.True(check.Code == 0, check.Output);
+            var state = Directory.GetDirectories(Path.Combine(app, ".thinkinghome/states")).Single();
             var copy = App();
-            var restore = await Task.Run(() => PackageFixture.Run("dotnet", tool, "ci", copy, Path.Combine(state.Directory, "plugins.json"), state.Directory, platform, sources));
+            var restore = await Task.Run(() => PackageFixture.Run("dotnet", tool, "ci", copy,
+                Path.Combine(state, "plugins.json"), state, sources));
             Assert.True(restore.Code == 0, restore.Output);
-            var validation = PackageFixture.Run("dotnet", tool, "validate", copy, platform);
+
+            var validation = PackageFixture.Run("dotnet", tool, "validate", copy);
             Assert.True(validation.Code == 0, validation.Output);
-        } finally { await server.StopAsync(); }
+            var restoredCheck = PackageFixture.Run("dotnet", host, "--app", copy, "--check");
+            Assert.True(restoredCheck.Code == 0, restoredCheck.Output);
+            var recovery = PackageFixture.Run("dotnet", tool, "recover", copy);
+            Assert.True(recovery.Code == 0, recovery.Output);
+
+            // Файл платформы больше не является ни входом, ни результатом команд.
+            Assert.Empty(Directory.GetFiles(app, "platform.json", SearchOption.AllDirectories));
+            Assert.Empty(Directory.GetFiles(copy, "platform.json", SearchOption.AllDirectories));
+            var obsolete = PackageFixture.Run("dotnet", tool, "validate", copy, "platform.json");
+            Assert.Equal(2, obsolete.Code);
+        }
+        finally
+        {
+            await server.StopAsync();
+        }
     }
 
-    private sealed class TestSource(params byte[][] packages) : ILockedPackageSource {
+    private sealed class TestSource(params byte[][] packages) : ILockedPackageSource
+    {
         private readonly Dictionary<string, byte[]> data = new(StringComparer.Ordinal);
         private bool initialized;
+
         internal int Downloads { get; private set; }
+
         internal int LockedDownloads { get; private set; }
+
         internal bool ForbidListing { get; set; }
+
         internal bool ChangeBytes { get; set; }
+
         internal bool ChangeSource { get; set; }
+
         private readonly Uri uri = new("https://fixtures.invalid/v3/index.json");
-        internal void Add(byte[] bytes) { Ensure(); var metadata = PackageMetadata.Read(bytes, false); data[metadata.Id.ToLowerInvariant() + "/" + PackageMetadata.NormalizeVersion(metadata.Version)] = bytes; }
-        private void Ensure() { if (initialized) return; initialized = true; foreach (var bytes in packages) Add(bytes); }
-        public Task<PackageListing> FindAsync(PackageKind kind, string id, CancellationToken cancellation = default) {
+
+        internal void Add(byte[] bytes)
+        {
             Ensure();
-            if (ForbidListing) throw new InvalidOperationException("Version selection must not run during locked restore");
-            return Task.FromResult(new PackageListing(uri, uri, data.Keys.Where(x => x.StartsWith(id.ToLowerInvariant() + "/")).Select(x => NuGetVersion.Parse(x.Split('/')[1])).ToArray()));
+            var metadata = PackageMetadata.Read(bytes, false);
+            data[metadata.Id.ToLowerInvariant() + "/" + PackageMetadata.NormalizeVersion(metadata.Version)] = bytes;
         }
-        public Task<PackageDownload> DownloadAsync(PackageKind kind, string id, NuGetVersion version, CancellationToken cancellation = default) { Downloads++; return Download(kind, id, version); }
-        public Task<PackageDownload> DownloadLockedAsync(Uri source, PackageKind kind, string id, NuGetVersion version, CancellationToken cancellation = default) {
-            Assert.Equal(uri, source); LockedDownloads++; return Download(kind, id, version);
+
+        private void Ensure()
+        {
+            if (initialized)
+            {
+                return;
+            }
+
+            initialized = true;
+
+            foreach (var bytes in packages)
+            {
+                Add(bytes);
+            }
         }
-        private Task<PackageDownload> Download(PackageKind kind, string id, NuGetVersion version) {
+
+        public Task<PackageListing> FindAsync(PackageKind kind, string id, CancellationToken cancellation = default)
+        {
+            Ensure();
+
+            if (ForbidListing)
+            {
+                throw new InvalidOperationException("Version selection must not run during locked restore");
+            }
+
+            return Task.FromResult(new PackageListing(uri, uri, data.Keys.Where(x =>
+                x.StartsWith(id.ToLowerInvariant() + "/")).Select(x => NuGetVersion.Parse(x.Split('/')[1])).ToArray()));
+        }
+
+        public Task<PackageDownload> DownloadAsync(PackageKind kind, string id, NuGetVersion version,
+            CancellationToken cancellation = default)
+        {
+            Downloads++;
+
+            return Download(kind, id, version);
+        }
+
+        public Task<PackageDownload> DownloadLockedAsync(Uri source, PackageKind kind, string id, NuGetVersion version,
+            CancellationToken cancellation = default)
+        {
+            Assert.Equal(uri, source);
+            LockedDownloads++;
+
+            return Download(kind, id, version);
+        }
+
+        private Task<PackageDownload> Download(PackageKind kind, string id, NuGetVersion version)
+        {
             Ensure();
             var bytes = data[id.ToLowerInvariant() + "/" + PackageMetadata.NormalizeVersion(version)];
             var metadata = PackageMetadata.Read(bytes, kind == PackageKind.Plugin);
-            if (ChangeBytes) bytes = bytes.Concat(new byte[] { 1 }).ToArray();
-            return Task.FromResult(new PackageDownload(ChangeSource ? new Uri("https://other.invalid/v3/index.json") : uri, metadata, bytes, PlanJson.Hash(bytes)));
+
+            if (ChangeBytes)
+            {
+                bytes = bytes.Concat(new byte[] { 1 }).ToArray();
+            }
+
+            return Task.FromResult(new PackageDownload(ChangeSource ? new Uri("https://other.invalid/v3/index.json") : uri,
+                metadata, bytes, PlanJson.Hash(bytes)));
         }
     }
 }

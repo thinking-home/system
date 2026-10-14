@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
     <Import Project="../Package.xml"/>
     <PropertyGroup>
         <Description>ThinkingHome plugin which provides web UI for script management.</Description>
@@ -35,4 +35,9 @@
         <PackageReference Include="Microsoft.Extensions.Configuration" Version="10.0.11"/>
         <PackageReference Include="Microsoft.Extensions.Logging" Version="10.0.11"/>
     </ItemGroup>
+  <ItemGroup>
+    <ThinkingHomeDependency Include="ThinkingHome.Plugins.WebServer" Kind="plugin" />
+    <ThinkingHomeDependency Include="ThinkingHome.Plugins.WebUi" Kind="plugin" />
+  </ItemGroup>
+  <Import Project="../ThinkingHome.Packaging/build/ThinkingHome.Plugin.targets" />
 </Project>

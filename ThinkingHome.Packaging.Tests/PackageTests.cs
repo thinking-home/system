@@ -1,16 +1,17 @@
+using ThinkingHome.Platform;
 using System.Diagnostics;
 using System.IO.Compression;
 using System.Xml.Linq;
 using ThinkingHome.Packaging;
 using ThinkingHome.PackagePlanning;
-using System.Reflection;
 using Xunit;
 
 [assembly: CollectionBehavior(DisableTestParallelization = true)]
 
 namespace ThinkingHome.Packaging.Tests;
 
-public sealed class PackageFixture : IDisposable {
+public sealed class PackageFixture : IDisposable
+{
     public string Root { get; }
     public string Work { get; }
     public string Good { get; }
@@ -20,25 +21,30 @@ public sealed class PackageFixture : IDisposable {
     public string Transitive { get; }
     public string Library { get; }
 
-    public PackageFixture() {
+    public PackageFixture()
+    {
         var directory = new DirectoryInfo(AppContext.BaseDirectory);
         while (directory != null && !File.Exists(Path.Combine(directory.FullName, "ThinkingHome.sln"))) directory = directory.Parent;
         Root = directory?.FullName ?? throw new IOException("Repository root not found");
         Work = Path.Combine(Root, "artifacts", "packaging-tests", Guid.NewGuid().ToString("N"));
-        try {
+        try
+        {
             Good = Build("Good", "good");
             Library = Build("Dependency", "dependency");
             Bad = Build("Bad", "bad");
             Shared = Build("Bad", "shared", "-p:DependencyKind=shared");
             Embedded = Build("Embedded", "embedded");
             Transitive = Build("Transitive", "transitive");
-        } catch {
+        }
+        catch
+        {
             Dispose();
             throw;
         }
     }
 
-    public void Dispose() {
+    public void Dispose()
+    {
         var parent = Path.GetFullPath(Path.Combine(Root, "artifacts", "packaging-tests")) + Path.DirectorySeparatorChar;
         var work = Path.GetFullPath(Work);
         if (!work.StartsWith(parent, StringComparison.OrdinalIgnoreCase))
@@ -46,7 +52,8 @@ public sealed class PackageFixture : IDisposable {
         if (Directory.Exists(work)) Directory.Delete(work, recursive: true);
     }
 
-    public string Build(string project, string name, params string[] extra) {
+    public string Build(string project, string name, params string[] extra)
+    {
         var output = Path.Combine(Work, name);
         Directory.CreateDirectory(output);
         var result = Run("dotnet", new[] { "pack", Path.Combine(Root, "ThinkingHome.Packaging.Tests", "Fixtures", project, project + ".csproj"),
@@ -58,18 +65,10 @@ public sealed class PackageFixture : IDisposable {
 
     public static string Inputs(string package) => Path.Combine(Path.GetDirectoryName(package)!, "inputs");
 
-    public PlatformCatalog Platform(string rid = "win-x64") {
-        var input = Inputs(Good);
-        var ids = File.ReadAllLines(Path.Combine(input, "platform.txt")).ToHashSet(StringComparer.OrdinalIgnoreCase);
-        var references = File.ReadAllLines(Path.Combine(input, "ownership.txt")).Select(x => x.Split('|'))
-            .Where(x => ids.Contains(x[1]) || x[2].Contains("ThinkingHome.Core.Plugins") || x[3].Length > 0).Select(x => x[0]);
-        var runtimeDirectory = Path.GetDirectoryName(typeof(object).Assembly.Location);
-        var runtime = ((string)AppContext.GetData("TRUSTED_PLATFORM_ASSEMBLIES")!).Split(Path.PathSeparator).Where(x => Path.GetDirectoryName(x) == runtimeDirectory);
-        var assemblies = references.Concat(runtime).GroupBy(x => AssemblyName.GetAssemblyName(x).Name).Select(x => x.Last()).ToArray();
-        return new("4.0.0-alpha34", "net10.0", rid, ids.ToDictionary(x => x, x => x == "ThinkingHome.Core.Plugins" ? "4.0.0-alpha34" : "10.0.11"), assemblies);
-    }
+    public PlatformCatalog Platform(string rid = "win-x64") => HostPlatform.Current() with { Rid = rid };
 
-    public string Mutate(Action<ZipArchive> change) {
+    public string Mutate(Action<ZipArchive> change)
+    {
         var target = Path.Combine(Work, Guid.NewGuid().ToString("N") + ".nupkg");
         File.Copy(Good, target);
         using var zip = ZipFile.Open(target, ZipArchiveMode.Update);
@@ -77,7 +76,8 @@ public sealed class PackageFixture : IDisposable {
         return target;
     }
 
-    public static (int Code, string Output) Run(string command, params string[] arguments) {
+    public static (int Code, string Output) Run(string command, params string[] arguments)
+    {
         var start = new ProcessStartInfo(command) { RedirectStandardOutput = true, RedirectStandardError = true, UseShellExecute = false };
         foreach (var argument in arguments) start.ArgumentList.Add(argument);
         using var process = Process.Start(start)!;
@@ -88,9 +88,11 @@ public sealed class PackageFixture : IDisposable {
     }
 }
 
-public class PackageTests(PackageFixture fixture) : IClassFixture<PackageFixture> {
+public class PackageTests(PackageFixture fixture) : IClassFixture<PackageFixture>
+{
     [Fact]
-    public void Validate_AcceptsPrivateImplementation_WithoutExecutingModuleInitializer() {
+    public void Validate_AcceptsPrivateImplementation_WithoutExecutingModuleInitializer()
+    {
         var result = PackageValidator.Validate(fixture.Good, PackageFixture.Inputs(fixture.Good));
         Assert.Equal("Fixture.Good", result.PackageId);
         Assert.Equal("1.2.3-beta.1", result.Version);
@@ -117,7 +119,8 @@ public class PackageTests(PackageFixture fixture) : IClassFixture<PackageFixture
     [InlineData("interface")]
     [InlineData("NestedValue")]
     [InlineData("forwarded type")]
-    public void Validate_RejectsPrivateType_InContract(string member) {
+    public void Validate_RejectsPrivateType_InContract(string member)
+    {
         var exception = Assert.Throws<InvalidDataException>(() => PackageValidator.Validate(fixture.Bad, PackageFixture.Inputs(fixture.Bad)));
         Assert.Contains(member, exception.Message);
         Assert.Contains("Fixture.Dependency", exception.Message);
@@ -125,12 +128,14 @@ public class PackageTests(PackageFixture fixture) : IClassFixture<PackageFixture
     }
 
     [Fact]
-    public void Validate_AcceptsSameApi_WhenDependencyIsExplicitlyShared() {
+    public void Validate_AcceptsSameApi_WhenDependencyIsExplicitlyShared()
+    {
         Assert.Equal("Fixture.Bad", PackageValidator.Validate(fixture.Shared, PackageFixture.Inputs(fixture.Shared)).PackageId);
     }
 
     [Fact]
-    public void Validate_RejectsPrivateType_InsideExternalSharedDto() {
+    public void Validate_RejectsPrivateType_InsideExternalSharedDto()
+    {
         var exception = Assert.Throws<InvalidDataException>(() =>
             PackageValidator.Validate(fixture.Transitive, PackageFixture.Inputs(fixture.Transitive)));
         Assert.Contains("GetData", exception.Message);
@@ -139,7 +144,8 @@ public class PackageTests(PackageFixture fixture) : IClassFixture<PackageFixture
     }
 
     [Fact]
-    public void Validate_AcceptsDeclaredEmbeddedLibrary() {
+    public void Validate_AcceptsDeclaredEmbeddedLibrary()
+    {
         Assert.Equal("Fixture.Embedded", PackageValidator.Validate(fixture.Embedded, PackageFixture.Inputs(fixture.Embedded)).PackageId);
         using var zip = ZipFile.OpenRead(fixture.Embedded);
         Assert.NotNull(zip.GetEntry("lib/net10.0/Vendor.Dependency.dll"));
@@ -148,8 +154,10 @@ public class PackageTests(PackageFixture fixture) : IClassFixture<PackageFixture
     [Theory]
     [InlineData("id", "Different.Plugin", "ID mismatch")]
     [InlineData("version", "9.0.0", "version mismatch")]
-    public void Validate_RejectsNuspecMismatch(string field, string value, string error) {
-        var package = fixture.Mutate(zip => {
+    public void Validate_RejectsNuspecMismatch(string field, string value, string error)
+    {
+        var package = fixture.Mutate(zip =>
+        {
             var spec = zip.Entries.Single(x => x.FullName.EndsWith(".nuspec"));
             XDocument document;
             using (var stream = spec.Open()) document = XDocument.Load(stream);
@@ -164,7 +172,8 @@ public class PackageTests(PackageFixture fixture) : IClassFixture<PackageFixture
     }
 
     [Fact]
-    public void Validate_RejectsUndeclaredBundledDependency() {
+    public void Validate_RejectsUndeclaredBundledDependency()
+    {
         var package = fixture.Mutate(zip => zip.CreateEntryFromFile(Path.Combine(fixture.Root,
             "ThinkingHome.Packaging.Tests", "Fixtures", "Dependency", "bin", "Release", "net10.0", "Vendor.Dependency.dll"),
             "lib/net10.0/Vendor.Dependency.dll"));
@@ -176,14 +185,16 @@ public class PackageTests(PackageFixture fixture) : IClassFixture<PackageFixture
     [InlineData("../escape.dll")]
     [InlineData("/absolute.dll")]
     [InlineData("C:/absolute.dll")]
-    public void Validate_RejectsUnsafeArchivePath(string path) {
+    public void Validate_RejectsUnsafeArchivePath(string path)
+    {
         var package = fixture.Mutate(zip => zip.CreateEntry(path));
         Assert.Contains("Unsafe package path", Assert.Throws<InvalidDataException>(() =>
             PackageValidator.Validate(package, PackageFixture.Inputs(fixture.Good))).Message);
     }
 
     [Fact]
-    public void Pack_DoesNotExposeInvalidPackage() {
+    public void Pack_DoesNotExposeInvalidPackage()
+    {
         var output = Path.Combine(fixture.Work, "rejected");
         var result = PackageFixture.Run("dotnet", typeof(PackageValidator).Assembly.Location, "pack",
             Path.Combine(fixture.Root, "ThinkingHome.Packaging.Tests", "Fixtures", "Bad", "Bad.csproj"), output);
@@ -196,16 +207,19 @@ public class PackageTests(PackageFixture fixture) : IClassFixture<PackageFixture
     [Theory]
     [InlineData("-p:MetadataCase=DUPLICATE_METADATA", "Duplicate manifest key")]
     [InlineData("-p:MetadataCase=UNKNOWN_METADATA", "Unknown plugin metadata")]
-    [InlineData("-p:FixtureEntryPoint=Fixture.Envelope", "Invalid entry point")]
-    public void Validate_RejectsMalformedManifest(string property, string error) {
+    [InlineData("-p:MetadataCase=NO_ENTRY_POINTS", "No plugin entry points")]
+    public void Validate_RejectsMalformedManifest(string property, string error)
+    {
         var package = fixture.Build("Good", Guid.NewGuid().ToString("N"), property);
         Assert.Contains(error, Assert.Throws<InvalidDataException>(() =>
             PackageValidator.Validate(package, PackageFixture.Inputs(package))).Message);
     }
 
     [Fact]
-    public void Validate_RejectsMissingNuspecDependency() {
-        var package = fixture.Mutate(zip => {
+    public void Validate_RejectsMissingNuspecDependency()
+    {
+        var package = fixture.Mutate(zip =>
+        {
             var entry = zip.Entries.Single(x => x.FullName.EndsWith(".nuspec"));
             XDocument document;
             using (var stream = entry.Open()) document = XDocument.Load(stream);
@@ -221,8 +235,10 @@ public class PackageTests(PackageFixture fixture) : IClassFixture<PackageFixture
     }
 
     [Fact]
-    public void Validate_RejectsDependencyRangeMismatch() {
-        var package = fixture.Mutate(zip => {
+    public void Validate_RejectsDependencyRangeMismatch()
+    {
+        var package = fixture.Mutate(zip =>
+        {
             var entry = zip.Entries.Single(x => x.FullName.EndsWith(".nuspec"));
             XDocument document;
             using (var stream = entry.Open()) document = XDocument.Load(stream);
@@ -238,7 +254,8 @@ public class PackageTests(PackageFixture fixture) : IClassFixture<PackageFixture
     }
 
     [Fact]
-    public void Validate_RejectsMissingReference_InsteadOfSkippingInspection() {
+    public void Validate_RejectsMissingReference_InsteadOfSkippingInspection()
+    {
         var inputs = Path.Combine(fixture.Work, "missing-reference");
         Directory.CreateDirectory(inputs);
         foreach (var file in Directory.GetFiles(PackageFixture.Inputs(fixture.Good)))
@@ -249,7 +266,8 @@ public class PackageTests(PackageFixture fixture) : IClassFixture<PackageFixture
     }
 
     [Fact]
-    public void Pack_PreservesExistingVersion() {
+    public void Pack_PreservesExistingVersion()
+    {
         var output = Path.Combine(fixture.Work, "existing");
         Directory.CreateDirectory(output);
         var destination = Path.Combine(output, Path.GetFileName(fixture.Good));

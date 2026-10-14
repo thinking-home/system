@@ -7,13 +7,10 @@
     <Description>Packaging validation fixture</Description>
     <NoWarn>$(NoWarn);CA2255</NoWarn>
     <DefineConstants>$(DefineConstants);$(MetadataCase)</DefineConstants>
-    <FixtureEntryPoint Condition="'$(FixtureEntryPoint)' == ''">Fixture.GoodPlugin</FixtureEntryPoint>
-    <ThinkingHomePlatformRange>[4.0.0-alpha34,5.0.0)</ThinkingHomePlatformRange>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="../../../ThinkingHome.Core.Plugins/ThinkingHome.Core.Plugins.csproj" />
     <ProjectReference Include="../Dependency/Dependency.csproj" />
-    <ThinkingHomeEntryPoint Include="$(FixtureEntryPoint)" />
     <ThinkingHomeDependency Include="Fixture.Dependency" Kind="private" />
     <None Include="asset.txt" Pack="true" PackagePath="content/asset.txt" />
   </ItemGroup>

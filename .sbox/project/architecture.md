@@ -14,7 +14,10 @@ verification: needs-review
 
 | Проект | Ответственность | Зависит от | С чего начинать |
 |---|---|---|---|
-| `ThinkingHome.Console` | хост: читает конфиг, запускает `HomeApplication`, ждёт Ctrl+C, останавливает плагины | все плагины | `ThinkingHome.Console/Program.cs` |
+| `ThinkingHome.Console` | потребительский хост: проверяет снимок, загружает пакеты, запускает `HomeApplication`, ждёт Ctrl+C | инфраструктура и PackageRuntime; без проектных ссылок на плагины | `ThinkingHome.Console/Program.cs` |
+| `ThinkingHome.PackageRuntime` | проверенная загрузка, контексты, локальные подключения DLL | PackageManagement, Platform и Core.Plugins | `ThinkingHome.PackageRuntime/PluginRuntime.cs` |
+| `ThinkingHome.Platform` | общий каталог платформы для упаковщика, хоста и менеджера; граф зависимостей ядра из deps.json и фактический runtime | Core.Plugins, ASP.NET Core framework | `ThinkingHome.Platform/HostPlatform.cs` |
+| `ThinkingHome.PackageManagement` | отдельный CLI установки, ci, validate и recover; автоматическая платформа | PackagePlanning и Platform | `ThinkingHome.PackageManagement/Program.cs` |
 | `ThinkingHome.Core.Plugins` | `PluginBase`, `IServiceContext`, `EventContext`, реестры `ObjectRegistry` и `ObjectSetRegistry`, `BaseConfigurationBuilder`, расширения `FindMethods`, `FindAttrs`, `SafeInvoke` | — | `ThinkingHome.Core.Plugins/PluginBase.cs`, `ThinkingHome.Core.Plugins/Utils/Extensions.cs` |
 | `ThinkingHome.Core.Infrastructure` | `HomeConfiguration` (appsettings и переменные `THINKINGHOME_`), `HomeApplication` (DI, Serilog, init/start/stop), `ServiceContext` | — | `ThinkingHome.Core.Infrastructure/HomeApplication.cs` |
 | `ThinkingHome.Plugins.Database` | EF Core и Npgsql, миграции ThinkingHome.Migrator при старте, `OpenSession()` | — | `ThinkingHome.Plugins.Database/DatabasePlugin.cs` |
@@ -45,7 +48,7 @@ verification: needs-review
 
 Отдельно от хоста в решение включены `ThinkingHome.Packaging` (упаковка, метаданные DLL и статическая проверка контрактов), `ThinkingHome.Repository` (NuGet V3 для локальной папки), `ThinkingHome.PackageSources` (раздельные источники плагинов и библиотек), `ThinkingHome.PackagePlanning` (разрешение графа, выбор ресурсов, повторная проверка контрактов, lock-файл и карта загрузки), `ThinkingHome.PackageManagement` (установка, locked-восстановление, валидация и журнал операций) и `ThinkingHome.Packaging.Tests` (проверки поставки пакетов). Сервер и клиент используют библиотечный API проекта упаковки.
 
-В `prototypes/PluginLoading` сохранён воспроизводимый прототип изоляции зависимостей через AssemblyLoadContext с проверками DI и EF; он запускается отдельно от решения. Это проверка архитектуры будущего загрузчика. Рабочий хост пока загружает сборки из собственного bin. Менеджер устанавливает пакеты в `.thinkinghome/packages`, сохраняет декларацию/lock/карту в неизменяемом поколении и переключает `current.json`; подключение этого состояния к хосту относится к этапу 6. Подробности и статус этапов — в [решениях](decisions/README.md).
+Менеджер устанавливает пакеты в `.thinkinghome/packages`, сохраняет декларацию, lock, карту и генерируемую конфигурацию в неизменяемом поколении и переключает `current.json`. Console удерживает снимок на время работы плагинов; новая версия применяется при следующем запуске. Для локального плагина используется временный план поверх установленных зависимостей. Локальные DLL подключаются через plugins.local.json; ThinkingHome.Local.proj генерирует его для монорепозитория. Исторический прототип `prototypes/PluginLoading` не используется хостом. [Единый запуск](plugin-package-runtime.md), [статус этапов](decisions/README.md).
 
 ### Работающий хост
 

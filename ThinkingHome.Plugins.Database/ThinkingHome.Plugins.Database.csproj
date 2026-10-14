@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <Import Project="../Package.xml" />
   <PropertyGroup>
     <Description>ThinkingHome plugin which provide database API (PostgreSQL) for other plugins.</Description>
@@ -15,4 +15,17 @@
     <PackageReference Include="ThinkingHome.Migrator" Version="3.10.0" />
     <PackageReference Include="ThinkingHome.Migrator.Providers.PostgreSQL" Version="3.10.0" />
   </ItemGroup>
+  <ItemGroup>
+    <ThinkingHomeDependency Include="Microsoft.EntityFrameworkCore" Kind="shared" />
+    <ThinkingHomeDependency Include="Npgsql.EntityFrameworkCore.PostgreSQL" Kind="private" />
+    <ThinkingHomeDependency Include="ThinkingHome.Migrator" Kind="private" />
+    <ThinkingHomeDependency Include="ThinkingHome.Migrator.Providers.PostgreSQL" Kind="private" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Abstractions" Version="10.0.11" />
+    <ThinkingHomeDependency Include="Microsoft.EntityFrameworkCore.Abstractions" Kind="shared" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="10.0.11" />
+    <ThinkingHomeDependency Include="Microsoft.EntityFrameworkCore.Relational" Kind="shared" />
+    <PackageReference Include="ThinkingHome.Migrator.Framework" Version="3.10.0" />
+    <ThinkingHomeDependency Include="ThinkingHome.Migrator.Framework" Kind="shared" />
+  </ItemGroup>
+  <Import Project="../ThinkingHome.Packaging/build/ThinkingHome.Plugin.targets" />
 </Project>

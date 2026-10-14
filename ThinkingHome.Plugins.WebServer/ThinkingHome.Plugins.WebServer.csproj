@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
     <Import Project="../Package.xml" />
     <PropertyGroup>
         <Description>ThinkingHome plugin which provide the ability to call other plugins methods by HTTP requests.</Description>
@@ -10,4 +10,5 @@
     <ItemGroup>
         <ProjectReference Include="../ThinkingHome.Core.Plugins/ThinkingHome.Core.Plugins.csproj" />
     </ItemGroup>
+    <Import Project="../ThinkingHome.Packaging/build/ThinkingHome.Plugin.targets" />
 </Project>

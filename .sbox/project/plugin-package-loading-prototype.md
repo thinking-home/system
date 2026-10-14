@@ -1,5 +1,7 @@
 # Контракты пакета и прототип загрузки плагинов
 
+Исторический отчёт о прототипе. Актуальные правила метаданных описаны в [документации упаковщика](../../ThinkingHome.Packaging/README.md), [ADR-0004](decisions/ADR-0004-plugin-entry-point-discovery.md) и [ADR-0005](decisions/ADR-0005-core-package-compatibility.md).
+
 Первый этап [плана MVP](decisions/ADR-0003-plugin-package-management-stages.md) уточняет технический контракт и проверяет модель из [ADR-0001](decisions/ADR-0001-plugin-package-management.md). Прототип находится в `prototypes/PluginLoading`, не подключён к рабочему решению и не заменяет загрузчик приложения.
 
 ## Контракт метаданных версии 1
