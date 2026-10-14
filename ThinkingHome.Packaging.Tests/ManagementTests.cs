@@ -441,7 +441,8 @@ public class ManagementTests(PackageFixture fixture) : IClassFixture<PackageFixt
             }
 
             return Task.FromResult(new PackageListing(uri, uri, data.Keys.Where(x =>
-                x.StartsWith(id.ToLowerInvariant() + "/")).Select(x => NuGetVersion.Parse(x.Split('/')[1])).ToArray()));
+                x.StartsWith(id.ToLowerInvariant() + "/") && PackageFixture.IsPlugin(data[x]) == (kind == PackageKind.Plugin))
+                .Select(x => NuGetVersion.Parse(x.Split('/')[1])).ToArray()));
         }
 
         public Task<PackageDownload> DownloadAsync(PackageKind kind, string id, NuGetVersion version,

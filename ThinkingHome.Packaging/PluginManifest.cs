@@ -1,4 +1,6 @@
 using System.Reflection;
+using System.Reflection.Metadata;
+using System.Reflection.PortableExecutable;
 using NuGet.Versioning;
 
 namespace ThinkingHome.Packaging;
@@ -11,6 +13,45 @@ public sealed record PluginManifest(string PackageId, NuGetVersion Version,
 {
     /// <summary>Префикс ключей метаданных плагина в AssemblyMetadataAttribute.</summary>
     public const string Prefix = "ThinkingHome.Plugin.";
+
+    /// <summary>Читает маркер непосредственно из DLL без разрешения её зависимостей и исполнения кода.</summary>
+    public static PluginManifest? TryRead(string path)
+    {
+        using var stream = File.OpenRead(path);
+        return TryRead(stream);
+    }
+
+    // Один декодер метаданных для локальных DLL и сборок внутри NuGet-пакета.
+    internal static PluginManifest? TryRead(Stream stream)
+    {
+        using var pe = new PEReader(stream, PEStreamOptions.LeaveOpen);
+        if (!pe.HasMetadata) return null;
+        var reader = pe.GetMetadataReader();
+        if (!reader.IsAssembly) return null;
+
+        var fields = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+        foreach (var handle in reader.GetAssemblyDefinition().GetCustomAttributes())
+        {
+            var attribute = reader.GetCustomAttribute(handle);
+            if (attribute.Constructor.Kind != HandleKind.MemberReference) continue;
+            var constructor = reader.GetMemberReference((MemberReferenceHandle)attribute.Constructor);
+            if (constructor.Parent.Kind != HandleKind.TypeReference) continue;
+            var type = reader.GetTypeReference((TypeReferenceHandle)constructor.Parent);
+            if (reader.GetString(type.Namespace) != "System.Reflection" || reader.GetString(type.Name) != "AssemblyMetadataAttribute") continue;
+
+            var blob = reader.GetBlobReader(attribute.Value);
+            Require(blob.ReadUInt16() == 1, "Invalid attribute encoding");
+            var key = blob.ReadSerializedString();
+            var value = blob.ReadSerializedString();
+            if (key?.StartsWith(Prefix, StringComparison.Ordinal) != true) continue;
+
+            Require(blob.ReadUInt16() == 0 && blob.RemainingBytes == 0, "Unexpected plugin attribute payload");
+            Require(!string.IsNullOrWhiteSpace(value), "Empty plugin metadata: " + key);
+            Require(fields.TryAdd(key[Prefix.Length..], value!), "Duplicate plugin metadata: " + key);
+        }
+
+        return fields.Count == 0 ? null : FromFields(fields);
+    }
 
     /// <summary>Читает манифест из атрибутов сборки без выполнения конструкторов атрибутов.</summary>
     public static PluginManifest Read(Assembly assembly)
@@ -45,7 +86,7 @@ public sealed record PluginManifest(string PackageId, NuGetVersion Version,
             if (key is "ManifestVersion" or "PackageId" or "PackageVersion") continue;
             if (key.StartsWith("Dependency.", StringComparison.Ordinal))
             {
-                Require(value is "plugin" or "shared" or "private", $"Invalid dependency kind: {key}={value}");
+                Require(value == "shared", $"Only shared dependencies may be declared: {key}={value}");
                 Require(key.Length > 11, "Empty dependency ID");
                 dependencies.Add(key[11..], value);
             }

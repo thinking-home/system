@@ -32,7 +32,7 @@ public sealed class PackageFixture : IDisposable
             Good = Build("Good", "good");
             Library = Build("Dependency", "dependency");
             Bad = Build("Bad", "bad");
-            Shared = Build("Bad", "shared", "-p:DependencyKind=shared");
+            Shared = Build("Bad", "shared", "-p:SharedDependency=true");
             Embedded = Build("Embedded", "embedded");
             Transitive = Build("Transitive", "transitive");
         }
@@ -65,6 +65,12 @@ public sealed class PackageFixture : IDisposable
 
     public static string Inputs(string package) => Path.Combine(Path.GetDirectoryName(package)!, "inputs");
 
+    public static bool IsPlugin(byte[] bytes)
+    {
+        try { return PackageMetadata.Read(bytes, true).Plugin != null; }
+        catch (InvalidDataException ex) when (ex.Message == "Package is not a ThinkingHome plugin") { return false; }
+    }
+
     public PlatformCatalog Platform(string rid = "win-x64") => HostPlatform.Current() with { Rid = rid };
 
     public string Mutate(Action<ZipArchive> change)
@@ -90,6 +96,20 @@ public sealed class PackageFixture : IDisposable
 
 public class PackageTests(PackageFixture fixture) : IClassFixture<PackageFixture>
 {
+    [Fact]
+    public void Manifest_ReadsIsolatedDll_WithoutDependenciesOrExecution()
+    {
+        var directory = Path.Combine(fixture.Work, "isolated-marker");
+        Directory.CreateDirectory(directory);
+        var path = Path.Combine(directory, "Good.dll");
+        using var zip = ZipFile.OpenRead(fixture.Good);
+        zip.GetEntry("lib/net10.0/Good.dll")!.ExtractToFile(path);
+
+        Assert.Equal("Fixture.Good", PluginManifest.TryRead(path)!.PackageId);
+        Assert.Single(Directory.GetFiles(directory));
+        Assert.DoesNotContain(AppDomain.CurrentDomain.GetAssemblies(), x => x.GetName().Name == "Good");
+    }
+
     [Fact]
     public void Validate_AcceptsPrivateImplementation_WithoutExecutingModuleInitializer()
     {
@@ -131,6 +151,28 @@ public class PackageTests(PackageFixture fixture) : IClassFixture<PackageFixture
     public void Validate_AcceptsSameApi_WhenDependencyIsExplicitlyShared()
     {
         Assert.Equal("Fixture.Bad", PackageValidator.Validate(fixture.Shared, PackageFixture.Inputs(fixture.Shared)).PackageId);
+        var manifest = PackageMetadata.Read(File.ReadAllBytes(fixture.Shared), true).Plugin!;
+        Assert.Equal("shared", Assert.Single(manifest.Dependencies).Value);
+        Assert.Contains("Fixture.Dependency", manifest.Dependencies.Keys);
+        Assert.Empty(PackageMetadata.Read(File.ReadAllBytes(fixture.Good), true).Plugin!.Dependencies);
+    }
+
+    [Fact]
+    public void Validate_RejectsSharedAnnotationOnPluginReference()
+    {
+        var package = fixture.Build("Runtime", "shared-plugin", "-p:SharedTimer=true");
+        var error = Assert.Throws<InvalidDataException>(() => PackageValidator.Validate(package, PackageFixture.Inputs(package)));
+        Assert.Contains("Plugin cannot be marked shared", error.Message);
+    }
+
+    [Fact]
+    public void Build_RejectsInvalidSharedAnnotation()
+    {
+        var result = PackageFixture.Run("dotnet", "build", Path.Combine(fixture.Root,
+            "ThinkingHome.Packaging.Tests/Fixtures/Bad/Bad.csproj"), "-m:1", "-p:UseSharedCompilation=false",
+            "-p:NuGetAudit=false", "-p:SharedDependency=maybe");
+        Assert.NotEqual(0, result.Code);
+        Assert.Contains("ThinkingHomeShared must be true or false", result.Output);
     }
 
     [Fact]

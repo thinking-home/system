@@ -142,7 +142,6 @@ public static class PackageValidator
                 $"Invalid dependency version: {id}");
             Require(resolvedVersions.TryGetValue(id, out var resolvedVersion) && range!.Satisfies(resolvedVersion),
                 $"Resolved dependency does not satisfy nuspec: {id}");
-            Require(platform.Contains(id) || manifest.Dependencies.ContainsKey(id), $"Dependency kind not declared: {id}");
         }
 
         foreach (var id in manifest.Dependencies.Keys)
@@ -152,6 +151,18 @@ public static class PackageValidator
         }
 
         var policies = ReadPolicies(inputs, framework, manifest, platform);
+
+        // Отсутствие явной категории private не должно скрывать потерянную зависимость в nuspec.
+        var graph = resolvedAssets.RootElement.GetProperty("targets").GetProperty(framework).EnumerateObject()
+            .ToDictionary(x => x.Name[..x.Name.LastIndexOf('/')], x => x.Value, StringComparer.OrdinalIgnoreCase);
+        var reachable = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        var pending = new Queue<string>(dependencyIds);
+        while (pending.TryDequeue(out var id))
+        {
+            if (!reachable.Add(id) || !graph.TryGetValue(id, out var node)
+                || !node.TryGetProperty("dependencies", out var children)) continue;
+            foreach (var child in children.EnumerateObject()) pending.Enqueue(child.Name);
+        }
 
         foreach (var path in runtimeFiles)
         {
@@ -187,6 +198,9 @@ public static class PackageValidator
             {
                 var resolved = context.LoadFromAssemblyName(reference);
                 Require(policies.ContainsKey(resolved.GetName().Name!), $"Unclassified assembly reference: {reference}");
+                var policy = policies[resolved.GetName().Name!];
+                Require(policy.Kind == "platform" || files.ContainsKey(resolved.GetName().Name!) || reachable.Contains(policy.Owner),
+                    $"Assembly dependency missing from nuspec graph: {policy.Owner}");
             }
         }
 
@@ -244,6 +258,17 @@ public static class PackageValidator
 
             Require(parts[3].Length > 0 || packageIds.Contains(id), $"Package reference not in assets: {id}");
             var kind = parts[3].Length > 0 || platform.Contains(id) ? "platform" : manifest.Dependencies.GetValueOrDefault(id, "private");
+            if (kind != "platform")
+            {
+                var plugin = TryRead(Path.GetFullPath(parts[0]));
+                if (plugin != null)
+                {
+                    Require(string.Equals(plugin.PackageId, id, StringComparison.OrdinalIgnoreCase),
+                        $"Plugin dependency identity differs from reference: {id}");
+                    Require(kind != "shared", $"Plugin cannot be marked shared: {id}");
+                    kind = "plugin";
+                }
+            }
             var policy = new AssemblyPolicy(kind, id);
             Require(!result.TryGetValue(name, out var existing) || existing == policy, $"Ambiguous assembly ownership: {name}");
             result[name] = policy;

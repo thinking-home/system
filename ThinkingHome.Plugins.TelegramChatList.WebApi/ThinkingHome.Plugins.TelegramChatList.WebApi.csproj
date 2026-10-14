@@ -13,11 +13,5 @@
         <ProjectReference Include="..\ThinkingHome.Plugins.TelegramChatList\ThinkingHome.Plugins.TelegramChatList.csproj"/>
         <ProjectReference Include="..\ThinkingHome.Plugins.WebServer\ThinkingHome.Plugins.WebServer.csproj"/>
     </ItemGroup>
-
-  <ItemGroup>
-    <ThinkingHomeDependency Include="ThinkingHome.Plugins.Database" Kind="plugin" />
-    <ThinkingHomeDependency Include="ThinkingHome.Plugins.TelegramChatList" Kind="plugin" />
-    <ThinkingHomeDependency Include="ThinkingHome.Plugins.WebServer" Kind="plugin" />
-  </ItemGroup>
   <Import Project="../ThinkingHome.Packaging/build/ThinkingHome.Plugin.targets" />
 </Project>

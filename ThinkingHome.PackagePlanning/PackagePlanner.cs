@@ -67,10 +67,12 @@ public sealed class PackagePlanner(IPackageSource source)
 
         var listings = new Dictionary<string, PackageListing>(StringComparer.Ordinal);
         var downloads = new Dictionary<string, Candidate>(StringComparer.Ordinal);
+        var pluginIds = roots.Select(x => x.Id).ToHashSet(StringComparer.OrdinalIgnoreCase);
+        var classified = new HashSet<string>(pluginIds, StringComparer.OrdinalIgnoreCase);
         var steps = 0;
         string diagnostic = "No solution";
 
-        ResolvedGraph Expand(Dictionary<string, Candidate> assignments) => ExpandGraph(roots, platformPackages, assignments);
+        ResolvedGraph Expand(Dictionary<string, Candidate> assignments) => ExpandGraph(roots, platformPackages, assignments, pluginIds);
 
         async Task<InstallationPlan?> Search(Dictionary<string, Candidate> assignments)
         {
@@ -82,6 +84,21 @@ public sealed class PackagePlanner(IPackageSource source)
             }
 
             ResolvedGraph graph;
+
+            // Репозитории плагинов имеют приоритет. Только отсутствие ID разрешает поиск библиотеки.
+            // Наличие маркера затем обязательно проверяется в скачанной DLL до принятия кандидата.
+            foreach (var id in assignments.Values.SelectMany(x => x.Dependencies).Select(x => x.Id).Distinct())
+            {
+                if (platformPackages.ContainsKey(id) || !classified.Add(id)) continue;
+                try
+                {
+                    var pluginListing = await source.FindAsync(PackageKind.Plugin, id, cancellation);
+                    if (pluginListing.Versions.Count == 0) continue;
+                    listings.Add(PackageKind.Plugin + ":" + id, pluginListing);
+                    pluginIds.Add(id);
+                }
+                catch (KeyNotFoundException) { }
+            }
 
             try
             {
@@ -189,8 +206,10 @@ public sealed class PackagePlanner(IPackageSource source)
     }
 
     internal static ResolvedGraph ExpandGraph(Requirement[] roots, Dictionary<string,
-        NuGetVersion> platformPackages, Dictionary<string, Candidate> assignments)
+        NuGetVersion> platformPackages, Dictionary<string, Candidate> assignments, IReadOnlySet<string>? pluginIds = null)
     {
+        pluginIds ??= assignments.Values.Where(x => x.Metadata.Plugin != null).Select(x => x.Metadata.Id)
+            .ToHashSet(StringComparer.OrdinalIgnoreCase);
         var declaredShared = assignments.Values.Where(x => x.Metadata.Plugin != null).SelectMany(x =>
             x.Metadata.Plugin!.Dependencies.Where(d => d.Value == "shared").Select(d => d.Key)).ToHashSet(StringComparer.OrdinalIgnoreCase);
         var edges = new List<Requirement>();
@@ -229,6 +248,8 @@ public sealed class PackagePlanner(IPackageSource source)
             }
 
             var manifest = candidate.Metadata.Plugin;
+            if ((requirement.Kind == "plugin") != (manifest != null))
+                throw new ResolutionException("Package kind differs from DLL metadata: " + requirement.Id);
 
             foreach (var dependency in candidate.Dependencies)
             {
@@ -259,9 +280,10 @@ public sealed class PackagePlanner(IPackageSource source)
                 }
                 else
                 {
-                    if (manifest != null && !manifest.Dependencies.ContainsKey(dependency.Id))
+                    if (pluginIds.Contains(dependency.Id))
                     {
-                        throw new ResolutionException("Plugin dependency kind not declared: " + dependency.Id);
+                        if (kind == "shared") throw new ResolutionException("Plugin cannot be marked shared: " + dependency.Id);
+                        kind = "plugin";
                     }
 
                     key = kind == "plugin" ? "plugin:" + dependency.Id : kind == "shared" || owner == "shared"
@@ -302,7 +324,10 @@ public sealed class PackagePlanner(IPackageSource source)
         {
             if (stack.Contains(key))
             {
-                throw new ResolutionException("Plugin dependency cycle: " + string.Join(" -> ", stack.Append(key)));
+                // Цикл библиотек сам по себе допустим; цикл с плагином нарушает порядок запуска.
+                if (stack.Skip(stack.IndexOf(key)).Any(node => nodes[node].Metadata.Plugin != null))
+                    throw new ResolutionException("Plugin dependency cycle: " + string.Join(" -> ", stack.Append(key)));
+                return;
             }
 
             if (!visited.Add(key))
@@ -312,14 +337,16 @@ public sealed class PackagePlanner(IPackageSource source)
 
             stack.Add(key);
 
-            foreach (var dependency in edges.Where(x => x.From == key && x.Kind == "plugin").OrderBy(x => x.Key, StringComparer.Ordinal))
+            // Автоматически найденный плагин может быть транзитивной зависимостью обычной библиотеки.
+            foreach (var dependency in edges.Where(x => x.From == key && x.Kind != "platform"
+                && nodes.ContainsKey(x.Key)).OrderBy(x => x.Key, StringComparer.Ordinal))
             {
                 Visit(dependency.Key);
             }
 
             stack.RemoveAt(stack.Count - 1);
 
-            if (nodes.ContainsKey(key))
+            if (nodes.TryGetValue(key, out var candidate) && candidate.Metadata.Plugin != null)
             {
                 result.Add(key);
             }

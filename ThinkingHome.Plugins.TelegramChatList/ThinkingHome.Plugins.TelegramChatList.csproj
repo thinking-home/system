@@ -14,13 +14,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="ThinkingHome.Migrator.Framework" Version="3.10.0" />
+      <PackageReference Include="ThinkingHome.Migrator.Framework" Version="3.10.0" ThinkingHomeShared="true" />
     </ItemGroup>
-
-  <ItemGroup>
-    <ThinkingHomeDependency Include="ThinkingHome.Plugins.Database" Kind="plugin" />
-    <ThinkingHomeDependency Include="ThinkingHome.Plugins.TelegramBot" Kind="plugin" />
-    <ThinkingHomeDependency Include="ThinkingHome.Migrator.Framework" Kind="shared" />
-  </ItemGroup>
   <Import Project="../ThinkingHome.Packaging/build/ThinkingHome.Plugin.targets" />
 </Project>

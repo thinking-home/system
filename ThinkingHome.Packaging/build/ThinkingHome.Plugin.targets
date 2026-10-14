@@ -2,6 +2,7 @@
   <PropertyGroup>
     <GenerateDependencyFile>true</GenerateDependencyFile>
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+    <_ThinkingHomeReferenceTargets>$(MSBuildThisFileDirectory)ThinkingHome.Reference.targets</_ThinkingHomeReferenceTargets>
   </PropertyGroup>
   <!-- Импортируется в конце проекта, после описания зависимостей и файлов. -->
   <ItemGroup>
@@ -12,6 +13,20 @@
   </ItemGroup>
   <Target Name="ThinkingHomeGenerateMetadata" BeforeTargets="GetAssemblyAttributes">
     <Error Condition="'$(TargetFramework)' != 'net10.0'" Text="Plugin packaging v1 requires net10.0." />
+    <Error Condition="'%(PackageReference.ThinkingHomeShared)' != '' and '%(PackageReference.ThinkingHomeShared)' != 'true' and '%(PackageReference.ThinkingHomeShared)' != 'false'"
+           Text="ThinkingHomeShared must be true or false: %(PackageReference.Identity)" />
+    <Error Condition="'%(ProjectReference.ThinkingHomeShared)' != '' and '%(ProjectReference.ThinkingHomeShared)' != 'true' and '%(ProjectReference.ThinkingHomeShared)' != 'false'"
+           Text="ThinkingHomeShared must be true or false: %(ProjectReference.Identity)" />
+    <ItemGroup>
+      <_ThinkingHomeSharedProject Include="@(ProjectReference)" Condition="'%(ProjectReference.ThinkingHomeShared)' == 'true'" />
+      <_ThinkingHomeShared Include="@(PackageReference)" Condition="'%(PackageReference.ThinkingHomeShared)' == 'true'" />
+    </ItemGroup>
+    <!-- PackageId проекта может отличаться от имени проекта и DLL. Читаем его после оценки SDK. -->
+    <MSBuild Projects="@(_ThinkingHomeSharedProject)" Targets="ThinkingHomeGetReferenceIdentity"
+             Properties="CustomAfterMicrosoftCommonTargets=$(_ThinkingHomeReferenceTargets);ThinkingHomeOriginalAfterCommonTargets=$(CustomAfterMicrosoftCommonTargets)"
+             Condition="'@(_ThinkingHomeSharedProject)' != ''">
+      <Output TaskParameter="TargetOutputs" ItemName="_ThinkingHomeShared" />
+    </MSBuild>
     <ItemGroup>
       <AssemblyAttribute Include="System.Reflection.AssemblyMetadataAttribute">
         <_Parameter1>ThinkingHome.Plugin.ManifestVersion</_Parameter1><_Parameter2>1</_Parameter2>
@@ -22,8 +37,8 @@
       <AssemblyAttribute Include="System.Reflection.AssemblyMetadataAttribute">
         <_Parameter1>ThinkingHome.Plugin.PackageVersion</_Parameter1><_Parameter2>$(PackageVersion)</_Parameter2>
       </AssemblyAttribute>
-      <AssemblyAttribute Include="System.Reflection.AssemblyMetadataAttribute" Condition="'@(ThinkingHomeDependency)' != ''">
-        <_Parameter1>ThinkingHome.Plugin.Dependency.%(ThinkingHomeDependency.Identity)</_Parameter1><_Parameter2>%(ThinkingHomeDependency.Kind)</_Parameter2>
+      <AssemblyAttribute Include="System.Reflection.AssemblyMetadataAttribute" Condition="'@(_ThinkingHomeShared)' != ''">
+        <_Parameter1>ThinkingHome.Plugin.Dependency.%(_ThinkingHomeShared.Identity)</_Parameter1><_Parameter2>shared</_Parameter2>
       </AssemblyAttribute>
       <AssemblyAttribute Include="System.Reflection.AssemblyMetadataAttribute" Condition="'@(ThinkingHomeEmbedded)' != ''">
         <_Parameter1>ThinkingHome.Plugin.Embedded.%(ThinkingHomeEmbedded.Filename)</_Parameter1><_Parameter2>%(ThinkingHomeEmbedded.Kind)</_Parameter2>
