@@ -183,14 +183,7 @@ internal static class PlanBuilder
                 AddImport(scope, item);
             }
 
-            foreach (var node in graph.Nodes.Where(x => PackagePlanner.Scope(x.Key) == scope))
-            {
-                foreach (var item in owners.Where(x => x.Owner == "shared" && x.Package == PackagePlanner.PackageKey(node.Value)))
-                {
-                    AddImport(scope, item);
-                }
-            }
-
+            // Импорт определяется рёбрами графа, а не совпадением пакета с приватной копией той же версии.
             var reachable = new HashSet<string>(StringComparer.Ordinal);
 
             void Imports(string node)

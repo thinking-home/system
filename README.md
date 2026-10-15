@@ -54,13 +54,13 @@ docker run --name thinking-home -v "./application:/data" -p 8080:8080 thinkingho
 
 ### Поставка плагинов через NuGet
 
-Пакетная система поддерживает планирование, установку, locked-восстановление и загрузку пакетов в хост. Установленные пакеты и локальные DLL запускаются одним хостом, без упаковки перед отладкой.
+Пакетная система поддерживает планирование, установку, удаление, locked-восстановление и загрузку пакетов в хост. Удаление плагина, необходимого другому установленному плагину, запрещено. Установленные пакеты и локальные DLL запускаются одним хостом, без упаковки перед отладкой.
 
 - [Упаковка плагинов и статическая валидация](ThinkingHome.Packaging/README.md)
 - [Сервер репозитория для локальной папки](ThinkingHome.Repository/README.md)
 - [Поиск версий и скачивание пакетов](ThinkingHome.PackageSources/README.md)
 - [Разрешение зависимостей и план установки](ThinkingHome.PackagePlanning/README.md)
-- [Установка, locked-восстановление и валидация](ThinkingHome.PackageManagement/README.md)
+- [Установка, удаление, locked-восстановление и валидация](ThinkingHome.PackageManagement/README.md)
 - [Общий API платформы и контракт совместной поставки](ThinkingHome.Platform/README.md)
 - [Сервер, отладка плагина и монорепозитория](ThinkingHome.PackageRuntime/README.md)
 - [Архитектурные решения и план MVP](.sbox/project/decisions/README.md)
