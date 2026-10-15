@@ -72,6 +72,71 @@ public static class LockedPlanVerifier
         IReadOnlyDictionary<string, byte[]> archives, CancellationToken cancellation = default)
     {
         CheckEnvelope(request, plan, platform);
+        var verified = Rebuild(request, plan, platform, archives, cancellation);
+
+        if (!PlanJson.Bytes(verified.Lock).SequenceEqual(PlanJson.Bytes(plan.Lock)) || !PlanJson.Bytes(verified.LoadMap)
+            .SequenceEqual(PlanJson.Bytes(plan.LoadMap)))
+        {
+            throw new InvalidDataException("Locked graph, files, platform or load map differ from verified package contents");
+        }
+    }
+
+    /// <summary>
+    /// Исключает неиспользуемый плагин и недостижимые зависимости без изменения оставшихся версий и источников.
+    /// </summary>
+    public static InstallationPlan RemovePlugin(string id, PlanRequest request, InstallationPlan plan,
+        PlatformCatalog platform, IReadOnlyDictionary<string, byte[]> archives, CancellationToken cancellation = default)
+    {
+        PackageAssets.ValidateId(id);
+        Verify(request, plan, platform, archives, cancellation);
+        var key = "plugin:" + id.ToLowerInvariant();
+        if (!plan.Lock.PluginOrder.Contains(key))
+            throw new InvalidOperationException("Plugin is not installed: " + id);
+
+        // Обратный обход проходит и через библиотеки: зависимость от плагина бывает транзитивной.
+        var ancestors = new HashSet<string>(StringComparer.Ordinal);
+        var pending = new Queue<string>([key]);
+        while (pending.TryDequeue(out var node))
+        {
+            cancellation.ThrowIfCancellationRequested();
+            foreach (var edge in plan.Lock.Dependencies.Where(x => x.To == node && x.From != "root"))
+                if (ancestors.Add(edge.From)) pending.Enqueue(edge.From);
+        }
+
+        var consumers = plan.Lock.PluginOrder.Where(ancestors.Contains).ToArray();
+        if (consumers.Length > 0)
+            throw new InvalidOperationException($"Plugin {id} is required by: " + string.Join(", ", consumers));
+
+        var remaining = request with { Plugins = request.Plugins.Where(x => !x.Id.Equals(id, StringComparison.OrdinalIgnoreCase)).ToArray() };
+        var reachable = new HashSet<string>(StringComparer.Ordinal);
+        pending = new Queue<string>(remaining.Plugins.Select(x => "plugin:" + x.Id.ToLowerInvariant()));
+
+        // Удаляем также декларации shared ушедших плагинов до повторного построения карты.
+        while (pending.TryDequeue(out var node))
+        {
+            cancellation.ThrowIfCancellationRequested();
+            if (!reachable.Add(node)) continue;
+            foreach (var edge in plan.Lock.Dependencies.Where(x => x.From == node && x.Kind != "platform"))
+                pending.Enqueue(edge.To);
+        }
+
+        var nodes = plan.Lock.Nodes.Where(x => reachable.Contains(x.Key)).ToArray();
+        var packages = nodes.Select(x => x.Package).ToHashSet(StringComparer.Ordinal);
+        var subset = plan with
+        {
+            Lock = plan.Lock with
+            {
+                Nodes = nodes,
+                Packages = plan.Lock.Packages.Where(x => packages.Contains(x.Key)).ToArray()
+            }
+        };
+
+        return Rebuild(remaining, subset, platform, archives, cancellation);
+    }
+
+    private static InstallationPlan Rebuild(PlanRequest request, InstallationPlan plan, PlatformCatalog platform,
+        IReadOnlyDictionary<string, byte[]> archives, CancellationToken cancellation)
+    {
         var candidates = new Dictionary<string, Candidate>(StringComparer.Ordinal);
 
         foreach (var package in plan.Lock.Packages)
@@ -116,7 +181,7 @@ public static class LockedPlanVerifier
             }
         }
 
-        var roots = plan.Lock.Roots.Select(x => new Requirement("root", "plugin:" + x.Id, x.Id,
+        var roots = request.Plugins.Select(x => new Requirement("root", "plugin:" + x.Id.ToLowerInvariant(), x.Id.ToLowerInvariant(),
             VersionRange.Parse(x.Version), "plugin", x.Id)).ToArray();
         var provided = platform.Packages.ToDictionary(x => x.Key.ToLowerInvariant(), x => NuGetVersion.Parse(x.Value),
             StringComparer.Ordinal);
@@ -127,12 +192,6 @@ public static class LockedPlanVerifier
             throw new InvalidDataException("Locked dependency is missing");
         }
 
-        var verified = PlanBuilder.Build(request, platform, graph, cancellation);
-
-        if (!PlanJson.Bytes(verified.Lock).SequenceEqual(PlanJson.Bytes(plan.Lock)) || !PlanJson.Bytes(verified.LoadMap)
-            .SequenceEqual(PlanJson.Bytes(plan.LoadMap)))
-        {
-            throw new InvalidDataException("Locked graph, files, platform or load map differ from verified package contents");
-        }
+        return PlanBuilder.Build(request, platform, graph, cancellation);
     }
 }

@@ -6,6 +6,7 @@ using ThinkingHome.Platform;
 
 var command = new RootCommand("ThinkingHome plugin package manager");
 command.Subcommands.Add(InstallCommand());
+command.Subcommands.Add(RemoveCommand());
 command.Subcommands.Add(RestoreCommand());
 command.Subcommands.Add(OfflineCommand("validate", "Validate the installed state without network access."));
 command.Subcommands.Add(OfflineCommand("recover", "Recover an interrupted installation."));
@@ -28,6 +29,21 @@ static Command InstallCommand()
     command.SetAction(result => Execute("install", result.GetValue(app)!, result.GetValue(sources),
         async (manager, cancellation) => await manager.InstallAsync(
             result.GetValue(plugin)!, result.GetValue(version)!, cancellation)));
+
+    return command;
+}
+
+static Command RemoveCommand()
+{
+    var app = new Argument<string>("app-directory");
+    var plugin = new Argument<string>("plugin-id");
+    var command = new Command("remove", "Remove a plugin unless another installed plugin requires it.")
+    {
+        Arguments = { app, plugin }
+    };
+
+    command.SetAction(result => Execute("remove", result.GetValue(app)!, null,
+        async (manager, cancellation) => await manager.RemoveAsync(result.GetValue(plugin)!, cancellation)));
 
     return command;
 }

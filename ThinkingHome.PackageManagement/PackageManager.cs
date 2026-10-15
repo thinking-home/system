@@ -10,7 +10,7 @@ using ThinkingHome.Packaging;
 namespace ThinkingHome.PackageManagement;
 
 /// <summary>
-/// Устанавливает, восстанавливает и проверяет пакеты в каталоге приложения с переключением поколений состояния.
+/// Устанавливает, удаляет, восстанавливает и проверяет пакеты с переключением поколений состояния.
 /// </summary>
 public sealed class PackageManager
 {
@@ -60,6 +60,30 @@ public sealed class PackageManager
         var plan = await new PackagePlanner(captured).PlanAsync(request, platform, cancellation);
 
         return await Apply(request, plan, captured.Archives, previous, cancellation);
+    }
+
+    /// <summary>
+    /// Удаляет плагин из активного состояния, если он не нужен другому плагину; файлы сохраняются в кеше.
+    /// </summary>
+    public async Task<InstalledState> RemoveAsync(string id, CancellationToken cancellation = default)
+    {
+        using var operation = BeginOperation();
+        RecoverCore();
+        using var snapshot = OpenSnapshot();
+        var previous = snapshot.State;
+        var archives = new Dictionary<string, byte[]>(StringComparer.Ordinal);
+
+        // Проверяем весь исходный набор до изменения графа, не ремонтируя файлы и не обращаясь к сети.
+        foreach (var package in previous.Plan.Lock.Packages)
+        {
+            cancellation.ThrowIfCancellationRequested();
+            archives.Add(package.Key, PackageStore.Verify(Path.GetDirectoryName(snapshot.PackageDirectory(package.Key))!, package));
+        }
+
+        var plan = LockedPlanVerifier.RemovePlugin(id, previous.Request, previous.Plan, platform, archives, cancellation);
+        var request = previous.Request with { Plugins = plan.Lock.Roots };
+
+        return await Apply(request, plan, archives, previous, cancellation);
     }
 
     /// <summary>

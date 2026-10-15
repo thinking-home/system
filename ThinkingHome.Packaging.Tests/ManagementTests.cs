@@ -1,5 +1,6 @@
 using System.IO.Compression;
 using System.Text.Json;
+using System.Xml.Linq;
 using NuGet.Versioning;
 using ThinkingHome.PackageManagement;
 using ThinkingHome.PackagePlanning;
@@ -23,6 +24,158 @@ public class ManagementTests(PackageFixture fixture) : IClassFixture<PackageFixt
         Path.DirectorySeparatorChar));
 
     private static string Pointer(string app) => Path.Combine(app, ".thinkinghome", "current.json");
+
+    [Fact]
+    public async Task Remove_PrunesUnusedGraph_WithoutChangingRemainingPackagesOrRunningSnapshot()
+    {
+        var app = App();
+        var source = Source();
+        source.Add(File.ReadAllBytes(fixture.Shared));
+        var manager = Manager(app, source);
+        await manager.InstallAsync("Fixture.Good", "[1.2.3-beta.1]");
+        await manager.InstallAsync("Fixture.Bad", "[1.0.0]");
+        var before = await manager.InstallAsync("Fixture.Embedded", "[1.0.0]");
+
+        var settings = Path.Combine(app, "appsettings.json");
+        File.WriteAllText(settings, "user settings");
+        using var running = manager.OpenSnapshot();
+        var removed = await Manager(app).RemoveAsync("FIXTURE.BAD");
+
+        Assert.Equal(before.Generation, running.State.Generation);
+        Assert.DoesNotContain(removed.Plan.Lock.Packages, x => x.Id == "Fixture.Bad");
+        Assert.DoesNotContain(removed.Plan.LoadMap.Assets, x => x.Owner == "shared");
+        Assert.Contains(removed.Plan.LoadMap.Assets, x => x.Name == "Vendor.Dependency" && x.Owner == "plugin:fixture.good");
+        Assert.Equal("user settings", File.ReadAllText(settings));
+
+        foreach (var package in removed.Plan.Lock.Packages)
+            Assert.Equal(PlanJson.Bytes(before.Plan.Lock.Packages.Single(x => x.Key == package.Key)), PlanJson.Bytes(package));
+        Assert.Equal(removed.Generation, Manager(app).Validate().Generation);
+        manager.Validate(running);
+
+        var last = await Manager(app).RemoveAsync("Fixture.Good");
+        Assert.Single(last.Plan.Lock.Packages);
+        Assert.Equal("Fixture.Embedded", last.Plan.Lock.Packages[0].Id);
+        Assert.True(Directory.Exists(Store(app, "fixture.good/1.2.3-beta.1")));
+
+        var empty = await Manager(app).RemoveAsync("Fixture.Embedded");
+        Assert.Empty(empty.Request.Plugins);
+        Assert.Empty(empty.Plan.Lock.Packages);
+        Assert.Empty(empty.Plan.Lock.Nodes);
+        Assert.Empty(empty.Plan.Lock.PluginOrder);
+        Assert.Equal(empty.Generation, Manager(app).Validate().Generation);
+        var restored = await Manager(App()).RestoreLockedAsync(empty.Request, empty.Plan);
+        Assert.Empty(restored.Plan.Lock.Packages);
+    }
+
+    [Theory]
+    [InlineData(false, false)]
+    [InlineData(false, true)]
+    [InlineData(true, false)]
+    [InlineData(true, true)]
+    public async Task Remove_RejectsRequiredPlugin_IncludingTransitiveAndExplicitRoots(bool throughLibrary, bool explicitRoot)
+    {
+        var app = App();
+        var source = Source();
+        var bytes = File.ReadAllBytes(throughLibrary ? fixture.Library : fixture.Good);
+        source.Add(WithDependency(bytes, "Fixture.Embedded", "[1.0.0]"));
+        var manager = Manager(app, source);
+        if (explicitRoot) await manager.InstallAsync("Fixture.Embedded", "[1.0.0]");
+        await manager.InstallAsync("Fixture.Good", "[1.2.3-beta.1]");
+
+        var pointer = File.ReadAllBytes(Pointer(app));
+        var error = await Assert.ThrowsAsync<InvalidOperationException>(() => Manager(app).RemoveAsync("Fixture.Embedded"));
+        Assert.Contains("required by", error.Message);
+        Assert.Contains("plugin:fixture.good", error.Message);
+        Assert.Equal(pointer, File.ReadAllBytes(Pointer(app)));
+        manager.Validate();
+
+        // Удаление потребителя убирает зависимый плагин только при отсутствии отдельного корня.
+        var result = await Manager(app).RemoveAsync("Fixture.Good");
+        Assert.Equal(explicitRoot ? 1 : 0, result.Plan.Lock.Packages.Length);
+        Manager(app).Validate();
+    }
+
+    [Theory]
+    [InlineData("Missing.Plugin")]
+    [InlineData("Fixture.Dependency")]
+    public async Task Remove_RejectsMissingPluginAndLibrary_WithoutChangingState(string id)
+    {
+        var app = App();
+        await Manager(app, Source()).InstallAsync("Fixture.Good", "[1.2.3-beta.1]");
+        var pointer = File.ReadAllBytes(Pointer(app));
+        var error = await Assert.ThrowsAsync<InvalidOperationException>(() => Manager(app).RemoveAsync(id));
+        Assert.Contains("not installed", error.Message);
+        Assert.Equal(pointer, File.ReadAllBytes(Pointer(app)));
+    }
+
+    [Theory]
+    [InlineData("staged", false)]
+    [InlineData("state-published", false)]
+    [InlineData("state-published", true)]
+    public async Task Remove_FailureOrCancellation_PreservesActiveState(string checkpoint, bool cancel)
+    {
+        var app = App();
+        await Manager(app, Source()).InstallAsync("Fixture.Good", "[1.2.3-beta.1]");
+        var pointer = File.ReadAllBytes(Pointer(app));
+        using var cancellation = new CancellationTokenSource();
+        var manager = new PackageManager(app, fixture.Platform())
+        {
+            Checkpoint = value =>
+            {
+                if (value != checkpoint) return;
+                if (cancel) cancellation.Cancel();
+                else throw new IOException("injected failure");
+            }
+        };
+
+        if (cancel)
+            await Assert.ThrowsAnyAsync<OperationCanceledException>(() => manager.RemoveAsync("Fixture.Good", cancellation.Token));
+        else
+            await Assert.ThrowsAsync<IOException>(() => manager.RemoveAsync("Fixture.Good"));
+
+        Assert.Equal(pointer, File.ReadAllBytes(Pointer(app)));
+        Manager(app).Validate();
+        Assert.False(File.Exists(Path.Combine(app, ".thinkinghome/transaction.json")));
+    }
+
+    private static byte[] WithDependency(byte[] bytes, string id, string version)
+    {
+        using var buffer = new MemoryStream();
+        buffer.Write(bytes);
+        using (var zip = new ZipArchive(buffer, ZipArchiveMode.Update, true))
+        {
+            var entry = zip.Entries.Single(x => x.FullName.EndsWith(".nuspec"));
+            XDocument xml;
+            using (var input = entry.Open()) xml = XDocument.Load(input);
+            var group = xml.Descendants().Single(x => x.Name.LocalName == "group");
+            group.Add(new XElement(group.Name.Namespace + "dependency", new XAttribute("id", id), new XAttribute("version", version)));
+
+            var name = entry.FullName;
+            entry.Delete();
+            using var output = zip.CreateEntry(name).Open();
+            xml.Save(output);
+        }
+
+        return buffer.ToArray();
+    }
+
+    [Fact]
+    public async Task Remove_RejectsCorruptState_AndConcurrentOperation()
+    {
+        var app = App();
+        await Manager(app, Source()).InstallAsync("Fixture.Good", "[1.2.3-beta.1]");
+        var pointer = File.ReadAllBytes(Pointer(app));
+        using (var busy = new FileStream(Path.Combine(app, ".thinkinghome/operation.lock"), FileMode.Open,
+            FileAccess.ReadWrite, FileShare.None))
+        {
+            var error = await Assert.ThrowsAsync<IOException>(() => Manager(app).RemoveAsync("Fixture.Good"));
+            Assert.Contains("Another package operation", error.Message);
+        }
+
+        File.WriteAllText(Path.Combine(Store(app, "fixture.good/1.2.3-beta.1"), "files/unexpected.txt"), "corrupt");
+        await Assert.ThrowsAsync<InvalidDataException>(() => Manager(app).RemoveAsync("Fixture.Good"));
+        Assert.Equal(pointer, File.ReadAllBytes(Pointer(app)));
+    }
 
     [Fact]
     public async Task Install_WritesCompleteSnapshot_AndValidatesOffline()
@@ -379,6 +532,14 @@ public class ManagementTests(PackageFixture fixture) : IClassFixture<PackageFixt
             Assert.True(restoredCheck.Code == 0, restoredCheck.Output);
             var recovery = PackageFixture.Run("dotnet", tool, "recover", copy);
             Assert.True(recovery.Code == 0, recovery.Output);
+
+            var remove = PackageFixture.Run("dotnet", tool, "remove", copy, "Fixture.Embedded");
+            Assert.True(remove.Code == 0, remove.Output);
+            var emptyCheck = PackageFixture.Run("dotnet", host, "--app", copy, "--check");
+            Assert.True(emptyCheck.Code == 0, emptyCheck.Output);
+            Assert.Equal(0, PackageFixture.Run("dotnet", tool, "validate", copy).Code);
+            Assert.Equal(1, PackageFixture.Run("dotnet", tool, "remove", copy, "Fixture.Embedded").Code);
+            Assert.Equal(2, PackageFixture.Run("dotnet", tool, "remove", copy).Code);
 
             // Файл платформы больше не является ни входом, ни результатом команд.
             Assert.Empty(Directory.GetFiles(app, "platform.json", SearchOption.AllDirectories));
