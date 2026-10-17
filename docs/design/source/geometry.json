@@ -1,0 +1,16 @@
+{
+  "fontSize": 100,
+  "markWidth": 91.109375,
+  "markHeight": 136,
+  "restX": 99.109375,
+  "baseline": 101,
+  "rect": {
+    "x": -14.5,
+    "y": -13,
+    "width": 109.109375,
+    "height": 162,
+    "rx": 14
+  },
+  "spacing": -1.5,
+  "wordGap": 8
+}

@@ -1,0 +1,1 @@
+{"private":true,"description":"Thinking Home design asset generation","scripts":{"vectors":"python tools/build_vectors.py","previews":"node tools/build_previews.cjs","favicons":"python tools/build_favicons.py"},"devDependencies":{"playwright":"1.62.1","sharp":"0.35.5"}}
