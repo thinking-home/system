@@ -1,0 +1,86 @@
+[
+  {
+    "kind": "logo",
+    "variant": "teal-light",
+    "svg": "assets/logo/svg/teal-light.svg",
+    "width": 651.0093750000001,
+    "height": 164
+  },
+  {
+    "kind": "logo",
+    "variant": "teal-dark",
+    "svg": "assets/logo/svg/teal-dark.svg",
+    "width": 651.0093750000001,
+    "height": 164
+  },
+  {
+    "kind": "logo",
+    "variant": "blue-light",
+    "svg": "assets/logo/svg/blue-light.svg",
+    "width": 651.0093750000001,
+    "height": 164
+  },
+  {
+    "kind": "logo",
+    "variant": "blue-dark",
+    "svg": "assets/logo/svg/blue-dark.svg",
+    "width": 651.0093750000001,
+    "height": 164
+  },
+  {
+    "kind": "logo",
+    "variant": "mono",
+    "svg": "assets/logo/svg/mono.svg",
+    "width": 651.0093750000001,
+    "height": 164
+  },
+  {
+    "kind": "logo",
+    "variant": "inverse",
+    "svg": "assets/logo/svg/inverse.svg",
+    "width": 651.0093750000001,
+    "height": 164
+  },
+  {
+    "kind": "icon",
+    "variant": "teal-light",
+    "svg": "assets/icon/svg/teal-light.svg",
+    "width": 64,
+    "height": 64
+  },
+  {
+    "kind": "icon",
+    "variant": "teal-dark",
+    "svg": "assets/icon/svg/teal-dark.svg",
+    "width": 64,
+    "height": 64
+  },
+  {
+    "kind": "icon",
+    "variant": "blue-light",
+    "svg": "assets/icon/svg/blue-light.svg",
+    "width": 64,
+    "height": 64
+  },
+  {
+    "kind": "icon",
+    "variant": "blue-dark",
+    "svg": "assets/icon/svg/blue-dark.svg",
+    "width": 64,
+    "height": 64
+  },
+  {
+    "kind": "icon",
+    "variant": "mono",
+    "svg": "assets/icon/svg/mono.svg",
+    "width": 64,
+    "height": 64
+  },
+  {
+    "kind": "icon",
+    "variant": "inverse",
+    "svg": "assets/icon/svg/inverse.svg",
+    "width": 64,
+    "height": 64
+  }
+]

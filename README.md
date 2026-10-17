@@ -70,3 +70,6 @@ $ docker run \
 ```shell
 docker build -t dima117a/thinking-home:4.0.0-alpha34 .
 ```
+## Дизайн
+
+[Логотип, пиктограммы, favicon и правила использования](docs/design/README.md)
