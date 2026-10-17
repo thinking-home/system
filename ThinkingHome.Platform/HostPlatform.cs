@@ -13,6 +13,12 @@ namespace ThinkingHome.Platform;
 public static class HostPlatform
 {
     /// <summary>
+    /// Переносимый RID текущего процесса для выбора и проверки пакетов.
+    /// </summary>
+    public static string CurrentRid => TargetRid(RuntimeInformation.RuntimeIdentifier,
+        OperatingSystem.IsLinux(), RuntimeInformation.ProcessArchitecture);
+
+    /// <summary>
     /// Создаёт каталог фактических сборок платформы без ручного перечня пакетов.
     /// </summary>
     public static PlatformCatalog Current()
@@ -53,8 +59,22 @@ public static class HostPlatform
 
         selected.Add(core.Location);
         versions[coreName] = version;
-        return new(version, "net10.0", RuntimeInformation.RuntimeIdentifier, versions,
+        var rid = CurrentRid;
+        return new(version, "net10.0", rid, versions,
             selected.Order(StringComparer.Ordinal).ToArray());
+    }
+
+    // Дистрибутивная сборка .NET может сообщать ubuntu.24.04-x64 вместо переносимого linux-x64.
+    // musl/Bionic и другие архитектуры не становятся поддерживаемыми за счёт нормализации.
+    internal static string TargetRid(string runtimeIdentifier, bool isLinux, Architecture architecture)
+    {
+        if (isLinux && architecture == Architecture.X64
+            && !runtimeIdentifier.Contains("musl", StringComparison.Ordinal)
+            && !runtimeIdentifier.Contains("bionic", StringComparison.Ordinal)
+            && !runtimeIdentifier.StartsWith("alpine", StringComparison.Ordinal))
+            return "linux-x64";
+
+        return runtimeIdentifier;
     }
 
     private static string ReadFrameworkVersion(string path, Assembly framework)
