@@ -1,8 +1,8 @@
 ---
 id: project.testing
-summary: Unit-тесты xunit в ThinkingHome.Tests, проверки упаковки, HTTP-источников, планирования, установки и восстановления в ThinkingHome.Packaging.Tests, прототип загрузки, команды dotnet test с фильтрами, TRX-отчёты и отсутствие JSON, правило именования тестов по цепочке capability › требование › сценарий, e2e нет, ручные проверки интеграций
+summary: Тесты ядра и плагинов в ThinkingHome.Tests, компонентные проверки пакетного менеджера в ThinkingHome.Packaging.Tests, приёмка опубликованного комплекта на Windows и Linux, команды проверок и ограничения аппаратных интеграций
 read_when: Перед написанием тестов, реализацией и верификацией
-updated: 2026-10-14
+updated: 2026-10-17
 verification: needs-review
 ---
 
@@ -15,7 +15,7 @@ verification: needs-review
 | unit (C#) | чистая логика без БД, сети и устройств: реестры, `FindMethods`, `MetaFilter`, `ScriptContext`, разбор команд Telegram | `ThinkingHome.Tests/{Area}/*.cs`; области `Core.Plugins`, `Plugins.Scripts`, `Plugins.TelegramBot` | xunit 2.9, Moq 4.20, `dotnet test` |
 | component (C#) | настоящие nupkg, метаданные DLL, контракты, графы версий, карта загрузки, установка, locked-восстановление, откат и блокировки, локальный Kestrel и HTTP-клиент без внешней сети | `ThinkingHome.Packaging.Tests` | `dotnet test` |
 | unit и component (TypeScript) | — : тест-раннера для каталогов `ThinkingHome.Plugins.*/frontend/**` нет, скриптов `test` в `package.json` нет | — | — |
-| e2e | — : см. «Среда e2e» | — | — |
+| приёмка опубликованного комплекта | установка, запуск, обновление, восстановление и удаление через отдельные процессы на Windows/Linux | `tools/package-acceptance.py` | Python 3.10+, .NET 10 SDK; инструкции в [журнале приёмки](plugin-package-acceptance.md) |
 
 Проект ThinkingHome.Tests ссылается только на `ThinkingHome.Core.Plugins`, `ThinkingHome.Plugins.Scripts`, `ThinkingHome.Plugins.TelegramBot` (`ThinkingHome.Tests/ThinkingHome.Tests.csproj`); для тестов другого плагина добавьте `ProjectReference`.
 
@@ -49,6 +49,8 @@ dotnet run --project prototypes/PluginLoading/Harness/Harness.csproj -- . Debug
 В этой среде для последовательной сборки без сервера компилятора применяются `-m:1 -p:UseSharedCompilation=false`; `-p:NuGetAudit=false` отключает сетевой аудит пакетов, а не тесты.
 
 ## Отчёты
+
+15 октября 2026 года, приёмка опубликованного комплекта: [журнал и инструкции повторного запуска](plugin-package-acceptance.md). На Windows пройдены 28 шагов отдельного сценария tools/package-acceptance.py: реальный HTTP-запуск, загрузка библиотеки с NuGet.org, обновление работающей установки и перезапуск, точное ci, офлайн-проверка и ремонт, удаление. Исправлено включение локального appsettings.Development.json в публикацию. 17 октября тот же цикл из 28 шагов успешно пройден в Ubuntu 24.04 под WSL2; исправлены нормализация дистрибутивного RID и проверка Linux ReadyToRun. Подробности и ограничения приведены в журнале приёмки.
 
 15 октября 2026 года, удаление плагинов: полный прогон **130 тестов пакетной системы — успешно**, отдельно **43 теста ядра/плагинов — успешно**. Добавлены remove и RemoveAsync: отказ при прямых и транзитивных потребителях, сохранение корневого статуса при отказе, исключение недостижимых зависимостей без изменения оставшихся версий и источников, пустая установка и её locked-восстановление, сохранность пользовательских настроек и работающего снимка, отказ при повреждении или конкурирующей операции, откат ошибки и отмены. Сквозной тест публикует комплект хоста/менеджера и проверяет CLI-удаление, validate и --check пустой установки отдельными процессами.
 

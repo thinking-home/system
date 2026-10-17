@@ -507,6 +507,8 @@ public class ManagementTests(PackageFixture fixture) : IClassFixture<PackageFixt
                 Path.Combine(fixture.Root, "ThinkingHome.Console/ThinkingHome.Console.csproj"),
                 "-c", "Release", "-o", bundle, "-m:1", "-p:UseSharedCompilation=false", "-p:NuGetAudit=false");
             Assert.True(publish.Code == 0, publish.Output);
+            Assert.False(File.Exists(Path.Combine(bundle, "appsettings.Development.json")));
+            Assert.False(File.Exists(Path.Combine(bundle, "plugins.local.json")));
             var tool = Path.Combine(bundle, "ThinkingHome.PackageManagement.dll");
             var host = Path.Combine(bundle, "ThinkingHome.Console.dll");
 

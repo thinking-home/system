@@ -1,9 +1,12 @@
 using ThinkingHome.Platform;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Reflection.Metadata;
 using System.Reflection.PortableExecutable;
 using NuGet.Versioning;
 using ThinkingHome.Packaging;
+
+[assembly: InternalsVisibleTo("ThinkingHome.Packaging.Tests")]
 
 namespace ThinkingHome.PackagePlanning;
 
@@ -71,7 +74,7 @@ internal static class PlanBuilder
         {
             var identity = AssemblyName.GetAssemblyName(file);
             var bytes = File.ReadAllBytes(file);
-            CheckManaged(bytes, file);
+            CheckManaged(bytes, file, platform.Rid);
 
             if (managed.Any(x => string.Equals(x.Identity.Name, identity.Name, StringComparison.OrdinalIgnoreCase)))
             {
@@ -111,7 +114,7 @@ internal static class PlanBuilder
                 File.WriteAllBytes(file, bytes);
                 var identity = AssemblyName.GetAssemblyName(file);
 
-                CheckManaged(bytes, path);
+                CheckManaged(bytes, path, request.Rid);
                 var culture = identity.CultureName;
                 var satellite = !string.IsNullOrEmpty(culture);
 
@@ -347,7 +350,7 @@ internal static class PlanBuilder
         || resolved.Version >= reference.Version) && (reference.CultureName ?? "") == (resolved.CultureName ?? "")
         && (reference.GetPublicKeyToken() ?? []).SequenceEqual(resolved.GetPublicKeyToken() ?? []);
 
-    private static void CheckManaged(byte[] bytes, string path)
+    internal static void CheckManaged(byte[] bytes, string path, string rid)
     {
         using var pe = new PEReader(new MemoryStream(bytes));
 
@@ -356,7 +359,17 @@ internal static class PlanBuilder
             throw new ResolutionException("Unsupported managed architecture: " + path);
         }
 
-        if (pe.PEHeaders.CoffHeader.Machine is not (Machine.I386 or Machine.Amd64))
+        // CoreCLR кодирует Linux ReadyToRun как AMD64 XOR Linux OS override (pedecoder.h).
+        // Принимаем его только для Linux и при наличии сигнатуры ReadyToRun, а не по одному machine.
+        const ushort linuxOsOverride = 0x7B79;
+        const uint readyToRunSignature = 0x00525452;
+        var machine = pe.PEHeaders.CoffHeader.Machine;
+        var nativeHeader = pe.PEHeaders.CorHeader.ManagedNativeHeaderDirectory;
+        var linuxReadyToRun = rid == "linux-x64" && (ushort)machine == ((ushort)Machine.Amd64 ^ linuxOsOverride)
+            && nativeHeader.Size >= sizeof(uint) && nativeHeader.RelativeVirtualAddress != 0
+            && pe.GetSectionData(nativeHeader.RelativeVirtualAddress).GetReader().ReadUInt32() == readyToRunSignature;
+
+        if (machine is not (Machine.I386 or Machine.Amd64) && !linuxReadyToRun)
         {
             throw new ResolutionException("Managed asset does not target x64 or AnyCPU: " + path);
         }

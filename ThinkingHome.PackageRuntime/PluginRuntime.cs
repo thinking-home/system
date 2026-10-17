@@ -120,7 +120,7 @@ public sealed class PluginRuntime : IDisposable
         this.files = files;
         Plan = plan;
 
-        if (platform.Rid != RuntimeInformation.RuntimeIdentifier)
+        if (platform.Rid != HostPlatform.CurrentRid)
         {
             throw new InvalidDataException($"Cannot execute {platform.Rid} on {RuntimeInformation.RuntimeIdentifier}");
         }

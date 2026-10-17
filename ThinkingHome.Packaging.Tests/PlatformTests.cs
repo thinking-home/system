@@ -1,10 +1,25 @@
 using ThinkingHome.Platform;
+using System.Runtime.InteropServices;
 using Xunit;
 
 namespace ThinkingHome.Packaging.Tests;
 
 public class PlatformTests
 {
+    [Theory]
+    [InlineData("ubuntu.24.04-x64", true, Architecture.X64, "linux-x64")]
+    [InlineData("linux-x64", true, Architecture.X64, "linux-x64")]
+    [InlineData("linux-musl-x64", true, Architecture.X64, "linux-musl-x64")]
+    [InlineData("alpine.3.22-x64", true, Architecture.X64, "alpine.3.22-x64")]
+    [InlineData("linux-bionic-x64", true, Architecture.X64, "linux-bionic-x64")]
+    [InlineData("ubuntu.24.04-arm64", true, Architecture.Arm64, "ubuntu.24.04-arm64")]
+    [InlineData("win-x64", false, Architecture.X64, "win-x64")]
+    public void Platform_NormalizesLinuxDistribution_WithoutEnablingOtherAbis(string rid, bool linux,
+        Architecture architecture, string expected)
+    {
+        Assert.Equal(expected, HostPlatform.TargetRid(rid, linux, architecture));
+    }
+
     [Fact]
     public void Graph_IncludesTransitivePackages_WithoutUsingAssemblyNameAsPackageId()
     {
