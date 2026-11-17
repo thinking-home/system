@@ -500,7 +500,7 @@ public class ManagementTests(PackageFixture fixture) : IClassFixture<PackageFixt
 
         try
         {
-            // Проверяем реальную поставку двух программ, а не платформу процесса тестов.
+            // Проверяем реальную поставку консольной утилиты, а не платформу процесса тестов.
             var bundle = Path.Combine(fixture.Work, "cli-bundle");
             var publish = PackageFixture.Run("dotnet", "publish",
                 Path.Combine(fixture.Root, "ThinkingHome.Console/ThinkingHome.Console.csproj"),
@@ -508,44 +508,43 @@ public class ManagementTests(PackageFixture fixture) : IClassFixture<PackageFixt
             Assert.True(publish.Code == 0, publish.Output);
             Assert.False(File.Exists(Path.Combine(bundle, "appsettings.Development.json")));
             Assert.False(File.Exists(Path.Combine(bundle, "plugins.local.json")));
-            var tool = Path.Combine(bundle, "ThinkingHome.PackageManagement.dll");
             var host = Path.Combine(bundle, "ThinkingHome.Console.dll");
 
             var sources = Path.Combine(folder, "sources.json");
             File.WriteAllBytes(sources,
                 PlanJson.Bytes(new SourceConfiguration { Sources = [server.Urls.Single() + "/v3/index.json"] }));
             var app = App();
-            var install = await Task.Run(() => PackageFixture.Run("dotnet", tool, "install", app,
+            var install = await Task.Run(() => PackageFixture.Run("dotnet", host, "install", app,
                 "Fixture.Graph", "[1.0.0]", sources));
             Assert.True(install.Code == 0, install.Output);
 
-            var check = PackageFixture.Run("dotnet", host, "--app", app, "--check");
+            var check = PackageFixture.Run("dotnet", host, "run", "--app", app, "--check");
             Assert.True(check.Code == 0, check.Output);
             var state = Directory.GetDirectories(Path.Combine(app, ".thinkinghome/states")).Single();
             var copy = App();
-            var restore = await Task.Run(() => PackageFixture.Run("dotnet", tool, "ci", copy,
+            var restore = await Task.Run(() => PackageFixture.Run("dotnet", host, "ci", copy,
                 Path.Combine(state, "plugins.json"), state, sources));
             Assert.True(restore.Code == 0, restore.Output);
 
-            var validation = PackageFixture.Run("dotnet", tool, "validate", copy);
+            var validation = PackageFixture.Run("dotnet", host, "validate", copy);
             Assert.True(validation.Code == 0, validation.Output);
-            var restoredCheck = PackageFixture.Run("dotnet", host, "--app", copy, "--check");
+            var restoredCheck = PackageFixture.Run("dotnet", host, "run", "--app", copy, "--check");
             Assert.True(restoredCheck.Code == 0, restoredCheck.Output);
-            var recovery = PackageFixture.Run("dotnet", tool, "recover", copy);
+            var recovery = PackageFixture.Run("dotnet", host, "recover", copy);
             Assert.True(recovery.Code == 0, recovery.Output);
 
-            var remove = PackageFixture.Run("dotnet", tool, "remove", copy, "Fixture.Graph");
+            var remove = PackageFixture.Run("dotnet", host, "uninstall", copy, "Fixture.Graph");
             Assert.True(remove.Code == 0, remove.Output);
-            var emptyCheck = PackageFixture.Run("dotnet", host, "--app", copy, "--check");
+            var emptyCheck = PackageFixture.Run("dotnet", host, "run", "--app", copy, "--check");
             Assert.True(emptyCheck.Code == 0, emptyCheck.Output);
-            Assert.Equal(0, PackageFixture.Run("dotnet", tool, "validate", copy).Code);
-            Assert.Equal(1, PackageFixture.Run("dotnet", tool, "remove", copy, "Fixture.Graph").Code);
-            Assert.Equal(2, PackageFixture.Run("dotnet", tool, "remove", copy).Code);
+            Assert.Equal(0, PackageFixture.Run("dotnet", host, "validate", copy).Code);
+            Assert.Equal(1, PackageFixture.Run("dotnet", host, "uninstall", copy, "Fixture.Graph").Code);
+            Assert.Equal(2, PackageFixture.Run("dotnet", host, "uninstall", copy).Code);
 
             // Файл платформы больше не является ни входом, ни результатом команд.
             Assert.Empty(Directory.GetFiles(app, "platform.json", SearchOption.AllDirectories));
             Assert.Empty(Directory.GetFiles(copy, "platform.json", SearchOption.AllDirectories));
-            var obsolete = PackageFixture.Run("dotnet", tool, "validate", copy, "platform.json");
+            var obsolete = PackageFixture.Run("dotnet", host, "validate", copy, "platform.json");
             Assert.Equal(2, obsolete.Code);
         }
         finally

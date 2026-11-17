@@ -1,3 +1,8 @@
+#nullable enable
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using ThinkingHome.Platform;
 using System.Reflection;
 using System.Runtime.InteropServices;

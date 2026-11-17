@@ -27,19 +27,19 @@ public class MyPlugin : PluginBase
 
 ## Подключение плагина
 
-`ThinkingHome.Console` загружает плагины из проверенной установки пакетного менеджера и необязательного `plugins.local.json`. Каталог приложения задаётся параметром `--app`; по умолчанию используется каталог хоста. В нём находятся установленное состояние `.thinkinghome`, локальные подключения и пользовательские настройки.
+`ThinkingHome.Console` загружает плагины из проверенной установки пакетного менеджера и необязательного `plugins.local.json`. Каталог приложения задаётся параметром `--app`; по умолчанию используется текущий рабочий каталог. В нём находятся установленное состояние `.thinkinghome`, локальные подключения и пользовательские настройки.
 
 ### Установленный пакет
 
-Опубликуйте пакет в репозитории плагинов и подготовьте [файл источников](../ThinkingHome.PackageSources/README.md) `./application/sources.json`. В примере `./host` — каталог полного опубликованного комплекта хоста и менеджера, `Example.Plugin` и версия заменяются на ID и версию вашего пакета:
+Опубликуйте пакет в репозитории плагинов и подготовьте [файл источников](../ThinkingHome.PackageManagement/Sources/README.md) `./application/sources.json`. В примере `./host` — каталог полного опубликованного комплекта хоста и менеджера, `Example.Plugin` и версия заменяются на ID и версию вашего пакета:
 
 ```shell
-dotnet ./host/ThinkingHome.PackageManagement.dll install ./application Example.Plugin "[1.0.0]" ./application/sources.json
-dotnet ./host/ThinkingHome.Console.dll --app ./application --check
-dotnet ./host/ThinkingHome.Console.dll --app ./application
+dotnet ./host/ThinkingHome.Console.dll install ./application Example.Plugin "[1.0.0]" ./application/sources.json
+dotnet ./host/ThinkingHome.Console.dll run --app ./application --check
+dotnet ./host/ThinkingHome.Console.dll run --app ./application
 ```
 
-Менеджер разрешает зависимости, скачивает и проверяет пакеты, сохраняет lock-файл и карту загрузки в `.thinkinghome`. Хост использует этот снимок без обращения к репозиториям. После изменения установленного набора хост нужно перезапустить. Команды `remove`, `ci`, `validate` и `recover` описаны в [документации менеджера](../ThinkingHome.PackageManagement/README.md).
+Менеджер разрешает зависимости, скачивает и проверяет пакеты, сохраняет lock-файл и карту загрузки в `.thinkinghome`. Хост использует этот снимок без обращения к репозиториям. После изменения установленного набора хост нужно перезапустить. Команды `uninstall`, `ci`, `validate` и `recover` описаны в [документации менеджера](../ThinkingHome.PackageManagement/README.md).
 
 ### Локальная сборка
 
@@ -62,7 +62,7 @@ dotnet ./host/ThinkingHome.Console.dll --app ./application
 
 Запуск и проверка выполняются теми же командами хоста с `--app`. Параметр `--check` проверяет граф, файлы и статические контракты и загружает типы без создания экземпляров и вызова `InitPlugin`/`StartPlugin`. Для применения новой локальной сборки остановите хост, пересоберите проект и запустите хост снова.
 
-Для монорепозитория `ThinkingHome.Local.proj` собирает плагины и генерирует `plugins.local.json`. Подробности отладки и сборки — в [сценариях запуска](../ThinkingHome.PackageRuntime/README.md).
+Для монорепозитория `ThinkingHome.Local.proj` собирает плагины и генерирует `plugins.local.json`. Подробности отладки и сборки — в [сценариях запуска](../ThinkingHome.Core.Infrastructure/Runtime/README.md).
 
 ## Жизненный цикл плагина
 
@@ -300,7 +300,7 @@ foreach (LocalizedString str in StringLocalizer.GetAllStrings())
 
 ## Настройки
 
-Пользовательские настройки задаются в `appsettings.json` в каталоге приложения (`--app` либо каталог хоста). Сначала хост формирует базовую конфигурацию из фактического плана плагинов, затем накладывает `appsettings.json`, необязательный `appsettings.{THINKINGHOME_ENVIRONMENT}.json` и переменные окружения `THINKINGHOME_*`.
+Пользовательские настройки задаются в `appsettings.json` в каталоге приложения (`--app` либо текущий рабочий каталог). Сначала хост формирует базовую конфигурацию из фактического плана плагинов, затем накладывает `appsettings.json`, необязательный `appsettings.{THINKINGHOME_ENVIRONMENT}.json` и переменные окружения `THINKINGHOME_*`.
 
 ```js
 {

@@ -4,13 +4,12 @@
 
 ## Запуск
 
-Для обычной установки используйте [менеджер пакетов](../ThinkingHome.PackageManagement/README.md): он получает платформу автоматически из [общего API](../ThinkingHome.Platform/README.md). Приведённый ниже низкоуровневый CLI предназначен для инструментов и тестов с явно заданной платформой.
+Для обычной установки используйте [менеджер пакетов](../README.md): он получает платформу автоматически из [общего API](../../ThinkingHome.Packaging/Platform/README.md). Приведённый ниже низкоуровневый CLI предназначен для инструментов и тестов с явно заданной платформой.
 
 Из корня репозитория:
 
 ```powershell
-dotnet build ThinkingHome.PackagePlanning/ThinkingHome.PackagePlanning.csproj -m:1 -p:UseSharedCompilation=false
-dotnet run --project ThinkingHome.PackagePlanning/ThinkingHome.PackagePlanning.csproj --no-build -- plan plugins.json platform.json ThinkingHome.PackageSources/sources.example.json artifacts/plan
+th plan plugins.json platform.json ThinkingHome.PackageManagement/Sources/sources.example.json artifacts/plan
 ```
 
 Выходной каталог должен отсутствовать. Оба документа сначала записываются в соседний временный каталог и становятся видимыми вместе после его переименования. Повторный запуск не перезаписывает существующий результат. Архивы и распакованные DLL используются для проверки, но не сохраняются как установленный набор пакетов; временные DLL удаляются.
@@ -22,7 +21,7 @@ dotnet run --project ThinkingHome.PackagePlanning/ThinkingHome.PackagePlanning.c
   "framework": "net10.0",
   "rid": "win-x64",
   "plugins": [
-    { "id": "ThinkingHome.Plugins.Timer", "version": "[4.0.0-alpha34]" }
+    { "id": "ThinkingHome.Plugins.Timer", "version": "[5.0.0-alpha.1]" }
   ]
 }
 ```
@@ -35,11 +34,11 @@ dotnet run --project ThinkingHome.PackagePlanning/ThinkingHome.PackagePlanning.c
 
 ```json
 {
-  "version": "4.0.0-alpha34",
+  "version": "5.0.0-alpha.1",
   "framework": "net10.0",
   "rid": "win-x64",
   "packages": {
-    "ThinkingHome.Core.Plugins": "4.0.0-alpha34",
+    "ThinkingHome.Core.Plugins": "5.0.0-alpha.1",
     "Microsoft.Extensions.Logging.Abstractions": "10.0.11"
   },
   "assemblies": [
@@ -58,7 +57,7 @@ dotnet run --project ThinkingHome.PackagePlanning/ThinkingHome.PackagePlanning.c
 
 ## Выбор версий и областей
 
-- Корни и неплатформенные зависимости ищутся в едином списке `sources`. Категория выбранной версии определяется по манифесту в DLL скачанного пакета: плагин или обычная библиотека. Корнями могут быть только плагины. Приоритет источников задаёт [клиент источников](../ThinkingHome.PackageSources/README.md); адрес источника и имя пакета не определяют категорию.
+- Корни и неплатформенные зависимости ищутся в едином списке `sources`. Категория выбранной версии определяется по манифесту в DLL скачанного пакета: плагин или обычная библиотека. Корнями могут быть только плагины. Приоритет источников задаёт [клиент источников](../Sources/README.md); адрес источника и имя пакета не определяют категорию.
 - Выбирается максимальная допустимая стабильная версия. Prerelease включается, если хотя бы одно требование явно содержит prerelease-границу или prerelease-шаблон. При конфликте транзитивных требований поиск возвращается к другим кандидатам; лимит — 10000 ветвей. Сетевые ошибки и повреждённые архивы не подменяются версионным конфликтом.
 - Категория пересчитывается для каждой ветви поиска по выбранным версиям. Обнаруженный плагин объединяет требования всех потребителей в один узел; один ID нельзя использовать одновременно как плагин и библиотеку в разных областях. При возврате к старой версии её категория не наследуется от отвергнутого кандидата.
 - У каждого плагина одна версия и собственная область `plugin:<id>`. Типизированная ссылка на другой плагин импортирует его сборку из области владельца. Приватные DLL поставщика не импортируются.
@@ -96,9 +95,9 @@ dotnet test ThinkingHome.Packaging.Tests/ThinkingHome.Packaging.Tests.csproj -m:
 
 Тесты используют реальные тестовые DLL и nupkg, проверяют приватные и общие версии, возврат при конфликте, плавающие версии, циклы, утечки типов, встроенные DLL, локализацию, выбор ресурсов обеих целевых сред, детерминизм и CLI через локальный HTTP-репозиторий. Проверки выбора Linux-файлов на Windows не заменяют запуск на Linux и исполнение native-кода.
 
-План применяет [ThinkingHome.PackageManagement](../ThinkingHome.PackageManagement/README.md): хранилище, согласованная установка, locked-восстановление и валидация установленного состояния. `LockedPlanVerifier.Verify` проверяет точный граф без поиска новых версий. Загрузку плагинов выполняет [ThinkingHome.PackageRuntime](../ThinkingHome.PackageRuntime/README.md).
+План применяет [ThinkingHome.PackageManagement](../README.md): хранилище, согласованная установка, locked-восстановление и валидация установленного состояния. `LockedPlanVerifier.Verify` проверяет точный граф без поиска новых версий. Загрузку плагинов выполняет [ThinkingHome.PackageRuntime](../../ThinkingHome.Core.Infrastructure/Runtime/README.md).
 
-`ExecutionPlanner.Build` составляет план выполнения из проверенной установки и локальных DLL/deps.json. Он использует тот же граф и PlanBuilder/ContractValidator. Этот план хранится в памяти, содержит локальные пути через отдельную таблицу файлов и не является входом install/ci. [Формат подключений и правила версий](../ThinkingHome.PackageRuntime/README.md).
+`ExecutionPlanner.Build` составляет план выполнения из проверенной установки и локальных DLL/deps.json. Он использует тот же граф и PlanBuilder/ContractValidator. Этот план хранится в памяти, содержит локальные пути через отдельную таблицу файлов и не является входом install/ci. [Формат подключений и правила версий](../../ThinkingHome.Core.Infrastructure/Runtime/README.md).
 
 Locked-восстановление определяет плагины по метаданным зафиксированных архивов, проверяет отметки shared и весь граф заново. Поиска в репозиториях для классификации при этом нет. Одна активная версия каждого плагина и ошибки циклических зависимостей сохраняются.
 

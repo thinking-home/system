@@ -12,11 +12,9 @@
     <PackageReference Include="xunit.runner.visualstudio" Version="4.0.0" PrivateAssets="all" />
     <ProjectReference Include="../ThinkingHome.Packaging/ThinkingHome.Packaging.csproj" />
     <ProjectReference Include="../ThinkingHome.Repository/ThinkingHome.Repository.csproj" />
-    <ProjectReference Include="../ThinkingHome.PackageSources/ThinkingHome.PackageSources.csproj" />
-    <ProjectReference Include="../ThinkingHome.PackagePlanning/ThinkingHome.PackagePlanning.csproj" />
     <ProjectReference Include="../ThinkingHome.PackageManagement/ThinkingHome.PackageManagement.csproj" />
-    <ProjectReference Include="../ThinkingHome.PackageRuntime/ThinkingHome.PackageRuntime.csproj" />
     <ProjectReference Include="../ThinkingHome.Core.Infrastructure/ThinkingHome.Core.Infrastructure.csproj" />
+    <ProjectReference Include="../ThinkingHome.Console/ThinkingHome.Console.csproj" />
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
   </ItemGroup>
 </Project>

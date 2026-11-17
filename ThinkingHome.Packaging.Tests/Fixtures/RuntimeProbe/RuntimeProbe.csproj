@@ -7,6 +7,6 @@
     <IsPackable>false</IsPackable>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="../../../ThinkingHome.PackageRuntime/ThinkingHome.PackageRuntime.csproj" />
+    <ProjectReference Include="../../../ThinkingHome.Core.Infrastructure/ThinkingHome.Core.Infrastructure.csproj" />
   </ItemGroup>
 </Project>

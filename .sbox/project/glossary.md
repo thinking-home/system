@@ -12,9 +12,9 @@ verification: needs-review
 
 | Термин | Определение | Где в коде |
 |---|---|---|
-| Плагин | класс-наследник `PluginBase`, единица расширения; выбранная планом точка входа установленного пакета или локальной сборки создаётся DI как singleton | `ThinkingHome.Core.Plugins/PluginBase.cs`, `ThinkingHome.PackageRuntime/PluginRuntime.cs`, `ThinkingHome.Core.Infrastructure/HomeApplication.cs` |
+| Плагин | класс-наследник `PluginBase`, единица расширения; выбранная планом точка входа установленного пакета или локальной сборки создаётся DI как singleton | `ThinkingHome.Core.Plugins/PluginBase.cs`, `ThinkingHome.Core.Infrastructure/Runtime/PluginRuntime.cs`, `ThinkingHome.Core.Infrastructure/HomeApplication.cs` |
 | Установленный набор | проверенный снимок `.thinkinghome`: корни, lock-файл, карта загрузки, генерируемая конфигурация и пакеты; изменяется менеджером, применяется после перезапуска хоста | `ThinkingHome.PackageManagement/PackageManager.cs` |
-| Локальные подключения | необязательный `plugins.local.json` в каталоге приложения: `pluginPaths` объявляет DLL, `plugins` — дополнительные корни; локальная реализация имеет приоритет над установленной с тем же ID | `ThinkingHome.PackageRuntime/PluginRuntime.cs` |
+| Локальные подключения | необязательный `plugins.local.json` в каталоге приложения: `pluginPaths` объявляет DLL, `plugins` — дополнительные корни; локальная реализация имеет приоритет над установленной с тем же ID | `ThinkingHome.Core.Infrastructure/Runtime/PluginRuntime.cs` |
 | Хост, хост-приложение | процесс `ThinkingHome.Console`, который загружает и останавливает плагины | `ThinkingHome.Console/Program.cs` |
 | Контекст сервисов | объект `IServiceContext`, даёт список всех плагинов в прямом или обратном порядке | `ThinkingHome.Core.Infrastructure/ServiceContext.cs` |
 | Индекс зависимости | `DependencyIndex`, порядок создания экземпляра плагина; задаёт порядок init/start и обратный порядок stop | `ThinkingHome.Core.Plugins/PluginBase.cs` |
