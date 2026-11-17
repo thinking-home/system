@@ -1,6 +1,6 @@
 ---
 id: project.workflow
-summary: База master (в конфиге sdd указан main), ветки по теме и sbox/ для агентов, пул-реквесты на GitHub без CI, запреты для агентов (коммит, push, мерж, миграции, секреты, публикация), список безопасных команд
+summary: База master, ветки по теме и sbox/ для агентов, пул-реквесты на GitHub без CI, запреты для агентов (коммит, push, мерж, миграции, секреты, публикация), список безопасных команд
 read_when: Перед коммитом, созданием ветки и пул-реквеста
 updated: 2026-11-17
 verification: needs-review
@@ -24,7 +24,7 @@ verification: needs-review
 ## Проверки CI
 
 - — : CI не настроен (нет `.github`, других конфигов CI). Все проверки — локально: `dotnet build ThinkingHome.sln`, `dotnet test ThinkingHome.Tests/ThinkingHome.Tests.csproj`.
-- Docker-образ собирается вручную командой `docker build -t dima117a/thinking-home:4.0.0-alpha34 .` и публикуется в Docker Hub (`README.md`); внутри образа Node 24 и `dotnet publish -c Release` (`Dockerfile`).
+- Docker-образ собирается вручную командой `docker build -t dima117a/thinking-home:5.0.0-alpha.1 .` и публикуется в Docker Hub (`README.md`); внутри образа Node 24 и `dotnet publish -c Release` (`Dockerfile`).
 - Шаблон workflow для GitHub можно создать командой `sbox ci install` — не применялось.
 
 ## Запрещено без человека

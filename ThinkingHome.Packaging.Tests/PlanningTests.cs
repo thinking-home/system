@@ -427,7 +427,7 @@ public class PlanningTests(PackageFixture fixture) : IClassFixture<PackageFixtur
             File.WriteAllBytes(roots, PlanJson.Bytes(Request(("Fixture.Embedded", "[1.0.0]"))));
             File.WriteAllBytes(platform, PlanJson.Bytes(Platform()));
             File.WriteAllBytes(sources, PlanJson.Bytes(new SourceConfiguration { Sources = [app.Urls.Single() + "/v3/index.json"] }));
-            var args = new[] { typeof(PackagePlanner).Assembly.Location, "plan", roots, platform, sources, output };
+            var args = new[] { Path.Combine(AppContext.BaseDirectory, "ThinkingHome.Console.dll"), "plan", roots, platform, sources, output };
             var run = await Task.Run(() => PackageFixture.Run("dotnet", args));
             Assert.True(run.Code == 0, run.Output);
             var locked = File.ReadAllBytes(Path.Combine(output, "plugins.lock.json"));

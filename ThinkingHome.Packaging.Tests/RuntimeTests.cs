@@ -62,7 +62,7 @@ public class RuntimeTests(PackageFixture fixture) : IClassFixture<PackageFixture
             .Select(x => x.FullName).Order(StringComparer.Ordinal));
 
         var localFolder = Folder();
-        await Install(localFolder, platform, [timer], [new("ThinkingHome.Plugins.Timer", "[4.0.0-alpha34]")]);
+        await Install(localFolder, platform, [timer], [new("ThinkingHome.Plugins.Timer", $"[{platform.Version}]")]);
         var dll = BuildLocal("Runtime", "-p:HandlerCase=ENTRY_SHAPES");
         Connect(localFolder, [dll], [new("Fixture.Runtime", "[1.0.0]")]);
         using var local = PluginRuntime.Open(localFolder, platform);
@@ -149,7 +149,7 @@ public class RuntimeTests(PackageFixture fixture) : IClassFixture<PackageFixture
         var folder = Folder();
         var timer = PackTimer(Folder());
         var platform = HostPlatform.Current();
-        await Install(folder, platform, [timer], [new("ThinkingHome.Plugins.Timer", "[4.0.0-alpha34]")]);
+        await Install(folder, platform, [timer], [new("ThinkingHome.Plugins.Timer", $"[{platform.Version}]")]);
         var pointer = File.ReadAllBytes(Path.Combine(folder, ".thinkinghome/current.json"));
         var dll = BuildLocal("Runtime");
 
@@ -245,7 +245,7 @@ public class RuntimeTests(PackageFixture fixture) : IClassFixture<PackageFixture
             var platform = HostPlatform.Current();
             var manager = new PackageManager(folder, platform, source);
             await manager.InstallAsync("ThinkingHome.Plugins.WebServer.UrlValidation",
-                "[4.0.0-alpha34]");
+                $"[{platform.Version}]");
             var state = await manager.InstallAsync("Fixture.Graph", "[1.0.0]");
             Assert.Contains(state.Plan.Lock.Packages, x => x.Kind == "library" && x.Id == "Fixture.Dependency");
             Assert.Single(state.Plan.Lock.Packages.Select(x => x.Source).Distinct());
@@ -394,7 +394,7 @@ public class RuntimeTests(PackageFixture fixture) : IClassFixture<PackageFixture
     {
         var folder = Folder();
         var platform = HostPlatform.Current();
-        await Install(folder, platform, [PackTimer(Folder())], [new("ThinkingHome.Plugins.Timer", "[4.0.0-alpha34]")]);
+        await Install(folder, platform, [PackTimer(Folder())], [new("ThinkingHome.Plugins.Timer", $"[{platform.Version}]")]);
         var dll = BuildLocal("Runtime");
         File.WriteAllBytes(Path.Combine(folder, "plugins.local.json"), PlanJson.Bytes(new { PluginPaths = new[] { dll } }));
         using var runtime = PluginRuntime.Open(folder, platform);
@@ -508,7 +508,7 @@ public class RuntimeTests(PackageFixture fixture) : IClassFixture<PackageFixture
             "-p:UseSharedCompilation=false", "-p:NuGetAudit=false");
         Assert.True(build.Code == 0, build.Output);
         Connect(folder, [Path.Combine(output, "ThinkingHome.Plugins.Database.dll"), Path.Combine(output,
-            "ThinkingHome.Plugins.Scripts.dll")], [new("ThinkingHome.Plugins.Scripts", "[4.0.0-alpha34]")]);
+            "ThinkingHome.Plugins.Scripts.dll")], [new("ThinkingHome.Plugins.Scripts", $"[{HostPlatform.Current().Version}]")]);
 
         // EF/framework caches can retain collectible contexts; a real host releases them on process exit.
         var probe = Path.Combine(fixture.Root, "ThinkingHome.Packaging.Tests/Fixtures/RuntimeProbe/RuntimeProbe.csproj");

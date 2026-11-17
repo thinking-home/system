@@ -1,6 +1,6 @@
 # Результат этапа источников и репозитория
 
-Третий этап [плана MVP](decisions/ADR-0003-plugin-package-management-stages.md) реализован как отдельные [сервер репозитория](../../ThinkingHome.Repository/README.md) и [клиент источников](../../ThinkingHome.PackageSources/README.md). Оба проекта добавлены в решение.
+Третий этап [плана MVP](decisions/ADR-0003-plugin-package-management-stages.md) реализован как отдельные [сервер репозитория](../../ThinkingHome.Repository/README.md) и [клиент источников](../../ThinkingHome.PackageManagement/Sources/README.md). Сервер поставляется отдельно; клиент входит в библиотеку PackageManagement.
 
 Сервер индексирует верхний уровень папки nupkg при запуске, проверяет структуру и манифесты DLL без исполнения кода и без зависимостей плагина, предоставляет service index и PackageBaseAddress/3.0.0. Пакеты выдаются из неизменяемого снимка в памяти; журнал SHA-512 защищает известные ID/версии от незаметной замены при перезапуске. Новые файлы становятся видимыми после перезапуска.
 

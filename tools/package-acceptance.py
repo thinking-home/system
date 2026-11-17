@@ -129,7 +129,7 @@ class Acceptance:
         self.wait_http(server, url + "/v3/index.json")
         sources = self.work / "sources.json"
         write_json(sources, {"sources": [url + "/v3/index.json", "https://api.nuget.org/v3/index.json"]})
-        tool, host = bundle / "ThinkingHome.PackageManagement.dll", bundle / "ThinkingHome.Console.dll"
+        host = bundle / "ThinkingHome.Console.dll"
         app, copy = self.work / "application", self.work / "restored"
         app.mkdir()
         web_port = port()
@@ -137,53 +137,56 @@ class Acceptance:
         write_json(app / "appsettings.json", settings)
         original_settings = (app / "appsettings.json").read_bytes()
 
-        self.run("install", "dotnet", tool, "install", app, "Acceptance.Probe", "[1.0.0]", sources)
-        self.run("install-real-consumer", "dotnet", tool, "install", app, "ThinkingHome.Plugins.WebServer.UrlValidation", "[4.0.0-alpha34]", sources)
+        self.run("install", "dotnet", host, "install", app, "Acceptance.Probe", "[1.0.0]", sources)
+        consumer_id = "ThinkingHome.Plugins.WebServer.UrlValidation"
+        consumer_package, = packages.glob(f"{consumer_id}.*.nupkg")
+        consumer_version = consumer_package.stem.removeprefix(consumer_id + ".")
+        self.run("install-real-consumer", "dotnet", host, "install", app, consumer_id, f"[{consumer_version}]", sources)
         state = self.state(app)
         locked = json.loads((state / "plugins.lock.json").read_text())
         assert len([p for p in locked["packages"] if p["id"].lower() == "newtonsoft.json"]) == 1
-        self.run("validate", "dotnet", tool, "validate", app)
-        self.run("preflight", "dotnet", host, "--app", app, "--check")
+        self.run("validate", "dotnet", host, "validate", app)
+        self.run("preflight", "dotnet", host, "run", "--app", app, "--check")
         endpoint = f"http://127.0.0.1:{web_port}/api/acceptance/state"
-        running = self.start("host-v1", "dotnet", host, "--app", app)
+        running = self.start("host-v1", "dotnet", host, "run", "--app", app)
         assert self.check_native(running, endpoint, app)["version"] == "1.0.0.0"
 
         pointer = (app / ".thinkinghome/current.json").read_bytes()
-        output = self.run("reject-required-remove", "dotnet", tool, "remove", app, "ThinkingHome.Plugins.WebServer", expected=1)
+        output = self.run("reject-required-remove", "dotnet", host, "uninstall", app, "ThinkingHome.Plugins.WebServer", expected=1)
         assert "required by" in output
-        self.run("reject-missing-version", "dotnet", tool, "install", app, "Acceptance.Probe", "[9.0.0]", sources, expected=1)
+        self.run("reject-missing-version", "dotnet", host, "install", app, "Acceptance.Probe", "[9.0.0]", sources, expected=1)
         assert pointer == (app / ".thinkinghome/current.json").read_bytes()
 
-        self.run("update-while-running", "dotnet", tool, "install", app, "Acceptance.Probe", "[2.0.0]", sources)
+        self.run("update-while-running", "dotnet", host, "install", app, "Acceptance.Probe", "[2.0.0]", sources)
         assert self.check_native(running, endpoint, app)["version"] == "1.0.0.0"
         self.stop(running)
-        running = self.start("host-v2", "dotnet", host, "--app", app)
+        running = self.start("host-v2", "dotnet", host, "run", "--app", app)
         assert self.check_native(running, endpoint, app)["version"] == "2.0.0.0"
         self.stop(running)
         self.steps.append("restart-applies-update-and-native-call")
 
         state = self.state(app)
-        self.run("ci-clean", "dotnet", tool, "ci", copy, state / "plugins.json", state, sources)
+        self.run("ci-clean", "dotnet", host, "ci", copy, state / "plugins.json", state, sources)
         for name in ("plugins.json", "plugins.lock.json", "load-map.json"):
             assert (state / name).read_bytes() == (self.state(copy) / name).read_bytes()
-        self.run("restored-preflight", "dotnet", host, "--app", copy, "--check")
+        self.run("restored-preflight", "dotnet", host, "run", "--app", copy, "--check")
         write_json(copy / "appsettings.json", settings)
-        restored = self.start("host-restored", "dotnet", host, "--app", copy)
+        restored = self.start("host-restored", "dotnet", host, "run", "--app", copy)
         assert self.check_native(restored, endpoint, copy)["version"] == "2.0.0.0"
         self.stop(restored)
         self.steps.append("native-loaded-after-ci")
 
         self.stop(server)
-        self.run("validate-offline", "dotnet", tool, "validate", copy)
-        self.run("ci-cached-offline", "dotnet", tool, "ci", copy, state / "plugins.json", state, sources)
+        self.run("validate-offline", "dotnet", host, "validate", copy)
+        self.run("ci-cached-offline", "dotnet", host, "ci", copy, state / "plugins.json", state, sources)
         locked = json.loads((self.state(copy) / "plugins.lock.json").read_text())
         probe = next(p for p in locked["packages"] if p["id"].lower() == "acceptance.probe")
         dll = next(f["path"] for f in probe["files"] if f["path"].endswith("/Probe.dll"))
         damaged = copy / ".thinkinghome/packages" / probe["key"] / "files" / dll
         damaged.write_bytes(b"damaged")
-        self.run("detect-corruption", "dotnet", tool, "validate", copy, expected=1)
-        self.run("repair-offline", "dotnet", tool, "ci", copy, state / "plugins.json", state, sources)
-        self.run("validate-repaired", "dotnet", tool, "validate", copy)
+        self.run("detect-corruption", "dotnet", host, "validate", copy, expected=1)
+        self.run("repair-offline", "dotnet", host, "ci", copy, state / "plugins.json", state, sources)
+        self.run("validate-repaired", "dotnet", host, "validate", copy)
 
         # Corrupt the selected native binary only after all host processes have stopped.
         native_package = next(p for p in locked["packages"] if p["id"].lower() == "sqlitepclraw.lib.e_sqlite3")
@@ -192,22 +195,22 @@ class Acceptance:
         native_file = next(f["path"] for f in native_package["files"]
                            if f["path"] == f"runtimes/{native_rid}/native/{native_name}")
         (copy / ".thinkinghome/packages" / native_package["key"] / "files" / native_file).write_bytes(b"damaged native")
-        self.run("detect-native-corruption", "dotnet", tool, "validate", copy, expected=1)
-        self.run("repair-native-offline", "dotnet", tool, "ci", copy, state / "plugins.json", state, sources)
+        self.run("detect-native-corruption", "dotnet", host, "validate", copy, expected=1)
+        self.run("repair-native-offline", "dotnet", host, "ci", copy, state / "plugins.json", state, sources)
 
-        repaired = self.start("host-native-repaired", "dotnet", host, "--app", copy)
+        repaired = self.start("host-native-repaired", "dotnet", host, "run", "--app", copy)
         assert self.check_native(repaired, endpoint, copy)["version"] == "2.0.0.0"
         self.stop(repaired)
         self.steps.append("native-loaded-after-repair")
-        self.run("recover", "dotnet", tool, "recover", copy)
+        self.run("recover", "dotnet", host, "recover", copy)
 
-        self.run("remove-probe", "dotnet", tool, "remove", app, "Acceptance.Probe")
+        self.run("remove-probe", "dotnet", host, "uninstall", app, "Acceptance.Probe")
         remaining = json.loads((self.state(app) / "plugins.lock.json").read_text())
         assert all(p["id"].lower() not in ("newtonsoft.json", "thinkinghome.plugins.timer", "sqlitepclraw.lib.e_sqlite3") for p in remaining["packages"])
-        self.run("remove-last-root", "dotnet", tool, "remove", app, "ThinkingHome.Plugins.WebServer.UrlValidation")
+        self.run("remove-last-root", "dotnet", host, "uninstall", app, "ThinkingHome.Plugins.WebServer.UrlValidation")
         assert not json.loads((self.state(app) / "plugins.lock.json").read_text())["packages"]
-        self.run("validate-empty", "dotnet", tool, "validate", app)
-        self.run("preflight-empty", "dotnet", host, "--app", app, "--check")
+        self.run("validate-empty", "dotnet", host, "validate", app)
+        self.run("preflight-empty", "dotnet", host, "run", "--app", app, "--check")
         assert (app / "appsettings.json").read_bytes() == original_settings
 
     def close(self):

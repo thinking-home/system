@@ -27,6 +27,13 @@ ThinkingHome - кроссплатформенное приложение, поз
 
 **[Как написать свой плагин](ThinkingHome.Core.Plugins)**
 
+## Установка с помощью .NET tool
+
+Пакет `ThinkingHome.Console` объединяет хост (`th run`) и менеджер (`th install`).
+Версия для подготовки к публикации — `5.0.0-alpha.1`. [Инструкция для чистого компьютера](ThinkingHome.Console/TOOL.md)
+описывает установку из nuget.org после публикации CLI и Timer. Для проверки тех же архивов до публикации
+используйте [локальную приёмку](docs/cli-release.md).
+
 ## Установка с помощью Docker
 
 Dockerfile создаёт комплект хоста и менеджера пакетов без предустановленных плагинов. Соберите образ из текущих исходников:
@@ -35,20 +42,20 @@ Dockerfile создаёт комплект хоста и менеджера па
 docker build -t thinkinghome:local .
 ```
 
-Подготовьте каталог `application` с пользовательским `appsettings.json` и файлом [источников пакетов](ThinkingHome.PackageSources/README.md) `sources.json`. Адреса репозиториев должны быть доступны из контейнера. Установите нужный плагин через менеджер из того же образа; замените `Example.Plugin` и диапазон версии на опубликованный пакет:
+Подготовьте каталог `application` с пользовательским `appsettings.json` и файлом [источников пакетов](ThinkingHome.PackageManagement/Sources/README.md) `sources.json`. Адреса репозиториев должны быть доступны из контейнера. Установите нужный плагин через менеджер из того же образа; замените `Example.Plugin` и диапазон версии на опубликованный пакет:
 
 ```shell
-docker run --rm --entrypoint dotnet -v "./application:/data" thinkinghome:local ThinkingHome.PackageManagement.dll install /data Example.Plugin "[1.0.0]" /data/sources.json
+docker run --rm -v "./application:/data" thinkinghome:local install /data Example.Plugin "[1.0.0]" /data/sources.json
 ```
 
 Проверьте установленный набор и запустите хост с тем же каталогом данных:
 
 ```shell
-docker run --rm -v "./application:/data" thinkinghome:local --app /data --check
-docker run --name thinking-home -v "./application:/data" -p 8080:8080 thinkinghome:local --app /data
+docker run --rm -v "./application:/data" thinkinghome:local run --app /data --check
+docker run --name thinking-home -v "./application:/data" -p 8080:8080 thinkinghome:local run --app /data
 ```
 
-Доступность веб-интерфейса, БД и других сервисов зависит от установленных плагинов и их настроек. Подключение PostgreSQL описано в [документации плагина базы данных](ThinkingHome.Plugins.Database/README.md). После изменения состава плагинов хост нужно перезапустить. При обновлении образа учитывайте [контракт совместной поставки и проверки платформы](ThinkingHome.Platform/README.md).
+Доступность веб-интерфейса, БД и других сервисов зависит от установленных плагинов и их настроек. Подключение PostgreSQL описано в [документации плагина базы данных](ThinkingHome.Plugins.Database/README.md). После изменения состава плагинов хост нужно перезапустить. При обновлении образа учитывайте [контракт совместной поставки и проверки платформы](ThinkingHome.Packaging/Platform/README.md).
 
 ## Для разработчиков
 
@@ -58,11 +65,11 @@ docker run --name thinking-home -v "./application:/data" -p 8080:8080 thinkingho
 
 - [Упаковка плагинов и статическая валидация](ThinkingHome.Packaging/README.md)
 - [Сервер репозитория для локальной папки](ThinkingHome.Repository/README.md)
-- [Поиск версий и скачивание пакетов](ThinkingHome.PackageSources/README.md)
-- [Разрешение зависимостей и план установки](ThinkingHome.PackagePlanning/README.md)
+- [Поиск версий и скачивание пакетов](ThinkingHome.PackageManagement/Sources/README.md)
+- [Разрешение зависимостей и план установки](ThinkingHome.PackageManagement/Planning/README.md)
 - [Установка, удаление, locked-восстановление и валидация](ThinkingHome.PackageManagement/README.md)
-- [Общий API платформы и контракт совместной поставки](ThinkingHome.Platform/README.md)
-- [Сервер, отладка плагина и монорепозитория](ThinkingHome.PackageRuntime/README.md)
+- [Общий API платформы и контракт совместной поставки](ThinkingHome.Packaging/Platform/README.md)
+- [Сервер, отладка плагина и монорепозитория](ThinkingHome.Core.Infrastructure/Runtime/README.md)
 - [Архитектурные решения и план MVP](.sbox/project/decisions/README.md)
 - [Команды сборки и тестирования](.sbox/project/testing.md)
 

@@ -44,7 +44,7 @@
 - библиотеки и файлы runtime, скопированные SDK в выходной каталог;
 - PDB для отладки, если они не встроены в DLL.
 
-Общие [ThinkingHome.Plugin.targets](../ThinkingHome.Packaging/build/ThinkingHome.Plugin.targets) включают `GenerateDependencyFile` и `CopyLocalLockFileAssemblies`. Никакой nupkg, публикации или установки собственной DLL для запуска не требуется. При нестандартном копировании файлов нужно сохранить структуру SDK, включая каталоги культур и `runtimes`.
+Общие [ThinkingHome.Plugin.targets](../../ThinkingHome.Packaging/build/ThinkingHome.Plugin.targets) включают `GenerateDependencyFile` и `CopyLocalLockFileAssemblies`. Никакой nupkg, публикации или установки собственной DLL для запуска не требуется. При нестандартном копировании файлов нужно сохранить структуру SDK, включая каталоги культур и `runtimes`.
 
 Зависимости-плагины распознаются по метаданным подключённых DLL и установленных пакетов и разрешаются общим поиском по ID. Соседняя DLL с маркером плагина распознаётся как требование отдельного подключения, но не подключается автоматически. Библиотеки приватные по умолчанию; ThinkingHomeShared на обычной ссылке делает библиотеку общей. Утечки приватных типов по-прежнему запрещены. Библиотеки локального плагина берутся из его результата сборки, а библиотеки установленного — из зафиксированного хранилища. Необъявленная копия библиотеки не подхватывается. Платформа предоставляет свои сборки единственным владельцем; локальная копия ядра или библиотек платформы не заменяет их.
 
@@ -81,36 +81,36 @@ dotnet publish ThinkingHome.Console/ThinkingHome.Console.csproj -c Release -o ./
 New-Item -ItemType Directory -Force ./artifacts/application
 ```
 
-Создайте `sources.json` по [формату источников](../ThinkingHome.PackageSources/README.md). Плагин соответствующей версии предварительно публикуется в вашем репозитории:
+Создайте `sources.json` по [формату источников](../../ThinkingHome.PackageManagement/Sources/README.md). Плагин соответствующей версии предварительно публикуется в вашем репозитории:
 
 ```powershell
-dotnet ./artifacts/host/ThinkingHome.PackageManagement.dll install ./artifacts/application ThinkingHome.Plugins.Timer "[4.0.0-alpha34]" ./artifacts/application/sources.json
-dotnet ./artifacts/host/ThinkingHome.Console.dll --app ./artifacts/application --check
-dotnet ./artifacts/host/ThinkingHome.Console.dll --app ./artifacts/application
+dotnet ./artifacts/host/ThinkingHome.Console.dll install ./artifacts/application ThinkingHome.Plugins.Timer "[5.0.0-alpha.1]" ./artifacts/application/sources.json
+dotnet ./artifacts/host/ThinkingHome.Console.dll run --app ./artifacts/application --check
+dotnet ./artifacts/host/ThinkingHome.Console.dll run --app ./artifacts/application
 ```
 
-Хост и менеджер входят в один комплект публикации и обновляются вместе. Каждый получает платформу непосредственно через общий API `ThinkingHome.Platform.HostPlatform.Current()`, без файла и запуска другой программы. Версии ядра, runtime и платформенных библиотек должны совпадать; после обновления может потребоваться пересчитать план. [Контракт совместной поставки](../ThinkingHome.Platform/README.md).
+Хост и менеджер входят в один комплект публикации и обновляются вместе. Каждый получает платформу непосредственно через общий API `ThinkingHome.Platform.HostPlatform.Current()`, без файла и запуска другой программы. Версии ядра, runtime и платформенных библиотек должны совпадать; после обновления может потребоваться пересчитать план. [Контракт совместной поставки](../../ThinkingHome.Packaging/Platform/README.md).
 
 ## Автор плагина в IDE
 
 1. Создайте отдельный каталог приложения для отладки и задайте его через `--app`.
 2. Установите туда сторонние плагины через менеджер пакетов. Проект собственного плагина должен ссылаться на их контракты для компиляции.
 3. Добавьте `plugins.local.json` с путём к выходной DLL и корнем собственного плагина.
-4. Настройте обычный Build проекта перед запуском. Запускайте из отладчика `dotnet <host>/ThinkingHome.Console.dll --app <каталог>` или подключите отладчик к этому процессу.
+4. Настройте обычный Build проекта перед запуском. Запускайте из отладчика `dotnet <host>/ThinkingHome.Console.dll run --app <каталог>` или подключите отладчик к этому процессу.
 5. Остановите процесс, пересоберите проект и запустите снова после изменений.
 
 Отладчик использует DLL и PDB прямо из каталога проекта. Не нужны отдельные версии пакета на каждую сборку. Несколько собственных плагинов подключаются несколькими путями тем же способом. Локальная реализация зависимости имеет приоритет над установленной и подчиняется тем же проверкам версий.
 
 ## Разработчик монорепозитория
 
-[ThinkingHome.Local.proj](../ThinkingHome.Local.proj) — автоматизация сборки, не дополнительный хост. Она собирает проекты плагинов и Console и создаёт обычный `plugins.local.json` в выходной папке Console. Пути получает через MSBuild `GetTargetPath`; каждый плагин загружается из собственного каталога. ID проектов этого монорепозитория совпадают с PackageId, версия берётся из Package.xml.
+[ThinkingHome.Local.proj](../../ThinkingHome.Local.proj) — автоматизация сборки, не дополнительный хост. Она собирает проекты плагинов и Console и создаёт обычный `plugins.local.json` в выходной папке Console. Пути получает через MSBuild `GetTargetPath`; каждый плагин загружается из собственного каталога. ID проектов этого монорепозитория совпадают с PackageId, версия берётся из Package.xml.
 
 ```powershell
 dotnet msbuild ThinkingHome.Local.proj -m:1 -p:UseSharedCompilation=false -p:NuGetAudit=false
-dotnet ThinkingHome.Console/bin/Debug/net10.0/ThinkingHome.Console.dll --check
+dotnet ThinkingHome.Console/bin/Debug/net10.0/ThinkingHome.Console.dll run --app ThinkingHome.Console/bin/Debug/net10.0 --check
 ```
 
-При первой сборке чистого репозитория выполните сборку дважды: существующие frontend-targets требуют второго прохода для включения впервые сгенерированных UI-ресурсов в DLL (см. [правила сборки](../.sbox/project/testing.md)).
+При первой сборке чистого репозитория выполните сборку дважды: существующие frontend-targets требуют второго прохода для включения впервые сгенерированных UI-ресурсов в DLL (см. [правила сборки](../../.sbox/project/testing.md)).
 
 После уже выполненной сборки решения можно только обновить подключения:
 
@@ -130,8 +130,8 @@ dotnet msbuild ThinkingHome.Local.proj -t:WriteConnections
 
 DI получает только проверенные entry points в порядке зависимостей. InitPlugin и StartPlugin выполняются в порядке создания экземпляров DI; StopPlugin — в обратном порядке для плагинов, инициализация которых началась, в том числе при ошибке старта. Сигнатуры атрибутных обработчиков проверяются при регистрации через CreateDelegate. Подписки хоста снимаются, контейнер освобождается, затем освобождается снимок установки.
 
-Полный список параметров хоста, включая справку, приведён в [документации Console](../ThinkingHome.Console/README.md#параметры-командной-строки). Разбор и проверку аргументов до загрузки плагинов выполняет System.CommandLine.
+Полный список параметров хоста, включая справку, приведён в [документации Console](../../ThinkingHome.Console/README.md#параметры-командной-строки). Разбор и проверку аргументов до загрузки плагинов выполняет System.CommandLine.
 
 `--check` проверяет файлы, граф и статические контракты и загружает типы. Он не создаёт экземпляры, не запускает init/start, не проверяет соединение с БД, аппаратурой и внешними API. Ошибки конфигурации/обработчиков, зависящие от жизненного цикла, могут обнаружиться только при обычном запуске.
 
-Горячая замена не поддерживается. Контексты загрузки допускают освобождение после остановки, но внешние ссылки на типы и делегаты могут задерживать выгрузку. Загрузчик не является песочницей для недоверенного кода. Поддерживаемые цели MVP: net10.0/win-x64 и net10.0/linux-x64; single-file, trimming и NativeAOT не поддерживаются. Фактические проверки этой поставки и ограничения среды перечислены в [testing.md](../.sbox/project/testing.md).
+Горячая замена не поддерживается. Контексты загрузки допускают освобождение после остановки, но внешние ссылки на типы и делегаты могут задерживать выгрузку. Загрузчик не является песочницей для недоверенного кода. Поддерживаемые цели MVP: net10.0/win-x64 и net10.0/linux-x64; single-file, trimming и NativeAOT не поддерживаются. Фактические проверки этой поставки и ограничения среды перечислены в [testing.md](../../.sbox/project/testing.md).
