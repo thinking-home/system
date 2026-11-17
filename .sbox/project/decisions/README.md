@@ -8,6 +8,7 @@
 - [Автоматическое обнаружение точек входа](ADR-0004-plugin-entry-point-discovery.md)
 - [Совместимость через зависимость от ядра](ADR-0005-core-package-compatibility.md)
 - [Автоматическое определение зависимостей и отметка shared](ADR-0006-reference-dependency-policy.md)
+- [Общие NuGet-источники и категория пакета по метаданным](ADR-0007-common-nuget-sources.md)
 
 Документация: [упаковка и контракты](../plugin-package-packaging.md), [источники и репозиторий](../plugin-package-sources.md), [план установки](../plugin-package-planning.md), [установка и восстановление](../plugin-package-installation.md), [интеграция с хостом и локальные подключения](../plugin-package-runtime.md).
 

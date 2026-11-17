@@ -11,41 +11,40 @@ public sealed record PackageListing(Uri Source, Uri ContentBase, IReadOnlyList<N
 public sealed record PackageDownload(Uri Source, PackageMetadata Metadata, byte[] Bytes, string Sha512);
 
 public interface IPackageSource {
-    Task<PackageListing> FindAsync(PackageKind kind, string id, CancellationToken cancellation = default);
-    Task<PackageDownload> DownloadAsync(PackageKind kind, string id, NuGetVersion version, CancellationToken cancellation = default);
+    Task<PackageListing> FindAsync(string id, CancellationToken cancellation = default);
+    Task<PackageDownload> DownloadAsync(string id, NuGetVersion version, CancellationToken cancellation = default);
 }
 
 public interface ILockedPackageSource : IPackageSource {
-    Task<PackageDownload> DownloadLockedAsync(Uri source, PackageKind kind, string id, NuGetVersion version, CancellationToken cancellation = default);
+    Task<PackageDownload> DownloadLockedAsync(Uri source, string id, NuGetVersion version, CancellationToken cancellation = default);
 }
 
 public sealed class NuGetSourceClient(HttpClient http, SourceConfiguration configuration) : ILockedPackageSource {
-    public Task<PackageDownload> DownloadLockedAsync(Uri source, PackageKind kind, string id, NuGetVersion version, CancellationToken cancellation = default) {
-        if (!configuration.GetSources(kind).Contains(source)) throw new InvalidDataException("Locked source is not configured: " + source);
-        var pinned = kind == PackageKind.Plugin ? new SourceConfiguration { PluginSources = [source.AbsoluteUri] }
-            : new SourceConfiguration { LibrarySources = [source.AbsoluteUri] };
-        return new NuGetSourceClient(http, pinned).DownloadAsync(kind, id, version, cancellation);
+    public Task<PackageDownload> DownloadLockedAsync(Uri source, string id, NuGetVersion version, CancellationToken cancellation = default) {
+        if (!configuration.GetSources().Contains(source)) throw new InvalidDataException("Locked source is not configured: " + source);
+        var pinned = new SourceConfiguration { Sources = [source.AbsoluteUri] };
+        return new NuGetSourceClient(http, pinned).DownloadAsync(id, version, cancellation);
     }
-    public async Task<PackageListing> FindAsync(PackageKind kind, string id, CancellationToken cancellation = default) {
+    public async Task<PackageListing> FindAsync(string id, CancellationToken cancellation = default) {
         ValidateId(id);
-        foreach (var source in configuration.GetSources(kind)) {
+        foreach (var source in configuration.GetSources()) {
             var listing = await GetListing(source, id, cancellation);
             if (listing != null) return listing;
         }
-        throw new KeyNotFoundException($"Package {id} not found in {kind} sources");
+        throw new KeyNotFoundException($"Package {id} not found in configured sources");
     }
 
-    public async Task<PackageDownload> DownloadAsync(PackageKind kind, string id, NuGetVersion version,
+    public async Task<PackageDownload> DownloadAsync(string id, NuGetVersion version,
         CancellationToken cancellation = default) {
-        var selected = await FindAsync(kind, id, cancellation);
+        var selected = await FindAsync(id, cancellation);
         if (!selected.Versions.Contains(version)) throw new KeyNotFoundException($"Version {version} is absent from selected source {selected.Source}");
         var bytes = await GetPackage(selected, id, version, cancellation);
-        var metadata = PackageMetadata.Read(bytes, requirePlugin: kind == PackageKind.Plugin);
+        var metadata = PackageMetadata.Read(bytes);
         if (!string.Equals(metadata.Id, id, StringComparison.OrdinalIgnoreCase) || metadata.Version != version)
             throw new InvalidDataException("Downloaded package identity differs from requested identity");
         var hash = Convert.ToHexString(SHA512.HashData(bytes));
-        // Проверяем одинаковую identity в других источниках выбранной группы, не меняя победителя.
-        foreach (var source in configuration.GetSources(kind).Where(x => x != selected.Source)) {
+        // Проверяем одинаковую identity в остальных источниках, не меняя победителя.
+        foreach (var source in configuration.GetSources().Where(x => x != selected.Source)) {
             var other = await GetListing(source, id, cancellation);
             if (other == null || !other.Versions.Contains(version)) continue;
             var otherBytes = await GetPackage(other, id, version, cancellation);
@@ -55,9 +54,9 @@ public sealed class NuGetSourceClient(HttpClient http, SourceConfiguration confi
         return new(selected.Source, metadata, bytes, hash);
     }
 
-    public async Task<string> DownloadToAsync(PackageKind kind, string id, NuGetVersion version, string directory,
+    public async Task<string> DownloadToAsync(string id, NuGetVersion version, string directory,
         CancellationToken cancellation = default) {
-        var download = await DownloadAsync(kind, id, version, cancellation);
+        var download = await DownloadAsync(id, version, cancellation);
         directory = Path.GetFullPath(directory);
         Directory.CreateDirectory(directory);
         var destination = Path.Combine(directory, id.ToLowerInvariant() + "." + PackageMetadata.NormalizeVersion(version) + ".nupkg");

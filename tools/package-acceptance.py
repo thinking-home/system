@@ -1,5 +1,6 @@
 """Run the published package-manager lifecycle in a fresh directory (Python 3, .NET 10 SDK)."""
 import argparse
+import hashlib
 import json
 import os
 from pathlib import Path
@@ -75,6 +76,24 @@ class Acceptance:
         pointer = json.loads((app / ".thinkinghome/current.json").read_text())
         return app / ".thinkinghome/states" / pointer["generation"]
 
+    def check_native(self, process, endpoint, app):
+        response = json.loads(self.wait_http(process, endpoint))
+        state = self.state(app)
+        locked = json.loads((state / "plugins.lock.json").read_text())
+        package = next(p for p in locked["packages"] if p["id"].lower() == "sqlitepclraw.lib.e_sqlite3")
+
+        # The actual loaded module must come from this installation, not the OS or SDK.
+        name = "e_sqlite3.dll" if os.name == "nt" else "libe_sqlite3.so"
+        rid = "win-x64" if os.name == "nt" else "linux-x64"
+        asset = next(f for f in package["files"] if f["path"] == f"runtimes/{rid}/native/{name}")
+        expected = app / ".thinkinghome/packages" / package["key"] / "files" / asset["path"]
+
+        assert Path(response["nativePath"]).resolve() == expected.resolve(), response
+        assert response["sqliteVersion"] == 3053003, response
+        assert response["nativeHash"] == hashlib.sha256(expected.read_bytes()).hexdigest(), response
+        write_json(self.work / ("native-" + app.name + "-" + response["version"] + ".json"), response)
+        return response
+
     def execute(self):
         bundle, repository, packer = [self.work / x for x in ("bundle", "repository", "packer")]
         packages = self.work / "packages"
@@ -89,7 +108,7 @@ class Acceptance:
             self.run("pack-" + name, "dotnet", packer / "ThinkingHome.Packaging.dll", "pack",
                      ROOT / f"ThinkingHome.Plugins.{name}/ThinkingHome.Plugins.{name}.csproj", packages)
 
-        # This probe exercises a real NuGet library, typed plugin references and a native OS call.
+        # Exercise typed plugin references, a managed NuGet library and a native NuGet library.
         project = self.work / "probe"
         project.mkdir()
         references = "".join(f'<ProjectReference Include="{escape(str(ROOT / path))}" />' for path in (
@@ -100,7 +119,7 @@ class Acceptance:
         for version in ("1.0.0", "2.0.0"):
             (project / "Probe.csproj").write_text(f'''<Project Sdk="Microsoft.NET.Sdk">
 <PropertyGroup><TargetFramework>net10.0</TargetFramework><PackageId>Acceptance.Probe</PackageId><Version>{version}</Version></PropertyGroup>
-<ItemGroup>{references}<PackageReference Include="Newtonsoft.Json" Version="13.0.3" /></ItemGroup>
+<ItemGroup>{references}<PackageReference Include="Newtonsoft.Json" Version="13.0.3" /><PackageReference Include="SQLitePCLRaw.lib.e_sqlite3" Version="3.53.3" /></ItemGroup>
 <Import Project="{escape(str(ROOT / 'ThinkingHome.Packaging/build/ThinkingHome.Plugin.targets'))}" />
 </Project>''', encoding="utf-8")
             self.run("pack-probe-" + version, "dotnet", packer / "ThinkingHome.Packaging.dll", "pack", project / "Probe.csproj", packages)
@@ -109,7 +128,7 @@ class Acceptance:
         server = self.start("repository", "dotnet", repository / "ThinkingHome.Repository.dll", packages, url)
         self.wait_http(server, url + "/v3/index.json")
         sources = self.work / "sources.json"
-        write_json(sources, {"pluginSources": [url + "/v3/index.json"], "librarySources": ["https://api.nuget.org/v3/index.json"]})
+        write_json(sources, {"sources": [url + "/v3/index.json", "https://api.nuget.org/v3/index.json"]})
         tool, host = bundle / "ThinkingHome.PackageManagement.dll", bundle / "ThinkingHome.Console.dll"
         app, copy = self.work / "application", self.work / "restored"
         app.mkdir()
@@ -127,7 +146,7 @@ class Acceptance:
         self.run("preflight", "dotnet", host, "--app", app, "--check")
         endpoint = f"http://127.0.0.1:{web_port}/api/acceptance/state"
         running = self.start("host-v1", "dotnet", host, "--app", app)
-        assert json.loads(self.wait_http(running, endpoint))["version"] == "1.0.0.0"
+        assert self.check_native(running, endpoint, app)["version"] == "1.0.0.0"
 
         pointer = (app / ".thinkinghome/current.json").read_bytes()
         output = self.run("reject-required-remove", "dotnet", tool, "remove", app, "ThinkingHome.Plugins.WebServer", expected=1)
@@ -136,10 +155,10 @@ class Acceptance:
         assert pointer == (app / ".thinkinghome/current.json").read_bytes()
 
         self.run("update-while-running", "dotnet", tool, "install", app, "Acceptance.Probe", "[2.0.0]", sources)
-        assert json.loads(self.wait_http(running, endpoint))["version"] == "1.0.0.0"
+        assert self.check_native(running, endpoint, app)["version"] == "1.0.0.0"
         self.stop(running)
         running = self.start("host-v2", "dotnet", host, "--app", app)
-        assert json.loads(self.wait_http(running, endpoint))["version"] == "2.0.0.0"
+        assert self.check_native(running, endpoint, app)["version"] == "2.0.0.0"
         self.stop(running)
         self.steps.append("restart-applies-update-and-native-call")
 
@@ -148,6 +167,11 @@ class Acceptance:
         for name in ("plugins.json", "plugins.lock.json", "load-map.json"):
             assert (state / name).read_bytes() == (self.state(copy) / name).read_bytes()
         self.run("restored-preflight", "dotnet", host, "--app", copy, "--check")
+        write_json(copy / "appsettings.json", settings)
+        restored = self.start("host-restored", "dotnet", host, "--app", copy)
+        assert self.check_native(restored, endpoint, copy)["version"] == "2.0.0.0"
+        self.stop(restored)
+        self.steps.append("native-loaded-after-ci")
 
         self.stop(server)
         self.run("validate-offline", "dotnet", tool, "validate", copy)
@@ -160,11 +184,26 @@ class Acceptance:
         self.run("detect-corruption", "dotnet", tool, "validate", copy, expected=1)
         self.run("repair-offline", "dotnet", tool, "ci", copy, state / "plugins.json", state, sources)
         self.run("validate-repaired", "dotnet", tool, "validate", copy)
+
+        # Corrupt the selected native binary only after all host processes have stopped.
+        native_package = next(p for p in locked["packages"] if p["id"].lower() == "sqlitepclraw.lib.e_sqlite3")
+        native_rid = "win-x64" if os.name == "nt" else "linux-x64"
+        native_name = "e_sqlite3.dll" if os.name == "nt" else "libe_sqlite3.so"
+        native_file = next(f["path"] for f in native_package["files"]
+                           if f["path"] == f"runtimes/{native_rid}/native/{native_name}")
+        (copy / ".thinkinghome/packages" / native_package["key"] / "files" / native_file).write_bytes(b"damaged native")
+        self.run("detect-native-corruption", "dotnet", tool, "validate", copy, expected=1)
+        self.run("repair-native-offline", "dotnet", tool, "ci", copy, state / "plugins.json", state, sources)
+
+        repaired = self.start("host-native-repaired", "dotnet", host, "--app", copy)
+        assert self.check_native(repaired, endpoint, copy)["version"] == "2.0.0.0"
+        self.stop(repaired)
+        self.steps.append("native-loaded-after-repair")
         self.run("recover", "dotnet", tool, "recover", copy)
 
         self.run("remove-probe", "dotnet", tool, "remove", app, "Acceptance.Probe")
         remaining = json.loads((self.state(app) / "plugins.lock.json").read_text())
-        assert all(p["id"].lower() not in ("newtonsoft.json", "thinkinghome.plugins.timer") for p in remaining["packages"])
+        assert all(p["id"].lower() not in ("newtonsoft.json", "thinkinghome.plugins.timer", "sqlitepclraw.lib.e_sqlite3") for p in remaining["packages"])
         self.run("remove-last-root", "dotnet", tool, "remove", app, "ThinkingHome.Plugins.WebServer.UrlValidation")
         assert not json.loads((self.state(app) / "plugins.lock.json").read_text())["packages"]
         self.run("validate-empty", "dotnet", tool, "validate", app)
@@ -185,6 +224,10 @@ class Acceptance:
 
 
 PROBE = '''using System;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using System.Security.Cryptography;
 using System.Runtime.InteropServices;
 using Newtonsoft.Json;
 using ThinkingHome.Core.Plugins;
@@ -196,6 +239,7 @@ using ThinkingHome.Plugins.WebServer.Handlers;
 namespace Acceptance;
 public sealed class ProbePlugin(TimerPlugin timer, WebServerPlugin server) : PluginBase
 {
+    [DllImport("e_sqlite3", CallingConvention = CallingConvention.Cdecl)] private static extern int sqlite3_libversion_number();
     [DllImport("kernel32.dll")] private static extern uint GetCurrentProcessId();
     [DllImport("libc")] private static extern int getpid();
 
@@ -214,8 +258,15 @@ public sealed class ProbePlugin(TimerPlugin timer, WebServerPlugin server) : Plu
     {
         var pid = OperatingSystem.IsWindows() ? (int)GetCurrentProcessId() : getpid();
         if (pid != Environment.ProcessId) throw new Exception("Native PID mismatch");
+
+        var sqliteVersion = sqlite3_libversion_number();
+        using var process = Process.GetCurrentProcess();
+        var nativePath = process.Modules.Cast<ProcessModule>().Single(m =>
+            Path.GetFileName(m.FileName) == (OperatingSystem.IsWindows() ? "e_sqlite3.dll" : "libe_sqlite3.so")).FileName;
+        var nativeHash = Convert.ToHexString(SHA256.HashData(File.ReadAllBytes(nativePath))).ToLowerInvariant();
+
         return HttpHandlerResult.Text(JsonConvert.SerializeObject(new {
-            version = typeof(ProbePlugin).Assembly.GetName().Version.ToString(), pid
+            version = typeof(ProbePlugin).Assembly.GetName().Version.ToString(), pid, sqliteVersion, nativePath, nativeHash
         }));
     }
 }

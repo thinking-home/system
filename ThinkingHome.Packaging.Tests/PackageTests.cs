@@ -65,12 +65,6 @@ public sealed class PackageFixture : IDisposable
 
     public static string Inputs(string package) => Path.Combine(Path.GetDirectoryName(package)!, "inputs");
 
-    public static bool IsPlugin(byte[] bytes)
-    {
-        try { return PackageMetadata.Read(bytes, true).Plugin != null; }
-        catch (InvalidDataException ex) when (ex.Message == "Package is not a ThinkingHome plugin") { return false; }
-    }
-
     public PlatformCatalog Platform(string rid = "win-x64") => HostPlatform.Current() with { Rid = rid };
 
     public string Mutate(Action<ZipArchive> change)
@@ -96,6 +90,36 @@ public sealed class PackageFixture : IDisposable
 
 public class PackageTests(PackageFixture fixture) : IClassFixture<PackageFixture>
 {
+    [Fact]
+    public void Metadata_DetectsPluginAndLibrary_WithoutExecutingCode()
+    {
+        Assert.NotNull(PackageMetadata.Read(File.ReadAllBytes(fixture.Good)).Plugin);
+        Assert.Null(PackageMetadata.Read(File.ReadAllBytes(fixture.Library)).Plugin);
+        Assert.DoesNotContain(AppDomain.CurrentDomain.GetAssemblies(), x => x.GetName().Name == "Good");
+    }
+
+    [Theory]
+    [InlineData("DUPLICATE_METADATA", "Duplicate plugin metadata")]
+    [InlineData("UNKNOWN_METADATA", "Unknown plugin metadata")]
+    public void Metadata_RejectsInvalidMarker_InAutomaticMode(string condition, string error)
+    {
+        var package = fixture.Build("Good", "auto-" + condition, "-p:MetadataCase=" + condition);
+        Assert.Contains(error, Assert.Throws<InvalidDataException>(() => PackageMetadata.Read(File.ReadAllBytes(package))).Message);
+    }
+
+    [Fact]
+    public void Metadata_RejectsMultiplePluginManifests_InAutomaticMode()
+    {
+        var package = fixture.Mutate(zip =>
+        {
+            using var input = zip.GetEntry("lib/net10.0/Good.dll")!.Open();
+            using var output = zip.CreateEntry("lib/net10.0/Second.dll").Open();
+            input.CopyTo(output);
+        });
+        Assert.Contains("Multiple plugin manifests", Assert.Throws<InvalidDataException>(() =>
+            PackageMetadata.Read(File.ReadAllBytes(package))).Message);
+    }
+
     [Fact]
     public void Manifest_ReadsIsolatedDll_WithoutDependenciesOrExecution()
     {

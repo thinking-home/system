@@ -150,6 +150,9 @@ public static class LockedPlanVerifier
 
             var metadata = PackageMetadata.Read(bytes, package.Kind == "plugin");
 
+            if ((metadata.Plugin != null) != (package.Kind == "plugin"))
+                throw new InvalidDataException("Locked package kind differs from DLL metadata: " + package.Key);
+
             if (!string.Equals(metadata.Id, package.Id, StringComparison.OrdinalIgnoreCase)
                 || metadata.Version != NuGetVersion.Parse(package.Version))
             {

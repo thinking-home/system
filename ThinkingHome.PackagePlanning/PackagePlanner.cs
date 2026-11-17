@@ -67,12 +67,8 @@ public sealed class PackagePlanner(IPackageSource source)
 
         var listings = new Dictionary<string, PackageListing>(StringComparer.Ordinal);
         var downloads = new Dictionary<string, Candidate>(StringComparer.Ordinal);
-        var pluginIds = roots.Select(x => x.Id).ToHashSet(StringComparer.OrdinalIgnoreCase);
-        var classified = new HashSet<string>(pluginIds, StringComparer.OrdinalIgnoreCase);
         var steps = 0;
         string diagnostic = "No solution";
-
-        ResolvedGraph Expand(Dictionary<string, Candidate> assignments) => ExpandGraph(roots, platformPackages, assignments, pluginIds);
 
         async Task<InstallationPlan?> Search(Dictionary<string, Candidate> assignments)
         {
@@ -85,24 +81,18 @@ public sealed class PackagePlanner(IPackageSource source)
 
             ResolvedGraph graph;
 
-            // Репозитории плагинов имеют приоритет. Только отсутствие ID разрешает поиск библиотеки.
-            // Наличие маркера затем обязательно проверяется в скачанной DLL до принятия кандидата.
-            foreach (var id in assignments.Values.SelectMany(x => x.Dependencies).Select(x => x.Id).Distinct())
-            {
-                if (platformPackages.ContainsKey(id) || !classified.Add(id)) continue;
-                try
-                {
-                    var pluginListing = await source.FindAsync(PackageKind.Plugin, id, cancellation);
-                    if (pluginListing.Versions.Count == 0) continue;
-                    listings.Add(PackageKind.Plugin + ":" + id, pluginListing);
-                    pluginIds.Add(id);
-                }
-                catch (KeyNotFoundException) { }
-            }
-
             try
             {
-                graph = Expand(assignments);
+                // Категория принадлежит выбранной версии и только текущей ветви поиска.
+                // Один ID не может одновременно обозначать плагин и приватную библиотеку.
+                foreach (var group in assignments.Values.GroupBy(x => x.Metadata.Id, StringComparer.OrdinalIgnoreCase))
+                {
+                    if (group.Any(x => x.Metadata.Plugin != null) && group.Any(x => x.Metadata.Plugin == null))
+                        throw new ResolutionException("Package used as both plugin and library: " + group.Key);
+                }
+                var pluginIds = roots.Select(x => x.Id).Concat(assignments.Values.Where(x => x.Metadata.Plugin != null)
+                    .Select(x => x.Metadata.Id)).ToHashSet(StringComparer.OrdinalIgnoreCase);
+                graph = ExpandGraph(roots, platformPackages, assignments, pluginIds);
             }
             catch (ResolutionException ex)
             {
@@ -130,14 +120,13 @@ public sealed class PackagePlanner(IPackageSource source)
             }
 
             var needed = unresolved.First();
-            var kind = needed.Kind == "plugin" ? PackageKind.Plugin : PackageKind.Library;
-            var listingKey = kind + ":" + needed.Id;
+            var listingKey = needed.Id;
 
             if (!listings.TryGetValue(listingKey, out var listing))
             {
                 try
                 {
-                    listing = await source.FindAsync(kind, needed.Id, cancellation);
+                    listing = await source.FindAsync(needed.Id, cancellation);
                 }
                 catch (KeyNotFoundException)
                 {
@@ -166,8 +155,8 @@ public sealed class PackagePlanner(IPackageSource source)
 
                 if (!downloads.TryGetValue(downloadKey, out var candidate))
                 {
-                    var download = await source.DownloadAsync(kind, needed.Id, version, cancellation);
-                    var metadata = PackageMetadata.Read(download.Bytes, kind == PackageKind.Plugin);
+                    var download = await source.DownloadAsync(needed.Id, version, cancellation);
+                    var metadata = PackageMetadata.Read(download.Bytes);
 
                     if (!string.Equals(metadata.Id, needed.Id, StringComparison.OrdinalIgnoreCase)
                         || metadata.Version != version || download.Sha512 != PlanJson.Hash(download.Bytes)
@@ -187,9 +176,12 @@ public sealed class PackagePlanner(IPackageSource source)
                     downloads.Add(downloadKey, candidate);
                 }
 
+                // До чтения DLL зависимость имеет предварительную область библиотеки.
+                // Обнаруженный плагин становится общим узлом для всех потребителей.
+                var key = candidate.Metadata.Plugin != null ? "plugin:" + needed.Id : needed.Key;
                 var next = new Dictionary<string, Candidate>(graph.Nodes, StringComparer.Ordinal)
                 {
-                    [needed.Key] = candidate
+                    [key] = candidate
                 };
                 var result = await Search(next);
 

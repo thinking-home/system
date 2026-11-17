@@ -8,6 +8,8 @@ internal static class PackageStore {
     internal static void CheckArchive(LockedPackage package, byte[] bytes) {
         if (bytes.Length > 64 * 1024 * 1024 || PlanJson.Hash(bytes) != package.Sha512) throw new InvalidDataException("Archive hash mismatch: " + package.Key);
         var metadata = PackageMetadata.Read(bytes, package.Kind == "plugin");
+        if ((metadata.Plugin != null) != (package.Kind == "plugin"))
+            throw new InvalidDataException("Archive kind differs from lock: " + package.Key);
         if (!string.Equals(metadata.Id, package.Id, StringComparison.OrdinalIgnoreCase) || PackageMetadata.NormalizeVersion(metadata.Version) != package.Version)
             throw new InvalidDataException("Archive identity mismatch: " + package.Key);
         using var archive = new ZipArchive(new MemoryStream(bytes));

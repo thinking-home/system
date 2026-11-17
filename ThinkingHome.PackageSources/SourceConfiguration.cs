@@ -3,18 +3,15 @@ using System.Text.Json.Serialization;
 
 namespace ThinkingHome.PackageSources;
 
-public enum PackageKind { Plugin, Library }
-
 public sealed class SourceConfiguration {
-    public string[] PluginSources { get; init; } = [];
-    public string[] LibrarySources { get; init; } = [];
+    public string[] Sources { get; init; } = [];
 
     public static SourceConfiguration Read(string path) => JsonSerializer.Deserialize<SourceConfiguration>(File.ReadAllText(path),
         new JsonSerializerOptions { PropertyNameCaseInsensitive = true, UnmappedMemberHandling = JsonUnmappedMemberHandling.Disallow })
         ?? throw new InvalidDataException("Empty source configuration");
 
-    public Uri[] GetSources(PackageKind kind) {
-        var values = kind == PackageKind.Plugin ? PluginSources : LibrarySources;
+    public Uri[] GetSources() {
+        var values = Sources;
         if (values == null) throw new InvalidDataException("Source list must not be null");
         var sources = values.Select(value => HttpUri(value)).ToArray();
         if (sources.Distinct().Count() != sources.Length) throw new InvalidDataException("Duplicate package source");

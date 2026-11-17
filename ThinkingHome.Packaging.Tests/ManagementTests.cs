@@ -6,7 +6,6 @@ using ThinkingHome.PackageManagement;
 using ThinkingHome.PackagePlanning;
 using ThinkingHome.PackageSources;
 using ThinkingHome.Packaging;
-using ThinkingHome.Repository;
 using Xunit;
 
 namespace ThinkingHome.Packaging.Tests;
@@ -495,8 +494,8 @@ public class ManagementTests(PackageFixture fixture) : IClassFixture<PackageFixt
     {
         var folder = Path.Combine(fixture.Work, "cli-repository");
         Directory.CreateDirectory(folder);
-        File.Copy(fixture.Embedded, Path.Combine(folder, "embedded.nupkg"));
-        await using var server = RepositoryServer.Create(folder, "http://127.0.0.1:0");
+        var graph = fixture.Build("Graph", "cli-mixed-graph");
+        await using var server = MixedPackageFeed.Create(File.ReadAllBytes(graph), File.ReadAllBytes(fixture.Library));
         await server.StartAsync();
 
         try
@@ -514,10 +513,10 @@ public class ManagementTests(PackageFixture fixture) : IClassFixture<PackageFixt
 
             var sources = Path.Combine(folder, "sources.json");
             File.WriteAllBytes(sources,
-                PlanJson.Bytes(new SourceConfiguration { PluginSources = [server.Urls.Single() + "/v3/index.json"] }));
+                PlanJson.Bytes(new SourceConfiguration { Sources = [server.Urls.Single() + "/v3/index.json"] }));
             var app = App();
             var install = await Task.Run(() => PackageFixture.Run("dotnet", tool, "install", app,
-                "Fixture.Embedded", "[1.0.0]", sources));
+                "Fixture.Graph", "[1.0.0]", sources));
             Assert.True(install.Code == 0, install.Output);
 
             var check = PackageFixture.Run("dotnet", host, "--app", app, "--check");
@@ -535,12 +534,12 @@ public class ManagementTests(PackageFixture fixture) : IClassFixture<PackageFixt
             var recovery = PackageFixture.Run("dotnet", tool, "recover", copy);
             Assert.True(recovery.Code == 0, recovery.Output);
 
-            var remove = PackageFixture.Run("dotnet", tool, "remove", copy, "Fixture.Embedded");
+            var remove = PackageFixture.Run("dotnet", tool, "remove", copy, "Fixture.Graph");
             Assert.True(remove.Code == 0, remove.Output);
             var emptyCheck = PackageFixture.Run("dotnet", host, "--app", copy, "--check");
             Assert.True(emptyCheck.Code == 0, emptyCheck.Output);
             Assert.Equal(0, PackageFixture.Run("dotnet", tool, "validate", copy).Code);
-            Assert.Equal(1, PackageFixture.Run("dotnet", tool, "remove", copy, "Fixture.Embedded").Code);
+            Assert.Equal(1, PackageFixture.Run("dotnet", tool, "remove", copy, "Fixture.Graph").Code);
             Assert.Equal(2, PackageFixture.Run("dotnet", tool, "remove", copy).Code);
 
             // Файл платформы больше не является ни входом, ни результатом команд.
@@ -575,7 +574,7 @@ public class ManagementTests(PackageFixture fixture) : IClassFixture<PackageFixt
         internal void Add(byte[] bytes)
         {
             Ensure();
-            var metadata = PackageMetadata.Read(bytes, false);
+            var metadata = PackageMetadata.Read(bytes);
             data[metadata.Id.ToLowerInvariant() + "/" + PackageMetadata.NormalizeVersion(metadata.Version)] = bytes;
         }
 
@@ -594,7 +593,7 @@ public class ManagementTests(PackageFixture fixture) : IClassFixture<PackageFixt
             }
         }
 
-        public Task<PackageListing> FindAsync(PackageKind kind, string id, CancellationToken cancellation = default)
+        public Task<PackageListing> FindAsync(string id, CancellationToken cancellation = default)
         {
             Ensure();
 
@@ -604,32 +603,32 @@ public class ManagementTests(PackageFixture fixture) : IClassFixture<PackageFixt
             }
 
             return Task.FromResult(new PackageListing(uri, uri, data.Keys.Where(x =>
-                x.StartsWith(id.ToLowerInvariant() + "/") && PackageFixture.IsPlugin(data[x]) == (kind == PackageKind.Plugin))
+                x.StartsWith(id.ToLowerInvariant() + "/"))
                 .Select(x => NuGetVersion.Parse(x.Split('/')[1])).ToArray()));
         }
 
-        public Task<PackageDownload> DownloadAsync(PackageKind kind, string id, NuGetVersion version,
+        public Task<PackageDownload> DownloadAsync(string id, NuGetVersion version,
             CancellationToken cancellation = default)
         {
             Downloads++;
 
-            return Download(kind, id, version);
+            return Download(id, version);
         }
 
-        public Task<PackageDownload> DownloadLockedAsync(Uri source, PackageKind kind, string id, NuGetVersion version,
+        public Task<PackageDownload> DownloadLockedAsync(Uri source, string id, NuGetVersion version,
             CancellationToken cancellation = default)
         {
             Assert.Equal(uri, source);
             LockedDownloads++;
 
-            return Download(kind, id, version);
+            return Download(id, version);
         }
 
-        private Task<PackageDownload> Download(PackageKind kind, string id, NuGetVersion version)
+        private Task<PackageDownload> Download(string id, NuGetVersion version)
         {
             Ensure();
             var bytes = data[id.ToLowerInvariant() + "/" + PackageMetadata.NormalizeVersion(version)];
-            var metadata = PackageMetadata.Read(bytes, kind == PackageKind.Plugin);
+            var metadata = PackageMetadata.Read(bytes);
 
             if (ChangeBytes)
             {
