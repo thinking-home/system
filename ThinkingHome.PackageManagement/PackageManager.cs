@@ -231,7 +231,7 @@ public sealed class PackageManager
 
                     if (bytes == null)
                     {
-                        var download = await (source ?? throw new IOException("Missing package and no source configured: " + package.Key)).DownloadLockedAsync(new Uri(package.Source), package.Kind == "plugin" ? PackageKind.Plugin : PackageKind.Library, package.Id, NuGetVersion.Parse(package.Version), cancellation);
+                        var download = await (source ?? throw new IOException("Missing package and no source configured: " + package.Key)).DownloadLockedAsync(new Uri(package.Source), package.Id, NuGetVersion.Parse(package.Version), cancellation);
 
                         if (download.Source.AbsoluteUri != package.Source)
                         {
@@ -499,13 +499,13 @@ public sealed class PackageManager
     {
         internal Dictionary<string, byte[]> Archives { get; } = new(StringComparer.Ordinal);
 
-        public Task<PackageListing> FindAsync(PackageKind kind, string id, CancellationToken cancellation = default) =>
-            inner.FindAsync(kind, id, cancellation);
+        public Task<PackageListing> FindAsync(string id, CancellationToken cancellation = default) =>
+            inner.FindAsync(id, cancellation);
 
-        public async Task<PackageDownload> DownloadAsync(PackageKind kind, string id, NuGetVersion version,
+        public async Task<PackageDownload> DownloadAsync(string id, NuGetVersion version,
             CancellationToken cancellation = default)
         {
-            var package = await inner.DownloadAsync(kind, id, version, cancellation);
+            var package = await inner.DownloadAsync(id, version, cancellation);
             Archives[package.Metadata.Id.ToLowerInvariant() + "/" + PackageMetadata.NormalizeVersion(package.Metadata.Version)] = package.Bytes;
 
             return package;

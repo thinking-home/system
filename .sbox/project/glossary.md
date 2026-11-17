@@ -2,7 +2,7 @@
 id: project.glossary
 summary: Термины ThinkingHome (плагин, обработчик, реестр, сценарий, сценарное событие, meta, подписка, HTTP-ресурс, раздел, шина сообщений, запись расписания и др.) с привязкой к коду
 read_when: При написании спецификаций, тестов и сообщений пользователю
-updated: 2026-09-14
+updated: 2026-11-17
 verification: needs-review
 ---
 
@@ -12,12 +12,14 @@ verification: needs-review
 
 | Термин | Определение | Где в коде |
 |---|---|---|
-| Плагин | класс-наследник `PluginBase`, единица расширения; создаётся DI как singleton при старте из сборок списка `assemblies` | `ThinkingHome.Core.Plugins/PluginBase.cs`, `ThinkingHome.Core.Infrastructure/HomeApplication.cs` |
+| Плагин | класс-наследник `PluginBase`, единица расширения; выбранная планом точка входа установленного пакета или локальной сборки создаётся DI как singleton | `ThinkingHome.Core.Plugins/PluginBase.cs`, `ThinkingHome.PackageRuntime/PluginRuntime.cs`, `ThinkingHome.Core.Infrastructure/HomeApplication.cs` |
+| Установленный набор | проверенный снимок `.thinkinghome`: корни, lock-файл, карта загрузки, генерируемая конфигурация и пакеты; изменяется менеджером, применяется после перезапуска хоста | `ThinkingHome.PackageManagement/PackageManager.cs` |
+| Локальные подключения | необязательный `plugins.local.json` в каталоге приложения: `pluginPaths` объявляет DLL, `plugins` — дополнительные корни; локальная реализация имеет приоритет над установленной с тем же ID | `ThinkingHome.PackageRuntime/PluginRuntime.cs` |
 | Хост, хост-приложение | процесс `ThinkingHome.Console`, который загружает и останавливает плагины | `ThinkingHome.Console/Program.cs` |
 | Контекст сервисов | объект `IServiceContext`, даёт список всех плагинов в прямом или обратном порядке | `ThinkingHome.Core.Infrastructure/ServiceContext.cs` |
 | Индекс зависимости | `DependencyIndex`, порядок создания экземпляра плагина; задаёт порядок init/start и обратный порядок stop | `ThinkingHome.Core.Plugins/PluginBase.cs` |
 | Жизненный цикл плагина | стадии `InitPlugin`, `StartPlugin`, `StopPlugin` | `ThinkingHome.Core.Plugins/PluginBase.cs` |
-| Секция конфигурации плагина | узел `plugins:{FullName}` из `appsettings.json`, доступен как `Configuration` | `ThinkingHome.Core.Infrastructure/HomeConfiguration.cs` |
+| Секция конфигурации плагина | узел `plugins:{FullName}` итоговой конфигурации, доступен как `Configuration`; задаёт параметры, состав плагинов выбирается отдельно | `ThinkingHome.Core.Infrastructure/HomeConfiguration.cs` |
 | Атрибут-обработчик, обработчик | публичный метод плагина, помеченный атрибутом (`[TimerCallback]`, `[CronHandler]`, `[ScriptCommand]`, `[TelegramMessageHandler]`, `[NooLiteCommandHandler]`) и найденный владельцем через `FindMethods` | `ThinkingHome.Core.Plugins/Utils/Extensions.cs` |
 | Метод конфигурации, билдер | метод с атрибутом `[Configure…]` (`ConfigureWebServer`, `ConfigureWebUi`, `ConfigureScriptEvents`, `ConfigureMqtt`), получающий билдер `…ConfigurationBuilder`; после `Dispose` билдера регистрация запрещена | `ThinkingHome.Core.Plugins/Utils/BaseConfigurationBuilder.cs` |
 | Безопасный вызов | `SafeInvoke` и `SafeInvokeAsync`: вызов обработчиков с изоляцией ошибок и записью в лог | `ThinkingHome.Core.Plugins/EventContext.cs` |

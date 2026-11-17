@@ -26,10 +26,10 @@ public class SourceTests(PackageFixture fixture) : IClassFixture<PackageFixture>
             var address = app.Urls.Single();
             using var http = new HttpClient(new HttpClientHandler { UseProxy = false });
             var source = address + "/v3/index.json";
-            var client = new NuGetSourceClient(http, new() { PluginSources = [source] });
-            var listing = await client.FindAsync(PackageKind.Plugin, "Fixture.Good");
+            var client = new NuGetSourceClient(http, new() { Sources = [source] });
+            var listing = await client.FindAsync("Fixture.Good");
             Assert.Single(listing.Versions);
-            var downloaded = await client.DownloadAsync(PackageKind.Plugin, "Fixture.Good", NuGetVersion.Parse("1.2.3-beta.1"));
+            var downloaded = await client.DownloadAsync("Fixture.Good", NuGetVersion.Parse("1.2.3-beta.1"));
             Assert.Equal(File.ReadAllBytes(fixture.Good), downloaded.Bytes);
             Assert.NotNull(downloaded.Metadata.Plugin);
             Assert.Equal(new Uri(source), downloaded.Source);
@@ -42,7 +42,7 @@ public class SourceTests(PackageFixture fixture) : IClassFixture<PackageFixture>
             Assert.Equal(HttpStatusCode.NotFound, (await http.GetAsync(address + "/v3/flat/missing/index.json")).StatusCode);
             // Изменение исходного файла не меняет уже обслуживаемый снимок.
             File.WriteAllText(Path.Combine(folder, "plugin.nupkg"), "changed");
-            Assert.Equal(downloaded.Bytes, (await client.DownloadAsync(PackageKind.Plugin, "Fixture.Good", NuGetVersion.Parse("1.2.3-beta.1"))).Bytes);
+            Assert.Equal(downloaded.Bytes, (await client.DownloadAsync("Fixture.Good", NuGetVersion.Parse("1.2.3-beta.1"))).Bytes);
         } finally { await app.StopAsync(); }
     }
 
@@ -71,24 +71,25 @@ public class SourceTests(PackageFixture fixture) : IClassFixture<PackageFixture>
     }
 
     [Fact]
-    public async Task Client_SeparatesSources_AndDownloadsOrdinaryNuGetPackage() {
+    public async Task Client_UsesSameFeed_ForPluginsAndLibraries() {
         using var handler = new FeedHandler(File.ReadAllBytes(fixture.Good), OrdinaryPackage());
         using var http = new HttpClient(handler);
         var client = new NuGetSourceClient(http, Configuration());
-        var library = await client.DownloadAsync(PackageKind.Library, "Example.Library", NuGetVersion.Parse("1.0.0"));
+        var library = await client.DownloadAsync("Example.Library", NuGetVersion.Parse("1.0.0"));
         Assert.Null(library.Metadata.Plugin);
-        Assert.All(handler.Requests, x => Assert.Equal("library.test", x.Host));
-        handler.Requests.Clear();
-        await Assert.ThrowsAsync<KeyNotFoundException>(() => client.FindAsync(PackageKind.Plugin, "Example.Library"));
+        var plugin = await client.DownloadAsync("Fixture.Good", NuGetVersion.Parse("1.2.3-beta.1"));
+        Assert.NotNull(plugin.Metadata.Plugin);
         Assert.All(handler.Requests, x => Assert.Equal("plugin.test", x.Host));
     }
 
     [Fact]
-    public async Task Client_RejectsOrdinaryPackage_FromPluginSource() {
-        using var handler = new FeedHandler(OrdinaryPackage(), OrdinaryPackage()) { PluginId = "example.library", PluginVersion = "1.0.0" };
+    public async Task Client_RejectsDamagedPackage_WithoutTryingAnotherSource() {
+        using var handler = new FeedHandler([1, 2, 3], OrdinaryPackage());
         using var http = new HttpClient(handler);
-        await Assert.ThrowsAsync<InvalidDataException>(() => new NuGetSourceClient(http, Configuration())
-            .DownloadAsync(PackageKind.Plugin, "Example.Library", NuGetVersion.Parse("1.0.0")));
+        await Assert.ThrowsAsync<InvalidDataException>(() => new NuGetSourceClient(http,
+            new() { Sources = ["http://plugin.test/v3/index.json", "http://other.test/v3/index.json"] })
+            .DownloadAsync("Fixture.Good", NuGetVersion.Parse("1.2.3-beta.1")));
+        Assert.DoesNotContain(handler.Requests, x => x.Host == "other.test");
     }
 
     [Fact]
@@ -96,23 +97,23 @@ public class SourceTests(PackageFixture fixture) : IClassFixture<PackageFixture>
         var bytes = File.ReadAllBytes(fixture.Good);
         using var handler = new FeedHandler(bytes, bytes);
         using var http = new HttpClient(handler);
-        var client = new NuGetSourceClient(http, new() { PluginSources = ["http://plugin.test/v3/index.json", "http://other.test/v3/index.json"] });
-        var selected = await client.DownloadAsync(PackageKind.Plugin, "Fixture.Good", NuGetVersion.Parse("1.2.3-beta.1"));
+        var client = new NuGetSourceClient(http, new() { Sources = ["http://plugin.test/v3/index.json", "http://other.test/v3/index.json"] });
+        var selected = await client.DownloadAsync("Fixture.Good", NuGetVersion.Parse("1.2.3-beta.1"));
         Assert.Equal("plugin.test", selected.Source.Host);
         handler.OtherPackage = File.ReadAllBytes(fixture.Mutate(zip => zip.CreateEntry("different.txt")));
         Assert.Contains("Conflicting content", (await Assert.ThrowsAsync<InvalidDataException>(() =>
-            client.DownloadAsync(PackageKind.Plugin, "Fixture.Good", NuGetVersion.Parse("1.2.3-beta.1")))).Message);
+            client.DownloadAsync("Fixture.Good", NuGetVersion.Parse("1.2.3-beta.1")))).Message);
     }
 
     [Fact]
     public async Task Client_FallsThroughOnlyOnMissingPackage_NotOnServerFailure() {
         using var handler = new FeedHandler(File.ReadAllBytes(fixture.Good), OrdinaryPackage()) { MissingFirst = true };
         using var http = new HttpClient(handler);
-        var client = new NuGetSourceClient(http, new() { PluginSources = ["http://plugin.test/v3/index.json", "http://other.test/v3/index.json"] });
-        Assert.Equal("other.test", (await client.FindAsync(PackageKind.Plugin, "Fixture.Good")).Source.Host);
+        var client = new NuGetSourceClient(http, new() { Sources = ["http://plugin.test/v3/index.json", "http://other.test/v3/index.json"] });
+        Assert.Equal("other.test", (await client.FindAsync("Fixture.Good")).Source.Host);
         handler.FailFirst = true;
         handler.Requests.Clear();
-        await Assert.ThrowsAsync<HttpRequestException>(() => client.FindAsync(PackageKind.Plugin, "Fixture.Good"));
+        await Assert.ThrowsAsync<HttpRequestException>(() => client.FindAsync("Fixture.Good"));
         Assert.DoesNotContain(handler.Requests, x => x.Host == "other.test");
     }
 
@@ -122,7 +123,7 @@ public class SourceTests(PackageFixture fixture) : IClassFixture<PackageFixture>
         using var http = new HttpClient(handler);
         var output = Path.Combine(Folder(), "downloads");
         await Assert.ThrowsAsync<InvalidDataException>(() => new NuGetSourceClient(http, Configuration())
-            .DownloadToAsync(PackageKind.Plugin, "Another.Plugin", NuGetVersion.Parse("1.2.3-beta.1"), output));
+            .DownloadToAsync("Another.Plugin", NuGetVersion.Parse("1.2.3-beta.1"), output));
         Assert.False(Directory.Exists(output));
     }
 
@@ -132,10 +133,10 @@ public class SourceTests(PackageFixture fixture) : IClassFixture<PackageFixture>
         using var http = new HttpClient(handler);
         var client = new NuGetSourceClient(http, Configuration());
         var output = Folder();
-        var file = await client.DownloadToAsync(PackageKind.Library, "EXAMPLE.LIBRARY", NuGetVersion.Parse("1.0.0.0+build"), output);
+        var file = await client.DownloadToAsync("EXAMPLE.LIBRARY", NuGetVersion.Parse("1.0.0.0+build"), output);
         Assert.Equal("example.library.1.0.0.nupkg", Path.GetFileName(file));
         var bytes = File.ReadAllBytes(file);
-        await Assert.ThrowsAsync<IOException>(() => client.DownloadToAsync(PackageKind.Library, "Example.Library", NuGetVersion.Parse("1.0"), output));
+        await Assert.ThrowsAsync<IOException>(() => client.DownloadToAsync("Example.Library", NuGetVersion.Parse("1.0"), output));
         Assert.Equal(bytes, File.ReadAllBytes(file));
         Assert.Single(Directory.GetFiles(output));
     }
@@ -144,8 +145,8 @@ public class SourceTests(PackageFixture fixture) : IClassFixture<PackageFixture>
     public async Task Client_DoesNotSearchLowerPrioritySource_ForMissingVersion() {
         using var handler = new FeedHandler(File.ReadAllBytes(fixture.Good), OrdinaryPackage());
         using var http = new HttpClient(handler);
-        var client = new NuGetSourceClient(http, new() { PluginSources = ["http://plugin.test/v3/index.json", "http://other.test/v3/index.json"] });
-        await Assert.ThrowsAsync<KeyNotFoundException>(() => client.DownloadAsync(PackageKind.Plugin, "Fixture.Good", NuGetVersion.Parse("99.0.0")));
+        var client = new NuGetSourceClient(http, new() { Sources = ["http://plugin.test/v3/index.json", "http://other.test/v3/index.json"] });
+        await Assert.ThrowsAsync<KeyNotFoundException>(() => client.DownloadAsync("Fixture.Good", NuGetVersion.Parse("99.0.0")));
         Assert.DoesNotContain(handler.Requests, x => x.Host == "other.test");
     }
 
@@ -154,24 +155,35 @@ public class SourceTests(PackageFixture fixture) : IClassFixture<PackageFixture>
         var path = Path.Combine(Folder(), "sources.json");
         File.WriteAllText(path, "{\"pluginSource\": []}");
         Assert.Throws<JsonException>(() => SourceConfiguration.Read(path));
-        Assert.Throws<InvalidDataException>(() => new SourceConfiguration { PluginSources = ["file:///tmp/packages"] }.GetSources(PackageKind.Plugin));
+        Assert.Throws<InvalidDataException>(() => new SourceConfiguration { Sources = ["file:///tmp/packages"] }.GetSources());
+        Assert.Throws<InvalidDataException>(() => new SourceConfiguration { Sources = ["https://feed.test", "https://feed.test"] }.GetSources());
+        Assert.Throws<InvalidDataException>(() => new SourceConfiguration { Sources = null! }.GetSources());
+    }
+
+    [Theory]
+    [InlineData("pluginSources")]
+    [InlineData("librarySources")]
+    public void Configuration_RejectsRemovedSourceGroups(string field) {
+        var path = Path.Combine(Folder(), "sources.json");
+        File.WriteAllText(path, JsonSerializer.Serialize(new Dictionary<string, string[]> { [field] = [] }));
+        Assert.Throws<JsonException>(() => SourceConfiguration.Read(path));
     }
 
     [Fact]
     public async Task Client_LockedDownload_UsesRecordedSource_DespitePriorityChange() {
         using var handler = new FeedHandler(File.ReadAllBytes(fixture.Good), OrdinaryPackage()) { FailFirst = true };
         using var http = new HttpClient(handler);
-        var client = new NuGetSourceClient(http, new() { PluginSources = ["http://plugin.test/v3/index.json", "http://other.test/v3/index.json"] });
-        var selected = await client.DownloadLockedAsync(new Uri("http://other.test/v3/index.json"), PackageKind.Plugin, "Fixture.Good", NuGetVersion.Parse("1.2.3-beta.1"));
+        var client = new NuGetSourceClient(http, new() { Sources = ["http://plugin.test/v3/index.json", "http://other.test/v3/index.json"] });
+        var selected = await client.DownloadLockedAsync(new Uri("http://other.test/v3/index.json"), "Fixture.Good", NuGetVersion.Parse("1.2.3-beta.1"));
         Assert.Equal("other.test", selected.Source.Host);
         Assert.All(handler.Requests, x => Assert.Equal("other.test", x.Host));
         handler.Requests.Clear();
-        await Assert.ThrowsAsync<InvalidDataException>(() => client.DownloadLockedAsync(new Uri("http://unknown.test/v3/index.json"), PackageKind.Plugin, "Fixture.Good", NuGetVersion.Parse("1.2.3-beta.1")));
+        await Assert.ThrowsAsync<InvalidDataException>(() => client.DownloadLockedAsync(new Uri("http://unknown.test/v3/index.json"), "Fixture.Good", NuGetVersion.Parse("1.2.3-beta.1")));
         Assert.Empty(handler.Requests);
     }
 
     private static SourceConfiguration Configuration() => new() {
-        PluginSources = ["http://plugin.test/v3/index.json"], LibrarySources = ["http://library.test/v3/index.json"]
+        Sources = ["http://plugin.test/v3/index.json"]
     };
 
     private static byte[] OrdinaryPackage() {
@@ -195,7 +207,7 @@ public class SourceTests(PackageFixture fixture) : IClassFixture<PackageFixture>
         protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken) {
             var uri = request.RequestUri!;
             Requests.Add(uri);
-            var isLibrary = uri.Host == "library.test";
+            var isLibrary = uri.AbsolutePath.StartsWith("/flat/example.library/", StringComparison.Ordinal);
             var id = isLibrary ? "example.library" : PluginId;
             var version = isLibrary ? "1.0.0" : PluginVersion;
             HttpResponseMessage Json(object value) => new(HttpStatusCode.OK) {

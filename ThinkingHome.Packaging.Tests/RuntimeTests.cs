@@ -15,7 +15,6 @@ using ThinkingHome.PackageRuntime;
 using ThinkingHome.Platform;
 using ThinkingHome.PackageSources;
 using ThinkingHome.Packaging;
-using ThinkingHome.Repository;
 using Xunit;
 
 namespace ThinkingHome.Packaging.Tests;
@@ -216,7 +215,7 @@ public class RuntimeTests(PackageFixture fixture) : IClassFixture<PackageFixture
     }
 
     [Fact]
-    public async Task Runtime_StartsHttpPlugins_AfterInstallationFromRepository()
+    public async Task Runtime_StartsHttpPlugins_AfterRestoreFromCommonSource()
     {
         var repository = Folder();
 
@@ -233,17 +232,26 @@ public class RuntimeTests(PackageFixture fixture) : IClassFixture<PackageFixture
             Assert.True(pack.Code == 0, pack.Output);
         }
 
-        await using var server = RepositoryServer.Create(repository, "http://127.0.0.1:0");
+        var graph = fixture.Build("Graph", "mixed-feed-graph");
+        await using var server = MixedPackageFeed.Create(Directory.GetFiles(repository, "*.nupkg")
+            .Append(graph).Append(fixture.Library).Select(File.ReadAllBytes).ToArray());
         await server.StartAsync();
 
         try
         {
             using var http = new HttpClient(new HttpClientHandler { UseProxy = false });
-            var source = new NuGetSourceClient(http, new() { PluginSources = [server.Urls.Single() + "/v3/index.json"] });
+            var source = new NuGetSourceClient(http, new() { Sources = [server.Urls.Single() + "/v3/index.json"] });
             var folder = Folder();
             var platform = HostPlatform.Current();
-            await new PackageManager(folder, platform, source).InstallAsync("ThinkingHome.Plugins.WebServer.UrlValidation",
+            var manager = new PackageManager(folder, platform, source);
+            await manager.InstallAsync("ThinkingHome.Plugins.WebServer.UrlValidation",
                 "[4.0.0-alpha34]");
+            var state = await manager.InstallAsync("Fixture.Graph", "[1.0.0]");
+            Assert.Contains(state.Plan.Lock.Packages, x => x.Kind == "library" && x.Id == "Fixture.Dependency");
+            Assert.Single(state.Plan.Lock.Packages.Select(x => x.Source).Distinct());
+            // Восстанавливаем с того же общего HTTP-источника и запускаем уже новую установку.
+            folder = Folder();
+            await new PackageManager(folder, platform, source).RestoreLockedAsync(state.Request, state.Plan);
             File.WriteAllText(Path.Combine(folder, "appsettings.json"),
                 "{\"plugins\":{\"ThinkingHome.Plugins.WebServer.WebServerPlugin\":{\"port\":0}}}");
 
@@ -277,20 +285,20 @@ public class RuntimeTests(PackageFixture fixture) : IClassFixture<PackageFixture
     private sealed class MemorySource(byte[][] bytes) : ILockedPackageSource
     {
         private static readonly Uri address = new("https://runtime-fixtures.invalid/v3/index.json");
-        private readonly PackageDownload[] packages = bytes.Select(x => new PackageDownload(address, PackageMetadata.Read(x,
-            false), x, PlanJson.Hash(x))).ToArray();
+        private readonly PackageDownload[] packages = bytes.Select(x => new PackageDownload(address, PackageMetadata.Read(x),
+            x, PlanJson.Hash(x))).ToArray();
 
-        public Task<PackageListing> FindAsync(PackageKind kind, string id, CancellationToken cancellation = default) =>
+        public Task<PackageListing> FindAsync(string id, CancellationToken cancellation = default) =>
             Task.FromResult(new PackageListing(address, address, packages.Where(x => x.Metadata.Id.Equals(id,
-            StringComparison.OrdinalIgnoreCase) && PackageFixture.IsPlugin(x.Bytes) == (kind == PackageKind.Plugin))
+            StringComparison.OrdinalIgnoreCase))
                 .Select(x => x.Metadata.Version).ToArray()));
 
-        public Task<PackageDownload> DownloadAsync(PackageKind kind, string id, NuGetVersion version,
+        public Task<PackageDownload> DownloadAsync(string id, NuGetVersion version,
             CancellationToken cancellation = default) => Task.FromResult(packages.Single(x => x.Metadata.Id.Equals(id,
             StringComparison.OrdinalIgnoreCase) && x.Metadata.Version == version));
 
-        public Task<PackageDownload> DownloadLockedAsync(Uri source, PackageKind kind, string id, NuGetVersion version,
-            CancellationToken cancellation = default) => DownloadAsync(kind, id, version, cancellation);
+        public Task<PackageDownload> DownloadLockedAsync(Uri source, string id, NuGetVersion version,
+            CancellationToken cancellation = default) => DownloadAsync(id, version, cancellation);
     }
 
     private async Task Install(string folder, PlatformCatalog platform, string[] packages, RootPlugin[] roots)

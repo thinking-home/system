@@ -8,7 +8,8 @@ public sealed record PackageMetadata(string Id, NuGetVersion Version, byte[] Nus
 {
     public static string NormalizeVersion(NuGetVersion version) => version.ToNormalizedString().Split('+')[0].ToLowerInvariant();
 
-    public static PackageMetadata Read(byte[] bytes, bool requirePlugin)
+    /// <summary>Определяет категорию по метаданным DLL; requirePlugin дополнительно запрещает обычные пакеты.</summary>
+    public static PackageMetadata Read(byte[] bytes, bool requirePlugin = false)
     {
         using var input = new MemoryStream(bytes, writable: false);
         using var zip = new ZipArchive(input, ZipArchiveMode.Read);
@@ -40,24 +41,22 @@ public sealed record PackageMetadata(string Id, NuGetVersion Version, byte[] Nus
         PluginManifest.Require(System.Text.RegularExpressions.Regex.IsMatch(id, @"^[A-Za-z0-9_][A-Za-z0-9_.-]*$"), "Invalid package ID");
         var version = NuGetVersion.Parse(Field("version"));
         PluginManifest? plugin = null;
-        if (requirePlugin)
+        // Источник не определяет категорию: один NuGet feed может содержать оба вида пакетов.
+        foreach (var entry in zip.Entries.Where(x => x.FullName.StartsWith("lib/net10.0/", StringComparison.Ordinal)
+            && x.FullName.Split('/').Length == 3 && x.FullName.EndsWith(".dll", StringComparison.OrdinalIgnoreCase)))
         {
-            foreach (var entry in zip.Entries.Where(x => x.FullName.StartsWith("lib/net10.0/", StringComparison.Ordinal)
-                && x.FullName.Split('/').Length == 3 && x.FullName.EndsWith(".dll", StringComparison.OrdinalIgnoreCase)))
-            {
-                using var dll = new MemoryStream(ReadEntry(entry));
-                var manifest = PluginManifest.TryRead(dll);
-                if (manifest == null) continue;
-                PluginManifest.Require(plugin == null, "Multiple plugin manifests");
-                plugin = manifest;
-                PluginManifest.Require(string.Equals(id, plugin.PackageId, StringComparison.OrdinalIgnoreCase) && version == plugin.Version,
-                    "DLL and nuspec identity mismatch");
-                var dependencies = metadata.Descendants().Where(x => x.Name.LocalName == "dependency")
-                    .Select(x => x.Attribute("id")?.Value ?? "").ToHashSet(StringComparer.OrdinalIgnoreCase);
-                PluginManifest.Require(plugin.Dependencies.Keys.All(dependencies.Contains), "Manifest dependency missing from nuspec");
-            }
-            PluginManifest.Require(plugin != null, "Package is not a ThinkingHome plugin");
+            using var dll = new MemoryStream(ReadEntry(entry));
+            var manifest = PluginManifest.TryRead(dll);
+            if (manifest == null) continue;
+            PluginManifest.Require(plugin == null, "Multiple plugin manifests");
+            plugin = manifest;
+            PluginManifest.Require(string.Equals(id, plugin.PackageId, StringComparison.OrdinalIgnoreCase) && version == plugin.Version,
+                "DLL and nuspec identity mismatch");
+            var dependencies = metadata.Descendants().Where(x => x.Name.LocalName == "dependency")
+                .Select(x => x.Attribute("id")?.Value ?? "").ToHashSet(StringComparer.OrdinalIgnoreCase);
+            PluginManifest.Require(plugin.Dependencies.Keys.All(dependencies.Contains), "Manifest dependency missing from nuspec");
         }
+        if (requirePlugin) PluginManifest.Require(plugin != null, "Package is not a ThinkingHome plugin");
         return new(id, version, nuspec, plugin);
     }
 }

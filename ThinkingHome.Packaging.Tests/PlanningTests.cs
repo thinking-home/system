@@ -160,23 +160,78 @@ public class PlanningTests(PackageFixture fixture) : IClassFixture<PackageFixtur
             result.Lock.Packages.ToDictionary(x => x.Key, x => source.Bytes(x.Key)));
     }
 
-    [Fact]
-    public async Task Plan_DoesNotFallBackToLibrary_WhenPluginRepositoryContainsInvalidPackage()
+    [Theory]
+    [InlineData(true)]
+    [InlineData(false)]
+    public async Task Plan_ReclassifiesSelectedVersion_WhenBacktracking(bool olderIsPlugin)
     {
-        var source = new MemorySource(File.ReadAllBytes(fixture.Good), Dependency()) { MisplacedLibrary = true };
-        var error = await Assert.ThrowsAsync<InvalidDataException>(() => new PackagePlanner(source)
-            .PlanAsync(Request(("Fixture.Good", "[1.2.3-beta.1]")), Platform()));
-        Assert.Contains("not a ThinkingHome plugin", error.Message);
-        Assert.Equal(0, source.LibraryLookups);
+        var embedded = File.ReadAllBytes(fixture.Embedded);
+        var lower = olderIsPlugin ? embedded : Library("Fixture.Embedded", "0.5.0");
+        var higher = olderIsPlugin
+            ? Library("Fixture.Embedded", "2.0.0", null, ("Missing.Package", "[1.0.0]"))
+            : ChangeDependencies(embedded, ("Missing.Package", "[1.0.0]"));
+        var good = ChangeDependencies(File.ReadAllBytes(fixture.Good), ("Fixture.Embedded", "[0.5.0,3.0.0)"));
+        var source = new MemorySource(good, Dependency(), lower, higher);
+        var request = Request(("Fixture.Good", "[1.2.3-beta.1]"));
+        var plan = await new PackagePlanner(source).PlanAsync(request, Platform());
+        var selected = plan.Lock.Packages.Single(x => x.Id == "Fixture.Embedded");
+        Assert.Equal(olderIsPlugin ? "plugin" : "library", selected.Kind);
+        Assert.Equal(olderIsPlugin ? "1.0.0" : "0.5.0", selected.Version);
+        Assert.Equal(olderIsPlugin, plan.Lock.PluginOrder.Contains("plugin:fixture.embedded"));
+        LockedPlanVerifier.Verify(request, plan, Platform(), plan.Lock.Packages.ToDictionary(x => x.Key, x => source.Bytes(x.Key)));
     }
 
     [Fact]
-    public async Task Plan_DoesNotFallBackToLibrary_WhenPluginRepositoryFails()
+    public async Task Plan_DoesNotUseLibraryVersion_ToSatisfyAnotherConsumerOfPlugin()
+    {
+        var graph = ChangeDependencies(File.ReadAllBytes(fixture.Build("Graph", "mixed-kind-consumer")),
+            ("Fixture.Embedded", "[0.5.0]"));
+        var good = ChangeDependencies(File.ReadAllBytes(fixture.Good), ("Fixture.Embedded", "[1.0.0]"));
+        var source = new MemorySource(graph, good, Dependency(), File.ReadAllBytes(fixture.Embedded),
+            Library("Fixture.Embedded", "0.5.0"));
+        await Assert.ThrowsAsync<ResolutionException>(() => new PackagePlanner(source).PlanAsync(
+            Request(("Fixture.Graph", "[1.0.0]"), ("Fixture.Good", "[1.2.3-beta.1]")), Platform()));
+    }
+
+    [Fact]
+    public async Task LockedPlan_RejectsPluginDisguisedAsLibrary()
+    {
+        var source = new MemorySource(File.ReadAllBytes(fixture.Embedded));
+        var request = Request(("Fixture.Embedded", "[1.0.0]"));
+        var plan = await new PackagePlanner(source).PlanAsync(request, Platform());
+        var locked = plan.Lock with { Packages = plan.Lock.Packages.Select(x => x with { Kind = "library" }).ToArray() };
+        var changed = new InstallationPlan(locked, plan.LoadMap with { LockSha512 = PlanJson.Hash(PlanJson.Bytes(locked)) });
+        var error = Assert.Throws<InvalidDataException>(() => LockedPlanVerifier.Verify(request, changed, Platform(),
+            plan.Lock.Packages.ToDictionary(x => x.Key, x => source.Bytes(x.Key))));
+        Assert.Contains("kind differs", error.Message);
+    }
+
+    [Fact]
+    public async Task Plan_AcceptsNativeOnlyPackage_FromCommonSource()
+    {
+        var good = ChangeDependencies(File.ReadAllBytes(fixture.Good), ("Native.Library", "[1.0.0]"));
+        var native = AddFiles(Library("Native.Library", "1.0.0"), ("runtimes/win-x64/native/helper.dll", new byte[] { 1, 2, 3 }));
+        var plan = await new PackagePlanner(new MemorySource(good, Dependency(), native))
+            .PlanAsync(Request(("Fixture.Good", "[1.2.3-beta.1]")), Platform());
+        Assert.Equal("library", plan.Lock.Packages.Single(x => x.Id == "Native.Library").Kind);
+        Assert.Contains(plan.LoadMap.Assets, x => x.Kind == "native" && x.Owner == "plugin:fixture.good");
+    }
+
+    [Fact]
+    public async Task Plan_RejectsMalformedPluginMetadata_FromCommonSource()
+    {
+        var source = new MemorySource(File.ReadAllBytes(fixture.Good), Dependency()) { CorruptDownload = true };
+        var error = await Assert.ThrowsAsync<InvalidDataException>(() => new PackagePlanner(source)
+            .PlanAsync(Request(("Fixture.Good", "[1.2.3-beta.1]")), Platform()));
+        Assert.Contains("identity mismatch", error.Message);
+    }
+
+    [Fact]
+    public async Task Plan_PropagatesSourceFailure()
     {
         var source = new MemorySource(File.ReadAllBytes(fixture.Good), Dependency()) { FailDependencyLookup = true };
         await Assert.ThrowsAsync<HttpRequestException>(() => new PackagePlanner(source)
             .PlanAsync(Request(("Fixture.Good", "[1.2.3-beta.1]")), Platform()));
-        Assert.Equal(0, source.LibraryLookups);
     }
 
     [Fact]
@@ -371,7 +426,7 @@ public class PlanningTests(PackageFixture fixture) : IClassFixture<PackageFixtur
             var output = Path.Combine(folder, "output");
             File.WriteAllBytes(roots, PlanJson.Bytes(Request(("Fixture.Embedded", "[1.0.0]"))));
             File.WriteAllBytes(platform, PlanJson.Bytes(Platform()));
-            File.WriteAllBytes(sources, PlanJson.Bytes(new SourceConfiguration { PluginSources = [app.Urls.Single() + "/v3/index.json"] }));
+            File.WriteAllBytes(sources, PlanJson.Bytes(new SourceConfiguration { Sources = [app.Urls.Single() + "/v3/index.json"] }));
             var args = new[] { typeof(PackagePlanner).Assembly.Location, "plan", roots, platform, sources, output };
             var run = await Task.Run(() => PackageFixture.Run("dotnet", args));
             Assert.True(run.Code == 0, run.Output);
@@ -393,31 +448,45 @@ public class PlanningTests(PackageFixture fixture) : IClassFixture<PackageFixtur
 
     private sealed class MemorySource(params byte[][] packages) : IPackageSource
     {
-        public bool MisplacedLibrary { get; init; }
+        public bool CorruptDownload { get; init; }
         public bool FailDependencyLookup { get; init; }
-        public int LibraryLookups { get; private set; }
         private readonly Dictionary<string, byte[]> data = packages.ToDictionary(x =>
         {
-            var metadata = PackageMetadata.Read(x, false);
+            var metadata = PackageMetadata.Read(x);
             return metadata.Id.ToLowerInvariant() + "/" + PackageMetadata.NormalizeVersion(metadata.Version);
         });
         private readonly Uri source = new("https://fixtures.invalid/v3/index.json");
         public byte[] Bytes(string key) => data[key];
-        public Task<PackageListing> FindAsync(PackageKind kind, string id, CancellationToken cancellation = default)
+        public Task<PackageListing> FindAsync(string id, CancellationToken cancellation = default)
         {
-            if (kind == PackageKind.Library) LibraryLookups++;
-            if (kind == PackageKind.Plugin && id == "fixture.dependency" && FailDependencyLookup)
-                throw new HttpRequestException("Plugin repository unavailable");
+            if (id == "fixture.dependency" && FailDependencyLookup)
+                throw new HttpRequestException("Package source unavailable");
             var versions = data.Keys.Where(x => x.StartsWith(id.ToLowerInvariant() + "/", StringComparison.Ordinal))
-                .Where(x => MisplacedLibrary || PackageFixture.IsPlugin(data[x]) == (kind == PackageKind.Plugin))
                 .Select(x => NuGetVersion.Parse(x.Split('/')[1])).ToArray();
             if (versions.Length == 0) throw new KeyNotFoundException(id);
             return Task.FromResult(new PackageListing(source, source, versions));
         }
-        public Task<PackageDownload> DownloadAsync(PackageKind kind, string id, NuGetVersion version, CancellationToken cancellation = default)
+        public Task<PackageDownload> DownloadAsync(string id, NuGetVersion version, CancellationToken cancellation = default)
         {
             var bytes = data[id.ToLowerInvariant() + "/" + PackageMetadata.NormalizeVersion(version)];
-            return Task.FromResult(new PackageDownload(source, PackageMetadata.Read(bytes, kind == PackageKind.Plugin), bytes, PlanJson.Hash(bytes)));
+            if (CorruptDownload)
+            {
+                using var buffer = new MemoryStream();
+                buffer.Write(bytes);
+                using (var zip = new ZipArchive(buffer, ZipArchiveMode.Update, true))
+                {
+                    var entry = zip.Entries.Single(x => x.FullName.EndsWith(".nuspec"));
+                    XDocument xml;
+                    using (var input = entry.Open()) xml = XDocument.Load(input);
+                    xml.Descendants().Single(x => x.Name.LocalName == "id").Value = "Wrong.Id";
+                    var path = entry.FullName;
+                    entry.Delete();
+                    using var output = zip.CreateEntry(path).Open();
+                    xml.Save(output);
+                }
+                bytes = buffer.ToArray();
+            }
+            return Task.FromResult(new PackageDownload(source, PackageMetadata.Read(bytes), bytes, PlanJson.Hash(bytes)));
         }
     }
 }
