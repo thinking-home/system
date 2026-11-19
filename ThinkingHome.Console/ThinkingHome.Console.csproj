@@ -1,7 +1,8 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <Import Project="../Package.xml" />
   <PropertyGroup>
-    <Description>ThinkingHome host and plugin package manager.</Description>
+    <Description>Runs the ThinkingHome host and manages installed plugins with the th command.</Description>
+    <PackageTags>$(PackageTags);dotnet-tool</PackageTags>
     <PackAsTool>true</PackAsTool>
     <ToolCommandName>th</ToolCommandName>
     <PackageReadmeFile>TOOL.md</PackageReadmeFile>
@@ -13,6 +14,7 @@
   <ItemGroup>
     <None Remove="logs\**\*" />
     <None Update="TOOL.md" Pack="true" PackagePath="/" />
+    <None Update="README.md" Pack="false" />
     <None Update="appsettings.Development.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <CopyToPublishDirectory>Never</CopyToPublishDirectory>

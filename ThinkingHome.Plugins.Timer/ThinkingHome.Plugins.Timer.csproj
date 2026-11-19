@@ -1,13 +1,12 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <Import Project="../Package.xml" />
   <PropertyGroup>
-    <Description>Runs periodic callbacks for ThinkingHome plugins.</Description>
-    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <Description>Runs periodic callbacks registered by ThinkingHome plugins.</Description>
+    <PackageTags>$(PackageTags);plugin;timer</PackageTags>
     <TargetFramework>net10.0</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="../ThinkingHome.Core.Plugins/ThinkingHome.Core.Plugins.csproj" />
-    <None Update="README.md" Pack="true" PackagePath="/" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="10.0.11" />

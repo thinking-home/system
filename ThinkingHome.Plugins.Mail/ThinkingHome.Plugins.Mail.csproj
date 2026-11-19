@@ -1,7 +1,8 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <Import Project="../Package.xml" />
   <PropertyGroup>
-    <Description>ThinkingHome plugin for sending mail.</Description>
+    <Description>Sends email from ThinkingHome automations over SMTP.</Description>
+    <PackageTags>$(PackageTags);plugin;smtp</PackageTags>
     <TargetFramework>net10.0</TargetFramework>
   </PropertyGroup>
   <ItemGroup>

@@ -1,7 +1,8 @@
 <Project Sdk="Microsoft.NET.Sdk">
     <Import Project="../Package.xml" />
     <PropertyGroup>
-        <Description>ThinkingHome plugin which store TelegramBot chats data.</Description>
+        <Description>Stores Telegram chat information for use by ThinkingHome plugins.</Description>
+        <PackageTags>$(PackageTags);plugin;telegram;storage</PackageTags>
         <TargetFramework>net10.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>

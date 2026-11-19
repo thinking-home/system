@@ -1,5 +1,6 @@
 <Project>
   <PropertyGroup>
+    <IsThinkingHomePlugin>true</IsThinkingHomePlugin>
     <GenerateDependencyFile>true</GenerateDependencyFile>
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
     <_ThinkingHomeReferenceTargets>$(MSBuildThisFileDirectory)ThinkingHome.Reference.targets</_ThinkingHomeReferenceTargets>

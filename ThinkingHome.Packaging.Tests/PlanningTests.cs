@@ -116,6 +116,23 @@ public class PlanningTests(PackageFixture fixture) : IClassFixture<PackageFixtur
     }
 
     [Fact]
+    public async Task Plan_ImportsProvidersSharedContractWithoutConsumerPackageReference()
+    {
+        var consumer = fixture.Build("Transitive", "consumer-of-shared", "-p:ThroughPlugin=true", "-p:SharedDependency=true");
+        PackageValidator.Validate(consumer, PackageFixture.Inputs(consumer));
+        var bytes = File.ReadAllBytes(consumer);
+        var metadata = PackageMetadata.Read(bytes, requirePlugin: true);
+        Assert.Empty(metadata.Plugin!.Dependencies);
+        Assert.DoesNotContain(PackageAssets.Dependencies(metadata, "net10.0"), x => x.Id.Equals("Fixture.Dependency", StringComparison.OrdinalIgnoreCase));
+
+        var provider = fixture.Build("Graph", "shared-provider", "-p:SharedDependency=true");
+        var result = await new PackagePlanner(new MemorySource(bytes, File.ReadAllBytes(provider), Dependency()))
+            .PlanAsync(Request(("Fixture.Transitive", "[1.0.0]")), Platform());
+        var asset = Assert.Single(result.LoadMap.Assets, x => x.Scope == "plugin:fixture.transitive" && x.Name == "Vendor.Dependency");
+        Assert.Equal("shared", asset.Owner);
+    }
+
+    [Fact]
     public async Task Plan_SharesContracts_ButAllowsIndependentPrivateVersion()
     {
         var source = new MemorySource(ChangeDependencies(File.ReadAllBytes(fixture.Shared), ("Fixture.Dependency", "[1.0.0]")),

@@ -1,7 +1,8 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <Import Project="../Package.xml" />
   <PropertyGroup>
-    <Description>ThinkingHome plugin which provide database API (PostgreSQL) for other plugins.</Description>
+    <Description>Provides PostgreSQL storage, Entity Framework Core sessions, and database migrations for ThinkingHome plugins.</Description>
+    <PackageTags>$(PackageTags);plugin;postgresql;ef-core</PackageTags>
     <TargetFramework>net10.0</TargetFramework>
   </PropertyGroup>
   <ItemGroup>

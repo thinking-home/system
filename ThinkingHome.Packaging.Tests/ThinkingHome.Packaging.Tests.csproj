@@ -1,5 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="../Package.xml" />
   <PropertyGroup>
+    <Description>Tests for ThinkingHome plugin packaging, installation, and runtime loading.</Description>
     <TargetFramework>net10.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>

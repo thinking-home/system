@@ -1,7 +1,8 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <Import Project="../Package.xml" />
   <PropertyGroup>
-    <Description>ThinkingHome plugin which provide API for send/receive MQTT messages.</Description>
+    <Description>Publishes MQTT messages and subscribes to MQTT topics in ThinkingHome.</Description>
+    <PackageTags>$(PackageTags);plugin;mqtt</PackageTags>
     <TargetFramework>net10.0</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
