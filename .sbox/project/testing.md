@@ -2,7 +2,7 @@
 id: project.testing
 summary: Тесты ядра и плагинов в ThinkingHome.Tests, компонентные проверки пакетного менеджера в ThinkingHome.Packaging.Tests, приёмка опубликованного комплекта на Windows и Linux, команды проверок и ограничения аппаратных интеграций
 read_when: Перед написанием тестов, реализацией и верификацией
-updated: 2026-11-17
+updated: 2026-11-19
 verification: needs-review
 ---
 
@@ -15,7 +15,8 @@ verification: needs-review
 | unit (C#) | чистая логика без БД, сети и устройств: реестры, `FindMethods`, `MetaFilter`, `ScriptContext`, разбор команд Telegram | `ThinkingHome.Tests/{Area}/*.cs`; области `Core.Plugins`, `Plugins.Scripts`, `Plugins.TelegramBot` | xunit 2.9, Moq 4.20, `dotnet test` |
 | component (C#) | настоящие nupkg, метаданные DLL, контракты, графы версий, карта загрузки, установка, locked-восстановление, откат и блокировки, локальный Kestrel и HTTP-клиент без внешней сети | `ThinkingHome.Packaging.Tests` | `dotnet test` |
 | unit и component (TypeScript) | — : тест-раннера для каталогов `ThinkingHome.Plugins.*/frontend/**` нет, скриптов `test` в `package.json` нет | — | — |
-| приёмка опубликованного комплекта | установка, запуск, обновление, восстановление и удаление через отдельные процессы на Windows/Linux | `tools/package-acceptance.py` | Python 3.10+, .NET 10 SDK; инструкции в [журнале приёмки](plugin-package-acceptance.md) |
+| приёмка опубликованного комплекта | установка, запуск, обновление, восстановление и удаление через отдельные процессы на Windows/Linux | `tools/package-acceptance.sh` | Bash, yq v4, Node.js, .NET 10 SDK; инструкции в [журнале приёмки](plugin-package-acceptance.md) |
+| приёмка релиза NuGet | сборка всех публикуемых пакетов, проверка метаданных и установка CLI и Timer в чистое окружение | `tools/publish-nuget.sh`, `tools/cli-acceptance.sh` | ручной GitHub Actions workflow или [локальный запуск](../../docs/nuget-release.md) |
 
 Проект ThinkingHome.Tests ссылается только на `ThinkingHome.Core.Plugins`, `ThinkingHome.Plugins.Scripts`, `ThinkingHome.Plugins.TelegramBot` (`ThinkingHome.Tests/ThinkingHome.Tests.csproj`); для тестов другого плагина добавьте `ProjectReference`.
 
@@ -49,6 +50,8 @@ dotnet run --project prototypes/PluginLoading/Harness/Harness.csproj -- . Debug
 В этой среде для последовательной сборки без сервера компилятора применяются `-m:1 -p:UseSharedCompilation=false`; `-p:NuGetAudit=false` отключает сетевой аудит пакетов, а не тесты.
 
 ## Отчёты
+
+19 ноября 2026 года на Windows x64 проверено наследование `ThinkingHomeShared`. Тестовый плагин с единственной ссылкой NuGet на `ThinkingHome.Plugins.Mqtt` объявил публичный метод с возвращаемым типом `DbContext`. Упаковщик принял пакет. Локально установленный `th` версии `5.0.0-alpha.1` установил его из тестового источника, и `th run --check` прошёл. В карте загрузки потребитель, Mqtt, Scripts и Database используют одну общую сборку EF Core 10.0.11. Прошли 156 тестов пакетной подсистемы и 43 теста ядра и плагинов. Релизный скрипт собрал и проверил 23 пакета.
 
 Для 5.0.0-alpha.1 на Windows x64 прошли 153 теста пакетной подсистемы и 43 теста ядра и плагинов. Дополнительно проверены установка CLI через `dotnet tool install` с изолированным кешем, установка Timer по HTTP, locked-восстановление, запуск и остановка хоста и удаление плагина. Сценарий повторён на финальных архивах. [Команды воспроизведения](../../docs/cli-release.md). Эта проверка использует установленный SDK и не требует публикации в публичный NuGet. Linux для этой версии не проверялся.
 

@@ -1,5 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="../Package.xml" />
   <PropertyGroup>
+    <Description>Tests for ThinkingHome core services and plugins.</Description>
     <TargetFramework>net10.0</TargetFramework>
     <IsPackable>false</IsPackable>
   </PropertyGroup>

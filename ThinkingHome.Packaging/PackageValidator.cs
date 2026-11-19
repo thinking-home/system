@@ -150,11 +150,10 @@ public static class PackageValidator
             Require(!platform.Contains(id), $"Platform dependency must not be reclassified: {id}");
         }
 
-        var policies = ReadPolicies(inputs, framework, manifest, platform);
-
         // Отсутствие явной категории private не должно скрывать потерянную зависимость в nuspec.
         var graph = resolvedAssets.RootElement.GetProperty("targets").GetProperty(framework).EnumerateObject()
             .ToDictionary(x => x.Name[..x.Name.LastIndexOf('/')], x => x.Value, StringComparer.OrdinalIgnoreCase);
+        var policies = ReadPolicies(inputs, resolvedAssets.RootElement, graph, dependencyIds, manifest, platform);
         var reachable = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
         var pending = new Queue<string>(dependencyIds);
         while (pending.TryDequeue(out var id))
@@ -211,17 +210,14 @@ public static class PackageValidator
         return new(manifest.PackageId, manifest.Version.ToNormalizedString(), entries);
     }
 
-    private static Dictionary<string, AssemblyPolicy> ReadPolicies(string inputs, string framework, PluginManifest manifest,
-        HashSet<string> platform)
+    private static Dictionary<string, AssemblyPolicy> ReadPolicies(string inputs, JsonElement assets,
+        Dictionary<string, JsonElement> graph, HashSet<string> dependencyIds, PluginManifest manifest, HashSet<string> platform)
     {
-        var assetsPath = File.ReadAllText(Path.Combine(inputs, "assets.txt")).Trim();
-        using var assets = JsonDocument.Parse(File.ReadAllText(assetsPath));
-        var target = assets.RootElement.GetProperty("targets").GetProperty(framework);
-        var projectDirectory = Path.GetDirectoryName(assets.RootElement.GetProperty("project").GetProperty("restore")
+        var projectDirectory = Path.GetDirectoryName(assets.GetProperty("project").GetProperty("restore")
             .GetProperty("projectPath").GetString()!)!;
         var projectIds = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
 
-        foreach (var library in assets.RootElement.GetProperty("libraries").EnumerateObject())
+        foreach (var library in assets.GetProperty("libraries").EnumerateObject())
         {
             if (library.Value.GetProperty("type").GetString() != "project")
             {
@@ -233,8 +229,7 @@ public static class PackageValidator
         }
 
         var result = new Dictionary<string, AssemblyPolicy>(StringComparer.OrdinalIgnoreCase);
-        var packageIds = target.EnumerateObject().Select(x => x.Name[..x.Name.LastIndexOf('/')])
-            .ToHashSet(StringComparer.OrdinalIgnoreCase);
+        var providers = new Dictionary<string, PluginManifest>(StringComparer.OrdinalIgnoreCase);
 
         foreach (var line in File.ReadAllLines(Path.Combine(inputs, "ownership.txt")))
         {
@@ -256,7 +251,7 @@ public static class PackageValidator
                 continue;
             }
 
-            Require(parts[3].Length > 0 || packageIds.Contains(id), $"Package reference not in assets: {id}");
+            Require(parts[3].Length > 0 || graph.ContainsKey(id), $"Package reference not in assets: {id}");
             var kind = parts[3].Length > 0 || platform.Contains(id) ? "platform" : manifest.Dependencies.GetValueOrDefault(id, "private");
             if (kind != "platform")
             {
@@ -266,6 +261,7 @@ public static class PackageValidator
                     Require(string.Equals(plugin.PackageId, id, StringComparison.OrdinalIgnoreCase),
                         $"Plugin dependency identity differs from reference: {id}");
                     Require(kind != "shared", $"Plugin cannot be marked shared: {id}");
+                    providers[id] = plugin;
                     kind = "plugin";
                 }
             }
@@ -274,6 +270,52 @@ public static class PackageValidator
             result[name] = policy;
         }
 
+        var inherited = InheritedShared(dependencyIds, manifest, providers, graph, platform);
+        foreach (var (name, policy) in result)
+        {
+            if (policy.Kind == "private" && inherited.Contains(policy.Owner))
+            {
+                result[name] = policy with { Kind = "shared" };
+            }
+        }
         return result;
+    }
+
+    private static HashSet<string> InheritedShared(HashSet<string> roots, PluginManifest consumer,
+        Dictionary<string, PluginManifest> providers, Dictionary<string, JsonElement> graph, HashSet<string> platform)
+    {
+        var inherited = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        var localLibraries = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        var imports = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+
+        void Visit(string id, bool inConsumerScope)
+        {
+            if (platform.Contains(id) || !graph.TryGetValue(id, out var node)) return;
+            providers.TryGetValue(id, out var provider);
+            var isLocalLibrary = inConsumerScope && provider == null && !consumer.Dependencies.ContainsKey(id);
+            var visited = isLocalLibrary ? localLibraries : imports;
+            if (!visited.Add(id) || !node.TryGetProperty("dependencies", out var children)) return;
+
+            foreach (var child in children.EnumerateObject())
+            {
+                var shared = provider?.Dependencies.ContainsKey(child.Name) == true;
+                if (shared)
+                {
+                    Require(!platform.Contains(child.Name), $"Platform dependency must not be reclassified: {child.Name}");
+                    Require(!providers.ContainsKey(child.Name), $"Plugin cannot be marked shared: {child.Name}");
+                    inherited.Add(child.Name);
+                }
+                // За границей плагина видны только другие плагины и явно общие библиотеки.
+                if (isLocalLibrary || shared || providers.ContainsKey(child.Name))
+                {
+                    Visit(child.Name, isLocalLibrary);
+                }
+            }
+        }
+
+        foreach (var id in roots) Visit(id, true);
+        // Приватная копия в области потребителя не может предоставить общий тип.
+        inherited.ExceptWith(localLibraries);
+        return inherited;
     }
 }

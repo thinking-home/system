@@ -1,7 +1,9 @@
 <Project Sdk="Microsoft.NET.Sdk">
     <Import Project="../Package.xml"/>
     <PropertyGroup>
-        <Description>Tmp plugin.</Description>
+        <Description>Local sandbox for exercising ThinkingHome integrations and sample web pages.</Description>
+        <PackageTags>$(PackageTags);plugin;demo</PackageTags>
+        <IsPackable>false</IsPackable>
         <TargetFramework>net10.0</TargetFramework>
     </PropertyGroup>
     <Target Name="NpmInstall" Inputs="package.json" Outputs="node_modules/.install-stamp">

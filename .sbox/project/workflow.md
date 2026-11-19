@@ -1,8 +1,8 @@
 ---
 id: project.workflow
-summary: База master, ветки по теме и sbox/ для агентов, пул-реквесты на GitHub без CI, запреты для агентов (коммит, push, мерж, миграции, секреты, публикация), список безопасных команд
+summary: Ветки и пул-реквесты, ручной выпуск NuGet через GitHub Actions, ограничения для агентов и список безопасных команд
 read_when: Перед коммитом, созданием ветки и пул-реквеста
-updated: 2026-11-17
+updated: 2026-11-18
 verification: needs-review
 ---
 
@@ -23,7 +23,7 @@ verification: needs-review
 
 ## Проверки CI
 
-- — : CI не настроен (нет `.github`, других конфигов CI). Все проверки — локально: `dotnet build ThinkingHome.sln`, `dotnet test ThinkingHome.Tests/ThinkingHome.Tests.csproj`.
+- Сборку решения и тесты для пул-реквестов запускают локально. Ручной workflow `.github/workflows/publish-nuget.yml` собирает полный комплект NuGet и проверяет установку CLI и Timer. Публикацию включает владелец при запуске. [Порядок выпуска](../../docs/nuget-release.md)
 - Docker-образ собирается вручную командой `docker build -t dima117a/thinking-home:5.0.0-alpha.1 .` и публикуется в Docker Hub (`README.md`); внутри образа Node 24 и `dotnet publish -c Release` (`Dockerfile`).
 - Шаблон workflow для GitHub можно создать командой `sbox ci install` — не применялось.
 

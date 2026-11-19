@@ -18,7 +18,6 @@ public sealed class PackageFixture : IDisposable
     public string Bad { get; }
     public string Shared { get; }
     public string Embedded { get; }
-    public string Transitive { get; }
     public string Library { get; }
 
     public PackageFixture()
@@ -34,7 +33,6 @@ public sealed class PackageFixture : IDisposable
             Bad = Build("Bad", "bad");
             Shared = Build("Bad", "shared", "-p:SharedDependency=true");
             Embedded = Build("Embedded", "embedded");
-            Transitive = Build("Transitive", "transitive");
         }
         catch
         {
@@ -199,11 +197,22 @@ public class PackageTests(PackageFixture fixture) : IClassFixture<PackageFixture
         Assert.Contains("ThinkingHomeShared must be true or false", result.Output);
     }
 
+    [Theory]
+    [InlineData("false", "false")]
+    [InlineData("true", "true")]
+    public void Validate_RejectsPrivateLibraryInConsumerContract(string providerSharesLibrary, string consumerHasPrivateCopy)
+    {
+        var package = fixture.Build("Transitive", $"consumer-of-private-{consumerHasPrivateCopy}", "-p:ThroughPlugin=true",
+            $"-p:SharedDependency={providerSharesLibrary}", $"-p:PrivateDependency={consumerHasPrivateCopy}");
+        var error = Assert.Throws<InvalidDataException>(() => PackageValidator.Validate(package, PackageFixture.Inputs(package)));
+        Assert.Contains("private dependency Fixture.Dependency (Vendor.Dependency)", error.Message);
+    }
+
     [Fact]
     public void Validate_RejectsPrivateType_InsideExternalSharedDto()
     {
-        var exception = Assert.Throws<InvalidDataException>(() =>
-            PackageValidator.Validate(fixture.Transitive, PackageFixture.Inputs(fixture.Transitive)));
+        var package = fixture.Build("Transitive", "transitive");
+        var exception = Assert.Throws<InvalidDataException>(() => PackageValidator.Validate(package, PackageFixture.Inputs(package)));
         Assert.Contains("GetData", exception.Message);
         Assert.Contains("Items", exception.Message);
         Assert.Contains("Fixture.Dependency", exception.Message);

@@ -1,0 +1,72 @@
+name: Publish NuGet packages
+
+on:
+  workflow_dispatch:
+    inputs:
+      publish:
+        description: Publish the verified packages to nuget.org
+        type: boolean
+        required: true
+        default: false
+
+permissions:
+  contents: read
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: 10.0.x
+      - uses: actions/setup-node@v6
+        with:
+          node-version-file: ThinkingHome.Plugins.WebUi/.nvmrc
+      - name: Install yq
+        run: choco install yq --yes --no-progress
+      - name: Build and verify all release packages
+        run: bash tools/publish-nuget.sh build --output artifacts/nuget-release
+      - name: Install CLI and Timer in an isolated environment
+        run: |
+          bash tools/cli-acceptance.sh artifacts/nuget-release/ThinkingHome.Console.*.nupkg \
+            artifacts/nuget-release/ThinkingHome.Plugins.Timer.*.nupkg
+      - uses: actions/upload-artifact@v7
+        with:
+          name: nuget-release
+          path: artifacts/nuget-release/
+          if-no-files-found: error
+
+  publish:
+    if: inputs.publish
+    needs: build
+    runs-on: windows-latest
+    environment: nuget
+    concurrency: nuget-publication
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: 10.0.x
+      - name: Install yq
+        run: choco install yq --yes --no-progress
+      - uses: actions/download-artifact@v8
+        with:
+          name: nuget-release
+          path: artifacts/nuget-release
+      - name: Obtain a short-lived nuget.org API key
+        id: login
+        uses: NuGet/login@v1
+        with:
+          user: ${{ secrets.NUGET_USER }}
+      - name: Push the verified release
+        env:
+          NUGET_API_KEY: ${{ steps.login.outputs.NUGET_API_KEY }}
+        run: bash tools/publish-nuget.sh push --output artifacts/nuget-release
