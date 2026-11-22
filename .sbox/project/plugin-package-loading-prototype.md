@@ -2,7 +2,7 @@
 
 Исторический отчёт о прототипе. Актуальные правила метаданных описаны в [документации упаковщика](../../ThinkingHome.Packaging/README.md), [ADR-0004](decisions/ADR-0004-plugin-entry-point-discovery.md) и [ADR-0005](decisions/ADR-0005-core-package-compatibility.md).
 
-Первый этап [плана MVP](decisions/ADR-0003-plugin-package-management-stages.md) уточняет технический контракт и проверяет модель из [ADR-0001](decisions/ADR-0001-plugin-package-management.md). Прототип находится в `prototypes/PluginLoading`, не подключён к рабочему решению и не заменяет загрузчик приложения.
+На первом этапе [плана MVP](decisions/ADR-0003-plugin-package-management-stages.md) отдельный стенд проверил модель загрузки из [ADR-0001](decisions/ADR-0001-plugin-package-management.md). После реализации загрузчика стенд удалили. Его исходники доступны в коммите `f5ef0c5` в каталоге `prototypes/PluginLoading`.
 
 ## Контракт метаданных версии 1
 
@@ -60,16 +60,9 @@ Harness не имеет compile-time ссылок на типы Provider и Cons
 
 Проверки создают DbContext и ModelBuilder, находят настоящий атрибут и вызывают настоящий делегат. InitPlugin, StartPlugin, миграции, подключения к БД и прочие интеграции не запускаются.
 
-## Воспроизведение
+## Проверка рабочего загрузчика
 
-Из корня репозитория:
-
-```powershell
-dotnet build prototypes/PluginLoading/Harness/Harness.csproj -m:1 -p:UseSharedCompilation=false -p:NuGetAudit=false
-dotnet run --project prototypes/PluginLoading/Harness/Harness.csproj --no-build -- D:/Source/system Debug
-```
-
-Первый аргумент стенда — абсолютный путь к корню конкретного checkout, второй — конфигурация сборки. Для другого каталога или Linux нужно передать соответствующий путь. Стенд использует только уже объявленные зависимости проекта; восстановление требует доступного NuGet-кеша или настроенных источников.
+Изоляцию версий, внедрение зависимостей и общий контракт EF Core проверяют [тесты загрузчика](../../ThinkingHome.Packaging.Tests/RuntimeTests.cs). Команда их запуска приведена в [руководстве по тестированию](testing.md#команды).
 
 ## Результат и пределы проверки
 

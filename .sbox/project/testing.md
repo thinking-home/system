@@ -2,7 +2,7 @@
 id: project.testing
 summary: Тесты ядра и плагинов в ThinkingHome.Tests, компонентные проверки пакетного менеджера в ThinkingHome.Packaging.Tests, приёмка опубликованного комплекта на Windows и Linux, команды проверок и ограничения аппаратных интеграций
 read_when: Перед написанием тестов, реализацией и верификацией
-updated: 2026-11-19
+updated: 2026-11-23
 verification: needs-review
 ---
 
@@ -40,10 +40,9 @@ verification: needs-review
 
 ```shell
 dotnet test ThinkingHome.Packaging.Tests/ThinkingHome.Packaging.Tests.csproj -m:1 -p:UseSharedCompilation=false -p:NuGetAudit=false
-dotnet run --project prototypes/PluginLoading/Harness/Harness.csproj -- . Debug
 ```
 
-Прототип проверяет изоляцию двух версий приватной библиотеки, типизированные ссылки между плагинами, DI, обработчики и построение модели EF без обращения к БД. Он не входит в решение.
+Чтобы проверить только загрузчик, добавьте к команде `--filter "FullyQualifiedName~RuntimeTests"`. Эти тесты проверяют изоляцию приватных версий, внедрение зависимостей между плагинами и построение общей модели EF Core плагинами Database и Scripts без подключения к базе. [RuntimeTests.cs](../../ThinkingHome.Packaging.Tests/RuntimeTests.cs)
 
 Тесты упаковки создают пакеты в собственных временных каталогах под `artifacts/packaging-tests` и удаляют их после завершения. Проверки не требуют работающего приложения или внешнего репозитория. `bin/obj` остаются обычными выходными каталогами сборки.
 
