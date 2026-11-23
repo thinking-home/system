@@ -1,7 +1,8 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <Import Project="../Package.xml" />
   <PropertyGroup>
-    <Description>ThinkingHome plugin which provide API for send/receive MQTT messages.</Description>
+    <Description>Publishes MQTT messages and subscribes to MQTT topics in ThinkingHome.</Description>
+    <PackageTags>$(PackageTags);plugin;mqtt</PackageTags>
     <TargetFramework>net10.0</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
@@ -15,4 +16,5 @@
     <PackageReference Include="Microsoft.Extensions.Logging" Version="10.0.11" />
     <PackageReference Include="MQTTnet" Version="5.2.0.1603" />
   </ItemGroup>
+  <Import Project="../ThinkingHome.Packaging/build/ThinkingHome.Plugin.targets" />
 </Project>

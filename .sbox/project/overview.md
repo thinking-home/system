@@ -2,7 +2,7 @@
 id: project.overview
 summary: ThinkingHome — сервер умного дома на .NET 10 с плагинами, веб-интерфейсом и JS-сценариями; кто пользуется, что рядом, где код и спецификации OpenSpec
 read_when: Перед исследованием и планированием любого изменения
-updated: 2026-09-15
+updated: 2026-11-17
 verification: needs-review
 ---
 
@@ -12,7 +12,9 @@ verification: needs-review
 
 Категория: серверное приложение умного дома (home automation hub) с расширением через плагины.
 
-ThinkingHome — кроссплатформенный управляющий центр умного дома на .NET 10 (`README.md`; версия `4.0.0-alpha34` в `Package.xml`). Хост `ThinkingHome.Console` загружает плагины из сборок, перечисленных в ключе `assemblies` файла `ThinkingHome.Console/appsettings.json`, и запускает их в одном процессе. Плагины дают JS-сценарии автоматизации (Jint), расписание cron, таймеры, веб-сервер с HTTP API и шиной сообщений SignalR, веб-интерфейс на React, интеграции MQTT, nooLite, Telegram и SMTP. Поставляется как docker-образ dima117a/thinking-home и как NuGet-пакеты `ThinkingHome.*` для авторов сторонних плагинов.
+ThinkingHome — кроссплатформенный управляющий центр умного дома на .NET 10 (`README.md`; версия `5.0.0-alpha.1` в `Package.xml`). Плагины дают JS-сценарии автоматизации (Jint), расписание cron, таймеры, веб-сервер с HTTP API и шиной сообщений SignalR, веб-интерфейс на React, интеграции MQTT, nooLite, Telegram и SMTP. Хост и менеджер упаковываются в .NET tool `ThinkingHome.Console`. Также поставляется как docker-образ dima117a/thinking-home и как NuGet-пакеты `ThinkingHome.*` для авторов сторонних плагинов.
+
+Хост `ThinkingHome.Console` загружает плагины из проверенного установленного набора пакетного менеджера и необязательных локальных подключений `plugins.local.json`, затем запускает их в одном процессе. `ThinkingHome.PackageRuntime` проверяет общий план и передаёт выбранные точки входа в DI; поле `assemblies` в appsettings больше не определяет состав плагинов. Установка пакетов, подключение локальных DLL и сборка монорепозитория описаны в [сценариях запуска](../../ThinkingHome.Core.Infrastructure/Runtime/README.md).
 
 ## Пользователи
 
@@ -47,6 +49,8 @@ ThinkingHome — кроссплатформенный управляющий ц�
 | `ThinkingHome.Console` | хост-приложение: `Program.cs`, `appsettings.json`, `README.md` о локальном запуске |
 | `ThinkingHome.Core.Plugins` | базовый класс `PluginBase`, реестры, расширения `FindMethods` и `SafeInvoke`, инструкция для авторов плагинов |
 | `ThinkingHome.Core.Infrastructure` | чтение конфигурации, DI, запуск и остановка плагинов |
+| `ThinkingHome.PackageManagement` | менеджер установки, удаления, locked-восстановления и проверки пакетов |
+| `ThinkingHome.Core.Infrastructure/Runtime` | проверка установленного набора и `plugins.local.json`, план выполнения и загрузка типов плагинов |
 | `ThinkingHome.Plugins.*` | один проект на плагин; суффикс `.WebApi` — HTTP API плагина, `.WebUi` — разделы веб-интерфейса; у UI-проектов каталог `frontend` и `package.json` |
 | `ThinkingHome.Tests` | xunit-тесты |
 | `openspec` | спецификации и архив изменений OpenSpec |

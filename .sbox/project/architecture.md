@@ -2,21 +2,26 @@
 id: project.architecture
 summary: Хост, ядро плагинов, карта плагинов и их зависимостей, точки входа через атрибуты-обработчики и HTTP, поток данных, границы модулей, генерируемые клиентские бандлы
 read_when: Перед исследованием, планированием и реализацией
-updated: 2026-09-15
+updated: 2026-11-23
 verification: needs-review
 ---
 
 # Архитектура и карта кода
 
+Точка входа для установки из NuGet — [ThinkingHome.Console](../../ThinkingHome.Console/TOOL.md).
+Команды `run`, `install` и `uninstall` используют общий граф зависимостей tool. Данные находятся в каталоге приложения; для `run` без `--app` это текущий рабочий каталог. Только Console определяет команды и параметры th, работает с System.CommandLine и преобразует ошибки библиотек в сообщения и коды выхода.
+
 ## Карта пакетов и модулей
 
-Зависимости взяты из `ProjectReference` в `.csproj`; все проекты дополнительно зависят от `ThinkingHome.Core.Plugins`.
+Зависимости хоста и плагинов взяты из `ProjectReference` в `.csproj`; плагины дополнительно зависят от `ThinkingHome.Core.Plugins`.
 
 | Проект | Ответственность | Зависит от | С чего начинать |
 |---|---|---|---|
-| `ThinkingHome.Console` | хост: читает конфиг, запускает `HomeApplication`, ждёт Ctrl+C, останавливает плагины | все плагины | `ThinkingHome.Console/Program.cs` |
+| ThinkingHome.Console | Исполняемый .NET tool `th` | Core.Infrastructure и PackageManagement | ThinkingHome.Console/Program.cs |
+| ThinkingHome.Packaging | Упаковка, статические контракты, каталог платформы | Core.Plugins, ASP.NET Core | ThinkingHome.Packaging/Platform/HostPlatform.cs |
+| ThinkingHome.PackageManagement | NuGet-источники, планирование, установка и восстановление | Packaging | ThinkingHome.PackageManagement/PackageManager.cs |
 | `ThinkingHome.Core.Plugins` | `PluginBase`, `IServiceContext`, `EventContext`, реестры `ObjectRegistry` и `ObjectSetRegistry`, `BaseConfigurationBuilder`, расширения `FindMethods`, `FindAttrs`, `SafeInvoke` | — | `ThinkingHome.Core.Plugins/PluginBase.cs`, `ThinkingHome.Core.Plugins/Utils/Extensions.cs` |
-| `ThinkingHome.Core.Infrastructure` | `HomeConfiguration` (appsettings и переменные `THINKINGHOME_`), `HomeApplication` (DI, Serilog, init/start/stop), `ServiceContext` | — | `ThinkingHome.Core.Infrastructure/HomeApplication.cs` |
+| ThinkingHome.Core.Infrastructure | Настройки, загрузка плагинов, DI и жизненный цикл хоста | Core.Plugins, PackageManagement | ThinkingHome.Core.Infrastructure/PluginHost.cs |
 | `ThinkingHome.Plugins.Database` | EF Core и Npgsql, миграции ThinkingHome.Migrator при старте, `OpenSession()` | — | `ThinkingHome.Plugins.Database/DatabasePlugin.cs` |
 | `ThinkingHome.Plugins.Timer` | периодические колбэки `[TimerCallback]` | — | `ThinkingHome.Plugins.Timer/TimerPlugin.cs` |
 | `ThinkingHome.Plugins.Scripts` | JS-сценарии на Jint, `[ScriptCommand]`, сценарные события, подписки с фильтром meta | Database | `ThinkingHome.Plugins.Scripts/ScriptsPlugin.cs` |
@@ -41,9 +46,17 @@ verification: needs-review
 
 ## Точки входа
 
+### Инструменты поставки плагинов
+
+ThinkingHome.Repository — отдельный NuGet V3-сервер, использующий API упаковки. Источники и планирование — каталоги Sources и Planning библиотеки PackageManagement, загрузчик — каталог Runtime библиотеки Core.Infrastructure.
+
+Менеджер устанавливает пакеты в `.thinkinghome/packages`, сохраняет декларацию, lock, карту и генерируемую конфигурацию в неизменяемом поколении и переключает `current.json`. Console удерживает снимок на время работы плагинов; новая версия применяется при следующем запуске. Для локального плагина используется временный план поверх установленных зависимостей. Локальные DLL подключаются через plugins.local.json; ThinkingHome.Local.proj генерирует его для монорепозитория. [Единый запуск](plugin-package-runtime.md), [статус этапов](decisions/README.md).
+
+### Работающий хост
+
 | Тип | Где начинается |
 |---|---|
-| Процесс | `ThinkingHome.Console/Program.cs` → `HomeApplication.StartServices` → `InitPlugin` всех плагинов по `DependencyIndex`, затем `StartPlugin`; Ctrl+C → `StopServices` в обратном порядке |
+| Процесс | `ThinkingHome.Console/Program.cs` → `PluginRuntime.Open` (проверка установки и `plugins.local.json`, загрузка точек входа) → `HomeApplication.StartServices` → `InitPlugin` всех выбранных плагинов по `DependencyIndex`, затем `StartPlugin`; Ctrl+C → `StopServices` в обратном порядке |
 | HTTP-ресурс | метод плагина с `[ConfigureWebServer]` регистрирует URL через `WebServerConfigurationBuilder` (`RegisterEmbeddedResource`, `RegisterDynamicResource`); запрос обрабатывает `HomePluginsMiddleware` |
 | Раздел веб-интерфейса | метод с `[ConfigureWebUi]` вызывает `RegisterPage(url, bundle)`; клиент читает `/api/webui/meta` и подгружает бандл раздела по маршруту |
 | Шина сообщений | SignalR hub по маршруту `/hub`; серверные обработчики через `RegisterMessageHandler(topic, fn)`, отправка через `WebServerPlugin.Send(topic, data)` |
@@ -59,8 +72,8 @@ verification: needs-review
 
 ## Поток данных
 
-1. Конфигурация: `appsettings.json` → `appsettings.{THINKINGHOME_ENVIRONMENT}.json` → переменные `THINKINGHOME_*` (разделитель `__`); секция `plugins:{FullName}` попадает в `PluginBase.Configuration`.
-2. Старт: `ServiceContext` раздаёт плагинам `Context`, `Logger`, `Configuration`, `StringLocalizer`; `DatabasePlugin.InitPlugin` применяет миграции всех сборок плагинов; порядок init/start — по `DependencyIndex`, то есть по порядку создания экземпляров DI.
+1. Конфигурация: сгенерированные значения фактического плана → `appsettings.json` → `appsettings.{THINKINGHOME_ENVIRONMENT}.json` → переменные `THINKINGHOME_*` (разделитель `__`); файлы читаются из каталога `--app` (по умолчанию текущий рабочий каталог), секция `plugins:{FullName}` попадает в `PluginBase.Configuration`. Состав плагинов задаётся установкой и `plugins.local.json`, поле `assemblies` не используется.
+2. Старт: `PluginRuntime` проверяет удерживаемый снимок установки и строит план с локальными подключениями; DI получает проверенные точки входа в порядке зависимостей. `ServiceContext` раздаёт плагинам `Context`, `Logger`, `Configuration`, `StringLocalizer`; `DatabasePlugin.InitPlugin` применяет миграции всех сборок плагинов; порядок init/start — по `DependencyIndex`, то есть по порядку создания экземпляров DI. `--check` завершает работу до создания экземпляров и запуска жизненного цикла.
 3. HTTP-запрос: Kestrel → routing (`/hub`) → сжатие → `HomePluginsMiddleware` ищет путь в реестре обработчиков; статический ресурс кэшируется 2 часа с учётом `Accept-Encoding`, динамический вызывает `HttpHandlerDelegate(HttpRequestParams)` и отдаёт `HttpHandlerResult` (Json, Text, Binary); `HttpHandlerException` задаёт код ответа, прочие ошибки → 500; незарегистрированный путь уходит дальше по конвейеру.
 4. Событие → сценарий: плагин вызывает emitter → `ScriptsPlugin.EmitScriptEvent` читает подписки `Scripts_EventHandler` по имени события, фильтрует `MetaFilter.IsMatch` в памяти и асинхронно выполняет `ScriptContext.Execute(meta, args)` в отдельном движке Jint с таймаутом `executionTimeout` (60 с по умолчанию); в сценарии доступны `host.api`, `host.scripts`, `host.log`, `host.emit`, константы `meta` и `args`.
 5. Веб-интерфейс: `index.html` с import map → `main.js` → `GET /api/webui/meta` (разделы, язык, параметры хаба) → по маршруту подгружается ESM-бандл раздела, строки локализации из `GET /api/webui/lang?id=…`; ответы API валидируются схемами valibot на клиенте.

@@ -2,7 +2,7 @@
 id: project.contracts
 summary: HTTP API плагинов (JSON, параметры в query string и form), шина SignalR /hub, сценарные события и их meta, MQTT scriptEvents, таблицы БД, потребители через NuGet и UI-кит; машиночитаемых контрактов нет
 read_when: При изменении интерфейсов и интеграций
-updated: 2026-09-15
+updated: 2026-11-17
 verification: needs-review
 ---
 
@@ -55,7 +55,8 @@ verification: needs-review
 - Таблицы PostgreSQL, создаются миграциями: `Scripts_UserScript` (`Id`, `Name`, `Body`), `Scripts_EventHandler` (`Id`, `EventName`, `MetaFilter`, `UserScriptId`, каскадное удаление), `Cron_Task` (`Id`, `Name`, `EventName`, `Expression`, `Enabled`), `TelegramChatList_Chat` (`Id`, `Login`, `ChatId` уникальный, `Date`, `FirstName`, `LastName`). Версия схемы — номер `[Migration(N)]` в сборке плагина; `ThinkingHome.Plugins.Scripts/Model/Migrations/Migration03.cs` пересоздаёт таблицу подписок без переноса данных.
 - Фильтр подписки: query string с URL-кодированием и сортировкой ключей (`MetaFilter.Serialize`); пустая строка или `null` — без фильтра.
 - Выражение cron: пять сегментов `минута час день месяц день-недели`, синтаксис NCrontab.
-- Конфигурация: `appsettings.json` с ключами `culture`, `assemblies`, `Serilog`, `plugins.{FullName}`; переопределение переменными `THINKINGHOME_a__b__c`.
+- Конфигурация: сгенерированные значения фактического плана → `appsettings.json` → `appsettings.{THINKINGHOME_ENVIRONMENT}.json` → переменные `THINKINGHOME_a__b__c`. Пользовательские файлы находятся в каталоге приложения (`--app`, по умолчанию текущий рабочий каталог), содержат `culture`, `Serilog`, `plugins.{FullName}`. Секция `plugins` задаёт параметры, поле `assemblies` не участвует в выборе плагинов.
+- Состав плагинов: установленный снимок пакетного менеджера в `.thinkinghome` и необязательный `plugins.local.json` с массивами `pluginPaths` (источники локальных DLL) и `plugins` (дополнительные корни с ID и диапазоном версии). Пути считаются от файла подключений; локальная реализация имеет приоритет над установленной с тем же ID. Формат и проверка итогового плана описаны в [контракте запуска](../../ThinkingHome.Core.Infrastructure/Runtime/README.md).
 - Клиентские схемы ответов: valibot в `ThinkingHome.Plugins.WebUi/frontend/utils/types.ts` (`MetaResponseSchema`, `LangDataSchema`, `MessageHubMessageSchema`) и в `ThinkingHome.Plugins.Scripts.WebUi/frontend/api.ts`.
 
 ## Потребители

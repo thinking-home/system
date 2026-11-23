@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="../Package.xml" />
+  <PropertyGroup>
+    <Description>Resolves dependencies and installs, restores, and verifies ThinkingHome plugin packages.</Description>
+    <PackageTags>$(PackageTags);package-management</PackageTags>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../ThinkingHome.Packaging/ThinkingHome.Packaging.csproj" />
+    <PackageReference Include="NuGet.Frameworks" Version="7.0.0" />
+  </ItemGroup>
+</Project>
